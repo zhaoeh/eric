@@ -1690,8 +1690,8 @@
         因此，第二个参数为Integer类型，和Long类型不匹配，所以调用Long.equals()方法直接返回false。
     }
     </pre>
-    <b><a name='header-n1' class='md-header-anchor '></a>1、如何避免NPE？</b><br>
-    <b><a name='header-n11' class='md-header-anchor '></a>1.1、 如何有效避免空指针异常？</b>
+    <b><a name='header-n1' class='md-header-anchor '></a>2、如何避免NPE？</b><br>
+    <b><a name='header-n11' class='md-header-anchor '></a>2.1、 如何有效避免空指针异常？</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         1.  通过实例对象调用实例方法时，切记要对实例对象进行判空处理。
         2.  调用Object类或者任何子类覆盖后的equals()方法比较两个对象是否相等时，比如：word.equals("zhaoeh");
