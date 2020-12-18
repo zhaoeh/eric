@@ -1653,15 +1653,15 @@
 
         JMS规范中并没有规范消息生产者是以同步方式还是异步方式进行消息生产、也没有规范消息消费者是以同步方式还是异步方式进行消息消费。
         消息的生产和消费，具体是同步方式还是异步方式取决于具体的JMS实现，即各个MQ的实现。
+        请参考如下：
+        <a href="https://www.cnblogs.com/qdhxhz/p/11121981.html">《RocketMQ发送普通消息（三种方式)》</a>。
+        <a href="https://blog.csdn.net/qq_36761831/article/details/99956613">《ActiveMQ异步发送》</a>
+        <a href="https://www.cnblogs.com/allenwas3/p/8600638.html">《ActiveMQ producer同步/异步发送消息》</a>
+        <a href="https://www.cnblogs.com/FG123/p/10091478.html">《Kafka生产者发送消息的三种方式》</a>
+        <a href="https://blog.csdn.net/yanerhao/article/details/106276277">《kafka生产者消费者同步与异步》</a>
+        <a href="https://blog.csdn.net/zxr0130/article/details/108968764">《Kafka生产者同步和异步的JavaAPI代码演示》</a>
+        <a href="https://www.cnblogs.com/ericli-ericli/articles/12983799.html">《什么是消息队列？》</a>
     </pre>
-    请参考如下：
-    <a href="https://www.cnblogs.com/qdhxhz/p/11121981.html">《RocketMQ发送普通消息（三种方式)》</a>。
-    <a href="https://blog.csdn.net/qq_36761831/article/details/99956613">《ActiveMQ异步发送》</a>
-    <a href="https://www.cnblogs.com/allenwas3/p/8600638.html">《ActiveMQ producer同步/异步发送消息》</a>
-    <a href="https://www.cnblogs.com/FG123/p/10091478.html">《Kafka生产者发送消息的三种方式》</a>
-    <a href="https://blog.csdn.net/yanerhao/article/details/106276277">《kafka生产者消费者同步与异步》</a>
-    <a href="https://blog.csdn.net/zxr0130/article/details/108968764">《Kafka生产者同步和异步的JavaAPI代码演示》</a>
-    <a href="https://www.cnblogs.com/ericli-ericli/articles/12983799.html">《什么是消息队列？》</a><br>
     <b><a name='header-n23' class='md-header-anchor '></a>2.3、 非实时业务削峰</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         每天中午12点峰值最大，请求每秒10000个，A系统全部发送给MySql，mySql被撑爆了。到了晚上风平浪静。
