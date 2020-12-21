@@ -1619,27 +1619,24 @@
         反射机制的核心是动态加载机制。
         动态代理模式结合反射，使用反射可以获取目标接口的Class对象，然后使用动态字节码机制可以直接生成目标接口的实现类，即字节码class文件，从而达到动态创建代理类的效果。
     </pre>
-    <b><a name='header-n2' class='md-header-anchor '></a>2、原因深度解析</b><br>
-    <b><a name='header-n21' class='md-header-anchor '></a>2.1、 应用解耦</b>
+    <b><a name='header-n2' class='md-header-anchor '></a>2、Java中想要扩展一个对象的功能一般有三种方案</b><br>
+    <b><a name='header-n21' class='md-header-anchor '></a>2.1、 继承</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        继承的方式去扩展父类的功能，和代理模式、装饰者模式相比，会增加很多子类的实现，而且类和类之间的耦合度比较高，比较臃肿，不符合高内聚低耦合的设计原则。
     </pre>
-    <b><a name='header-n22' class='md-header-anchor '></a>2.2、 异步发送请求</b>
+    <b><a name='header-n22' class='md-header-anchor '></a>2.2、 代理模式</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        代理模式增强对象功能，很强大，尤其是动态代理模式，最难理解的一种设计模式。
     </pre>
-    <b><a name='header-n23' class='md-header-anchor '></a>2.3、 非实时业务削峰</b>
+    <b><a name='header-n23' class='md-header-anchor '></a>2.3、 装饰者模式</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-
-    <b><a name='header-n3' class='md-header-anchor '></a>3、加入消息队列后的缺点</b><br>
-    <b><a name='header-n31' class='md-header-anchor '></a>3.1、 系统可用性降低</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-    <b><a name='header-n32' class='md-header-anchor '></a>3.2、 系统复杂性提高</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-    <b><a name='header-n33' class='md-header-anchor '></a>3.3、 一致性问题</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        装饰者模式分为全量装饰和增量装饰。
+        全量装饰意味着覆盖被装饰者的目标方法；增量装饰意味着依旧调用被装饰者的目标方法，即委托被装饰者对象去处理；但是在调用方法前或者方法后可以加入自己的逻辑。
+        一般都使用增量装饰，因为增量装饰更符合装饰者模式的设计理念。
+        但是有的情况下，不得不用全量装饰。
+        最常见的是全量装饰和增量装饰结合使用。
     </pre>
 </div>
 </body>
 </html>
+
