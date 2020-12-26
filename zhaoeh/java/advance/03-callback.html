@@ -1599,27 +1599,62 @@
 </head>
 <body class='typora-export'>
 <div id='write' class='is-node'>
-    <b><a name='header-n0' class='md-header-anchor '></a>Java 回调</b>
+    <b><a name='header-n0' class='md-header-anchor '></a>回调模式</b>
 
-    <b><a name='header-n1' class='md-header-anchor '></a>1、宏观的异步</b><br>
+    <b><a name='header-n1' class='md-header-anchor '></a>1、回调设计模式</b><br>
+    <b><a name='header-n21' class='md-header-anchor '></a>1.1、 理解回调</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        常说的事件监听通知大多数是通过回调机制实现的，因为回调callback机制天生具有监听功能。
+        理解回调的思路如下：
+        1.  方法自己调用自己：递归。
+        2.  对象自己引用自己：链表。
+        3.  A对象或者其他控制程序调用B，B反过来再调用A：回调。
+        4.  A类中注入了B对象，通过B对象去实现某些功能：委托（依赖/代理）。
+    </pre>
+    <b><a name='header-n22' class='md-header-anchor '></a>1.2、 一个最基本的回调架子</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        一个最基本的回调应该包括：
+        1.  调用方A和callback回调方法的定义。
+        2.  服务方B（被调用方）和事件、以及对事件监听状态的定义。
+        3.  控制程序，负责将A对象注入给B，并触发对B的某个方法的调用（即触发事件）。这一步很关键，因为回调的前提就是你中有我。
+    </pre>
+    <b><a name='header-n23' class='md-header-anchor '></a>1.3、 回调模式的核心</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        必须将消费方A的实例对象想办法注入到服务方B中去，只有服务方B有了A的引用后，才能完成回调逻辑（因为B在执行完自己的某个方法后需要回调A的callback方法）。
+    </pre>
+    <b><a name='header-n23' class='md-header-anchor '></a>1.4、 回调模式架子升级</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        按照回调模式的思路，一个成熟的回调方案应该包含如下三种实现思路：
+        1.  回调callback：仅仅使用回调，将事件和监听都包含在B对象里面，不灵活。
+        2.  将触发事件Event通过接口抽象出去，这样就不用服务方B负责去实现事件了。
+        3.  将对事件的监听Listener通过接口抽象出去，这样就不用服务方B负责去监听事件的状态了（往往是通过另外启动一个线程去监听事件的状态）。
+        注意：不管哪种方式实现回调，回调既可用于同步回调，也可用于异步回调；而且回调天然具备监听属性，它往往多使用于异步回调中。
+    </pre>
+    <b><a name='header-n23' class='md-header-anchor '></a>1.5、 一句话总结回调</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        你中有我是回调，调用方式很灵活。
+    </pre>
 
-    </pre>
-    <b><a name='header-n2' class='md-header-anchor '></a>2、调用机制分类</b><br>
-    <b><a name='header-n21' class='md-header-anchor '></a>2.1、 同步调用</b>
+    <b><a name='header-n2' class='md-header-anchor '></a>2、事件驱动模型</b><br>
+    <b><a name='header-n21' class='md-header-anchor '></a>2.1、 什么是事件驱动模型</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  事件驱动模型，实际上就是我们常说的事件监听机制。
+        2.  事件驱动模型中，回调模式是核心。
     </pre>
-    <b><a name='header-n22' class='md-header-anchor '></a>2.2、 异步调用</b>
+    <b><a name='header-n22' class='md-header-anchor '></a>2.2、 事件驱动模型三要素</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  事件
+        2.  事件源
+        发生事件的实体，事件源向外提供的能力是，注册事件监听器、移除事件监听器、触发事件监听器等操作，即外部通过操作事件源对象向事件源对象中注册事件监听器、移除事件监听器、触发事件监听器。
+        注意，事件源就是回调中定义的服务端程序，事件监听器就是回调中定义的消费方钩子函数，即消费方定义的回调函数。
+        3.  事件监听器
     </pre>
-    <b><a name='header-n23' class='md-header-anchor '></a>2.3、 同步回调</b>
+    <b><a name='header-n23' class='md-header-anchor '></a>2.3、 一句话总结事件驱动模型</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-    <b><a name='header-n23' class='md-header-anchor '></a>2.4、 异步回调</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        事件驱动模型：当事件监听器监听到事件源上发生某个事件后将执行事件监听器实现的回调逻辑。
     </pre>
 
-    <b><a name='header-n5' class='md-header-anchor '></a>5、回调机制的应用场景</b><br>
+    <b><a name='header-n3' class='md-header-anchor '></a>3、回调模式的应用场景</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         1.  实现监听通知机制：
         所谓事件监听通知机制，就是“当....的时候，就....”。
