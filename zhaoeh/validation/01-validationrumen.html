@@ -1613,43 +1613,12 @@
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         1.  JSR303是一项标准,JSR-349是其的升级版本，添加了一些新特性，他们规定一些校验规范即校验注解，如@Null，@NotNull，@Pattern，他们位于javax.validation.constraints包下，只提供规范不提供实现。
         2.  hibernate validation是对这个规范的实践（不要将hibernate和数据库orm框架联系在一起），他提供了相应的实现，并增加了一些其他校验注解，如@Email，@Length，@Range等等，他们位于org.hibernate.validator.constraints包下。
-        3.  万能的spring为了给开发者提供便捷，对hibernate validation进行了二次封装，显式校验validated bean时，你可以使用spring validation或者hibernate validation，而spring validation另一个特性，便是其在springmvc模块中添加了自动校验，并将校验信息封装进了特定的类中。这无疑便捷了我们的web开发。
-    </pre>
-
-    <b><a name='header-n2' class='md-header-anchor '></a>2、事件驱动模型</b><br>
-    <b><a name='header-n21' class='md-header-anchor '></a>2.1、 什么是事件驱动模型</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-    <b><a name='header-n22' class='md-header-anchor '></a>2.2、 事件驱动模型三要素</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-    <b><a name='header-n23' class='md-header-anchor '></a>2.3、 一句话总结事件驱动模型</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-
-    <b><a name='header-n3' class='md-header-anchor '></a>3、回调模式的应用场景</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-
-    <b><a name='header-n4' class='md-header-anchor '></a>4、回调模式案例</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        案例结构图:
-        <img src="03-callback-demo.jpg"/>
-    </pre>
-    <b><a name='header-n41' class='md-header-anchor '></a>4.1、 mode1</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-    <b><a name='header-n42' class='md-header-anchor '></a>4.2、 mode2</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-    <b><a name='header-n43' class='md-header-anchor '></a>4.3、 mode3</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-    <b><a name='header-n44' class='md-header-anchor '></a>4.4、 mode4</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        3.  万能的spring为了给开发者提供便捷，对hibernate validation进行了二次封装。
+        显式校验validated bean时，既可以使用spring validation，也可以使用hibernate validation。
+        spring validation在validation的基础上提供了新特性，即其在springmvc模块中添加了自动校验，并将校验信息封装进了特定的类中。
+        说白了，spring提供的validation框架底层使用的就是hibernate validation，但在此基础上提供了databind数据绑定，将校验信息封装进了指定的BindingResult对象中（而hibernate不提供该类）。
     </pre>
 </div>
 </body>
 </html>
-
 
