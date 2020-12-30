@@ -1613,10 +1613,42 @@
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         1.  JSR303是一项标准,JSR-349是其的升级版本，添加了一些新特性，他们规定一些校验规范即校验注解，如@Null，@NotNull，@Pattern，他们位于javax.validation.constraints包下，只提供规范不提供实现。
         2.  hibernate validation是对这个规范的实践（不要将hibernate和数据库orm框架联系在一起），他提供了相应的实现，并增加了一些其他校验注解，如@Email，@Length，@Range等等，他们位于org.hibernate.validator.constraints包下。
+        @Valid注解是使用hibernate validation时使用。
         3.  万能的spring为了给开发者提供便捷，对hibernate validation进行了二次封装。
         显式校验validated bean时，既可以使用spring validation，也可以使用hibernate validation。
         spring validation在validation的基础上提供了新特性，即其在springmvc模块中添加了自动校验，并将校验信息封装进了特定的类中。
         说白了，spring提供的validation框架底层使用的就是hibernate validation，但在此基础上提供了databind数据绑定，将校验信息封装进了指定的BindingResult对象中（而hibernate不提供该类）。
+        @Validated注解是使用spring validation时使用。
+    </pre>
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、聊聊数据校验的背景</b><br>
+    <b><a name='header-n21' class='md-header-anchor '></a>2.1、 为什么需要数据校验？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  在软件系统设计中，前中后台之间本质上就是通过信息传递的，而数据就是信息的载体。
+        2.  在数据传递过程中，为了确保数据符合业务的某些规则，需要对数据进行校验。
+        3.  如果不对数据进行校验，则各种类型各种取值的数据将会提升业务代码异常的风险。
+    </pre>
+    <b><a name='header-n22' class='md-header-anchor '></a>2.2、 为什么需要整合一个数据校验框架？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        下文引用<a href="https://blog.csdn.net/f641385712/category_10338056.html">BAT的乌托邦系列文章</a>
+        正如前面所说，软件系统中对数据进行校验是一个程序员的基本素养。并且数据在软件系统的每一层都需要校验，比如在前端、中台、后台等。
+        但是，如果任由程序员去手动校验系统交互中传递的数据，则很有可能导致，在软件系统的每一个角度都出现完全相同的数据校验代码。
+        这就是某种意义上的垃圾代码：
+        public String queryValueByKey(String zhName, String enName, Integer age) {
+            checkNotNull(zhName, "zhName must be not null");
+            checkNotNull(enName, "enName must be not null");
+            checkNotNull(age, "age must be not null");
+            validAge(age, "age must be positive");
+            ...
+        }
+
+        从这个简单的方法入参校验至少能发现如下问题：
+        需要写大量的代码来进行参数基本验证（这种代码多了就算垃圾代码）
+        需要通过文字注释来知道每个入参的约束是什么（否则别人咋看得懂）
+        每个程序员做参数验证的方式可能不一样，参数验证抛出的异常也不一样，导致后期几乎没法维护
+        如上会导致代码冗余和一些管理的问题（代码量越大，管理起来维护起来就越困难），比如说语义的一致性问题。为了避免这样的情况发生，最好是将验证逻辑与相应的域模型进行绑定。
+        而框架 Bean validation 就是一个优秀的第三方数据校验框架！
+
     </pre>
 </div>
 </body>
