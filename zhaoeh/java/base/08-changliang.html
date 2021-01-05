@@ -1689,6 +1689,24 @@
 			2) 加载该类的ClassLoader实例被gc（启动类加载器永远不会被回收）。
             3) 该类的class实例没有在其他地方被引用。
     </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、java中变量和常量的分类</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        口诀：成员变量堆内存、方法变量栈内存（如果是常量，则不论作为成员常量还是方法常量都存在于方法区内存的常量池）。
+    </pre>
+    <b><a name='header-n41' class='md-header-anchor '></a>4.1、 按照数据类型划分变量和常量</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        按照变量分配内存空间的大小及以何种形式存储，存储的内容是什么（值还是地址）来划分的话，分为：基本数据类型 + 引用数据类型。
+        (1) 基本数据类型有八种，存储的是各种基本数据，即永远存储的是变量的具体值；比如int a = 10;则a中存储的是10。
+        (2) 引用数据类型有四种(类，数组，接口，枚举)，存储的是引用（即是指向堆内存空间的地址）。
+    </pre>
+    <b><a name='header-n42' class='md-header-anchor '></a>4.2、 按照存储的物理位置划分变量和常量</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        按照变量存储的物理位置不同，分为：成员变量(全局变量) + 方法变量(方法里的变量)。
+        (1) 成员变量存储在堆内存空间中。多个线程共享，所有目标线程执行完毕，生命周期结束。
+        (2) 方法变量存储在栈内存空间中。线程私有，当前目标线程执行完毕，生命周期结束。
+        注意：其中成员变量也叫做全局变量，指该变量在当前类中的任何地方都可以访问；方法变量也叫做局部变量或者块变量，只能在当前的块或者方法中才能够访问。
+    </pre>
 </div>
 </body>
 </html>
