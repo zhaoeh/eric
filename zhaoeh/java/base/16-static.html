@@ -3,7 +3,7 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width initial-scale=1'>
-    <title>面向对象.md</title>
+    <title>static修饰符.md</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
           rel='stylesheet' type='text/css'/>
     <style type='text/css'>html {
@@ -1635,6 +1635,58 @@
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         因为static成员和方法链接符是在方法区内存的静态区内存进行保存，而JVM的方法区内存是共享区域，是可以被任何实例化对象进行访问的，因此，static成员和方法是共享成员。
     </pre>
+    <b><a name='header-n25' class='md-header-anchor '></a>2.5、 方法区内存的静态区永远被类链接符指向</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        一个类的*.class文件被加载进JVM后，这个类会在JVM的方法区内存中缓存一个全局唯一的权限定地址，这个权限定地址被成为类链接符，和方法链接符类似。
+        同时，一个类被加载进JVM后，会在堆内存中为该类首先创建一个Class实体对象，这个Class对象保存着当前类的结构。
+        方法区内存中的类链接符只会指向一个地方--->方法区内存的静态区。
+        而方法区内存的静态区存储着当前类的Class对象的地址，和当前类所有的static成员的地址；其中Class对象的地址指向Class实体，这个实体就是存储在堆内存中目标类的结构。
+        Person.name;
+        Person.class;
+        其中这个Person就是一个地址，表示类链接符，保存在方法区中，指向方法区内存的静态区；name是存储在方法区内存的静态区的静态成员的地址，class是存储在方法区内存的静态区的Class对象的地址，指向堆内存中的Class实例。
+    </pre>
+    <b><a name='header-n26' class='md-header-anchor '></a>2.6、 只随着目标类装载一次，但可以初始化多次</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        static成员随着目标类的装载只被JVM装载一次，然后保存在方法区内存的静态区中，基本类型保存的是值，引用类型保存的是地址；且该静态区内存始终被*.class类链接符所指向。
+        因为目标类只会被JVM在整个生命周期中装载一次，因此static成员也只会被JVM装载一次。
+        但是，尽管static成员只被JVM装载一次，但是它可以被初始化多次。
+        加载目标类往往伴随着初始化操作（如果不显示指定初始化值，则加载往往将变量初始化为默认值）；但是否显式的继续进行初始化操作则取决于后续是否对变量进行重置。
+        详解：static成员默认和目标类一样在整个JVM生命周期中只被JVM装载一次，但是如果后续手动重置了该成员的话，则它后续会被初始化或者实例化多次；这是饿汉式单例的核心原理。
+        1.  static Person per = new Person();此场景，随着目标类的装载就实例化成员per，同时将实例化后的per引用地址赋值给变量per进行初始化操作；
+        2.  static Person per;此场景，随着目标类的装载加载该成员per，但不进行实例化，只是初始化为默认值null。
+    </pre>
+    <b><a name='header-n27' class='md-header-anchor '></a>2.7、 static成员本身永远不会被gc回收</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        不论是 static Person per = new Person();还是 static Person per;只要是static成员一旦被JVM装载，便永远不会被gc回收。
+        根因：static成员随着目标类装载完后，其方法区的静态区地址将在整个JVM生命周期中被*.class类链接符永远指向。
+        结论：static成员本身永远不会被gc回收。
+        理解结论：描述的是static成员本身，这个本身可能保存的是基本类型的值，也可能是引用类型的地址。即并不是说static成员指向的对象实体不会被回收。
+        举例：static Person per = new Person();此场景中，per引用地址永远被*.class类链接符指向，永远不会被gc回收，但是new Person()实体便不一定了。一旦后续动作频发的重置了per，则旧的new Person()堆内存就会被gc回收。
+        比如，重置了per变量的指向，即重置了static成员，让per指向了新的堆内存，那之前的堆内存就会被gc回收。
+        即 per = new Person("1");后，则之前的new Person()堆内存将等着被gc回收。
+    </pre>
+    <b><a name='header-n28' class='md-header-anchor '></a>2.8、 static成员可以是基本类型，也可以是引用类型</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        static只能修饰成员，该成员可以是基本类型，比如int；也可以是引用类型，比如Person。
+        当是基本类型时，保存在方法区内存静态区的就是基本类型的值；当是引用类型时，般存在方法区内存静态区的就是引用类型的引用地址。这一点和非静态成员是一致的，即 基本类型保存值，引用类型保存地址（指向真正的堆内存目标实体）。
+        解释：
+        1.  static Person per = new Person();此场景，per本身的引用地址保存在方法区内存的静态区，而被共享的也是per本身的引用地址；至于new Person()则是per指向的堆内存中的实体对象，是在堆内存中开辟的。
+        2.  static int i = 10;10本身被保存在方法区内存的静态区。
+    </pre>
+    <b><a name='header-n29' class='md-header-anchor '></a>2.9、 static成员和单例</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        static成员在整个JVM生命周期中只和目标类一样被JVM装载一次，但并不是只初始化一次；它首先在JVM的“加载、链接（验证，准备和解析）、初始化”阶段的准备阶段被初始化一次，后续是否被重置取决于代码实现。
+        然而一个良好的单例，应该确保，该单例在整个JVM生命周期中只会初始化一次。饿汉式单例只会初始化一次，这就是饿汉式单例必须是static的原因，只有是static才能保证其在这个生命周期中只加载一次。
+        至于懒汉式单例，则需要采取其他措施保证单例的“单实例”。
+    </pre>
+    <b><a name='header-n210' class='md-header-anchor '></a>2.10、 static成员和static块</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        static成员和static块，都随着目标类的装载而装载一次。
+        区别：
+        static成员虽然只装载一次，但后续可能初始化多次，即同一个static成员可能被重新赋值执行多次！
+        static块无法在后续被重置，就不能多次初始化，因此，static块在整个JVM生命周期中和目标类完全绑定，只会装载一次！
+    </pre>
+
 </div>
 </body>
 </html>
