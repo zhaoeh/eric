@@ -1721,6 +1721,14 @@
         静态成员被类链接符指向，因此通过类链接符即类名即可调用；
         非静态成员被实例化对象指向，因此通过实例化对象即可调用。
     </pre>
+    <b><a name='header-n34' class='md-header-anchor '></a>3.4、 依赖类而不依赖对象</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        上面已经反复说过：
+        static随着目标类被JVM装载而装载，属于静态装载，且整个JVM生命周期只装载一次，存放在方法区内存的静态区。
+        而并不随着目标类的实例化对象而装载。
+        因此：
+        被static关键字修饰的方法或者变量不需要依赖于实例化对象来进行访问，只要类被加载了，就可以通过类名去进行访问。
+    </pre>
 </div>
 </body>
 </html>
