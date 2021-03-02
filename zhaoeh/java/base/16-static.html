@@ -1686,7 +1686,41 @@
         static成员虽然只装载一次，但后续可能初始化多次，即同一个static成员可能被重新赋值执行多次！
         static块无法在后续被重置，就不能多次初始化，因此，static块在整个JVM生命周期中和目标类完全绑定，只会装载一次！
     </pre>
+    <b><a name='header-n3' class='md-header-anchor '></a>3、static修饰后的区别</b><br>
+    <b><a name='header-n31' class='md-header-anchor '></a>3.1、 加载时机</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        从加载时机来说，静态成员变量和静态成员方法随着目标类的加载而创建，在JVM “加载、链接、初始化”的准备阶段，即在方法区内存的静态区开辟内存空间保存并初始化为默认值，并不需要new一个目标类的对象才会创建static成员。
+        static成员在一个目标类被加载过程中是最早被加载并初始化的，存在在方法区内存的静态区，且永远被*.class类链接符永远指定。
 
+        总结：
+        static成员最早初始化，且永远不会被gc回收。
+        而非static成员和方法，只有当目标类被new之后才会在堆内存空间开辟空间进行初始化，它永远被自己的应用对象所指向。
+    </pre>
+    <b><a name='header-n32' class='md-header-anchor '></a>3.2、 内存存储</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        从内存存储角度来讲：
+        静态成员和静态方法保存在内存的独立区域，这块独立区域叫做方法区内存的静态区；该内存被目标类所有实例化对象共享，是独立于堆内存的。
+        非静态成员和非静态方法只会随着目标类的new操作实例化而在对应的堆内存中开辟空间保存成员，此时的成员变量和成员方法只是属于当前new出来的这个对象，而不是目标类的所有对象。
+
+        总结：
+        static修饰的成员和方法是属于当前类的，是静态的，是随着当前类被JVM装载便开始初始化的，且独立存放在方法区内存的静态区的，是被当前类所有实例对象共享的，是不随着new操作而加载的。
+        而非static成员和方法只会随着目标对象的new操作才会被初始化的，且只是存放在当前对象的堆内存空间里的，当前类的其他对象是不能共享的。
+
+        扩展：
+        为什么工具类是不能交给Spring进行IOC呢？
+        正是因为工具类中全部是Util方法，即全部是static方法和static成员，因此任何一个工具类是在JVM一开始加载当前类，就已经进行初始化操作了。
+        而spring的IOC只是将目标对象的new操作进行了管理，因此spring无法管理工具类的加载！
+    </pre>
+    <b><a name='header-n33' class='md-header-anchor '></a>3.3、 调用方式</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        从调用方式来讲：
+        不论是在同一个类还是多个类之间，只需要采用“目标类名.静态成员”和“目标类名.静态方法”的形式便可以调用目标类的static成员和static方法。
+        而要调用非static成员和非static方法，需要首先实例化一个目标类的对象，然后才能通过该对象去调用，即需要new一个实例化对象，才能通过该“实例化对象.实例成员”和“实例化对象.实例方法”去调用。
+
+        总结：
+        静态成员被类链接符指向，因此通过类链接符即类名即可调用；
+        非静态成员被实例化对象指向，因此通过实例化对象即可调用。
+    </pre>
 </div>
 </body>
 </html>
