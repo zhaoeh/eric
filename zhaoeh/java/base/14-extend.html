@@ -3,7 +3,7 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width initial-scale=1'>
-    <title>java 面向对象.md</title>
+    <title>java java继承.md</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
           rel='stylesheet' type='text/css'/>
     <style type='text/css'>html {
@@ -1607,6 +1607,10 @@
         <font color="#dc143c">
             默认分情况，私有静态构造不继承。（只要是子类能继承的，子类就能访问，能访问就能覆盖；不能继承的，一定不能访问，不能访问当然更不能覆盖了）
         </font>
+        解析：
+        1.  对于父类中private、static的成员和构造方法，任何子类都是不能继承的。private成员是父类私有的，子类继承不了；static成员是随着类的加载而最早被JVM加载到方法区内存的静态区的，属于类的静态加载而不随着实例对象去加载，因此子类无法继承方法区内存中静态区的东西；构造方法不属于一个类的成员，因此不能被继承。
+        2.  对于父类中的default成员，如果父子类在同一个package中，则子类可以继承；如果父子类不在同一个package中，则子类不能继承。
+        3.  成员的继承关系和成员本身的访问权限有关，只要子类能访问的成员，子类就能继承，能继承就能覆盖；子类不能访问的成员，子类就不能继承，不能继承就不能覆盖。
     </pre>
     <b><a name='header-n2' class='md-header-anchor '></a>2、单继承</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
