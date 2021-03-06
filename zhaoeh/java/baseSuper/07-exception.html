@@ -1,0 +1,1769 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>Java中异常处理机制.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror {
+        height: auto;
+    }
+
+    .CodeMirror-scroll {
+        overflow-y: hidden;
+        overflow-x: auto;
+    }
+
+    .CodeMirror-lines {
+        padding: 4px 0px;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
+        background-color: white;
+    }
+
+    .CodeMirror-gutters {
+        border-right: 1px solid rgb(221, 221, 221);
+        background-color: rgb(247, 247, 247);
+        white-space: nowrap;
+    }
+
+    .CodeMirror-linenumbers {
+    }
+
+    .CodeMirror-linenumber {
+        padding: 0px 3px 0px 5px;
+        text-align: right;
+        color: rgb(153, 153, 153);
+    }
+
+    .CodeMirror div.CodeMirror-cursor {
+        border-left: 1px solid black;
+        z-index: 3;
+    }
+
+    .CodeMirror div.CodeMirror-secondarycursor {
+        border-left: 1px solid silver;
+    }
+
+    .CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor {
+        width: auto;
+        border: 0px;
+        background: rgb(119, 238, 119);
+        z-index: 1;
+    }
+
+    .CodeMirror div.CodeMirror-cursor.CodeMirror-overwrite {
+    }
+
+    .cm-tab {
+        display: inline-block;
+    }
+
+    .cm-s-typora-default .cm-header, .cm-s-typora-default .cm-property {
+        color: rgb(217, 79, 138);
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-atom, .cm-s-typora-default .cm-number {
+        color: rgb(149, 132, 134);
+    }
+
+    .cm-s-typora-default .cm-table-row, .cm-s-typora-default .cm-block-start {
+        font-family: monospace;
+    }
+
+    .cm-s-typora-default .cm-comment, .cm-s-typora-default .cm-code {
+        color: rgb(74, 90, 159);
+        font-family: monospace;
+    }
+
+    .cm-s-typora-default .cm-tag {
+        color: rgb(169, 68, 66);
+    }
+
+    .cm-s-typora-default .cm-string {
+        color: rgb(126, 134, 169);
+    }
+
+    .cm-s-typora-default .cm-link {
+        color: rgb(196, 122, 15);
+        text-decoration: underline;
+    }
+
+    .cm-s-typora-default .cm-variable-2, .cm-s-typora-default .cm-variable-1 {
+        color: inherit;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror.cm-s-typora-default div.CodeMirror-cursor {
+        border-left: 3px solid rgb(228, 98, 154);
+    }
+
+    .cm-s-typora-default .CodeMirror-activeline-background {
+        left: -60px;
+        right: -30px;
+        background: rgba(204, 204, 204, 0.2);
+    }
+
+    .cm-s-typora-default .CodeMirror-gutters {
+        border-right: none;
+        background-color: inherit;
+    }
+
+    .cm-s-typora-default .cm-trailing-space-new-line::after, .cm-startspace::after, .cm-starttab .cm-tab::after {
+        content: "•";
+        position: absolute;
+        left: 0px;
+        opacity: 0;
+        font-family: LetterGothicStd, monospace;
+    }
+
+    .os-windows .cm-startspace::after, .os-windows .cm-starttab .cm-tab::after {
+        left: -0.1em;
+    }
+
+    .cm-starttab .cm-tab::after {
+        content: " ";
+    }
+
+    .cm-startspace, .cm-tab, .cm-starttab, .cm-trailing-space-a, .cm-trailing-space-b, .cm-trailing-space-new-line {
+        font-family: monospace;
+        position: relative;
+    }
+
+    .cm-s-typora-default .cm-trailing-space-new-line::after {
+        content: "↓";
+        opacity: 0.3;
+    }
+
+    .cm-s-inner .cm-keyword {
+        color: rgb(119, 0, 136);
+    }
+
+    .cm-s-inner .cm-atom, .cm-s-inner.cm-atom {
+        color: rgb(34, 17, 153);
+    }
+
+    .cm-s-inner .cm-number {
+        color: rgb(17, 102, 68);
+    }
+
+    .cm-s-inner .cm-def {
+        color: rgb(0, 0, 255);
+    }
+
+    .cm-s-inner .cm-variable {
+        color: black;
+    }
+
+    .cm-s-inner .cm-variable-2 {
+        color: rgb(0, 85, 170);
+    }
+
+    .cm-s-inner .cm-variable-3 {
+        color: rgb(0, 136, 85);
+    }
+
+    .cm-s-inner .cm-property {
+        color: black;
+    }
+
+    .cm-s-inner .cm-operator {
+        color: rgb(152, 26, 26);
+    }
+
+    .cm-s-inner .cm-comment, .cm-s-inner.cm-comment {
+        color: rgb(170, 85, 0);
+    }
+
+    .cm-s-inner .cm-string {
+        color: rgb(170, 17, 17);
+    }
+
+    .cm-s-inner .cm-string-2 {
+        color: rgb(255, 85, 0);
+    }
+
+    .cm-s-inner .cm-meta {
+        color: rgb(85, 85, 85);
+    }
+
+    .cm-s-inner .cm-qualifier {
+        color: rgb(85, 85, 85);
+    }
+
+    .cm-s-inner .cm-builtin {
+        color: rgb(51, 0, 170);
+    }
+
+    .cm-s-inner .cm-bracket {
+        color: rgb(153, 153, 119);
+    }
+
+    .cm-s-inner .cm-tag {
+        color: rgb(17, 119, 0);
+    }
+
+    .cm-s-inner .cm-attribute {
+        color: rgb(0, 0, 204);
+    }
+
+    .cm-s-inner .cm-header, .cm-s-inner.cm-header {
+        color: blue;
+    }
+
+    .cm-s-inner .cm-quote, .cm-s-inner.cm-quote {
+        color: rgb(0, 153, 0);
+    }
+
+    .cm-s-inner .cm-hr, .cm-s-inner.cm-hr {
+        color: rgb(153, 153, 153);
+    }
+
+    .cm-s-inner .cm-link, .cm-s-inner.cm-link {
+        color: rgb(0, 0, 204);
+    }
+
+    .cm-negative {
+        color: rgb(221, 68, 68);
+    }
+
+    .cm-positive {
+        color: rgb(34, 153, 34);
+    }
+
+    .cm-header, .cm-strong {
+        font-weight: bold;
+    }
+
+    .cm-del {
+        text-decoration: line-through;
+    }
+
+    .cm-em {
+        font-style: italic;
+    }
+
+    .cm-link {
+        text-decoration: underline;
+    }
+
+    .cm-error {
+        color: rgb(255, 0, 0);
+    }
+
+    .cm-invalidchar {
+        color: rgb(255, 0, 0);
+    }
+
+    .cm-constant {
+        color: rgb(38, 139, 210);
+    }
+
+    .cm-defined {
+        color: rgb(181, 137, 0);
+    }
+
+    div.CodeMirror span.CodeMirror-matchingbracket {
+        color: rgb(0, 255, 0);
+    }
+
+    div.CodeMirror span.CodeMirror-nonmatchingbracket {
+        color: rgb(255, 34, 34);
+    }
+
+    .cm-s-inner .CodeMirror-activeline-background {
+        background: inherit;
+    }
+
+    .CodeMirror {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .CodeMirror-scroll {
+        margin-bottom: -30px;
+        margin-right: -30px;
+        padding-bottom: 30px;
+        padding-right: 30px;
+        height: 100%;
+        outline: none;
+        position: relative;
+        box-sizing: content-box;
+    }
+
+    .CodeMirror-sizer {
+        position: relative;
+    }
+
+    .CodeMirror-vscrollbar, .CodeMirror-hscrollbar, .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
+        position: absolute;
+        z-index: 6;
+        display: none;
+    }
+
+    .CodeMirror-vscrollbar {
+        right: 0px;
+        top: 0px;
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
+
+    .CodeMirror-hscrollbar {
+        bottom: 0px;
+        left: 0px;
+        overflow-y: hidden;
+        overflow-x: scroll;
+    }
+
+    .CodeMirror-scrollbar-filler {
+        right: 0px;
+        bottom: 0px;
+    }
+
+    .CodeMirror-gutter-filler {
+        left: 0px;
+        bottom: 0px;
+    }
+
+    .CodeMirror-gutters {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        padding-bottom: 30px;
+        z-index: 3;
+    }
+
+    .CodeMirror-gutter {
+        white-space: normal;
+        height: 100%;
+        box-sizing: content-box;
+        padding-bottom: 30px;
+        margin-bottom: -32px;
+        display: inline-block;
+    }
+
+    .CodeMirror-gutter-wrapper {
+        position: absolute;
+        z-index: 4;
+        background: none !important;
+        border: none !important;
+    }
+
+    .CodeMirror-gutter-background {
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        z-index: 4;
+    }
+
+    .CodeMirror-gutter-elt {
+        position: absolute;
+        cursor: default;
+        z-index: 4;
+    }
+
+    .CodeMirror-lines {
+        cursor: text;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-linebackground {
+        position: absolute;
+        left: 0px;
+        right: 0px;
+        top: 0px;
+        bottom: 0px;
+        z-index: 0;
+    }
+
+    .CodeMirror-linewidget {
+        position: relative;
+        z-index: 2;
+        overflow: auto;
+    }
+
+    .CodeMirror-widget {
+    }
+
+    .CodeMirror-wrap .CodeMirror-scroll {
+        overflow-x: hidden;
+    }
+
+    .CodeMirror-measure {
+        position: absolute;
+        width: 100%;
+        height: 0px;
+        overflow: hidden;
+        visibility: hidden;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror div.CodeMirror-cursor {
+        position: absolute;
+        visibility: hidden;
+        border-right: none;
+        width: 0px;
+    }
+
+    .CodeMirror div.CodeMirror-cursor {
+        visibility: hidden;
+    }
+
+    .CodeMirror-focused div.CodeMirror-cursor {
+        visibility: inherit;
+    }
+
+    .CodeMirror-selected {
+        background: rgb(217, 217, 217);
+    }
+
+    .CodeMirror-focused .CodeMirror-selected {
+        background: rgb(215, 212, 240);
+    }
+
+    .cm-searching {
+        background: rgba(255, 255, 0, 0.4);
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+    .CodeMirror-lint-markers {
+        width: 16px;
+    }
+
+    .CodeMirror-lint-tooltip {
+        background-color: infobackground;
+        border: 1px solid black;
+        border-radius: 4px;
+        color: infotext;
+        font-family: monospace;
+        overflow: hidden;
+        padding: 2px 5px;
+        position: fixed;
+        white-space: pre-wrap;
+        z-index: 10000;
+        max-width: 600px;
+        opacity: 0;
+        transition: opacity 0.4s;
+        font-size: 0.8em;
+    }
+
+    .CodeMirror-lint-mark-error, .CodeMirror-lint-mark-warning {
+        background-position: left bottom;
+        background-repeat: repeat-x;
+    }
+
+    .CodeMirror-lint-mark-error {
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAYAAAC09K7GAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sJDw4cOCW1/KIAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAAAHElEQVQI12NggIL/DAz/GdA5/xkY/qPKMDAwAADLZwf5rvm+LQAAAABJRU5ErkJggg==");
+    }
+
+    .CodeMirror-lint-marker-error, .CodeMirror-lint-marker-warning {
+        background-position: center center;
+        background-repeat: no-repeat;
+        cursor: pointer;
+        display: inline-block;
+        height: 16px;
+        width: 16px;
+        vertical-align: middle;
+        position: relative;
+    }
+
+    .CodeMirror-lint-message-error, .CodeMirror-lint-message-warning {
+        padding-left: 18px;
+        background-position: left top;
+        background-repeat: no-repeat;
+    }
+
+    .CodeMirror-lint-marker-error, .CodeMirror-lint-message-error {
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAHlBMVEW7AAC7AACxAAC7AAC7AAAAAAC4AAC5AAD///+7AAAUdclpAAAABnRSTlMXnORSiwCK0ZKSAAAATUlEQVR42mWPOQ7AQAgDuQLx/z8csYRmPRIFIwRGnosRrpamvkKi0FTIiMASR3hhKW+hAN6/tIWhu9PDWiTGNEkTtIOucA5Oyr9ckPgAWm0GPBog6v4AAAAASUVORK5CYII=");
+    }
+
+    .CodeMirror-lint-marker-warning, .CodeMirror-lint-message-warning {
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAANlBMVEX/uwDvrwD/uwD/uwD/uwD/uwD/uwD/uwD/uwD6twD/uwAAAADurwD2tQD7uAD+ugAAAAD/uwDhmeTRAAAADHRSTlMJ8mN1EYcbmiixgACm7WbuAAAAVklEQVR42n3PUQqAIBBFUU1LLc3u/jdbOJoW1P08DA9Gba8+YWJ6gNJoNYIBzAA2chBth5kLmG9YUoG0NHAUwFXwO9LuBQL1giCQb8gC9Oro2vp5rncCIY8L8uEx5ZkAAAAASUVORK5CYII=");
+    }
+
+    .CodeMirror-lint-marker-multiple {
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAMAAADzjKfhAAAACVBMVEUAAAAAAAC/v7914kyHAAAAAXRSTlMAQObYZgAAACNJREFUeNo1ioEJAAAIwmz/H90iFFSGJgFMe3gaLZ0od+9/AQZ0ADosbYraAAAAAElFTkSuQmCC");
+        background-repeat: no-repeat;
+        background-position: right bottom;
+        width: 100%;
+        height: 100%;
+    }
+
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    .in-text-selection, ::selection {
+        background: rgb(181, 214, 252);
+        text-shadow: none;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+        .CodeMirror-sizer {
+            margin-left: 0px !important;
+        }
+
+        .CodeMirror-gutters {
+            display: none !important;
+        }
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    .mathjax-block {
+        margin-top: 0px;
+        margin-bottom: 0px;
+        -webkit-margin-before: 0rem;
+        -webkit-margin-after: 0rem;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .md-blockmeta {
+        color: rgb(204, 204, 204);
+        font-weight: bold;
+        font-style: italic;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    sup.md-footnote {
+        padding: 2px 4px;
+        background-color: rgba(238, 238, 238, 0.7);
+        color: rgb(85, 85, 85);
+        border-radius: 4px;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror-gutters {
+        border-right: 0px;
+        background-color: inherit;
+    }
+
+    .CodeMirror {
+        text-align: left;
+    }
+
+    .CodeMirror-placeholder {
+        opacity: 0.3;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    .CodeMirror-lines {
+        padding: 0px;
+    }
+
+    div.hr:focus {
+        cursor: none;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .CodeMirror-gutters {
+        margin-right: 4px;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-diagram-panel {
+        width: 100%;
+        margin-top: 10px;
+        text-align: center;
+        padding-top: 0px;
+        padding-bottom: 8px;
+        overflow-x: auto;
+    }
+
+    .md-fences .CodeMirror.CodeMirror-wrap {
+        top: -1.6em;
+        margin-bottom: -1.6em;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    .footnotes {
+        opacity: 0.8;
+        font-size: 0.9rem;
+        padding-top: 1em;
+        padding-bottom: 1em;
+    }
+
+    .footnotes + .footnotes {
+        margin-top: -1em;
+    }
+
+    .md-reset {
+        margin: 0px;
+        padding: 0px;
+        border: 0px;
+        outline: 0px;
+        vertical-align: top;
+        background: transparent;
+        text-decoration: none;
+        text-shadow: none;
+        float: none;
+        position: static;
+        width: auto;
+        height: auto;
+        white-space: nowrap;
+        cursor: inherit;
+        -webkit-tap-highlight-color: transparent;
+        line-height: normal;
+        font-weight: normal;
+        text-align: left;
+        box-sizing: content-box;
+        direction: ltr;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li p, li .mathjax-block {
+        margin: 0.5rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    .footnotes-area {
+        color: rgb(136, 136, 136);
+        margin-top: 0.714rem;
+        padding-bottom: 0.143rem;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    .footnote-line {
+        margin-top: 0.714em;
+        font-size: 0.7em;
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    pre.md-meta-block {
+        font-size: 0.8rem;
+        min-height: 2.86rem;
+        white-space: pre-wrap;
+        background: rgb(204, 204, 204);
+        display: block;
+        overflow-x: hidden;
+    }
+
+    p .md-image:only-child {
+        display: inline-block;
+        width: 100%;
+        text-align: center;
+    }
+
+    #write .MathJax_Display {
+        margin: 0.8em 0px 0px;
+    }
+
+    .mathjax-block {
+        white-space: pre;
+        overflow: hidden;
+        width: 100%;
+    }
+
+    p + .mathjax-block {
+        margin-top: -1.143rem;
+    }
+
+    .mathjax-block:not(:empty)::after {
+        display: none;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list {
+        list-style-type: none;
+    }
+
+    .task-list-item {
+        position: relative;
+        padding-left: 1em;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    .math {
+        font-size: 1rem;
+    }
+
+    .md-toc {
+        min-height: 3.58rem;
+        position: relative;
+        font-size: 0.9rem;
+        border-radius: 10px;
+    }
+
+    .md-toc-content {
+        position: relative;
+        margin-left: 0px;
+    }
+
+    .md-toc::after, .md-toc-content::after {
+        display: none;
+    }
+
+    .md-toc-item {
+        display: block;
+        color: rgb(65, 131, 196);
+        text-decoration: none;
+    }
+
+    .md-toc-inner:hover {
+    }
+
+    .md-toc-inner {
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    .md-toc-h1 .md-toc-inner {
+        margin-left: 0px;
+        font-weight: bold;
+    }
+
+    .md-toc-h2 .md-toc-inner {
+        margin-left: 2em;
+    }
+
+    .md-toc-h3 .md-toc-inner {
+        margin-left: 4em;
+    }
+
+    .md-toc-h4 .md-toc-inner {
+        margin-left: 6em;
+    }
+
+    .md-toc-h5 .md-toc-inner {
+        margin-left: 8em;
+    }
+
+    .md-toc-h6 .md-toc-inner {
+        margin-left: 10em;
+    }
+
+    @media screen and (max-width: 48em) {
+        .md-toc-h3 .md-toc-inner {
+            margin-left: 3.5em;
+        }
+
+        .md-toc-h4 .md-toc-inner {
+            margin-left: 5em;
+        }
+
+        .md-toc-h5 .md-toc-inner {
+            margin-left: 6.5em;
+        }
+
+        .md-toc-h6 .md-toc-inner {
+            margin-left: 8em;
+        }
+    }
+
+    a.md-toc-inner {
+        font-size: inherit;
+        font-style: inherit;
+        font-weight: inherit;
+        line-height: inherit;
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    .md-attr {
+        display: none;
+    }
+
+    .md-fn-count::after {
+        content: ".";
+    }
+
+    .md-tag {
+        opacity: 0.5;
+    }
+
+    .md-comment {
+        color: rgb(162, 127, 3);
+        opacity: 0.8;
+        font-family: monospace;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    h1 .md-tag, h2 .md-tag, h3 .md-tag, h4 .md-tag, h5 .md-tag, h6 .md-tag {
+        font-weight: initial;
+        opacity: 0.35;
+    }
+
+    a.md-print-anchor {
+        border-width: initial !important;
+        border-style: none !important;
+        border-color: initial !important;
+        display: inline-block !important;
+        position: absolute !important;
+        width: 1px !important;
+        right: 0px !important;
+        outline: none !important;
+        background: transparent !important;
+        text-decoration: initial !important;
+        text-shadow: initial !important;
+    }
+
+    .md-inline-math .MathJax_SVG .noError {
+        display: none !important;
+    }
+
+    .mathjax-block .MathJax_SVG_Display {
+        text-align: center;
+        margin: 1em 0em;
+        position: relative;
+        text-indent: 0px;
+        max-width: none;
+        max-height: none;
+        min-height: 0px;
+        min-width: 100%;
+        width: auto;
+        display: block !important;
+    }
+
+    .MathJax_SVG_Display, .md-inline-math .MathJax_SVG_Display {
+        width: auto;
+        margin: inherit;
+        display: inline-block !important;
+    }
+
+    .MathJax_SVG .MJX-monospace {
+        font-family: monospace;
+    }
+
+    .MathJax_SVG .MJX-sans-serif {
+        font-family: sans-serif;
+    }
+
+    .MathJax_SVG {
+        display: inline;
+        font-style: normal;
+        font-weight: normal;
+        line-height: normal;
+        zoom: 90%;
+        text-indent: 0px;
+        text-align: left;
+        text-transform: none;
+        letter-spacing: normal;
+        word-spacing: normal;
+        word-wrap: normal;
+        white-space: nowrap;
+        float: none;
+        direction: ltr;
+        max-width: none;
+        max-height: none;
+        min-width: 0px;
+        min-height: 0px;
+        border: 0px;
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+        text-decoration: none;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    li p.first {
+        display: inline-block;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .CodeMirror-gutters {
+        border-right: 1px solid rgb(221, 221, 221);
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list {
+        padding-left: 0px;
+    }
+
+    .task-list-item {
+        padding-left: 32px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    #write pre.md-meta-block {
+        padding: 1rem;
+        font-size: 85%;
+        line-height: 1.45;
+        background-color: rgb(247, 247, 247);
+        border: 0px;
+        border-radius: 3px;
+        color: rgb(119, 119, 119);
+        margin-top: 0px !important;
+    }
+
+    .mathjax-block > .code-tooltip {
+        bottom: 0.375rem;
+    }
+
+    #write > h3.md-focus::before {
+        left: -1.5625rem;
+        top: 0.375rem;
+    }
+
+    #write > h4.md-focus::before {
+        left: -1.5625rem;
+        top: 0.285714rem;
+    }
+
+    #write > h5.md-focus::before {
+        left: -1.5625rem;
+        top: 0.285714rem;
+    }
+
+    #write > h6.md-focus::before {
+        left: -1.5625rem;
+        top: 0.285714rem;
+    }
+
+    .md-image > .md-meta {
+        border: 1px solid rgb(221, 221, 221);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+        color: inherit;
+    }
+
+    .md-tag {
+        color: inherit;
+    }
+
+    .md-toc {
+        margin-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    .sidebar-tabs {
+        border-bottom: none;
+    }
+
+    #typora-quick-open {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+    }
+
+    #typora-quick-open-item {
+        background-color: rgb(250, 250, 250);
+        border-color: rgb(254, 254, 254) rgb(229, 229, 229) rgb(229, 229, 229) rgb(238, 238, 238);
+        border-style: solid;
+        border-width: 1px;
+    }
+
+    #md-notification::before {
+        top: 10px;
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+
+    header, .context-menu, .megamenu-content, footer {
+        font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    .file-node-content:hover .file-node-icon, .file-node-content:hover .file-node-open-state {
+        visibility: visible;
+    }
+
+    .mac-seamless-mode #typora-sidebar {
+        background-color: var(--side-bar-bg-color);
+    }
+
+    .md-lang {
+        color: rgb(180, 101, 77);
+    }
+
+
+    </style>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>异常处理机制、异常栈</b>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、Java中的错误</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  Java中的错误，分为两种：语法错误，语义错误。
+        2.  语法错误也叫做编译时错误，无法正常编译，只要语法有错，Eclipse，IDEA等IDE会自动检查语法，飘红提示导致java文件无法编译为class文件。
+        3.  语义错误也叫做运行时错误，也称之为异常。语义错误可以正常编译，但是无法正常运行。
+        4.  语义错误即异常并不是一种可预见性错误，而是必须通过运行才能发现的错误。比如int a = 10 / 0，这是符合语法的，但只有代码运行后才能知道加载进内存的被除数的值是不是0，是0的话才导致异常。
+    </pre>
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、Java中的异常</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        Java中的异常是语义错误，叫做Throwable,Throwable本质是jdk封装好的一个内置类，其中又可以细分为一下三种：
+        1.  错误类，即Error类。错误类一般是由JVM引起的，一般不由开发人员处理，可忽略。
+        2.  运行时异常类，也叫做非检查性异常。该异常可以不进行捕获，不用处理，由JVM自动进行处理。如果不对该异常处理的话，类似于直接使用throws将出现的异常向上抛出去了，最终整个代码执行链上都没处理的话，则层层向上抛出，最终抛给栈底，一般都是程序入口方法，比如main方法。再由栈顶直接抛给JVM。而JVM会直接导致程序流程异常终止的。因此，运行时异常一般也需要手动进行try catch处理。
+        3.  非运行时异常类，也叫做检查性异常。该异常必须由java开发人员手动进行处理。
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、异常处理的两种方式</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  try catch finally语句块，手动进行异常的捕获和处理。
+        2.  使用throws关键字将可能出现的异常继续向流程调用方抛出，最终会层层抛出，直到在代码执行链上遇到try catch或者最终抛给了JVM进行处理。
+
+        <font color="#a52a2a">
+            tips：
+            对于异常本质的处理方式只有try catch finally语句块，throws并不具备处理异常的能力。
+            如果一直throws向上游程序抛出异常的话，最终只是抛给了JVM，而JVM的处理就是让程序流程异常终止。
+
+            注意：区分throws和throw，throws用来向上抛出异常，而throw用来手动抛出一个异常对象。
+        </font>
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、finally块的说明</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        当代码执行到try语句时，对finally块中，不论是try和catch块中使用return或者break，还是出现了异常，finally块总会执行。
+        即：finally块的逻辑总会执行的，除非在执行finally之前使用System.exit()，使JVM进行强制结束，这样finally就不会执行。
+
+        分析如下：
+        1.  try语句没有被执行，比如在try语句前就return了，这样finally语句并不会执行。因此说明了finally语句块被执行的必要而非充分条件就是：相应的try语句一定被执行到。
+        2.  如果在try代码之前或者try代码、catch代码中执行了System.exit(0);语句使得JVM进程强制退出，那么将终止Java虚拟机，因此，finally语句也不会被执行到。
+        3.  finally块的语句在try块或者catch块中的return语句执行之后，返回之前执行。而且finally语句块中的逻辑有可能影响try块或者catch块中return的值，也有可能不影响。
+        如果返回值类型是基本类型，则不影响；如果是引用类型，则可能影响。
+        如果finally语句块中也有return语句，则最终会覆盖掉try块和catch块中的return语句，直接返回finally语句块中的return逻辑。
+
+        <font color="#a52a2a">
+            最终结论：在代码执行到try语句且不终止JVM的情况下，finally语句块一定会执行。
+        </font>
+    </pre>
+
+    <b><a name='header-n5' class='md-header-anchor '></a>5、运行时异常</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  运行时异常如果不显式处理，则直接一层一层向调用方抛出，类似于throws，直到遇见try catch语句，如果抛向异常栈的最底部（即最初的调用方，注意栈是先进后出的）一直没有catch处理则程序会异常终止。
+        2.  常见的运行时异常：
+        ArrayIndexOutOfBoundsException 数组下标越界异常；
+        NullPointerException 空指针异常；
+        ArithmeticException 算数异常；
+        MissingResourceException 资源丢失异常；
+        ClassNotFoundException 找不到类异常。
+        3.  运行时异常属于非检查性异常，程序中可以选择try catch处理，也可以不处理。这些异常一般是由于程序逻辑错误引起的，完全是可以避免的异常，也就是说这些异常完全是程序员可以自己规避的异常，jdk团队已经整理好了，所以才将这些异常定义为运行时异常，目的就是不让程序员频繁的使用try catch进行处理（即抛出这些运行时异常不处理完全可以），然而不处理一旦发生这种运行时异常就会直接导致程序异常终止。
+        4.  从逻辑角度讲，运行时异常应该由程序员通过代码实现进行规避。
+    </pre>
+
+    <b><a name='header-n6' class='md-header-anchor '></a>6、异常的作用</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  异常就是用来检查程序运行期间是否出现意外，异常一旦发生建议必须使用try catch进行处理，或者通过逻辑代码进行规避。
+        2.  不使用try catch处理的异常，一定会导致程序异常终止。
+        <font color="#a52a2a">
+            tips:
+            所谓不使用try catch处理的异常，包括任何的异常。包括运行时异常，非运行时异常，手动抛出的异常等。只要是异常，都必须使用try catch进行处理，才能保证代码不异常终止。
+            记住，不使用try catch处理的异常都是耍流氓，因为一旦发生异常，程序必将终止。
+        </font>
+    </pre>
+
+    <b><a name='header-n7' class='md-header-anchor '></a>7、throws和throw</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  throws表示抛出当前方法内部出现的异常给调用方，当前方法不进行异常的处理，交给调用方进行处理。如果调用方不处理，则继续向上抛或者异常终止程序。如果当前方法使用try catch捕获了异常进行了处理，则当前方法的throws不生效，即try catch语句块的优先级比throws高。
+        2.  throw是在代码当中手动产生一个异常，相当于认为制造了一个异常，异常产生后的处理方式和其他异常完全一样。即如果产生的是检查性异常则需要使用try catch或者throws进行处理；如果产生的是运行时异常则可以不做任何处理，直接交给JVM（但建议使用try catch进行处理）。
+    </pre>
+
+    <b><a name='header-n8' class='md-header-anchor '></a>8、throws和throw</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  throws表示抛出当前方法内部出现的异常给调用方，当前方法不进行异常的处理，交给调用方进行处理。如果调用方不处理，则继续向上抛或者异常终止程序。如果当前方法使用try catch捕获了异常进行了处理，则当前方法的throws不生效，即try catch语句块的优先级比throws高。
+        2.  throw是在代码当中手动产生一个异常，相当于认为制造了一个异常，异常产生后的处理方式和其他异常完全一样。即如果产生的是检查性异常则需要使用try catch或者throws进行处理；如果产生的是运行时异常则可以不做任何处理，直接交给JVM（但建议使用try catch进行处理）。
+    </pre>
+
+    <b><a name='header-n9' class='md-header-anchor '></a>9、代码执行链和异常栈</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  一个简单的测试类
+        public class Test{
+            public static void main(String args[]){
+                fun1();// main方法调用fun1方法。调用方：main  被调用方：fun1
+            }
+
+            public static void fun1(){
+                fun2();// fun1方法调用fun2方法。调用方：fun1   被调用方：fun2
+            }
+
+            public static void fun2(){
+                fun3();// fun2方法调用fun3方法。调用方：fun2   被调用方：fun3
+            }
+
+            public static void fun3(){
+                fun4();// fun3方法调用fun4方法。调用方：fun3   被调用方：fun4
+            }
+        }
+
+        <font color="#a52a2a">
+            tips:
+            了解栈内存结构和栈帧。
+            栈内存的数据结构是线性的，可以采用数组实现，也可以采用链表等实现。
+            栈内存数据结构的特点是先进后出。
+            栈内存只有一个口，既是入口也是出口。
+            先进入栈内存的数据首先被压栈，也叫做入栈，后续进来的数据依次序入栈。
+            最终栈内存的数据状态是，先进入的被压到栈底，后进入的在栈顶。
+            这样一来，后进入的数据则优先出栈。
+            这边是栈结构的特性，即先进后出。
+
+            栈帧是JVM为每个被压入虚拟机栈内存的方法等创建的一个对象，里面保存着局部变量表、操作数栈、方法链接符等信息。
+        </font>
+
+        2.  JVM进程启动后，启动主线程从main方法开始执行，即从上游业务开始向下游业务执行，开始执行整个方法的调用链。这种程序的执行链被称为代码执行链。
+            在代码执行链中，当主线程执行到fun4方法时，虚拟机栈中的状态是这样的：
+            栈顶
+            fun4
+            fun3
+            fun2
+            fun1
+            main
+            栈底
+
+        （1）、程序入口方法是main，所以虚拟机首先会创建main方法对应的栈帧，栈帧中保存着局部变量表、操作数栈、方法链接符等信息。
+        （2）、将main方法对应的栈帧压栈。
+        （3）、main方法调用了fun1，则创建fun1的栈帧，压栈。
+        （4）、以此类推，当执行到fun4方法时，则创建fun4方法的栈帧，压栈。
+        （5）、最终形态即为：代码执行链最上游的方法沉到栈底；代码执行链最下游的方法漂到栈顶。
+        （6）、代码执行链之所以采用栈结构进行存储，是因为完全符合软件执行流程，只有采用栈结构，下游的执行结果才能够方便的被线程获取到（因为方法越是在业务下游，其数据内容越是在栈顶，方便出栈）。
+
+        <font color="#a52a2a">
+            tips：
+            如果在主线程中的某个流程中，启动了异步子线程，那么异步子线程会拥有完全独立的虚拟机栈空间，保存为子线程的整个方法调用链上的每个方法创建的栈帧。
+
+            扩展：JVM内存划分中，程序计数器、栈内存是线程私有的；而堆内存、方法区是线程共享的内存区域。
+        </font>
+
+        3.  如果当代码执行链执行到fun4方法时，fun4方法抛出了异常，那么虚拟机生成Exception实例就会保存整个代码执行链的虚拟机栈信息。
+            异常对象生成后，fun4方法会提前结束。
+            exception对象会一直沿着代码执行链的反方向，一直向上游移动（即throws的原理或者运行时异常默认向上抛出的原理）。
+            直到某个上游方法将exception进行了try catch捕获或者最终交给了JVM处理。
+            如果try catch捕获了异常并进行了打印（JVM捕获后会默认打印exception对象栈信息），则此时就会打印出异常栈信息。
+
+        4.  exception对象被打印，实际上就是其中的虚拟机栈信息出栈的过程。
+            打印的顺序就是按照出栈的顺序打印的。
+            具体就是：真正抛出异常的方法栈帧始终在栈定方向；而整个调用链的上游方法始终在栈底方向。
+
+        5.  总结：
+            异常栈信息的第一行就是抛出这个异常的最原始的地方。
+            异常栈信息的最后一行就是最开始调用的地方。
+            如果异常栈信息后面跟着Cause by，就证明抛出当前异常的原因是捕获到了下面的异常。
+    </pre>
+
+    <b><a name='header-n10' class='md-header-anchor '></a>10、断言</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+</div>
+</body>
+</html>
