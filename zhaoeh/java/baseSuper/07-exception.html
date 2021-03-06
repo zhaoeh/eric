@@ -1680,13 +1680,7 @@
         2.  throw是在代码当中手动产生一个异常，相当于认为制造了一个异常，异常产生后的处理方式和其他异常完全一样。即如果产生的是检查性异常则需要使用try catch或者throws进行处理；如果产生的是运行时异常则可以不做任何处理，直接交给JVM（但建议使用try catch进行处理）。
     </pre>
 
-    <b><a name='header-n8' class='md-header-anchor '></a>8、throws和throw</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        1.  throws表示抛出当前方法内部出现的异常给调用方，当前方法不进行异常的处理，交给调用方进行处理。如果调用方不处理，则继续向上抛或者异常终止程序。如果当前方法使用try catch捕获了异常进行了处理，则当前方法的throws不生效，即try catch语句块的优先级比throws高。
-        2.  throw是在代码当中手动产生一个异常，相当于认为制造了一个异常，异常产生后的处理方式和其他异常完全一样。即如果产生的是检查性异常则需要使用try catch或者throws进行处理；如果产生的是运行时异常则可以不做任何处理，直接交给JVM（但建议使用try catch进行处理）。
-    </pre>
-
-    <b><a name='header-n9' class='md-header-anchor '></a>9、代码执行链和异常栈</b><br>
+    <b><a name='header-n8' class='md-header-anchor '></a>8、代码执行链和异常栈</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         1.  一个简单的测试类
         public class Test{
@@ -1761,7 +1755,7 @@
             如果异常栈信息后面跟着Cause by，就证明抛出当前异常的原因是捕获到了下面的异常。
     </pre>
 
-    <b><a name='header-n10' class='md-header-anchor '></a>10、断言</b><br>
+    <b><a name='header-n9' class='md-header-anchor '></a>9、断言</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
     </pre>
 </div>
