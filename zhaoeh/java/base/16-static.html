@@ -1602,7 +1602,7 @@
 <body class='typora-export'>
 <div id='write' class='is-node'>
     <b><a name='header-n0' class='md-header-anchor '></a>修饰符static</b>
-    
+
     <b><a name='header-n1' class='md-header-anchor '></a>1、static的含义</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         口诀：<font color="#a52a2a">static在天边，实现数据共享</font>
@@ -1686,6 +1686,14 @@
         区别：
         static成员虽然只装载一次，但后续可能初始化多次，即同一个static成员可能被重新赋值执行多次！
         static块无法在后续被重置，就不能多次初始化，因此，static块在整个JVM生命周期中和目标类完全绑定，只会装载一次！
+    </pre>
+    <b><a name='header-n211' class='md-header-anchor '></a>2.11、 static方法和static块中不能使用this或者super</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        static方法和static代码块中不能直接使用this和super，如果要等价使用this或者super，则必须实例化自身对象或者直接父类对象。
+        原因：static成员是类成员，随着目标类的装载而被初始化，并不随着目标类的new实例化而初始化。即static成员是最早被JVM初始化的，属于静态初始化，而不是new操作进行的动态初始化。
+        因此，如果强制在static中使用this或者super的话，此时堆内存并没有开辟空间保存当前类的实例化对象或者父类的实例化对象，那this和super根本就不存在指向的内存空间，故而无法直接使用。
+        static成员只要类一经加载就会在方法区内存的静态区分配空间保存；而非静态成员不进行对象的实例化操作便不会分配空间保存。
+        所以，在一个类的静态成员中去访问非静态成员之所以会出错是因为在类的非静态成员不存在的时候静态成员就已经存在了，访问一个内存中不存在的东西当然会出错。
     </pre>
     <b><a name='header-n3' class='md-header-anchor '></a>3、static修饰后的区别</b><br>
     <b><a name='header-n31' class='md-header-anchor '></a>3.1、 加载时机</b>
