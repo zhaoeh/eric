@@ -1617,7 +1617,7 @@
         <font color="#dc143c">
             口诀：一个孩子不能有多个亲生父亲
         </font>
-        子类继承父类在Java中只能是单继承；单继承即一个子类不能继承多个父类。
+        子类继承父类在Java中只能是单继承而不能是多重继承；单继承即一个子类只能继承一个父类，而不能继承多个父类。
         但是Java中一个类可以实现多层继承，即C继承B、B再继承A。
     </pre>
 
@@ -1646,8 +1646,15 @@
         (5) 普通类可以实现接口；
         (6) 抽象类可以实现接口；
         (7) 接口可以继承多个接口。
+        https://www.cnblogs.com/myseries/p/10973524.html
     </pre>
 
+    <b><a name='header-n4' class='md-header-anchor '></a>5、深入父子类继承</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="#dc143c">
+            口诀：实例化子类对象之前，如果子类对象存在直接父类，则先实例化父类对象；如果父类继续存在父类，则优先实例化父类的父类对象。以此类推。
+        </font>
+    </pre>
 </div>
 </body>
 </html>
