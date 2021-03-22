@@ -1937,7 +1937,280 @@
         循环依赖一旦形成的无限循环依赖方式，则一定产生StackOverflowError栈内存溢出。
         如果循环依赖只是形成闭环，则一定不会产生StackOverflowError栈内存溢出。
     </pre>
-   
+    <b><a name='header-n3' class='md-header-anchor '></a>3、spring处理循环依赖</b><br>
+    <b><a name='header-n31' class='md-header-anchor '></a>3.1、 宏观方案</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        查看spring的源码，得出如下结论：
+        1.  当前bean交给spring的IOC容器进行管理，如果依赖其他bean，当其他bean的注入方式是通过构造器进行注入的，那么spring启动将报错，即spring无法处理构造器的循环依赖。
+        2.  当前bean如果注入其他bean是通过属性注入或者setter注入（本质都是属性注入的），如果当前bean是单例管理的，那么spring通过三级缓存来处理循环依赖。
+        3.  当前bean注入其他bean，如果当前bean是多例管理的，那么spring无法处理循环依赖。
+    </pre>
+    <b><a name='header-n32' class='md-header-anchor '></a>3.2、 spring如何检测目标bean存在循环依赖？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            1.  spring扫描到需要实例化目标bean；
+            2.  spring去ioc容器中获取bean，获取不到；
+            3.  spring去单例bean的缓存中获取bean，获取不到；
+            4.  spring开始创建bean；
+            5.  创建前首先去正在创建的bean列表中尝试加入当前bean，如果加入失败，说明当前bean正在被创建，即发生了循环依赖，直接报异常；
+            6.  如果可以加入当前bean到正在创建的bean列表中，则说明当前bean不存在循环依赖，继续执行bean创建；
+            7.  开始创建bean，先去三级缓存中获取bean，获取不到，则创建；
+            8.  反射目标bean的无参构造去创建bean实例；
+            9.  填充目标bean的各种属性；
+            10. 执行目标bean的初始化方法；
+            11. 从正在创建的bean列表中，删除该bean；
+            12. 缓存目标bean到bean缓存中，即加入到ioc容器中。
+        </font>
+
+        关键步骤是5和11。
+        即spring通过一个缓存列表，来存储每一个正在创建的bean对象。
+        在开始创建bean对象前，就尝试加入该bean；
+        当该bean被完整创建成功后（实例化、填充完属性、初始化），则从该缓存列表中移除该bean。
+        因此，spring在创建bean之前，通过检测“正在创建的bean缓存列表”中是否包含当前bean，来检测当前bean是否产生了循环依赖。
+
+        需要注意的是，spring只要检测到目标bean存在循环依赖，就会直接抛出异常。
+        <font color="#a52a2a">
+            tips：
+            spring为啥要检测循环依赖？
+            前面说过，对于java来说如果不检测循环依赖，任由jvm去搞的话，最终会导致StackOverflowError，即栈内存溢出的。
+            因此，作为一个框架，就需要及时发现循环依赖，及时止损，而不是非得耗尽栈内存！
+        </font>
+    </pre>
+    <b><a name='header-n33' class='md-header-anchor '></a>3.3、 spring如何解决循环依赖？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">先了解spring创建bean的几个步骤</font></b>
+        spring实际上是在java基础之上，对任何一个目标bean的创建制定了自己的标准。
+        这个标准分为如下3个步骤：
+        <font color="gray">
+            1.  实例化bean，即通过反射调用目标bean的构造方法去创建目标bean实例；如果自己交给spring管理的bean的构造方法是无参构造，则spring默认调用无参构造，如果是有参构造，则spring默认调用有参构造。这个时候spring创建出来的bean往往是通过无参构造去实例化的，因为后续有填充属性这一步，因此这一步产生的bean一般是空构造产生的空bean对象，我们称之为早期bean。
+            2.  填充属性；为实例化好的目标bean填充该bean依赖的属性；即@Autowired注入的属性，底层是反射目标bean的setXXX方法进行属性填充。
+            3.  bean的初始化操作；比如目标bean定义了init()方法，则spring在为目标bean填充完属性之后，再执行init方法对bean做某些初始化操作。此时bean经过了层层处理，是最终bean。
+        </font>
+
+        通过上面两个步骤，可以得知，要想为目标bean注入依赖对象，有两种方式：
+        1.  通过步骤1，直接调用目标bean的有参构造为目标bean注入依赖对象。
+        2.  通过步骤2，在为目标bean填充属性时，注入依赖对象。
+
+        <b><font color="#a52a2a">spring通过构造器注入依赖对象</font></b>
+        构造器注入依赖对象，一旦产生循环依赖，spring无法解决。本质是构造器的行为是JVM自己控制的，不受外部控制。
+        以下是spring通过构造器注入循环依赖的简化步骤：
+        <font color="gray">
+            1.  spring实例化serviceA，实例化前将serviceA的beanName放入正在创建的bean列表中缓存起来。
+            2.  调用构造器实例化serviceA，发现serviceA依赖serviceB。
+            3.  spring又开始实例化serviceB,实例化前将serviceB的beanName放入正在创建的bean列表中缓存起来。
+            4.  调用构造器实例化serviceB，发现serviceB又依赖serviceA（此处即发生了循环依赖）。
+            5.  调用构造器实例化serviceA，结果发现serviceA已经存在于正在创建的bean列表中了，于是抛出spring自定义的异常。
+        </font>
+
+        <b><font color="#a52a2a">spring通过属性或者setter方式注入依赖对象</font></b>
+        对于单例bean，如果是我们自己硬编码的话，那肯定如下：
+        ClassA a = new ClassA();
+        ClassB b = new ClassB();
+        即，硬编码方式只要开发者自己保证在整个过程中只手动new一次对象即可称之为单例。
+        注意：
+        此处的单例实际上不同于我们一般说的单例模式那种单例，单例模式那种单例是站在JVM角度保证的单例，而不是站在业务角度保证的单例。
+        也就是说，我们在实现单例时，只要能保证在整个JVM生命周期中，由我们自己产生的实例只有唯一一个，就认为我们的实现保证了单例。
+
+        那如果是spring容器要产生单例bean呢？
+        由于单例bean在spring容器中只存在一个，即只要是单例bean交给spring去管理，那spring就要保证通过它管理的单例bean在整个JVM生命周期中只能产生一个。
+        因此，spring容器中肯定是有一个缓存来存放所有已经创建好的单例bean；
+        获取单例bean前，先去缓存中查找，找到了就直接返回；找不到的话再去创建，创建完毕之后再将其丢到缓存中。
+        可以使用一个map来缓存单例bean，比如使用下面这个：
+        <b>Map&lt;String,Object&gt; singletonObjects = new ConcurrentHashMap&lt;&gt;(256);</b>
+
+        下面我们来猜测一下spring创建循环依赖的两个对象serviceA和serviceB的大致步骤：
+        <font color="gray">
+            1.  spring轮询准备创建2个bean：serviceA和serviceB。
+            2.  spring发现singletonObjects缓存中没有serviceA。
+            3.  spring反射调用serviceA的构造器创建serviceA的实例。
+            4.  spring准备为serviceA填充属性，发现serviceA依赖serviceB，需要通过setServiceB注入serviceB。
+            5.  serviceA向spring容器查找serviceB。
+            6.  spring发现singletonObjects缓存中没有serviceB。
+            7.  spring反射调用serviceB的构造器创建serviceB的实例。
+            8.  spring准备为serviceB填充属性，发现serviceB又依赖serviceA，需要通过setServiceA注入serviceA。
+            9.  serviceB向spring容器查找serviceA。
+            10. 此时又进入第2步了。
+        </font>
+        what？上面的过程死循环了，怎么才能终结循环？
+        可以在第2步和第7步后加一个操作：将实例化好的serviceA和serviceB加入到singletonObjects缓存中，此时这个问题就解决了。
+
+        spring也采用类似的方式，只是稍微复杂了些。上面使用了一个缓存singletonObjects，而spring使用了三个缓存来解决这种单例bean的存储问题。
+        这3个缓存就是我们常说的spring管理bean的三级缓存。
+        <b>
+            spring三级缓存对应的代码如下：
+            // 第一级缓存：最终单例bean的缓存
+            Map&lt;String,Object&gt; singletonObjects = new ConcurrentHashMap&lt;&gt;(256);
+
+            // 第二级缓存：早期暴露的bean的缓存
+            Map&lt;String,Object&gt; earlySingletonObjects = new HashMap&lt;&gt;(16);
+
+            // 第三级缓存：单例bean工厂的缓存
+            // 注意，此处的第三级缓存本质上缓存的是一个可以创建bean实例的工厂，即一个ObjectFactory对象。
+            // 该工厂实际上是个回调接口，其中只有一个方法 ：T getObject() throws BeansException。
+            // 该方法的实现通过外部传入，即lambda表达式传入。
+            // 该方法的实现很复杂，一般来说ObjectFactory对象中会缓存之前创建好的bean实例，如果能够拿到ObjectFactory，就会直接返回bean实例。
+            // 否则，ObjectFactory重新创建bean。
+            // 由此可见，三级缓存不直接缓存早期bean实例，而是直接缓存了bean工厂，目的就是让缓存的对象具备的功能更丰富。
+            Map&lt;String,ObjectFactory&lt;?&gt;&gt; singletonFactories = new HashMap&lt;&gt;(16);
+        </b>
+
+        以下是spring创建一个单例bean的简化步骤，先不考虑依赖其他bean的情况：
+        <font color="gray">
+            1.  spring从Ioc容器中查询目标bean service，先从三级缓存（第一级缓存、第二级缓存、第三级缓存）中依次查询。
+            2.  如果缓存中查询到了则直接返回service，查询不到则开始创建bean。
+            3.  创建前首先去正在创建的bean列表中尝试加入当前bean，如果加入失败，说明当前bean正在被创建，即发生了循环依赖，直接报异常。
+            4.  否则开始创建，spring实例化前将service的beanName放入正在创建的bean缓存列表中缓存起来。
+            5.  spring调用空构造器实例化service对象，此时获得service的早期对象，service还未填充属性，未进行任何初始化操作。
+            6.  将早期的service对象暴露给第三级缓存singletonFactories，进行缓存。
+            7.  对service对象进行属性填充操作和初始化操作等后续操作，此时的service对象已经是最终的完整对象。
+            8.  将service对象从正在创建的bean缓存列表中移除。
+            9.  将service对象放入第一级缓存singletonObjects中，并且从第二级缓存earlySingletonObjects和第三级缓存singletonFactories中删除。
+        </font>
+
+        当A对象依赖B对象时，spring创建的简化步骤如下：
+        <font color="gray">
+            1.  spring从Ioc容器中查询目标bean serviceA，先从三级缓存（第一级缓存、第二级缓存、第三级缓存）中依次查询。
+            2.  如果缓存中查询到了则直接返回serviceA，查询不到则开始创建bean。
+            3.  创建前首先去正在创建的bean列表中尝试加入当前bean，如果加入失败，说明当前bean正在被创建，即发生了循环依赖，直接报异常。
+            3.  否则开始创建，spring实例化前将serviceA的beanName放入正在创建的bean缓存列表中缓存起来。
+            4.  spring调用空构造器实例化serviceA对象，此时获得serviceA的早期对象，serviceA还未填充属性，未进行任何初始化操作。
+            5.  将早期的serviceA对象暴露给第三级缓存singletonFactories，进行缓存。
+            6.  对serviceA对象进行属性填充操作和初始化操作等后续操作时，发现serviceA对象依赖serviceB对象。
+            7.  spring从Ioc容器中查询目标bean serviceB，先从三级缓存（第一级缓存、第二级缓存、第三级缓存）中依次查询。
+            8.  如果缓存中查询到了则直接返回serviceB，查询不到则开始创建bean。
+            9.  创建前首先去正在创建的bean列表中尝试加入当前bean，如果加入失败，说明当前bean正在被创建，即发生了循环依赖，直接报异常。
+            10.  否则开始创建，spring实例化前将serviceB的beanName放入正在创建的bean缓存列表中缓存起来。
+            11. spring调用空构造器实例化serviceB对象，此时获得serviceB的早期对象，serviceB还未填充属性，未进行任何初始化操作。
+            12. 将早期的serviceB对象暴露给第三级缓存singletonFactories，进行缓存。
+            13. 对serviceB对象进行属性填充操作和初始化操作等后续操作，此时的serviceB对象已经是最终的完整对象。
+            14. 将serviceB对象从正在创建的bean缓存列表中移除。
+            15. 将serviceB对象放入第一级缓存singletonObjects中，并且从第二级缓存earlySingletonObjects和第三级缓存singletonFactories中删除。
+            16. 返回创建好的serviceB对象给serviceA，可以对serviceA对象进行属性填充操作和初始化操作等后续操作，此时的serviceA对象已经是最终的完整对象。
+            17. 将serviceA对象从正在创建的bean缓存列表中移除。
+            18. 将serviceA对象放入第一级缓存singletonObjects中，并且从第二级缓存earlySingletonObjects和第三级缓存singletonFactories中删除。
+        </font>
+        <font color="#a52a2a">
+            tips：
+            分析上述步骤，发现，当两个对象或者多个对象之间没有产生循环依赖时，spring实际上并不会从三级缓存和二级缓存中获取对象。
+            因为没有发生循环依赖，所以整个依赖链上的对象最终都是完整产生出来的，直接从第一级缓存中获取完整对象注入即可。
+        </font>
+
+        当A对象依赖B对象，B对象又依赖A对象时（即发生循环依赖），spring创建的简化步骤如下：
+        <font color="gray">
+            1.  spring从Ioc容器中查询目标bean serviceA，先从三级缓存（第一级缓存、第二级缓存、第三级缓存）中依次查询。
+            2.  如果缓存中查询到了则直接返回serviceA，查询不到则开始创建bean。
+            3.  创建前首先去正在创建的bean列表中尝试加入当前bean，如果加入失败，说明当前bean正在被创建，即发生了循环依赖，直接报异常。
+            4.  否则开始创建，spring实例化前将serviceA的beanName放入正在创建的bean缓存列表中缓存起来。
+            5.  spring调用空构造器实例化serviceA对象，此时获得serviceA的早期对象，serviceA还未填充属性，未进行任何初始化操作。
+            6.  将早期的serviceA对象暴露给第三级缓存singletonFactories，进行缓存。
+            7.  对serviceA对象进行属性填充操作和初始化操作等后续操作时，发现serviceA对象依赖serviceB对象。
+            8.  spring从Ioc容器中查询目标bean serviceB，先从三级缓存（第一级缓存、第二级缓存、第三级缓存）中依次查询。
+            9.  如果缓存中查询到了则直接返回serviceB，查询不到则开始创建bean。
+            10. 创建前首先去正在创建的bean列表中尝试加入当前bean，如果加入失败，说明当前bean正在被创建，即发生了循环依赖，直接报异常。
+            11. 否则开始创建，spring实例化前将serviceB的beanName放入正在创建的bean缓存列表中缓存起来。
+            12. spring调用空构造器实例化serviceB对象，此时获得serviceB的早期对象，serviceB还未填充属性，未进行任何初始化操作。
+            13. 将早期的serviceB对象暴露给第三级缓存singletonFactories，进行缓存。
+            14. 对serviceB对象进行属性填充操作和初始化操作等后续操作时，发现serviceB对象又依赖serviceA对象。
+            15. spring从Ioc容器中查询目标bean serviceA，先从三级缓存（第一级缓存、第二级缓存、第三级缓存）中依次查询。结果从第三级缓存中查询到了serviceA，于是将serviceA从第三级缓存singletonFactories中删除，移动到了第二级缓存earlySingletonObjects中。
+            16. 将serviceA对象返回给serviceB对象，可以对serviceB对象进行属性填充操作和初始化操作等后续操作，此时的serviceA对象是早期对象，serviceB对象已经是完整对象了。
+            17. 将serviceB对象从正在创建的bean缓存列表中移除。
+            18. 将serviceB对象放入第一级缓存singletonObjects中，并且从第二级缓存earlySingletonObjects和第三级缓存singletonFactories中删除。
+            19. 返回创建好的serviceB对象给serviceA，可以对serviceA对象进行属性填充操作和初始化操作等后续操作，此时的serviceA对象已经是最终的完整对象。因为此时serviceA已经完整了，所以前面serviceB持有的serviceA的早期引用也已经变成了完整对象了。
+            20. 将serviceA对象从正在创建的bean缓存列表中移除。
+            21. 将serviceA对象放入第一级缓存singletonObjects中，并且从第二级缓存earlySingletonObjects和第三级缓存singletonFactories中删除。
+        </font>
+        <font color="#a52a2a">
+            tips：
+            分析上述步骤，发现，当两个对象或者多个对象之间产生循环依赖时，spring会从第三级缓存中获取早期bean的引用然后存储在二级缓存中，并返回给依赖的对象。
+            也就是说，只有发生了循环依赖后，才会查询三级缓存和二级缓存。
+            如果整个依赖链上没有发生循环依赖，是不会查询三级缓存和二级缓存的，而是直接查询的最终bean所在的一级缓存。
+        </font>
+    </pre>
+    <b><a name='header-n34' class='md-header-anchor '></a>3.4、 spring无法解决的循环依赖</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        上面已经分析，对于构造器注入的循环依赖，spring无法解决。
+        spring只能解决单例bean的循环依赖问题。
+        <font color="#a52a2a">
+            只有单例的bean对象会通过三级缓存提前暴露早期bean对象来解决循环依赖的问题。
+            而非单例的bean，每次spring从容器中获取都是直接创建一个新的对象，每次都会重新创建，所以非单例的bean是没有任何缓存的，并且都是延迟加载的，即getBean的时候才会直接创建，而不是提前缓存。
+            因此，所有非单例的bean都不会放入到三级缓存中（因为没有缓存放个毛啊），故spring无法解决非单例bean的循环依赖问题。
+        </font>
+
+        既然如此，就产生了几种情况需要注意。
+        同样按照两个bean：serviceA和serviceB。
+
+        <font color="#a52a2a">情况1：serviceA多例，serviceB多例</font>
+        使用构造器构造器注入循环依赖，相互注入会直接报错。
+
+        使用属性注入循环依赖，spring创建的简化步骤如下：
+        <font color="gray">
+            1.  因为serviceA是多例，当应用调用getBean()时，spring直接去创建serviceA。
+            3.  创建前首先去正在创建的bean列表中尝试加入当前bean，如果加入失败，说明当前bean正在被创建，即发生了循环依赖，直接报异常。
+            4.  否则开始创建，spring实例化前将serviceA的beanName放入正在创建的bean缓存列表中缓存起来。
+            5.  spring调用空构造器实例化serviceA对象，此时获得serviceA的早期对象，serviceA还未填充属性，未进行任何初始化操作。
+            7.  对serviceA对象进行属性填充操作和初始化操作等后续操作时，发现serviceA对象依赖serviceB对象。
+            8.  因为serviceB也是多例，spring直接去创建serviceB。
+            10. 创建前首先去正在创建的bean列表中尝试加入当前bean，如果加入失败，说明当前bean正在被创建，即发生了循环依赖，直接报异常。
+            11. 否则开始创建，spring实例化前将serviceB的beanName放入正在创建的bean缓存列表中缓存起来。
+            12. spring调用空构造器实例化serviceB对象，此时获得serviceB的早期对象，serviceB还未填充属性，未进行任何初始化操作。
+            14. 对serviceB对象进行属性填充操作和初始化操作等后续操作时，发现serviceB对象又依赖serviceA对象。
+            15. 因为serviceA是多例，每次都需要创建一个新的serviceA，于是spring又开始重新创建serviceA。
+            16. 创建前首先去正在创建的bean列表中尝试加入当前bean，如果加入失败，说明当前bean正在被创建，即发生了循环依赖，直接报异常。很明显到这一步，因为前面已经将serviceA加入到正在创建的bean列表中了，因此spring此处检测到了循环依赖，直接抛出异常了。
+        </font>
+
+        <font color="#a52a2a">情况2：serviceA单例，serviceB多例，应用直接获取serviceB</font>
+        使用构造器构造器注入循环依赖，相互注入会直接报错。
+
+        使用属性注入循环依赖，spring创建的简化步骤如下：
+        <font color="gray">
+            1.  因为serviceB是多例，当应用调用getBean()时，spring直接去创建serviceB。
+            2.  创建前首先去正在创建的bean列表中尝试加入当前bean，如果加入失败，说明当前bean正在被创建，即发生了循环依赖，直接报异常。
+            3.  否则开始创建，spring实例化前将serviceB的beanName放入正在创建的bean缓存列表中缓存起来。
+            4.  spring调用空构造器实例化serviceB对象，此时获得serviceB的早期对象，serviceB还未填充属性，未进行任何初始化操作。
+            5.  对serviceB对象进行属性填充操作和初始化操作等后续操作时，发现serviceB对象依赖serviceA对象。
+            6.  serviceA是单例对象，因此，spring从Ioc容器中查询目标bean serviceA，先从三级缓存（第一级缓存、第二级缓存、第三级缓存）中依次查询。
+            7.  如果缓存中查询到了则直接返回serviceA，查询不到则开始创建bean。
+            8.  创建前首先去正在创建的bean列表中尝试加入当前bean，如果加入失败，说明当前bean正在被创建，即发生了循环依赖，直接报异常。
+            9.  否则开始创建，spring实例化前将serviceA的beanName放入正在创建的bean缓存列表中缓存起来。
+            10. spring调用空构造器实例化serviceA对象，此时获得serviceA的早期对象，serviceA还未填充属性，未进行任何初始化操作。
+            11. 将早期的serviceA对象暴露给第三级缓存singletonFactories，进行缓存。
+            12. 对serviceA对象进行属性填充操作和初始化操作等后续操作时，发现serviceA对象又依赖serviceB对象。
+            13. 因此serviceB是多例，每次都需要创建一个新的serviceB，于是spring又开始重新创建serviceB。
+            14. 创建前首先去正在创建的bean列表中尝试加入当前bean，如果加入失败，说明当前bean正在被创建，即发生了循环依赖，直接报异常。很明显到这一步，因为前面已经将serviceB加入到正在创建的bean列表中了，因此spring此处检测到了循环依赖，直接抛出异常了。
+        </font>
+
+        <font color="#a52a2a">情况3：serviceA单例，serviceB多例，应用直接获取serviceA（重点）</font>
+        使用构造器构造器注入循环依赖，相互注入会直接报错。
+
+        使用属性注入循环依赖，spring创建的简化步骤如下：
+        <font color="gray">
+            1.  serviceA是单例对象，因此，spring从Ioc容器中查询目标bean serviceA，先从三级缓存（第一级缓存、第二级缓存、第三级缓存）中依次查询。
+            2.  如果缓存中查询到了则直接返回serviceA，查询不到则开始创建bean。
+            3.  创建前首先去正在创建的bean列表中尝试加入当前bean，如果加入失败，说明当前bean正在被创建，即发生了循环依赖，直接报异常。
+            4.  否则开始创建，spring实例化前将serviceA的beanName放入正在创建的bean缓存列表中缓存起来。
+            5.  spring调用空构造器实例化serviceA对象，此时获得serviceA的早期对象，serviceA还未填充属性，未进行任何初始化操作。
+            6.  将早期的serviceA对象暴露给第三级缓存singletonFactories，进行缓存。
+            7.  对serviceA对象进行属性填充操作和初始化操作等后续操作时，发现serviceA对象依赖serviceB对象。
+            8.  因为serviceB是多例，spring直接去创建serviceB。
+            9.  创建前首先去正在创建的bean列表中尝试加入当前bean，如果加入失败，说明当前bean正在被创建，即发生了循环依赖，直接报异常。
+            10. 否则开始创建，spring实例化前将serviceB的beanName放入正在创建的bean缓存列表中缓存起来。
+            11. spring调用空构造器实例化serviceB对象，此时获得serviceB的早期对象，serviceB还未填充属性，未进行任何初始化操作。
+            12. 对serviceB对象进行属性填充操作和初始化操作等后续操作时，发现serviceB对象依赖serviceA对象。
+            13. 因为serviceA是单例，spring从Ioc容器中查询目标bean serviceA，先从三级缓存（第一级缓存、第二级缓存、第三级缓存）中依次查询。结果从第三级缓存中查询到了serviceA，于是将serviceA从第三级缓存singletonFactories中删除，移动到了第二级缓存earlySingletonObjects中。
+            14. 将serviceA对象返回给serviceB对象，可以对serviceB对象进行属性填充操作和初始化操作等后续操作，此时的serviceA对象是早期对象，serviceB对象已经是完整对象了。
+            15. 将serviceB对象从正在创建的bean缓存列表中移除。
+            16. 返回创建好的serviceB对象给serviceA，可以对serviceA对象进行属性填充操作和初始化操作等后续操作，此时的serviceA对象已经是最终的完整对象。因为此时serviceA已经完整了，所以前面serviceB持有的serviceA的早期引用也已经变成了完整对象了。
+            17. 将serviceA对象从正在创建的bean缓存列表中移除。
+            18. 将serviceA对象放入第一级缓存singletonObjects中，并且从第二级缓存earlySingletonObjects和第三级缓存singletonFactories中删除。
+        </font>
+
+        <font color="#a52a2a">
+            总结：
+            对于产生循环依赖的两个对象，如果其中一个是单例，一个是多例，那么是否存在循环依赖问题，要看首先容器获取的单例对象还是多例对象。
+            如果先获取单例对象，则不发生循环依赖问题。
+            如果先获取多例对象，则发生循环依赖问题。
+        </font>
+    </pre>
 </div>
 </body>
 </html>
