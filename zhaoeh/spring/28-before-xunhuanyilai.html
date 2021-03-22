@@ -86,3 +86,1083 @@ public class Demo01HelloIOCMain {
         service.service();// 调用service层
     }
 }
+
+     
+     
+     
+     
+     
+     
+     
+     
+     
+ package demo02.myspring.run.xml.ioc;
+
+import demo00.myspring.common.initconfig.LoadSpringConfigFactory;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+
+/**
+ * 应用程序，主要测试Spring的IOC控制反转和依赖注入DI的配置原理。
+ * <p>
+ * 面向接口编程-通过实现类去实现公共接口，可以达到接口统一和多实现的目的。
+ *
+ * @类名称： IPerson
+ * @作者： zhaoerhu
+ * @创建时间： 2019-3-21
+ * @修改时间： 2019-3-21下午10:08:10
+ * @备注：尊重每一行代码！
+ */
+@SuppressWarnings("deprecation")
+interface IPerson {
+    public abstract void eat();
+
+    public abstract void drink();
+}
+
+/**
+ * 子类实现实体bean接口
+ *
+ * @author zhaoeh
+ */
+class StudentImpl implements IPerson {
+    public StudentImpl() {
+        System.out.println("实例化 StudentImpl 对象...");
+    }
+
+    public void eat() {
+        System.out.println("吃学生餐...");
+    }
+
+    public void drink() {
+        System.out.println("喝学生饮料...");
+    }
+
+    public void work() {
+        System.out.println("写作业...");
+    }
+}
+
+/**
+ * 定义控制器bean
+ *
+ * @author zhaoeh
+ */
+interface IService {
+    public abstract void service();
+}
+
+/**
+ * 子类实现控制器bean接口
+ * <p>
+ * 依赖之前的实体bean
+ *
+ * @author zhaoeh
+ */
+class ServiceImpl implements IService {
+    //委托stu，注意没有手动实例化，而是通过配置文件注册目标bean定义到IOC容器中，然后交给IOC容器进行目标bean的实例化（反射目标bean定义获取class对象）
+    //并通过配置文件将IOC中实例化好的stu对象直接赋值给目标bean的某个成员属性上。
+    private StudentImpl stu;
+
+    public ServiceImpl() {
+        System.out.println("实例化ServiceImpl......");
+    }
+
+    public void setStu(StudentImpl stu) {
+        this.stu = stu;
+    }
+
+    public void service() {
+        this.stu.drink();
+        this.stu.eat();
+        this.stu.work();
+    }
+}
+
+/**
+ * 应用程序取得BeanFactory的方式
+ * <p>
+ * Spring通过BeanFactory工厂构造xml配置中的所有bean，所以应用程序首先应该构造beanFactory对象
+ *
+ * @author zhaoeh
+ */
+public class Demo01IOCBaseMain {
+    public static void main(String args[]) {
+        // 方式一加载spring配置，构造classpath目录下的配置文件对象
+        // 所有的bean在第一次getBean()的时候才实例化并初始化。
+        /**
+         * 总结spring的IOC管理bean的生命周期：
+         * 1、如果使用beanFactory来管理目标bean时，则所有的bean都是在getBean，即使用该bean的时候才实例化目标bean。
+         * 即所有目标bean的实例化都是懒加载（即beanFactory管理的bean永远不会即时加载）:
+         * （1）、如果是单例 singleton ，则都是在第一次getBean的时候才延迟初始化。
+         * （2）、如果是多例 prototype，则都是在每一次getBean的时候才延迟初始化。
+         *
+         * 2、使用ApplicationContext作为bean的工厂类
+         * 	ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
+         * 	细分为3种情况：
+         * 		（1）、如果bean的scope是singleton的,并且lazy-init为false（默认为false，即立即加载，所以可以不用设置），则ApplicationContext启动的时
+         * 		候就初始化所有的bean对象，并且将实例化后的bean对象放在一个map缓存中，下次使用该bean的时候，直接从map缓存中取值（立即加载能让错误立
+         * 		马暴露出来）。
+         * 		（2）、如果bean的scope是singleton的，并且lazy-init为true，表示单例延迟加载，则该bean的实例化是在第一次使用该bean的时候即第一次getBean时实例化。
+         * 		（3）、如果bean的scope是prototype的，则该bean的实例化是在第一次使用该bean的时候（注意，多例没有立即加载的概念，多例都是等到用的时候才加
+         * 		载，哪怕配置了lazy-init="false"也不会生效）。
+         *
+         * 	总结：目标bean即时加载只有一种情况：即使用ApplicationContext管理目标bean，且目标bean配置为单例singleton，且目标bean的lazy-init属性配置为false(这两个
+         * 	是所有目标bean的默认值)。
+         * 	多例bean对立即加载免疫。
+         */
+        @SuppressWarnings("deprecation")
+        XmlBeanFactory xmlBeanFactory = LoadSpringConfigFactory.getXmlBeanFactory("spring/demo02-applicationContext-ioc.xml");
+        // 取得配置文件中实例化好的bean
+        //如果目标bean配置为单例，则在第一次getBean时才会实例化目标bean；
+        //如果目标bean配置为多例，则每次在geyBean时都会实例化目标bean。
+        IService service = (IService) xmlBeanFactory.getBean("serviceImpl");
+        IService service2 = (IService) xmlBeanFactory.getBean("serviceImpl");
+        IService service3 = (IService) xmlBeanFactory.getBean("serviceImpl");
+        IService service4 = (IService) xmlBeanFactory.getBean("serviceImpl");
+        IService service5 = (IService) xmlBeanFactory.getBean("serviceImpl");
+        service.service();// 调用IService接口中的service()方法
+    }
+}
+
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+package demo02.myspring.run.xml.ioc;
+
+import demo00.myspring.common.initconfig.LoadSpringConfigFactory;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
+/**
+ * spring的IOC容器管理目标bean的生命周期：生命周期即指的是目标bean是怎么一步步来的，到怎么一步步死的。
+ * <p>
+ * 普通Bean实现 InitializingBean 接口和 DisposableBean 接口。
+ * <p>
+ * 这两个接口分别是Spring容器提供的初始化回调和销毁回调的接口，用于在目标bean的实例化完成之后和销毁之前执行初始化方法和销毁方法，总的来说是做一些前置处理和后置处理操作。
+ * <p>
+ * 效果和 init-method,destroy-method 配置几乎是等价的。
+ * 不论是对于destroy-method指定的销毁方法还是对于覆盖DisposableBean接口的destroy方法来说，都需要手动关闭spring容器才能执行销毁方法。
+ * <p>
+ * 建议使用配置的方法或者使用JAVAEE标准中的@PostConstruct和@preDestroy注解，因为使用java代码的方式会造成业务代码和spring代码耦合。
+ * <p>
+ * 本案例直接采用实现接口的方式，造成了代码耦合。
+ * <p>
+ * 总结：
+ * InitializingBean, DisposableBean接口的afterPropertiesSet和destroy方法完全等价于JAVAEE的@PostConstruct和@preDestroy注解；且早于init-method和destroy-method配置指定的方法。
+ * 尽管这几种方式实现的初始化方法和销毁方法是有先后顺序的，但是在实际当中，往往将同一个bean交给spring管理时，只会采取其中的一种方式，因为它们的意义都是一样的，就是在调用bean的业务方法之前和IOC容器销毁之前做一些前置和后置操作。
+ * 执行时机：
+ * 反射IOC容器中注册的bean定义调用无参构造实例化目标bean
+ * -->
+ * 调用setter方法注入属性-->执行InitializingBean接口的afterPropertiesSet方法或者@PostConstruct标注的方法
+ * -->
+ * 执行init-method配置指定的初始化方法
+ * -->
+ * 执行目标bean的业务方法
+ * -->
+ * 执行DisposableBean接口的destroy方法或者@preDestroy标注的方法
+ * -->
+ * 执行destroy-method配置指定的销毁方法。
+ *
+ * @类名称： Demo18IOCMain
+ * @作者： zhaoerhu
+ * @创建时间： 2019-2-18
+ * @修改时间： 2019-2-18下午7:14:32
+ * @备注：尊重每一行代码！
+ */
+public class Demo18IOCInitializingBeanMain {
+    public static void main(String[] args) {
+        // 方式二加载spring配置，构造classpath目录下的配置文件对象
+        ApplicationContext applicationContext = LoadSpringConfigFactory.getApplicationContext("./spring/demo02-applicationContext-ioc.xml");
+        MyBeanTest bean = (MyBeanTest) applicationContext.getBean("myBeanTest");
+        bean.testBean();
+
+        // 必须手动销毁容器才会执行销毁方法
+        ((ClassPathXmlApplicationContext) applicationContext).close();
+
+        // 使用ConfigurableApplicationContext的注册钩子是关闭spring容器的优雅方式。
+        // ((ConfigurableApplicationContext) applicationContext)
+        // .registerShutdownHook();
+    }
+}
+
+/**
+ * 目标bean
+ *
+ * @类名称： MyBeanTest
+ * @作者： zhaoerhu
+ * @创建时间： 2019-2-18
+ * @修改时间： 2019-2-18下午7:26:42
+ * @备注：尊重每一行代码！
+ */
+class MyBeanTest implements InitializingBean, DisposableBean {
+    private MyBeanTestExtend myBeanTestExtend;
+
+    public MyBeanTest() {
+        System.out.println("实例化" + this.getClass().getSimpleName() + "对象..");
+    }
+
+    public MyBeanTestExtend getMyBeanTestExtend() {
+        return myBeanTestExtend;
+    }
+
+    public void setMyBeanTestExtend(MyBeanTestExtend myBeanTestExtend) {
+        System.out.println("调用 setMyBeanTestExtend 方法。");
+        this.myBeanTestExtend = myBeanTestExtend;
+    }
+
+    /**
+     * 注意，初始化方法的调用时机（静静非构构初始化，spring管理目标bean的初始化方法是在目标bean实例化完成并且通过构造方法或者setter方法自动注入所有依赖对象之后才执行的）。
+     * <p>
+     * spring的bean的初始化方法是afterPropertiesSet()，注意不是Servlet中的init()啊。
+     * 为啥叫做 afterPropertiesSet()，就是表明初始化方法是在反射调用了对象的setter()方法之后执行的。
+     * 当然，通过实现接口的方式指定的初始化方法和销毁方法是早于init-method配置和destroy-method配置指定的初始化方法和销毁方法。
+     */
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        System.out.println("InitializingBean 接口的 afterPropertiesSet 执行：" + this.getClass().getName());
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        System.out.println("DisposableBean 接口的 destroy 执行：" + this.getClass().getSimpleName());
+    }
+
+    /**
+     * init-method配置指定的初始化方法
+     */
+    public void initTest() {
+        System.out.println("init-method 配置指定 当前bean " + this.getClass().getSimpleName() + " 初始化");
+    }
+
+    /**
+     * destroy-method配置指定的初始化方法
+     */
+    public void destroyTest() {
+        System.out.println("init-destroy 配置指定 当前bean " + this.getClass().getSimpleName() + " 销毁");
+    }
+
+    /**
+     * 当前bean的业务方法
+     */
+    public void testBean() {
+        System.out.println("执行目标bean的testBean方法...");
+    }
+}
+
+/**
+ * 功能描述: 被依赖的bean
+ *
+ * @params:
+ * @return:
+ * @author: zhaoerhu
+ * @date: 2019/12/24 20:13
+ */
+class MyBeanTestExtend {
+
+    public MyBeanTestExtend() {
+        System.out.println("实例化" + this.getClass().getSimpleName() + "对象...");
+    }
+
+}
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+package demo03.myspring.run.annotation.ioc;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Component;
+
+import demo00.myspring.common.initconfig.LoadSpringConfigFactory;
+
+/**
+ * 使用注解标准来实现bean的自定义生命周期。
+ * <p>
+ * 效果和 init-method,destroy-method 配置是等价的。对于 destroy-method 来说，都需要手动关闭spring容器才能执行销毁方法。
+ * <p>
+ * 建议使用配置的方法或者使用JAVAEE标准中的@PostConstruct和@preDestroy注解，
+ * 因为使用java代码的方式会造成业务代码和spring代码耦合
+ * 。本案例就使用JAVAEE的标准注解来自定义bean的生命周期，这样不会和Spring代码造成耦合。
+ * <p>
+ * 总结控制bean生命周期的方式：
+ * <p>
+ * （1）、实现InitializingBean, DisposableBean回调接口，覆盖对应的初始化方法和销毁方法，会和spring接口造成严重耦合。
+ * <p>
+ * （2）、xml方式配置init-method和destroy-method，指定自定义的init和destroy方法，与spring接口不耦合。
+ * <p>
+ * （3）、使用JAVAEE标准中的@PostConstruct和@preDestroy注解，与spring接口不耦合。
+ * <p>
+ * 如果一个目标bean同时使用了上面的3种生命周期方式，并且含有不同的方法名，则执行顺序如下：
+ * <p>
+ * （1）、先执行注解@PostConstruct和@preDestroy；
+ * <p>
+ * （2）、执行实现了InitializingBean, DisposableBean回调接口的方法；
+ * <p>
+ * （3）、执行xml配置中init-method和destroy-method指定的初始化方法和销毁方法。
+ * <p>
+ * spring容器管理的相同作用的xml配置和注解的优先级：xml配置优先级高于注解。
+ *
+ * @类名称： Demo18IOCMain
+ * @作者： zhaoerhu
+ * @创建时间： 2019-2-18
+ * @修改时间： 2019-2-18下午7:14:32
+ * @备注：尊重每一行代码！
+ */
+public class Demo18IOCInitializingBeanMain {
+    public static void main(String[] args) {
+        // 方式二加载spring配置，构造classpath目录下的配置文件对象
+        ApplicationContext applicationContext = LoadSpringConfigFactory.getApplicationContext("./spring/demo03-applicationContext-annotation.xml");
+        MyBeanTest bean = (MyBeanTest) applicationContext.getBean("myBeanTest");
+        bean.testBean();
+
+        // 必须手动销毁容器才会执行销毁方法
+        ((ClassPathXmlApplicationContext) applicationContext).close();
+    }
+}
+
+/**
+ * 目标bean：对不同的生命周期方法同时使用上面3种方式进行设置，观察执行的顺序。
+ *
+ * @类名称： MyBeanTest
+ * @作者： zhaoerhu
+ * @创建时间： 2019-2-18
+ * @修改时间： 2019-2-18下午7:26:42
+ * @备注：尊重每一行代码！
+ */
+@Component
+class MyBeanTest implements InitializingBean, DisposableBean {
+    @Value("赵二虎")
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * 注解方式标注的初始化方法。
+     * <p>
+     * 注意，初始化方法的调用时机（静静非构构初始化，
+     * spring管理目标bean的初始化方法是在目标bean实例化完成并且通过构造方法或者setter方法自动注入所有依赖对象之后才执行的。）。
+     *
+     * @throws Exception
+     */
+    @PostConstruct
+    public void initAnnotation() throws Exception {
+        System.out.println("注解方式：Bean初始化...");
+    }
+
+    /**
+     * 注解方式标注的生命销毁方法。
+     *
+     * @throws Exception
+     */
+    @PreDestroy
+    public void destroyAnnotation() throws Exception {
+        System.out.println("注解方式：Bean销毁...");
+    }
+
+    /**
+     * spring回调接口的初始化方法。
+     */
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        System.out.println("spring接口方式：Bean初始化...");
+    }
+
+    /**
+     * spring回调接口的销毁方法。
+     */
+    @Override
+    public void destroy() throws Exception {
+        System.out.println("spring接口方式：Bean销毁...");
+    }
+
+    /**
+     * xml配置方式的自定义初始化方法。
+     */
+    public void initXml() {
+        System.out.println("init-method xml方式：Bean初始化...");
+    }
+
+    /**
+     * xml配置方式的自定义销毁方法。
+     */
+    public void destroyXml() {
+        System.out.println("destroy-method xml方式：Bean销毁...");
+    }
+
+    /**
+     * bean的业务方法。
+     */
+    public void testBean() {
+        System.out.println("执行目标bean的方法..." + name);
+    }
+
+}
+     
+     
+     
+     
+     
+     
+     
+ package demo04.myspring.run.scope.ioc;
+
+import demo00.myspring.common.initconfig.LoadSpringConfigFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+
+/**
+ * 测试Spring的默认单例模式和手动设置的多例模式。
+ * <p>
+ * bean是否设置多例生效，遵循如下原则：
+ * <p>
+ * 如果引用bean是单例，则被引用链上的bean即使设置为prototype也是单例（此时需要自己处理，要不将引用bean从一开始就设置为prototype
+ * ，要不对被引用bean手动实现多例，要不加入ThreadLocal处理）。
+ * <p>
+ * 如果引用bean是多例， 被引用链上的bean必须都设置为prototype才会产生多例，否则还是单例。
+ * <p>
+ * 如何执行本案例：通过更改TargetBean.java文件中的三个依赖bean的singlton和prototype属性，挨个组合进行测试。
+ *
+ * @类名称： Demo01SingletonAndPrototype
+ * @作者： zhaoerhu
+ * @创建时间： 2019-3-7
+ * @修改时间： 2019-3-7上午9:38:33
+ * @备注：尊重每一行代码！
+ */
+public class Demo01SingletonAndPrototype {
+    public static void main(String[] args) {
+        // 方式二加载spring配置，构造classpath目录下的配置文件对象
+        ApplicationContext applicationContext = LoadSpringConfigFactory.getApplicationContext("./spring/demo04-applicationContext-scope.xml");
+        TargetBean bean = applicationContext.getBean("targetBean", TargetBean.class);
+        TargetBean bean2 = applicationContext.getBean("targetBean", TargetBean.class);
+        System.out.println("bean:" + bean);
+        System.out.println("bean2:" + bean2);
+        System.out.println("bean == bean2?" + (bean == bean2));
+    }
+}
+
+/**
+ * 目标Bean。
+ *
+ * @类名称： TargetBean
+ * @作者： zhaoerhu
+ * @创建时间： 2019-3-20
+ * @修改时间： 2019-3-20下午2:15:23
+ * @备注：尊重每一行代码！
+ */
+@Component
+@Scope("prototype")
+// 尝试在singleton和prototype之间切换，运行Demo01SingletonAndPrototype.main，观察bean依赖关系中的单例和多例特性。
+class TargetBean {
+
+    @Resource(name = "targetBean2")
+    private TargetBean2 targetBean2;
+
+    /**
+     * 不论单例还是多例，静态块、静态成员和目标类一样，整个生命周期中只会执行一次，即随着目标类的装载而执行。
+     */
+    static {
+        System.out.println("static TargetBean....");
+    }
+
+    private TargetBean() {
+        System.out.println("TargetBean实例化...");
+    }
+
+    @Override
+    public String toString() {
+        return targetBean2.toString();
+    }
+
+}
+
+@Component
+@Scope("prototype")
+// 尝试在singleton和prototype之间切换，运行Demo01SingletonAndPrototype.main，观察bean依赖关系中的单例和多例特性。
+class TargetBean2 {
+    @Resource(name = "targetBean3")
+    private TargetBean3 targetBean3;
+
+    static {
+        System.out.println("static TargetBean2...");
+    }
+
+    public TargetBean2() {
+        System.out.println("TargetBean2实例化...");
+    }
+
+    @Override
+    public String toString() {
+        return targetBean3.toString();
+    }
+}
+
+@Component
+@Scope("prototype")
+// 尝试在singleton和prototype之间切换，运行Demo01SingletonAndPrototype.main，观察bean依赖关系中的单例和多例特性。
+class TargetBean3 {
+
+    @Value(value = "Eric")
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    static {
+        System.out.println("static TargetBean3...");
+    }
+
+    public TargetBean3() {
+        System.out.println("TargetBean3实例化...");
+    }
+
+    @Override
+    public String toString() {
+        return "name = " + this.getName();
+    }
+}
+
+     
+     
+     
+     
+     
+     
+     
+package demo10.myspring.model.redis.sdr.run.base;
+
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.data.redis.connection.DataType;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.BoundHashOperations;
+import org.springframework.data.redis.core.BoundListOperations;
+import org.springframework.data.redis.core.BoundSetOperations;
+import org.springframework.data.redis.core.BoundValueOperations;
+import org.springframework.data.redis.core.BoundZSetOperations;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.data.redis.serializer.RedisSerializer;
+
+import demo00.myspring.common.initconfig.LoadSpringConfigFactory;
+import demo10.myspring.model.redis.sdr.factory.RedisTemplateFactory;
+
+/**
+ * 使用SDR操作redis的全局命令。
+ * 
+ * 使用spring与redis的整合包spring-data-redis.jar来操作redis客户端。与传统的jedis客户端相比，
+ * spring封装了jedis为redisTemplate顶层对象
+ * ，使得操作更加方便，注意redisTemplate是RedisOperations接口的实现子类。
+ * 
+ * （1）导入spring-data-redis.jar；
+ * 
+ * （2）配置applicationContext-redis.xml，设置redis的各种配置；
+ * 
+ * （3）编写代码：为了简单起见，本案例不再封装Service层，而是直接使用SDR的各种接口。
+ * 
+ * @类名称： RedisTemplateTest
+ * @作者： zhaoerhu
+ * @创建时间： 2019-1-16
+ * @修改时间： 2019-1-16上午10:28:57
+ * @备注：尊重每一行代码！
+ */
+public class RedisTemplateGlobalCommandRun {
+	private static ApplicationContext applicationContext;
+
+	// 主方法中的静态块初始化applicationContext对象，保证jvm进程中装载只初始化一次
+	static {
+		// 方式二加载spring配置
+		// 注意spring中bean的生命周期，在getApplicationContext()这一步所有的bean就已经由beanFactory工厂反射实例化了。
+		// Spring的IOC可以对任何类的实例化过程进行管理，注意是任何，但是要注意bean的生命周期，尤其注意空指针异常。
+		applicationContext = LoadSpringConfigFactory
+				.getApplicationContext("./spring/demo10-applicationContext-redis.xml");
+	}
+
+	// 第一步应该通过工具类得到redisTemplate对象，这个对象是spring操作redis的开始
+	// 注意下面的RedisTemplateFactory工具类同样交给spring管理了。因为不论是放在当前类的静态块中还是构造中都无法获取到，注意spring
+	// bean的生命周期，到这一步这个bean已经实例化完成了，而如果不交给spring
+	// 管理RedisTemplateUtil对象的话，则此处getRedisTemplate()将获取为null值，因为前面在注入redisTemplate对象时这个bean即已经实例化完成了。
+	private static RedisTemplate<String, Object> redisTemplate = RedisTemplateFactory
+			.getRedisTemplate();
+
+	/**
+	 * redisTemplate是spring封装的最顶层的redis模板对象，通过这个对象可以获得redis中的5种键值对的操作对象。
+	 * 即redisTemplate对象可以返回5种对象，这5种对象分别是spring对redis 5种键值对的对应封装接口。
+	 * 
+	 * 5种封装接口又分为两大类:
+	 * 
+	 * （1）直接通过template模板实例化的5种对象，可以操作任何key；
+	 * 
+	 * （2）通过bound绑定指定key的5种对象。
+	 * 
+	 * 可以看出，spring对jedis进行了分类包装
+	 * ，原生jedis对象可以随便操作5种键值对，但是spring将5种操作分别封装成了对应的操作对对象，使得操作更明确。
+	 * 
+	 * redisTemplate有两个方法经常用到,一个是opsForXXX一个是boundXXXOps,XXX是value的类型,
+	 * 前者获取到一个Opercation
+	 * ,但是没有指定操作的key,可以在一个连接(事务)内操作多个key以及对应的value;后者会获取到一个指定了key的operation
+	 * ,在一个连接内只操作这个key对应的value.
+	 * 
+	 * 通过redisTemplate对象的opsForXXX和boundXXXOps方法创建的5种操作对象又提供了获取RedisOperations对象的方法
+	 * ， 这个方法返回的是一个RedisOperations接口的对象，而RedisTemplate是RedisOperations接口的实现类，所以：
+	 * 
+	 * 5种类型对应的封装对象实际上和redisTemplate对象互相引用，这样提高操作的灵活性。
+	 */
+	private static ValueOperations<String, Object> valueOperations;// 操作value类型为字符串的封装对象
+	private static HashOperations<String, Object, Object> hashOperations;// 操作value类型为hash散列表的封装对象
+	private static ListOperations<String, Object> listOperations;// 操作value类型为list列表的封装对象
+	private static SetOperations<String, Object> setOperations;// 操作value类型为set集合的对象
+	private static ZSetOperations<String, Object> zSetOperations;// 操作value类型为zset有序集合的封装对象
+
+	private static BoundValueOperations<String, Object> boundValueOperations;
+	private static BoundHashOperations<String, Object, Object> boundHashOperations;
+	private static BoundListOperations<String, Object> boundListOperations;
+	private static BoundSetOperations<String, Object> boundSetOperations;
+	private static BoundZSetOperations<String, Object> boundZSetOperations;
+
+	// 上面5种类型对象的实例化操作不能写下static静态块中，因为spring
+	// bean在一开始就反射实例化了这个bean，所以在装载这个bean的时候，redisTemplate对象还没有set进去导致空指针；
+	// 除非将RedisTemplateUtil类也交给spring容器进行管理并设置依赖关系
+	static {
+		// 第二步通过redisTemplate对象得到操作5种value类型的对象ValueOperations
+		valueOperations = redisTemplate.opsForValue();
+		hashOperations = redisTemplate.opsForHash();
+		listOperations = redisTemplate.opsForList();
+		setOperations = redisTemplate.opsForSet();
+		zSetOperations = redisTemplate.opsForZSet();
+	}
+
+	// =============================bound指定key，返回绑定指定key的5种类型操作=============================
+	/**
+	 * 专门绑定指定key，实例化5种绑定指定key的Operations，用于在同一次事务中只能操作指定的key
+	 */
+	@Before
+	public void testBoundKeyForOperations() {
+		boundValueOperations = redisTemplate.boundValueOps("key1");
+		boundHashOperations = redisTemplate.boundHashOps("key2");
+		boundListOperations = redisTemplate.boundListOps("key3");
+		boundSetOperations = redisTemplate.boundSetOps("key4");
+		boundZSetOperations = redisTemplate.boundZSetOps("key5");
+	}
+
+	// =============================redisTemplate获取序列化器=============================
+	@Test
+	public void getSerializer() {
+		RedisSerializer<?> serizlizer = redisTemplate.getDefaultSerializer();
+		System.out.println("SDR默认的序列化器：" + serizlizer);
+		serizlizer = redisTemplate.getStringSerializer();
+		System.out.println("SDR支持的String序列化器：" + serizlizer);
+		serizlizer = redisTemplate.getKeySerializer();// String类型的key的序列化器
+		System.out.println("当前的String类型的key配置的序列化器：" + serizlizer);
+		serizlizer = redisTemplate.getValueSerializer();// String类型的value的序列化器
+		System.out.println("当前的String类型的value配置的序列化器：" + serizlizer);
+		serizlizer = redisTemplate.getHashKeySerializer();// hash类型的key的序列化器
+		System.out.println("当前的hash类型的key配置的序列化器：" + serizlizer);
+		serizlizer = redisTemplate.getHashValueSerializer();// hash类型的value的序列化器
+		System.out.println("当前的hash类型的value配置的序列化器：" + serizlizer);
+	}
+
+	// =============================分别获取5种操作类型的RedisOperations对象，实际上返回的就是redisTemplate对象=============================
+	/**
+	 * 获取RedisOperations对象，实际上和前面的redisTemplate对象的功能一模一样
+	 */
+	@Test
+	public void testGetRedisOperations() {
+		RedisOperations<String, Object> redisOperations1 = valueOperations
+				.getOperations();// 通过String类型的操作对象返回redisTemplate对象
+
+		RedisOperations<String, ?> redisOperations2 = hashOperations
+				.getOperations();
+
+		RedisOperations<String, Object> redisOperations3 = listOperations
+				.getOperations();
+		RedisOperations<String, Object> redisOperations4 = setOperations
+				.getOperations();
+		RedisOperations<String, Object> redisOperations5 = zSetOperations
+				.getOperations();
+
+		Set<String> allKeys1 = redisOperations1.keys("*");// 获取所有键
+		System.out.println("redisOperations1获取所有键");
+		Iterator<String> iteratorKeys1 = allKeys1.iterator();
+		while (iteratorKeys1.hasNext()) {
+			System.out.println("key：" + iteratorKeys1.next());
+		}
+
+		Set<String> allKeys2 = redisOperations2.keys("*");// 获取所有键
+		System.out.println("redisOperations2获取所有键");
+		Iterator<String> iteratorKeys2 = allKeys2.iterator();
+		while (iteratorKeys2.hasNext()) {
+			System.out.println("key：" + iteratorKeys2.next());
+		}
+
+		Set<String> allKeys3 = redisOperations3.keys("*");// 获取所有键
+		System.out.println("redisOperations3获取所有键");
+		Iterator<String> iteratorKeys3 = allKeys3.iterator();
+		while (iteratorKeys3.hasNext()) {
+			System.out.println("key：" + iteratorKeys3.next());
+		}
+
+		Set<String> allKeys4 = redisOperations4.keys("*");// 获取所有键
+		System.out.println("redisOperations4获取所有键");
+		Iterator<String> iteratorKeys4 = allKeys4.iterator();
+		while (iteratorKeys4.hasNext()) {
+			System.out.println("key：" + iteratorKeys4.next());
+		}
+
+		Set<String> allKeys5 = redisOperations5.keys("*");// 获取所有键
+		System.out.println("redisOperations5获取所有键");
+		Iterator<String> iteratorKeys5 = allKeys5.iterator();
+		while (iteratorKeys5.hasNext()) {
+			System.out.println("key：" + iteratorKeys5.next());
+		}
+
+	}
+
+	/**
+	 * 通过绑定指定key的Operations对象获取RedisOperations对象，实际上和前面的redisTemplate对象的功能一模一样
+	 */
+	@Test
+	public void testGetRedisOperationsByBound() {
+		RedisOperations<String, Object> redisOperations1 = boundValueOperations
+				.getOperations();// 通过String类型的操作对象返回redisTemplate对象
+
+		RedisOperations<String, ?> redisOperations2 = boundHashOperations
+				.getOperations();
+
+		RedisOperations<String, Object> redisOperations3 = boundListOperations
+				.getOperations();
+		RedisOperations<String, Object> redisOperations4 = boundSetOperations
+				.getOperations();
+		RedisOperations<String, Object> redisOperations5 = boundZSetOperations
+				.getOperations();
+
+		Set<String> allKeys1 = redisOperations1.keys("*");// 获取所有键
+		System.out.println("redisOperations1获取所有键");
+		Iterator<String> iteratorKeys1 = allKeys1.iterator();
+		while (iteratorKeys1.hasNext()) {
+			System.out.println("key：" + iteratorKeys1.next());
+		}
+
+		Set<String> allKeys2 = redisOperations2.keys("*");// 获取所有键
+		System.out.println("redisOperations2获取所有键");
+		Iterator<String> iteratorKeys2 = allKeys2.iterator();
+		while (iteratorKeys2.hasNext()) {
+			System.out.println("key：" + iteratorKeys2.next());
+		}
+
+		Set<String> allKeys3 = redisOperations3.keys("*");// 获取所有键
+		System.out.println("redisOperations3获取所有键");
+		Iterator<String> iteratorKeys3 = allKeys3.iterator();
+		while (iteratorKeys3.hasNext()) {
+			System.out.println("key：" + iteratorKeys3.next());
+		}
+
+		Set<String> allKeys4 = redisOperations4.keys("*");// 获取所有键
+		System.out.println("redisOperations4获取所有键");
+		Iterator<String> iteratorKeys4 = allKeys4.iterator();
+		while (iteratorKeys4.hasNext()) {
+			System.out.println("key：" + iteratorKeys4.next());
+		}
+
+		Set<String> allKeys5 = redisOperations5.keys("*");// 获取所有键
+		System.out.println("redisOperations5获取所有键");
+		Iterator<String> iteratorKeys5 = allKeys5.iterator();
+		while (iteratorKeys5.hasNext()) {
+			System.out.println("key：" + iteratorKeys5.next());
+		}
+
+	}
+
+	// =============================redis全局命令=============================
+	/**
+	 * redis keys 命令，返回当前redis服务器所有的键
+	 */
+	@Test
+	public void testKeys() {
+		Set<String> keySets = redisTemplate.keys("*");
+		Iterator<String> iteratorKeys = keySets.iterator();
+		while (iteratorKeys.hasNext()) {
+			System.out.println("key:" + iteratorKeys.next());
+		}
+	}
+
+	/**
+	 * redis delete命令，删除指定的key-value键
+	 */
+	@Test
+	public void testDeleteKey() {
+		System.out.println("开始删除指定的key-value");
+		redisTemplate.delete("test1");
+		System.out.println("删除完成");
+	}
+
+	/**
+	 * 删除所有的key-value
+	 */
+	@Test
+	public void testDeleteAllKeys() {
+		System.out.println("开始删除所有的key-value");
+		Set<String> keys = redisTemplate.keys("*");
+		redisTemplate.delete(keys);
+		System.out.println("删除完成");
+	}
+
+	/**
+	 * redis exists命令，判断指定的key是否存在；
+	 * 
+	 * exists命令被redis Spring封装成了hasKey方法，返回由整数0,1变作了boolean类型
+	 */
+	@Test
+	public void testHasKey() {
+		boolean hasKey = redisTemplate.hasKey("test1");
+		System.out.println("指定key是否存在？" + hasKey);
+	}
+
+	/**
+	 * redis expire命令，为指定的key设置过期时间，当超过过期时间后自动删除键值对。返回由整数0，1变作boolean类型。
+	 * 
+	 * 如果指定的key不存在，将返回false。
+	 * 
+	 * redis spring封装后还可以指定时间单位，原生redis命令默认是s。
+	 * 
+	 * redis不支持对二级数据结构设置过期时间，比如不能对list,set,zset,hash里面的某一个元素设置过期时间，只能对整个一级结构设置，
+	 * 即整体对string,set,list,zset,hash设置过期时间。
+	 * 
+	 * 当使用set命令重新设置一个key的String类型的value时，将自动清除这个key的过期时间。深入理解set命令的机制：
+	 * redis的底层对set命令的实现是setKey()函数： 该函数执行到最后会移除目标键的过期时间。
+	 */
+	@Test
+	public void testExpire() {
+		boolean expireResult = redisTemplate.expire("test1", 1000,
+				TimeUnit.SECONDS);
+		if (expireResult) {
+			System.out.println("指定key的过期时间设置成功");
+		} else {
+			System.out.println("指定key不存在");
+		}
+
+	}
+
+	/**
+	 * expireAt 命令，返回由整数0,1变作boolean类型。
+	 * 
+	 * redis expireat命令，设置在某个时间点后过期，spring改造成了指定日期。
+	 */
+	@Test
+	public void testExpireAt() {
+		boolean expireAtResult = redisTemplate.expireAt("test1", new Date());
+		if (expireAtResult) {
+			System.out.println("指定key的过期时间设置成功");
+		} else {
+			System.out.println("指定key不存在");
+		}
+	}
+
+	/**
+	 * 获取目标key的剩余过期时间。
+	 * 
+	 * ttl和pttl命令；获取目标key的剩余过期时间，spring redis可以指定时间单位，不指定的话默认为s。
+	 * 
+	 * 因为spring redis可以指定具体的时间单位，所以ttl和pttl命令就合成为一个getExpire()方法了。
+	 * 
+	 * 如果key存在且设置了过期时间，则返回剩余过期时间；
+	 * 
+	 * 如果key存在但没有设置过期时间，则返回-1；
+	 * 
+	 * 如果key不存在，则返回-2；
+	 */
+	@Test
+	public void testGetExpire() {
+		// 如果没有指定时间单位，默认为s。
+		Long getExpireResult = redisTemplate.getExpire("test1");
+		if (getExpireResult == -2) {
+			System.out.println("指定key不存在");
+		} else if (getExpireResult == -1) {
+			System.out.println("指定key存在但没有设置过期时间");
+		} else {
+			System.out.println("按照默认时间单位返回剩余过期时间：" + getExpireResult);
+		}
+
+		// 如果指定时间单位，按照指定的时间单位返回。
+		getExpireResult = redisTemplate.getExpire("test1", TimeUnit.MINUTES);
+		if (getExpireResult == -2) {
+			System.out.println("指定key不存在");
+		} else if (getExpireResult == -1) {
+			System.out.println("指定key存在但没有设置过期时间");
+		} else {
+			System.out.println("按照指定时间单位返回剩余过期时间：" + getExpireResult);
+		}
+	}
+
+	/**
+	 * 清除目标key的过期时间。
+	 * 
+	 * 如果目标key不存在或者目标key没有设置过期时间，则返回false。
+	 * 
+	 * persist命令，清除目标key的过期时间,返回由整数0,1变作了boolean类型。
+	 */
+	@Test
+	public void testPersist() {
+		boolean persistResult = redisTemplate.persist("test1");
+		if (persistResult) {
+			System.out.println("指定key的过期时间清除成功");
+		} else {
+			System.out.println("指定key不存在或者没有设置过期时间");
+		}
+	}
+
+	/**
+	 * 对原始key重命名，rename命令。原始键如果不存在，则rename失败。
+	 */
+	@Test
+	public void testRenameKey() {
+		System.out.println("对指定key重命名");
+		String resourceKey = "test1";
+		if (redisTemplate.hasKey(resourceKey)) {
+			redisTemplate.rename("test1", "test_new");
+			System.out.println("重命名结束");
+		} else {
+			System.out.println("原始key不存在，重命名失败");
+		}
+	}
+
+	/**
+	 * 对原始key重命名，只有当目标key不存在的时候才重命名成功。
+	 * 
+	 * 对应的命令是renamenx，目的就是为了防止强行rename。
+	 */
+	@Test
+	public void testRenameIfAbsent() {
+		System.out.println("对指定key重命名");
+		String resourceKey = "test1";
+		if (redisTemplate.hasKey(resourceKey)) {
+			boolean renameResult = redisTemplate.renameIfAbsent("test1",
+					"test_new");
+			if (renameResult) {
+				System.out.println("目标key不存在，重命名成功");
+			} else {
+				System.out.println("目标key存在，重命名失败");
+			}
+			System.out.println("重命名结束");
+		} else {
+			System.out.println("原始key不存在，重命名失败");
+		}
+	}
+
+	/**
+	 * randomkey命令，随机返回一个存在的键；如果没有存在的键，则返回null值。
+	 * 
+	 * 随机返回一个存在的键；如果没有存在的键，则返回null值。
+	 */
+	@Test
+	public void testRandomKey() {
+		String randomKey = redisTemplate.randomKey();
+		if (randomKey == null) {
+			System.out.println("当前redis服务器不存在任何键值对");
+		} else {
+			System.out.println("随机返回一个key：" + randomKey);
+		}
+	}
+
+	/**
+	 * type 命令，返回key对应的value的数据类型
+	 */
+	@Test
+	public void testType() {
+		DataType valueType = redisTemplate.type("test1");
+		if (valueType.equals(DataType.NONE)) {
+			System.out.println("当前不存在任何键值对");
+		} else {
+			System.out.println("指定key对应的value类型：" + valueType);
+		}
+	}
+
+	/**
+	 * select dbIndex命令，选择目标数据库(默认是0号数据库，默认数据库个数是0-15共16个)
+	 * 
+	 * 注意，SDR的redisTemplate并不提供切换数据库的接口，
+	 * 而是通过jedisConnectionFactory这个连接池工厂类在创建连接的时候切换数据库。
+	 */
+	@Test
+	public void testSelect() {
+		// 通过JedisConnectionFactory工厂设置当前连接的数据库为1号database
+		((JedisConnectionFactory) applicationContext
+				.getBean("jedisConnectionFactory")).setDatabase(1);
+		testKeys();
+	}
+
+	/**
+	 * move key db命令：将目标键从当前database迁移到目标database
+	 */
+	@Test
+	public void testMove() {
+		// 注意当前database默认是0号数据库
+		boolean result = redisTemplate.move("index", 1);
+		if (result) {
+			System.out.println("迁移成功");
+			testSelect();
+		} else {
+			System.out.println("源键不存在");
+		}
+	}
+
+}
