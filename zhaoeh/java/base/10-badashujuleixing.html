@@ -3,7 +3,7 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width initial-scale=1'>
-    <title>java 面向对象.md</title>
+    <title>java 数据类型.md</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
           rel='stylesheet' type='text/css'/>
     <style type='text/css'>html {
@@ -1668,6 +1668,52 @@
         char d = (char) c;//强制类型转换
         System.out.println(d);
         System.out.println("\"HelloWorld\"\n\"我叫赵二虎\"" + "d:");
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>6、void是啥？</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        上面所说的8大基本数据类型，是明确的。
+        实际上，上面的8大基本数据类型，byte、short、int、long、char、boolean、float、double，java虚拟机都为它们创建了对应的class对象。
+        就像你定义了一个引用类Person，Person被JVN装载后就会在对应的堆内存中创建一个唯一的class对象用来描述Person类的结构。
+        int等基本类型由于是JVM内置的类型，JVM默认会为这些类型创建对应的class对象。
+        确切来讲，java中共有9中预定义的Class对象。之所以预定义是因为这9种Class对象是由java虚拟机默认创建好的。
+        这9种预定义的Class对象分别是8大基本类型和void，其对象名称分别与其表示的基本类型相同，即 byte、short、int、long、char、boolean、float、double和void。
+        这9种class对象只能通过public static final 声明的变量进行访问，即：
+        int.class，short.class，void.class等。其他方式无法访问。
+
+        扩展：
+        Class类中有一个isPrimitive()方法，用来判断传入的class对象是否是一个基本类型，如果是则返回true，否则返回false。
+        而能使此方法返回true，仅有的9个class对象便是上面提到的9种。如果是基本类型的包装类型，上述方法将返回false。
+
+        案例：
+        package zeh.test.demo.com;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2020-06-24
+         */
+        public class Test {
+
+            public static void main(String args[]) {
+                System.out.println(void.class.isPrimitive());
+                System.out.println(int.class.isPrimitive());
+                System.out.println(float.class.isPrimitive());
+                System.out.println(boolean.class.isPrimitive());
+                System.out.println(Integer.class.isPrimitive());
+            }
+        }
+
+        执行结果：
+        true
+        true
+        true
+        true
+        false
+
+        Process finished with exit code 0
+
     </pre>
 </div>
 </body>
