@@ -1,1 +1,1953 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>Class API.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror {
+        height: auto;
+    }
+
+    .CodeMirror-scroll {
+        overflow-y: hidden;
+        overflow-x: auto;
+    }
+
+    .CodeMirror-lines {
+        padding: 4px 0px;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
+        background-color: white;
+    }
+
+    .CodeMirror-gutters {
+        border-right: 1px solid rgb(221, 221, 221);
+        background-color: rgb(247, 247, 247);
+        white-space: nowrap;
+    }
+
+    .CodeMirror-linenumbers {
+    }
+
+    .CodeMirror-linenumber {
+        padding: 0px 3px 0px 5px;
+        text-align: right;
+        color: rgb(153, 153, 153);
+    }
+
+    .CodeMirror div.CodeMirror-cursor {
+        border-left: 1px solid black;
+        z-index: 3;
+    }
+
+    .CodeMirror div.CodeMirror-secondarycursor {
+        border-left: 1px solid silver;
+    }
+
+    .CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor {
+        width: auto;
+        border: 0px;
+        background: rgb(119, 238, 119);
+        z-index: 1;
+    }
+
+    .CodeMirror div.CodeMirror-cursor.CodeMirror-overwrite {
+    }
+
+    .cm-tab {
+        display: inline-block;
+    }
+
+    .cm-s-typora-default .cm-header, .cm-s-typora-default .cm-property {
+        color: rgb(217, 79, 138);
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-atom, .cm-s-typora-default .cm-number {
+        color: rgb(149, 132, 134);
+    }
+
+    .cm-s-typora-default .cm-table-row, .cm-s-typora-default .cm-block-start {
+        font-family: monospace;
+    }
+
+    .cm-s-typora-default .cm-comment, .cm-s-typora-default .cm-code {
+        color: rgb(74, 90, 159);
+        font-family: monospace;
+    }
+
+    .cm-s-typora-default .cm-tag {
+        color: rgb(169, 68, 66);
+    }
+
+    .cm-s-typora-default .cm-string {
+        color: rgb(126, 134, 169);
+    }
+
+    .cm-s-typora-default .cm-link {
+        color: rgb(196, 122, 15);
+        text-decoration: underline;
+    }
+
+    .cm-s-typora-default .cm-variable-2, .cm-s-typora-default .cm-variable-1 {
+        color: inherit;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror.cm-s-typora-default div.CodeMirror-cursor {
+        border-left: 3px solid rgb(228, 98, 154);
+    }
+
+    .cm-s-typora-default .CodeMirror-activeline-background {
+        left: -60px;
+        right: -30px;
+        background: rgba(204, 204, 204, 0.2);
+    }
+
+    .cm-s-typora-default .CodeMirror-gutters {
+        border-right: none;
+        background-color: inherit;
+    }
+
+    .cm-s-typora-default .cm-trailing-space-new-line::after, .cm-startspace::after, .cm-starttab .cm-tab::after {
+        content: "•";
+        position: absolute;
+        left: 0px;
+        opacity: 0;
+        font-family: LetterGothicStd, monospace;
+    }
+
+    .os-windows .cm-startspace::after, .os-windows .cm-starttab .cm-tab::after {
+        left: -0.1em;
+    }
+
+    .cm-starttab .cm-tab::after {
+        content: " ";
+    }
+
+    .cm-startspace, .cm-tab, .cm-starttab, .cm-trailing-space-a, .cm-trailing-space-b, .cm-trailing-space-new-line {
+        font-family: monospace;
+        position: relative;
+    }
+
+    .cm-s-typora-default .cm-trailing-space-new-line::after {
+        content: "↓";
+        opacity: 0.3;
+    }
+
+    .cm-s-inner .cm-keyword {
+        color: rgb(119, 0, 136);
+    }
+
+    .cm-s-inner .cm-atom, .cm-s-inner.cm-atom {
+        color: rgb(34, 17, 153);
+    }
+
+    .cm-s-inner .cm-number {
+        color: rgb(17, 102, 68);
+    }
+
+    .cm-s-inner .cm-def {
+        color: rgb(0, 0, 255);
+    }
+
+    .cm-s-inner .cm-variable {
+        color: black;
+    }
+
+    .cm-s-inner .cm-variable-2 {
+        color: rgb(0, 85, 170);
+    }
+
+    .cm-s-inner .cm-variable-3 {
+        color: rgb(0, 136, 85);
+    }
+
+    .cm-s-inner .cm-property {
+        color: black;
+    }
+
+    .cm-s-inner .cm-operator {
+        color: rgb(152, 26, 26);
+    }
+
+    .cm-s-inner .cm-comment, .cm-s-inner.cm-comment {
+        color: rgb(170, 85, 0);
+    }
+
+    .cm-s-inner .cm-string {
+        color: rgb(170, 17, 17);
+    }
+
+    .cm-s-inner .cm-string-2 {
+        color: rgb(255, 85, 0);
+    }
+
+    .cm-s-inner .cm-meta {
+        color: rgb(85, 85, 85);
+    }
+
+    .cm-s-inner .cm-qualifier {
+        color: rgb(85, 85, 85);
+    }
+
+    .cm-s-inner .cm-builtin {
+        color: rgb(51, 0, 170);
+    }
+
+    .cm-s-inner .cm-bracket {
+        color: rgb(153, 153, 119);
+    }
+
+    .cm-s-inner .cm-tag {
+        color: rgb(17, 119, 0);
+    }
+
+    .cm-s-inner .cm-attribute {
+        color: rgb(0, 0, 204);
+    }
+
+    .cm-s-inner .cm-header, .cm-s-inner.cm-header {
+        color: blue;
+    }
+
+    .cm-s-inner .cm-quote, .cm-s-inner.cm-quote {
+        color: rgb(0, 153, 0);
+    }
+
+    .cm-s-inner .cm-hr, .cm-s-inner.cm-hr {
+        color: rgb(153, 153, 153);
+    }
+
+    .cm-s-inner .cm-link, .cm-s-inner.cm-link {
+        color: rgb(0, 0, 204);
+    }
+
+    .cm-negative {
+        color: rgb(221, 68, 68);
+    }
+
+    .cm-positive {
+        color: rgb(34, 153, 34);
+    }
+
+    .cm-header, .cm-strong {
+        font-weight: bold;
+    }
+
+    .cm-del {
+        text-decoration: line-through;
+    }
+
+    .cm-em {
+        font-style: italic;
+    }
+
+    .cm-link {
+        text-decoration: underline;
+    }
+
+    .cm-error {
+        color: rgb(255, 0, 0);
+    }
+
+    .cm-invalidchar {
+        color: rgb(255, 0, 0);
+    }
+
+    .cm-constant {
+        color: rgb(38, 139, 210);
+    }
+
+    .cm-defined {
+        color: rgb(181, 137, 0);
+    }
+
+    div.CodeMirror span.CodeMirror-matchingbracket {
+        color: rgb(0, 255, 0);
+    }
+
+    div.CodeMirror span.CodeMirror-nonmatchingbracket {
+        color: rgb(255, 34, 34);
+    }
+
+    .cm-s-inner .CodeMirror-activeline-background {
+        background: inherit;
+    }
+
+    .CodeMirror {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .CodeMirror-scroll {
+        margin-bottom: -30px;
+        margin-right: -30px;
+        padding-bottom: 30px;
+        padding-right: 30px;
+        height: 100%;
+        outline: none;
+        position: relative;
+        box-sizing: content-box;
+    }
+
+    .CodeMirror-sizer {
+        position: relative;
+    }
+
+    .CodeMirror-vscrollbar, .CodeMirror-hscrollbar, .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
+        position: absolute;
+        z-index: 6;
+        display: none;
+    }
+
+    .CodeMirror-vscrollbar {
+        right: 0px;
+        top: 0px;
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
+
+    .CodeMirror-hscrollbar {
+        bottom: 0px;
+        left: 0px;
+        overflow-y: hidden;
+        overflow-x: scroll;
+    }
+
+    .CodeMirror-scrollbar-filler {
+        right: 0px;
+        bottom: 0px;
+    }
+
+    .CodeMirror-gutter-filler {
+        left: 0px;
+        bottom: 0px;
+    }
+
+    .CodeMirror-gutters {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        padding-bottom: 30px;
+        z-index: 3;
+    }
+
+    .CodeMirror-gutter {
+        white-space: normal;
+        height: 100%;
+        box-sizing: content-box;
+        padding-bottom: 30px;
+        margin-bottom: -32px;
+        display: inline-block;
+    }
+
+    .CodeMirror-gutter-wrapper {
+        position: absolute;
+        z-index: 4;
+        background: none !important;
+        border: none !important;
+    }
+
+    .CodeMirror-gutter-background {
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        z-index: 4;
+    }
+
+    .CodeMirror-gutter-elt {
+        position: absolute;
+        cursor: default;
+        z-index: 4;
+    }
+
+    .CodeMirror-lines {
+        cursor: text;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-linebackground {
+        position: absolute;
+        left: 0px;
+        right: 0px;
+        top: 0px;
+        bottom: 0px;
+        z-index: 0;
+    }
+
+    .CodeMirror-linewidget {
+        position: relative;
+        z-index: 2;
+        overflow: auto;
+    }
+
+    .CodeMirror-widget {
+    }
+
+    .CodeMirror-wrap .CodeMirror-scroll {
+        overflow-x: hidden;
+    }
+
+    .CodeMirror-measure {
+        position: absolute;
+        width: 100%;
+        height: 0px;
+        overflow: hidden;
+        visibility: hidden;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror div.CodeMirror-cursor {
+        position: absolute;
+        visibility: hidden;
+        border-right: none;
+        width: 0px;
+    }
+
+    .CodeMirror div.CodeMirror-cursor {
+        visibility: hidden;
+    }
+
+    .CodeMirror-focused div.CodeMirror-cursor {
+        visibility: inherit;
+    }
+
+    .CodeMirror-selected {
+        background: rgb(217, 217, 217);
+    }
+
+    .CodeMirror-focused .CodeMirror-selected {
+        background: rgb(215, 212, 240);
+    }
+
+    .cm-searching {
+        background: rgba(255, 255, 0, 0.4);
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+    .CodeMirror-lint-markers {
+        width: 16px;
+    }
+
+    .CodeMirror-lint-tooltip {
+        background-color: infobackground;
+        border: 1px solid black;
+        border-radius: 4px;
+        color: infotext;
+        font-family: monospace;
+        overflow: hidden;
+        padding: 2px 5px;
+        position: fixed;
+        white-space: pre-wrap;
+        z-index: 10000;
+        max-width: 600px;
+        opacity: 0;
+        transition: opacity 0.4s;
+        font-size: 0.8em;
+    }
+
+    .CodeMirror-lint-mark-error, .CodeMirror-lint-mark-warning {
+        background-position: left bottom;
+        background-repeat: repeat-x;
+    }
+
+    .CodeMirror-lint-mark-error {
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAYAAAC09K7GAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sJDw4cOCW1/KIAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAAAHElEQVQI12NggIL/DAz/GdA5/xkY/qPKMDAwAADLZwf5rvm+LQAAAABJRU5ErkJggg==");
+    }
+
+    .CodeMirror-lint-marker-error, .CodeMirror-lint-marker-warning {
+        background-position: center center;
+        background-repeat: no-repeat;
+        cursor: pointer;
+        display: inline-block;
+        height: 16px;
+        width: 16px;
+        vertical-align: middle;
+        position: relative;
+    }
+
+    .CodeMirror-lint-message-error, .CodeMirror-lint-message-warning {
+        padding-left: 18px;
+        background-position: left top;
+        background-repeat: no-repeat;
+    }
+
+    .CodeMirror-lint-marker-error, .CodeMirror-lint-message-error {
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAHlBMVEW7AAC7AACxAAC7AAC7AAAAAAC4AAC5AAD///+7AAAUdclpAAAABnRSTlMXnORSiwCK0ZKSAAAATUlEQVR42mWPOQ7AQAgDuQLx/z8csYRmPRIFIwRGnosRrpamvkKi0FTIiMASR3hhKW+hAN6/tIWhu9PDWiTGNEkTtIOucA5Oyr9ckPgAWm0GPBog6v4AAAAASUVORK5CYII=");
+    }
+
+    .CodeMirror-lint-marker-warning, .CodeMirror-lint-message-warning {
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAANlBMVEX/uwDvrwD/uwD/uwD/uwD/uwD/uwD/uwD/uwD6twD/uwAAAADurwD2tQD7uAD+ugAAAAD/uwDhmeTRAAAADHRSTlMJ8mN1EYcbmiixgACm7WbuAAAAVklEQVR42n3PUQqAIBBFUU1LLc3u/jdbOJoW1P08DA9Gba8+YWJ6gNJoNYIBzAA2chBth5kLmG9YUoG0NHAUwFXwO9LuBQL1giCQb8gC9Oro2vp5rncCIY8L8uEx5ZkAAAAASUVORK5CYII=");
+    }
+
+    .CodeMirror-lint-marker-multiple {
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAMAAADzjKfhAAAACVBMVEUAAAAAAAC/v7914kyHAAAAAXRSTlMAQObYZgAAACNJREFUeNo1ioEJAAAIwmz/H90iFFSGJgFMe3gaLZ0od+9/AQZ0ADosbYraAAAAAElFTkSuQmCC");
+        background-repeat: no-repeat;
+        background-position: right bottom;
+        width: 100%;
+        height: 100%;
+    }
+
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    .in-text-selection, ::selection {
+        background: rgb(181, 214, 252);
+        text-shadow: none;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+        .CodeMirror-sizer {
+            margin-left: 0px !important;
+        }
+
+        .CodeMirror-gutters {
+            display: none !important;
+        }
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    .mathjax-block {
+        margin-top: 0px;
+        margin-bottom: 0px;
+        -webkit-margin-before: 0rem;
+        -webkit-margin-after: 0rem;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .md-blockmeta {
+        color: rgb(204, 204, 204);
+        font-weight: bold;
+        font-style: italic;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    sup.md-footnote {
+        padding: 2px 4px;
+        background-color: rgba(238, 238, 238, 0.7);
+        color: rgb(85, 85, 85);
+        border-radius: 4px;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror-gutters {
+        border-right: 0px;
+        background-color: inherit;
+    }
+
+    .CodeMirror {
+        text-align: left;
+    }
+
+    .CodeMirror-placeholder {
+        opacity: 0.3;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    .CodeMirror-lines {
+        padding: 0px;
+    }
+
+    div.hr:focus {
+        cursor: none;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .CodeMirror-gutters {
+        margin-right: 4px;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-diagram-panel {
+        width: 100%;
+        margin-top: 10px;
+        text-align: center;
+        padding-top: 0px;
+        padding-bottom: 8px;
+        overflow-x: auto;
+    }
+
+    .md-fences .CodeMirror.CodeMirror-wrap {
+        top: -1.6em;
+        margin-bottom: -1.6em;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    .footnotes {
+        opacity: 0.8;
+        font-size: 0.9rem;
+        padding-top: 1em;
+        padding-bottom: 1em;
+    }
+
+    .footnotes + .footnotes {
+        margin-top: -1em;
+    }
+
+    .md-reset {
+        margin: 0px;
+        padding: 0px;
+        border: 0px;
+        outline: 0px;
+        vertical-align: top;
+        background: transparent;
+        text-decoration: none;
+        text-shadow: none;
+        float: none;
+        position: static;
+        width: auto;
+        height: auto;
+        white-space: nowrap;
+        cursor: inherit;
+        -webkit-tap-highlight-color: transparent;
+        line-height: normal;
+        font-weight: normal;
+        text-align: left;
+        box-sizing: content-box;
+        direction: ltr;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li p, li .mathjax-block {
+        margin: 0.5rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    .footnotes-area {
+        color: rgb(136, 136, 136);
+        margin-top: 0.714rem;
+        padding-bottom: 0.143rem;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    .footnote-line {
+        margin-top: 0.714em;
+        font-size: 0.7em;
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    pre.md-meta-block {
+        font-size: 0.8rem;
+        min-height: 2.86rem;
+        white-space: pre-wrap;
+        background: rgb(204, 204, 204);
+        display: block;
+        overflow-x: hidden;
+    }
+
+    p .md-image:only-child {
+        display: inline-block;
+        width: 100%;
+        text-align: center;
+    }
+
+    #write .MathJax_Display {
+        margin: 0.8em 0px 0px;
+    }
+
+    .mathjax-block {
+        white-space: pre;
+        overflow: hidden;
+        width: 100%;
+    }
+
+    p + .mathjax-block {
+        margin-top: -1.143rem;
+    }
+
+    .mathjax-block:not(:empty)::after {
+        display: none;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list {
+        list-style-type: none;
+    }
+
+    .task-list-item {
+        position: relative;
+        padding-left: 1em;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    .math {
+        font-size: 1rem;
+    }
+
+    .md-toc {
+        min-height: 3.58rem;
+        position: relative;
+        font-size: 0.9rem;
+        border-radius: 10px;
+    }
+
+    .md-toc-content {
+        position: relative;
+        margin-left: 0px;
+    }
+
+    .md-toc::after, .md-toc-content::after {
+        display: none;
+    }
+
+    .md-toc-item {
+        display: block;
+        color: rgb(65, 131, 196);
+        text-decoration: none;
+    }
+
+    .md-toc-inner:hover {
+    }
+
+    .md-toc-inner {
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    .md-toc-h1 .md-toc-inner {
+        margin-left: 0px;
+        font-weight: bold;
+    }
+
+    .md-toc-h2 .md-toc-inner {
+        margin-left: 2em;
+    }
+
+    .md-toc-h3 .md-toc-inner {
+        margin-left: 4em;
+    }
+
+    .md-toc-h4 .md-toc-inner {
+        margin-left: 6em;
+    }
+
+    .md-toc-h5 .md-toc-inner {
+        margin-left: 8em;
+    }
+
+    .md-toc-h6 .md-toc-inner {
+        margin-left: 10em;
+    }
+
+    @media screen and (max-width: 48em) {
+        .md-toc-h3 .md-toc-inner {
+            margin-left: 3.5em;
+        }
+
+        .md-toc-h4 .md-toc-inner {
+            margin-left: 5em;
+        }
+
+        .md-toc-h5 .md-toc-inner {
+            margin-left: 6.5em;
+        }
+
+        .md-toc-h6 .md-toc-inner {
+            margin-left: 8em;
+        }
+    }
+
+    a.md-toc-inner {
+        font-size: inherit;
+        font-style: inherit;
+        font-weight: inherit;
+        line-height: inherit;
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    .md-attr {
+        display: none;
+    }
+
+    .md-fn-count::after {
+        content: ".";
+    }
+
+    .md-tag {
+        opacity: 0.5;
+    }
+
+    .md-comment {
+        color: rgb(162, 127, 3);
+        opacity: 0.8;
+        font-family: monospace;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    h1 .md-tag, h2 .md-tag, h3 .md-tag, h4 .md-tag, h5 .md-tag, h6 .md-tag {
+        font-weight: initial;
+        opacity: 0.35;
+    }
+
+    a.md-print-anchor {
+        border-width: initial !important;
+        border-style: none !important;
+        border-color: initial !important;
+        display: inline-block !important;
+        position: absolute !important;
+        width: 1px !important;
+        right: 0px !important;
+        outline: none !important;
+        background: transparent !important;
+        text-decoration: initial !important;
+        text-shadow: initial !important;
+    }
+
+    .md-inline-math .MathJax_SVG .noError {
+        display: none !important;
+    }
+
+    .mathjax-block .MathJax_SVG_Display {
+        text-align: center;
+        margin: 1em 0em;
+        position: relative;
+        text-indent: 0px;
+        max-width: none;
+        max-height: none;
+        min-height: 0px;
+        min-width: 100%;
+        width: auto;
+        display: block !important;
+    }
+
+    .MathJax_SVG_Display, .md-inline-math .MathJax_SVG_Display {
+        width: auto;
+        margin: inherit;
+        display: inline-block !important;
+    }
+
+    .MathJax_SVG .MJX-monospace {
+        font-family: monospace;
+    }
+
+    .MathJax_SVG .MJX-sans-serif {
+        font-family: sans-serif;
+    }
+
+    .MathJax_SVG {
+        display: inline;
+        font-style: normal;
+        font-weight: normal;
+        line-height: normal;
+        zoom: 90%;
+        text-indent: 0px;
+        text-align: left;
+        text-transform: none;
+        letter-spacing: normal;
+        word-spacing: normal;
+        word-wrap: normal;
+        white-space: nowrap;
+        float: none;
+        direction: ltr;
+        max-width: none;
+        max-height: none;
+        min-width: 0px;
+        min-height: 0px;
+        border: 0px;
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+        text-decoration: none;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    li p.first {
+        display: inline-block;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .CodeMirror-gutters {
+        border-right: 1px solid rgb(221, 221, 221);
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list {
+        padding-left: 0px;
+    }
+
+    .task-list-item {
+        padding-left: 32px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    #write pre.md-meta-block {
+        padding: 1rem;
+        font-size: 85%;
+        line-height: 1.45;
+        background-color: rgb(247, 247, 247);
+        border: 0px;
+        border-radius: 3px;
+        color: rgb(119, 119, 119);
+        margin-top: 0px !important;
+    }
+
+    .mathjax-block > .code-tooltip {
+        bottom: 0.375rem;
+    }
+
+    #write > h3.md-focus::before {
+        left: -1.5625rem;
+        top: 0.375rem;
+    }
+
+    #write > h4.md-focus::before {
+        left: -1.5625rem;
+        top: 0.285714rem;
+    }
+
+    #write > h5.md-focus::before {
+        left: -1.5625rem;
+        top: 0.285714rem;
+    }
+
+    #write > h6.md-focus::before {
+        left: -1.5625rem;
+        top: 0.285714rem;
+    }
+
+    .md-image > .md-meta {
+        border: 1px solid rgb(221, 221, 221);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+        color: inherit;
+    }
+
+    .md-tag {
+        color: inherit;
+    }
+
+    .md-toc {
+        margin-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    .sidebar-tabs {
+        border-bottom: none;
+    }
+
+    #typora-quick-open {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+    }
+
+    #typora-quick-open-item {
+        background-color: rgb(250, 250, 250);
+        border-color: rgb(254, 254, 254) rgb(229, 229, 229) rgb(229, 229, 229) rgb(238, 238, 238);
+        border-style: solid;
+        border-width: 1px;
+    }
+
+    #md-notification::before {
+        top: 10px;
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+
+    header, .context-menu, .megamenu-content, footer {
+        font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    .file-node-content:hover .file-node-icon, .file-node-content:hover .file-node-open-state {
+        visibility: visible;
+    }
+
+    .mac-seamless-mode #typora-sidebar {
+        background-color: var(--side-bar-bg-color);
+    }
+
+    .md-lang {
+        color: rgb(180, 101, 77);
+    }
+
+
+    </style>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>Class API 学习</b>
+    <b><a name='header-n1' class='md-header-anchor '></a>1、isPrimitive方法</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        之所以将isPrimitive方法单独拎出来说，是因为 isPrimitive 方法牵扯到Class类、Field类、包装类、JVM内置的9个class对象等基本类型的复杂关系，需要一步步深入搞懂。
+    </pre>
+    <b><a name='header-n11' class='md-header-anchor '></a>1.1、 isPrimitive方法能干啥</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  public boolean isPrimitive();
+        2.  说明：判定指定的 Class 对象是否表示一个基本类型。有九种预定义的 Class 对象，表示八个基本类型和 void。这些类对象由 Java 虚拟机创建，与其表示的基本类型同名，即 boolean、byte、char、short、int、long、float 和 double。
+        3.  返回值：如果是上述9种class对象的话，则返回true，否则返回false。
+        4.  备注：上面的9种class对象，只能通过public static final类型的字段进行访问，不能通过getClass()方法或者Class.forName()进行访问。比如：
+            int.class,void.class,boolean.class等。
+            并且，整个java中也就只有这9种class对象能够使isPrimitive()方法返回true。
+        5.  isPrimitive()总结下，就是来判断传入的一个class对象是否是基本类型和void类型的。
+        6.  测试：
+        package zeh.test.demo.com;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2020-06-24
+         */
+        public class Test {
+
+            public static void main(String args[]) {
+                System.out.println(void.class.isPrimitive());
+                System.out.println(int.class.isPrimitive());
+                System.out.println(float.class.isPrimitive());
+                System.out.println(boolean.class.isPrimitive());
+                System.out.println(Integer.class.isPrimitive());
+            }
+        }
+
+        7.  测试结果：
+        true
+        true
+        true
+        true
+        false
+
+        Process finished with exit code 0
+
+        8.  疑问？
+        上面案例中，凡是JVM预创建的9种class对象，isPrimitive都返回了true。
+        然而，对于基本类型的包装类，比如Integer，它的class对象通过 isPrimitive 竟然返回了false。
+        而往往，实际业务中，我们认为8大基本类型的包装类，也应该是我们认知当中的基本类型，那显然，此处单纯通过 isPrimitive 方法去验证，对于包装类就失效了。
+        对于包装类，我们该如何进行验证？
+    </pre>
+    <b><a name='header-n12' class='md-header-anchor '></a>1.2、 class对象直接输出</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  任何一个class对象直接输出，则表示该class对象表示的权限定名称，即它表示的类链接符。因为Class的toString()方法实现了覆盖。
+        2.  Class类覆盖后的toString方法如下：
+            public String toString() {
+                return (isInterface() ? "interface " : (isPrimitive() ? "" : "class ")) + getName();
+            }
+        3.  测试：
+            package zeh.test.demo.com;
+
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2020-06-24
+             */
+            public class Test {
+
+                public static void main(String args[]) {
+                    System.out.println("Person.class is : " + Person.class);
+                    System.out.println("Integer.class is : " + Integer.class);
+                    System.out.println("int.class is : " + int.class);
+                    System.out.println("void.class is : " + void.class);
+                    System.out.println("boolean.class is : " + boolean.class);
+                    System.out.println("char.class is : " + char.class);
+                }
+            }
+
+        4.  测试结果：
+        Person.class is : class zeh.test.demo.com.Person
+        Integer.class is : class java.lang.Integer
+        int.class is : int
+        void.class is : void
+        boolean.class is : boolean
+        char.class is : char
+
+        Process finished with exit code 0
+
+        5.  结果分析：
+        通过测试可以发现，如果是JVM预创建的9种内置class对象的话，其class对象直接输出的话，直接输出的就是其表示的基本类型或者void的名称。即，int.class直接输出就是int，void.class直接输出就是void。
+        如果不是预创建的9种内置class对象，而是普通的引用类型的class对象，则class对象直接输出的格式为：class class对象描述的类的权限定名称。
+    </pre>
+    <b><a name='header-n13' class='md-header-anchor '></a>1.3、 Field对象直接输出</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  Field类用来描述一个类里面的成员变量。
+        2.  Field类的toString()方法实现了覆盖，直接输出一个field对象，就是输出该field对象描述的字段的权限定信息。
+        3.  Field类的toString()方法覆盖如下：
+            public String toString() {
+                int mod = getModifiers();
+                return (((mod == 0) ? "" : (Modifier.toString(mod) + " "))
+                    + getType().getTypeName() + " "
+                    + getDeclaringClass().getTypeName() + "."
+                    + getName());
+            }
+        4.  Class类中有个getField()方法，一般通过class对象调用该方法，指定字段名称，就会返回该class对象描述的目标类中指定成员的Field实例。如果指定的字段名称在对应的目标类中不存在，则抛出异常。
+        5.  测试：
+        package zeh.test.demo.com;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2020-06-24
+         */
+        public class Test {
+
+            public static void main(String args[]) throws NoSuchFieldException {
+                System.out.println(Person.class.getField("name"));
+                System.out.println(Integer.class.getField("TYPE"));
+                System.out.println(Person.class.getField("CAO"));
+            }
+        }
+
+        6.  测试结果：
+        public java.lang.String zeh.test.demo.com.Person.name
+        public static final java.lang.Class java.lang.Integer.TYPE
+        Exception in thread "main" java.lang.NoSuchFieldException: CAO
+            at java.lang.Class.getField(Class.java:1703)
+            at zeh.test.demo.com.Test.main(Test.java:14)
+
+        Process finished with exit code 1
+    </pre>
+    <b><a name='header-n14' class='md-header-anchor '></a>1.4、 Field对象获取指定对象上的当前字段值</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  Field类用来描述一个类里面的属性成员信息的。
+        2.  Field提供了一个方法：public Object get(Object obj) throws IllegalArgumentException,IllegalAccessException;
+        3.  返回值：对象obj中所表示的字段的值。
+        4.  注意点：
+            如果底层字段是一个静态字段，则忽略 obj 变量，直接传入一个null值即可。
+            其他注意点参考Java API。
+        5.  测试：
+        package zeh.test.demo.com;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2020-06-24
+         */
+        public class Test {
+
+            public static void main(String args[]) throws NoSuchFieldException, IllegalAccessException {
+                System.out.println(Person.class.getField("name").get(new Person("Eric")));
+                System.out.println("Integer.class TYPE is : " + Integer.class.getField("TYPE"));
+                System.out.println(Integer.class.getField("TYPE").get(null));
+            }
+        }
+
+        6.  测试结果：
+        Eric
+        Integer.class TYPE is : public static final java.lang.Class java.lang.Integer.TYPE
+        int
+
+        Process finished with exit code 0
+
+        7.  结果分析：
+        System.out.println(Person.class.getField("name").get(new Person("Eric")));输出了Eric，很好理解。因为Person.class描述的目标类是Person，所以getField("name")获取的Field对象就是描述Person类里面的name字段的。然后去获取指定实例对象new Person("Eric")中的name字段的值，即Eric。
+
+        重点分析：System.out.println(Integer.class.getField("TYPE").get(null));
+        Integer类是int的包装类，不是我们自定义的类。而且我们看到 Integer.class.getField("TYPE") 输出的是 public static final java.lang.Class java.lang.Integer.TYPE。
+        说明了Integer内部有一个常量字段TYPE。
+        我们查看Integer的源码：
+        public static final Class&lt;Integer&gt;  TYPE = (Class&lt;Integer&gt;) Class.getPrimitiveClass("int");
+
+        Class.getPrimitiveClass("int")方法是Class类的内部方法，用来获取基本类型的class对象，所以说：Integer内部的TYPE字段实际上就是JAVA虚拟机内置的int的class对象。
+        即：Integer.TYPE == int.class。其他包装类类似。
+
+        同时，因为TYPE字段是static的，所以 Integer.class.getField("TYPE").get(null) 直接传入了一个null值。
+        很显然从TYPE字段的定义中就看到，Integer类一旦被JVM装载，TYPE字段就初始化为int的内置class对象了。
+        现在得出结论了：Integer.class.getField("TYPE").get(null);最终返回的是Integer内部的TYPE字段的值，这个值实际上就是int基本类型的class对象。
+    </pre>
+    <b><a name='header-n15' class='md-header-anchor '></a>1.5、 isPrimitive识别包装类</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  回到刚开始的问题，isPrimitive 方法不能直接判断包装类，直接判断包装类将返回false。即意味着该方法认为包装类不是一个预创建的基本类型（很明显包装类的class对象确实不是9种预创建的class对象之一）。
+        2.  但我们在业务中，认为基本类型和包装类实际上是代表相同的业务含义的，即我们认为：int和Integer的业务含义是完全相同的。
+        3.  那么，如何通过 isPrimitive 方法处理包装类的类型认证呢？
+        4.  猜想：
+            既然 isPrimitive 方法只能判断JVM预创建的9种基本类型的class对象，那么要想使用 isPrimitive 去正确判断对应的包装类型，应该想办法从对应的包装类型中获取到与之相关联的预创建的class对象。
+        5.  通过上面的测试已经有了方案：
+            Integer.class.getField("TYPE").get(null);返回的是Integer内部的TYPE字段的值，实际上就是JVM预创建的int的class对象。
+        7.  挨个查看8种包装类的TYPE字段的定义：
+            Byte类中的TYPE字段：public static final Class<&lt;Byte&gt; TYPE = (Class&lt;Byte&gt;) Class.getPrimitiveClass("byte");
+            Short类中的TYPE字段：public static final Class<&lt;Short&gt; TYPE = (Class&lt;Short&gt;) Class.getPrimitiveClass("short");
+            Integer类中的TYPE字段：public static final Class<&lt;Integer&gt; TYPE = (Class&lt;Integer&gt;) Class.getPrimitiveClass("int");
+            Long类中的TYPE字段：public static final Class<&lt;Long&gt; TYPE = (Class&lt;Long&gt;) Class.getPrimitiveClass("long");
+            Float类中的TYPE字段：public static final Class<&lt;Float&gt; TYPE = (Class&lt;Float&gt;) Class.getPrimitiveClass("float");
+            Double类中的TYPE字段：public static final Class<&lt;Double&gt; TYPE = (Class&lt;Double&gt;) Class.getPrimitiveClass("double");
+            Boolean类中的TYPE字段：public static final Class<&lt;Boolean&gt; TYPE = (Class&lt;Boolean&gt;) Class.getPrimitiveClass("boolean");
+            Character类中的TYPE字段：public static final Class<&lt;Character&gt; TYPE = (Class&lt;Character&gt;) Class.getPrimitiveClass("char");
+
+        8.  我们全面验证下8种包装类型的TYPE字段取出来都是啥：
+        package zeh.test.demo.com;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2020-06-24
+         */
+        public class Test {
+
+            public static void main(String args[]) throws NoSuchFieldException, IllegalAccessException {
+                System.out.println(Byte.class.getField("TYPE").get(null));
+                System.out.println(Short.class.getField("TYPE").get(null));
+                System.out.println(Integer.class.getField("TYPE").get(null));
+                System.out.println(Long.class.getField("TYPE").get(null));
+                System.out.println(Float.class.getField("TYPE").get(null));
+                System.out.println(Double.class.getField("TYPE").get(null));
+                System.out.println(Boolean.class.getField("TYPE").get(null));
+                System.out.println(Character.class.getField("TYPE").get(null));
+            }
+        }
+
+        9.  我们看到8种包装类型中，TYPE字段实际上都是public static final的，即本身就是常量，因此，我们可以直接通过包装类的类名进行访问：
+        package zeh.test.demo.com;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2020-06-24
+         */
+        public class Test {
+
+            public static void main(String args[]) {
+                System.out.println(Byte.TYPE);
+                System.out.println(Short.TYPE);
+                System.out.println(Integer.TYPE);
+                System.out.println(Long.TYPE);
+                System.out.println(Float.TYPE);
+                System.out.println(Double.TYPE);
+                System.out.println(Boolean.TYPE);
+                System.out.println(Character.TYPE);
+            }
+        }
+
+        10. 上面两种方式的测试结果是一致的，如下：
+        byte
+        short
+        int
+        long
+        float
+        double
+        boolean
+        char
+
+        Process finished with exit code 0
+
+    </pre>
+    <b><a name='header-n16' class='md-header-anchor '></a>1.6、 isPrimitive实现基本类型和对应包装类型的通用判断</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  基于上面的分析，我们知道，isPrimitive 去判断基本类型是很直观的，因为JVM为基本类型预创建的class对象，通过isPrimitive返回的就是true。
+        2.  isPrimitive 去判断包装类型，可以先获取到包装类型里面的TYPE字段的值，因为TYPE字段的值表示的就是包装类型对应的预创建的基本类型的class对象，比如Integer类里面的TYPE字段的值表示的就是JVM预创建的int类型的class对象。
+        3.  获取包装类的TYPE字段的值有两种方式，以Integer举例：
+            （1） Integer.class.getField("TYPE").get(null);
+            （2） Integer.TYPE;
+        4.  分析上述两种方式，很明显，第二种直接通过包装类获取TYPE的方式根本无法进行扩展。因为如果要实现一个通用的方法去专门实现包装类型的判断的话，我们无法从外部就直接传入一个包装类的TYPE。因为我们不知道要传入的对象是啥啊。而第一种方式，外部只需要传入一个class对象即可。
+        5.  测试：
+        package zeh.test.demo.com;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2020-06-24
+         */
+        public class Test {
+
+            public static void main(String args[]) {
+                System.out.println(isPrimitive(byte.class));
+                System.out.println(isPrimitive(short.class));
+                System.out.println(isPrimitive(int.class));
+                System.out.println(isPrimitive(long.class));
+                System.out.println(isPrimitive(float.class));
+                System.out.println(isPrimitive(double.class));
+                System.out.println(isPrimitive(boolean.class));
+                System.out.println(isPrimitive(char.class));
+                System.out.println(isPrimitive(Byte.class));
+                System.out.println(isPrimitive(Short.class));
+                System.out.println(isPrimitive(Integer.class));
+                System.out.println(isPrimitive(Long.class));
+                System.out.println(isPrimitive(Float.class));
+                System.out.println(isPrimitive(Double.class));
+                System.out.println(isPrimitive(Boolean.class));
+                System.out.println(isPrimitive(Character.class));
+
+                System.out.println(isPrimitive(Object.class));
+                System.out.println(isPrimitive(Person.class));
+            }
+
+            /**
+             * 判断目标clazz对象是否是基本类型或其对应的包装类型
+             *
+             * @param clazz 目标clazz对象
+             * @return true：是基本类型 false：不是基本类型
+             */
+            public static boolean isPrimitive(Class clazz) {
+                return clazz.isPrimitive() || isWrapPrimitive(clazz);
+            }
+
+            /**
+             * 判断目标clazz对象是否是包装类型
+             *
+             * @param clazz 目标clazz对象
+             * @return true：是包装类型 false：不是包装类型
+             */
+            public static boolean isWrapPrimitive(Class clazz) {
+                try {
+                    return ((Class) (clazz.getField("TYPE").get(null))).isPrimitive();
+                } catch (Exception e) {
+                    return false;
+                }
+            }
+        }
+
+        6.  测试结果：
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        true
+        false
+        false
+
+        Process finished with exit code 0
+    </pre>
+</div>
+</body>
+</html>
 
