@@ -1768,8 +1768,7 @@
                 Class&lt;? extends ClassA&gt; classA = ClassA.class.asSubclass(ClassA.class);
                 System.out.println(classA.getSimpleName());
 
-                // 当前class对象是 ClassA.class，它是目标class对象 MyInterface.class 所表示的类型的子类型，因此返回的是 MyInterface.class 所表示的某个子类型，即 Class<? extends MyInterface>
-        。
+                // 当前class对象是 ClassA.class，它是目标class对象 MyInterface.class 所表示的类型的子类型，因此返回的是 MyInterface.class 所表示的某个子类型，即 Class&lt;? extends MyInterface&gt;。
                 Class&lt;? extends MyInterface&gt; myInterface = ClassA.class.asSubclass(MyInterface.class);
                 System.out.println(myInterface.getSimpleName());
 
