@@ -1610,8 +1610,8 @@
         2.  instanceof严格说是java中的一个双目运算符，用来判断一个对象是否是另外一个类的实例。
         3.  instanceof的作用就是判断左边的对象是否是右边的类的一个实例，如果是就返回true，否则返回false。
         4.  用法为：boolean result = obj instanceof TargetClass。左边obj是一个实例化对象，TargetClass表示一个类或者接口。当 obj 为 TargetClass 的对象，或者是其直接或间接子类，或者是其接口的实现类，结果result 都返回 true，否则返回false。
-        5.  编译器会检查instanceof左边的实例对象是否能够自动转换右边TargetClass类型（大多数都会向上转型），如果不能自动转换则报错；如果不能确定obj的类型，则可以通过编译，具体运行时再确定结果。
-        6.  说白了，instanceof就是用来判断“我是不是你儿子”。
+        5.  编译器会检查instanceof左边的实例对象是否能够强制转换为右边TargetClass类型（大多数都会向上转型，偶尔会发生向下转型），如果不能强制转换则报错；如果不能确定obj的类型，则可以通过编译，具体运行时再确定结果。
+        6.  说白了，instanceof就是用来判断“我能不能强制转换成你的类型”。
     </pre>
     <b><a name='header-n12' class='md-header-anchor '></a>1.2、 obj必须是引用类型</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
@@ -1624,13 +1624,13 @@
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         null instanceof Object; // 返回false，null不是一种类型。
     </pre>
-    <b><a name='header-n13' class='md-header-anchor '></a>1.4、 obj为目标类的实例</b>
+    <b><a name='header-n14' class='md-header-anchor '></a>1.4、 obj为目标类的实例</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         当obj为右边目标类的实例化对象时，直接返回true。
         Person per = new Person();
         per instanceof Person; // 返回true
     </pre>
-    <b><a name='header-n13' class='md-header-anchor '></a>1.5、 obj为目标类的子类实例或者是目标接口的实现</b>
+    <b><a name='header-n15' class='md-header-anchor '></a>1.5、 obj为目标类的子类实例或者是目标接口的实现</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         当obj为右边目标类的子类实例化对象，或者为右边目标接口的实现类的实例化对象时，直接返回true。
         IPerson person = new Student();
@@ -1638,7 +1638,21 @@
         Student student = (Student)person;
         person instanceof IPerson; // 返回true
     </pre>
-    <b><a name='header-n13' class='md-header-anchor '></a>1.6、 存在的问题</b>
+    <b><a name='header-n16' class='md-header-anchor '></a>1.6、 obj为目标类父类实例</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        当obj为右边目标类的父类实例化对象，则需要分情况。
+        说白了就是如果左边的父类实例能够强转成右边子类，则返回true；否则返回false。
+
+        // 发生了对应的向上转型
+        MyInterface myInterface = new ClassA();
+
+        // 则此时 myInterface 对象可以强转成继承链中的任意一个子类型，所以下面返回true
+        System.out.println(myInterface instanceof ClassA);
+
+        // 因为 ClassD 和 MyInterface 的继承链中没有发生过对应的向上转型，因此，myInterface对象不能强转成ClassD，所以下面返回false
+        System.out.println(myInterface instanceof ClassD);
+    </pre>
+    <b><a name='header-n17' class='md-header-anchor '></a>1.7、 存在的问题</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         前面我们说过编译器会检查 obj 是否能转换成右边的class类型，如果不能转换则直接报错，如果不能确定类型，则通过编译，具体看运行时定。
 
@@ -1673,9 +1687,9 @@
     　　简单来说就是：如果 obj 不为 null 并且 (T) obj 不抛 ClassCastException 异常则该表达式值为 true ，否则值为 false 。
     　　所以对于上面提出的问题就很好理解了，为什么 p1 instanceof String 编译报错，因为(String)p1 是不能通过编译的，而 (List)p1 可以通过编译。
     </pre>
-    <b><a name='header-n13' class='md-header-anchor '></a>1.7、 底层原理</b>
+    <b><a name='header-n18' class='md-header-anchor '></a>1.8、 底层原理</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        instanceof底层原理使用的就是转型的原理。能够进行自动转型，则instanceof就返回true，否则返回false。
+        instanceof底层原理使用的就是转型的原理。左边对象能够强制转型为右边的类型，则instanceof就返回true，否则返回false。
     </pre>
 </div>
 </body>
