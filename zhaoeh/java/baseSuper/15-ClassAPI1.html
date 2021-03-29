@@ -3,7 +3,7 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width initial-scale=1'>
-    <title>instanceof和Class类.md</title>
+    <title>Class API.md</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
           rel='stylesheet' type='text/css'/>
     <style type='text/css'>html {
@@ -1913,8 +1913,8 @@
             如果是则返回true，否则返回false。如果当前class对象表示一个基本类型，则目标cls也必须表示对应的基本类型，否则返回false。
             如果指定的cls参数为null，将抛出空指针异常。
         3.  返回值：true或者false。
-        4.  补充：还记的instanceof表示“我是不是你儿子”，isAssignableFrom实际上和instanceof差不多，表示“我是不是你爸爸”。
-            不论是instanceof还是isAssignableFrom，其本质都可以测试两个类型之间是否具备类型转换关系，如果具备类型转换关系就可以自动转换，否则就不可以自动转换。
+        4.  补充：isAssignableFrom表示“我是不是你爸爸”。
+            instanceof测试左边的对象是否能够强制转换成右边的类型，而 isAssignableFrom 实际上直接测试的是左边的类型是否是右边的类型，或者是右边类型的父类型。
         5.  测试：
         package zeh.test.demo.com.class1;
 
@@ -1959,11 +1959,11 @@
     <b><a name='header-n17' class='md-header-anchor '></a>1.7、 isInstance方法</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         1.  public boolean isInstance(Object obj);
-        2.  说明：目标obj对象是否是当前class对象所表示的类型或者是其子类型。实际上，该方法是instanceof的等价实现。如果当前class对象表示基本类型，则直接返回false。
+        2.  说明：目标obj对象是否是当前class对象所表示的类型。实际上，该方法是instanceof的等价实现。如果当前class对象表示基本类型，则直接返回false。
         3.  区别：
-            obj instanceof TargetClass：表示左边的obj，是不是右边TargetClass的儿子。即“我是不是你儿子”。
-            class.isInstance(Object obj):表示目标对象obj，是不是当前class对象的儿子。即“你是不是我儿子”。
-            只是将表示顺序颠倒了而已，都表示“是不是儿子”的含义。
+            obj instanceof TargetClass：表示左边的obj，是否能够强转成TargetClass类型。
+            class.isInstance(Object obj):表示目标对象obj，是否能够强制转换为当前的Class类型。
+            只是将表示顺序颠倒了而已，本质上都表示一个对象是否能够强制转换为目标类型。
     </pre>
 </div>
 </body>
