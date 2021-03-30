@@ -1654,7 +1654,7 @@
 
     <b><a name='header-n3' class='md-header-anchor '></a>3、向下转型和向下转型案例</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        1.  定义一个顶层接口
+        <b><font color="#a52a2a">1.  定义一个顶层接口</font></b>
         package zeh.test.demo.com.zhuanxing;
 
         /**
@@ -1673,7 +1673,7 @@
             void sleep();
         }
 
-        2.  接口继承链中的第一个子类
+        <b><font color="#a52a2a">2.  接口继承链中的第一个子类</font></b>
         package zeh.test.demo.com.zhuanxing;
 
         /**
@@ -1709,7 +1709,7 @@
             }
         }
 
-        3.  继承链中的第二个子类
+        <b><font color="#a52a2a">3.  继承链中的第二个子类</font></b>
         package zeh.test.demo.com.zhuanxing;
 
         /**
@@ -1735,7 +1735,7 @@
 
         }
 
-        4.  继承链中的第三个子类
+        <b><font color="#a52a2a">4.  继承链中的第三个子类</font></b>
         package zeh.test.demo.com.zhuanxing;
 
         /**
@@ -1760,7 +1760,7 @@
             }
         }
 
-        5.  继承链中的第四个子类
+        <b><font color="#a52a2a">5.  继承链中的第四个子类</font></b>
         package zeh.test.demo.com.zhuanxing;
 
         /**
@@ -1780,7 +1780,7 @@
             }
         }
 
-        6.  主程序测试向上转型和向下转型
+        <b><font color="#a52a2a">6.  主程序测试向上转型和向下转型</font></b>
         package zeh.test.demo.com.zhuanxing;
 
         /**
@@ -1811,12 +1811,24 @@
                 // 所以如下方法输出：ClassC sleep
                 myInterface.sleep();
 
+                // 向上转型后的class对象实际上就是真正的子类的class对象，而不会是转型后的class对象。
+                // 这其实很好理解：因为getClass()方法是每个类都会覆盖的，因此子类此时已经覆盖了getClass方法，所以几遍向上转型后调用的getClass()方法也是子类的。
+                System.out.println("myInterface.getClass() : " + myInterface.getClass());
+
                 // 场景2：测试向下转型
                 // 向下转型前，需要先将指定的子类对象进行向上转型
                 myInterface = new ClassC();
 
                 // 调用子类独有的方法，不进行向下转型，将无法调用对应子类的独有方法，语法报错
-        //        myInterface.testC();
+                // myInterface.testC();
+
+
+                // 向下转型原则：
+                // 发生向下转型前，必须发生对应的向上转型。
+                // 父类对象可以向下转型为对应的继承链中的任何一个节点子类对象。
+                // 此处，myInterface对象实际上向上转型对应的子类对象是ClassC,但是因为ClassA在继承链中，因此myInterface可以向下转型为ClassA类型。
+                ClassA classA = (ClassA)myInterface;
+                classA.testA();
 
                 // 要想调用子类ClassC的独有方法，则需要将向转型的对象转换为对应的子类对象。
                 ClassC classC = (ClassC)myInterface;
@@ -1827,12 +1839,6 @@
                 ClassD classD = (ClassD)myInterface;
                 classD.testD();
 
-                // 向下转型原则：
-                // 发生向下转型前，必须发生对应的向上转型。
-                // 父类对象可以向下转型为对应的继承链中的任何一个节点子类对象。
-                // 此处，myInterface对象实际上向上转型对应的子类对象是ClassC,但是因为ClassA在继承链中，因此myInterface可以向下转型为ClassA类型。
-                ClassA classA = (ClassA)myInterface;
-                classA.testA();
             }
         }
     </pre>
