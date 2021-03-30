@@ -1633,7 +1633,7 @@
     <b><a name='header-n3' class='md-header-anchor '></a>3、使用多态的几种案例</b><br>
     <b><a name='header-n31' class='md-header-anchor '></a>3.1、 玩转方法重载</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        <font color="#a52a2a">ClassA</font>
+        <b><font color="#a52a2a">ClassA</font></b>
         package zeh.test.demo.com.duotai;
 
         /**
@@ -1680,7 +1680,7 @@
 
         }
 
-        <font color="#a52a2a">MainClassA</font>
+        <b><font color="#a52a2a">MainClassA</font></b>
         package zeh.test.demo.com.duotai;
 
         /**
@@ -1714,7 +1714,7 @@
     </pre>
     <b><a name='header-n32' class='md-header-anchor '></a>3.2、 通过父类或者接口玩转向上转型和重载</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        <font color="#a52a2a">IService</font>
+        <b><font color="#a52a2a">IService</font></b>
         package zeh.test.demo.com.duotai;
 
         /**
@@ -1736,7 +1736,7 @@
             void drink();
         }
 
-        <font color="#a52a2a">AbstractBaseService</font>
+        <b><font color="#a52a2a">AbstractBaseService</font></b>
         package zeh.test.demo.com.duotai;
 
         /**
@@ -1783,7 +1783,7 @@
             abstract void doDrink();
         }
 
-        <font color="#a52a2a">BaseService</font>
+        <b><font color="#a52a2a">BaseService</font></b>
         package zeh.test.demo.com.duotai;
 
         /**
@@ -1835,7 +1835,7 @@
             }
         }
 
-        <font color="#a52a2a">PersonService</font>
+        <b><font color="#a52a2a">PersonService</font></b>
         package zeh.test.demo.com.duotai;
 
         /**
@@ -1862,7 +1862,7 @@
             }
         }
 
-        <font color="#a52a2a">CatService</font>
+        <b><font color="#a52a2a">CatService</font></b>
         package zeh.test.demo.com.duotai;
 
         /**
@@ -1913,7 +1913,7 @@
             }
         }
 
-        <font color="#a52a2a">TestMain</font>
+        <b><font color="#a52a2a">TestMain</font></b>
         package zeh.test.demo.com.duotai;
 
         /**
@@ -1930,32 +1930,100 @@
                 service.eat();
                 service.drink();
 
-                System.out.println("=========================");
+                System.out.println("=========================" + service.getClass());
 
                 // 子类实例对象向上转型
                 service = new CatService();
                 service.eat();
                 service.drink();
 
+                System.out.println("=========================" + service.getClass());
+
             }
         }
 
-        <font color="#a52a2a">执行结果</font>
+        <b><font color="#a52a2a">执行结果</font></b>
         没人去的话，那就老子去买食物
         没人去的话，那就老子去做饭
         老子你别吃了，你负责做就行了，我来吃哈哈哈哈
         没人买水的话，那就老子去买
         老子你别喝了，你买回来我自己喝哈哈哈
-        =========================
+        =========================class zeh.test.demo.com.duotai.PersonService
         我是猫猫，我需要的食物是猫粮，我得自己去买
         我是猫猫，我需要的食物是猫粮，我得自己去加工
         我是猫猫，我的猫粮只能我自己来吃喽
         我是猫猫，我需要的是特别干净的泉水，我得自己去买
         我是猫猫，我的水水其他人喝不了，我只能自己享用
+        =========================class zeh.test.demo.com.duotai.CatService
 
         Process finished with exit code 0
     </pre>
-    <b><a name='header-n33' class='md-header-anchor '></a>3.3、 多态的逻辑分发</b>
+    <b><a name='header-n33' class='md-header-anchor '></a>3.3、 方法间参数传递对多态的助攻</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        上面的案例在使用多态时直接使用的是手工传递参数的方式，即直接使用 = 来进行多态的向上转型：
+        IService service = new PersonService();
+        service = new CatService();
+
+        然而在真实使用中，很多是在方法间进行参数传递时，灵活使用多态。
+        请看如下案例：
+        <b><font color="#a52a2a">TestMain</font></b>
+        package zeh.test.demo.com.duotai;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2021-03-22
+         */
+        public class TestMain {
+
+            public static void main(String[] args) {
+                // 子类实例对象向上转型
+                IService service = new PersonService();
+                serviceHandle(service);
+
+                // 子类实例对象向上转型
+                service = new CatService();
+                serviceHandle(service);
+
+            }
+
+            /**
+             * 现在服务允许Cat去操作，如果是Person的话输出拒绝操作的信息
+             *
+             * @param service
+             */
+            public static void serviceHandle(IService service) {
+                if(service instanceof CatService){
+                    service.drink();
+                    service.eat();
+                }
+
+                if(service.getClass().equals(PersonService.class)){
+                    System.out.println("Person 拒绝操作");
+                }
+            }
+        }
+
+        <b><font color="#a52a2a">测试结果</font></b>
+        Person 拒绝操作
+        我是猫猫，我需要的是特别干净的泉水，我得自己去买
+        我是猫猫，我的水水其他人喝不了，我只能自己享用
+        我是猫猫，我需要的食物是猫粮，我得自己去买
+        我是猫猫，我需要的食物是猫粮，我得自己去加工
+        我是猫猫，我的猫粮只能我自己来吃喽
+
+        Process finished with exit code 0
+
+        <b><font color="#a52a2a">分析</font></b>
+        在多态中，一个对象通过向上转型后，传递给了父类对象，此时很多人不清楚现在这个对象到底是谁。
+        现在告诉你，任何一个对象通过向上转型后，这个对象本质上就是真正new出来的那个子类对象。
+        也就是说，上述案例中的“service.getClass()”实际上返回的是当前真正传递进来的子类对象实体所属于的类，而不可能是父类。
+        因此，在多态的传递中，有很重要的一点需要注意：
+        我们可以使用service.getClass()这种方式进行多态的逻辑分发，去判断当前流程传递进来的多态对象究竟是哪个Class。
+    </pre>
+
+    <b><a name='header-n34' class='md-header-anchor '></a>3.4、 多态的逻辑分发</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         想一想我们平时都在用多态做啥？
         似乎也想不起专门使用多态的地方。
