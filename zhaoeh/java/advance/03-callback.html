@@ -1604,7 +1604,13 @@
     <b><a name='header-n1' class='md-header-anchor '></a>1、委托机制</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         A类持有B对象，外部程序调用A的某个方法，A再委托B去处理。
-        这就是java中的委托机制。
+        这种基于水平扩展A对象功能的方式，就称为java中的委托机制。
+        一般来讲，如果让A对象持有B对象的引用，存在两种常见方式：
+        1.  A类中定义一个B类型的成员，专门用来注入B对象，即以成员变量的方式注入B对象（成员注入方式用的最多）。
+        2.  在调用A类某个方法时，定义一个形式参数用来注入B对象，即以局部变量的方式注入B对象。
+        <font color="#a52a2a">
+            tips：记住委托机制的两种注入方式，后续用到之处很多。
+        </font>
     </pre>
 
     <b><a name='header-n2' class='md-header-anchor '></a>2、方法转发</b><br>
@@ -1619,9 +1625,9 @@
     <b><a name='header-n22' class='md-header-anchor '></a>2.2、 实现方法转发的方式</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         正如上面所言，既然流程想从A对象的a方法转发到B对象的b方法，至少得保证：A对象必须持有B对象，才能调用B对象的b方法。
-        如何让A对象持有B对象的呢？无非是下面两种方案：
-        1.  A对象封装一个B对象的属性成员，在使用时，从外部向A对象中注入B对象实例（即委托机制）；
-        2.  外部在调用A对象的a方法时，通过方法间参数传递，传递一个局部的B对象实例进去，相当于让A对象持有了一个局部的B对象实例。
+        如何让A对象持有B对象的呢？通过上面的委托机制，已经明显知道无非是下面两种方案：
+        1.  A对象封装一个B对象的属性成员，在使用时，从外部向A对象中注入B对象实例（以成员的方式注入）；
+        2.  外部在调用A对象的a方法时，通过方法间参数传递，注入一个局部的B对象实例进去，相当于让A对象持有了一个局部的B对象实例（以参数的方式注入）。
     </pre>
     <b><a name='header-n23' class='md-header-anchor '></a>2.3、 方法转发案例</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
@@ -1636,7 +1642,7 @@
          */
         public class ClassA {
 
-            // 通过委托机制，需要定义成员变量去接收注入的成员，同样需要提供对应的set方法
+            // 通过成员方式注入，需要定义成员变量去接收注入的成员，同样需要提供对应的set方法
             private ClassB classB;
 
             public ClassB getClassB() {
@@ -1652,7 +1658,7 @@
                 classB.testClassB();
             }
 
-            // 直接通过方法间参数传递一个局部的ClassB对象，此时ClassA对象持有一个局部的ClassB对象
+            // 直接通过方法间参数注入一个局部的ClassB对象，此时ClassA对象持有一个局部的ClassB对象
             public void testClassA(ClassB classB) {
                 System.out.println("测试 classA");
                 classB.testClassB();
@@ -1708,8 +1714,8 @@
 
                 System.out.println("*****************************");
 
-                // 通过方法参数传递的方式，完成A方法到B方法的转发
-                classA.testClassA(new ClassB("方法间参数传递"));
+                // 通过参数注入方式，完成A方法到B方法的转发
+                classA.testClassA(new ClassB("方法间参数注入"));
             }
         }
 
@@ -1718,13 +1724,13 @@
         成员注入 测试 classB
         *****************************
         测试 classA
-        方法间参数传递 测试 classB
+        方法间参数注入 测试 classB
 
         Process finished with exit code 0
 
         <b><font color="#a52a2a">结果分析</font></b>
         1.  成员注入方式成功的将流程从A对象的a方法转发到B对象的b方法中去了。
-        2.  方法间参数传递的方式同样也成功的完成了方法的转发。
+        2.  方法间参数注入的方式同样也成功的完成了方法的转发。
 
         <b><font color="#a52a2a">遗留问题</font></b>
         执行ClassA的testClassA方法，已经转发到了ClassB的testClassB方法上了。
