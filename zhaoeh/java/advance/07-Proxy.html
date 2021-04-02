@@ -1606,6 +1606,7 @@
         1.  jdk的动态代理中关键核心就在于一个Proxy类。这个类是jdk提供的内置类。这个类能干嘛？
         2.  前面学习反射机制、和java中常见机制时，曾经反复强调两个动态性的概念：动态加载和静态加载、动态字节码和静态字节码。在这个我们首先通过Proxy类来直观的感受下到底什么叫做动态字节码机制？
         3.  学习动态字节码机制时，核心的一点就是字节码的生成过程是在一个正在运行当中的JVM中动态进行的，生成的字节码是在JVM内存中虚拟缓存的，而不是java编译器预编译后产生的*.class文件。那么具体怎么样呢？
+        Proxy类我们分为两节来学习，本节先学习Proxy对外暴露的4个API。
     </pre>
 
     <b><a name='header-n2' class='md-header-anchor '></a>2、Proxy类</b><br>
@@ -1860,131 +1861,6 @@
 
         <b><font color="#a52a2a">结果分析</font></b>
         getProxyClass 方法用于获取一个目标接口的动态字节码的class对象，如果动态字节码文件不存在，则自动生成并保存在JVM内存中
-    </pre>
-
-    <b><a name='header-n3' class='md-header-anchor '></a>3、Proxy的动态字节码文件到底怎么生成的啊？</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        玩转了Proxy的4个API，虽然它可以为我们生成动态字节码代理对象，也可以为我们获取动态字节码的class对象，也可以做判断是不是动态字节码对象等。
-        但是，玩了一圈，还是不知道生成的动态字节码文件到底长啥样？
-
-        看了一圈源码，最终发现，实际上生成动态字节码的过程是在 ProxyGenerator 类中的如下方法生成的：
-        public static byte[] generateProxyClass(final String name, Class&lt;?&gt;[] interfaces);
-        第一个参数 name：需要生成的动态字节码文件的名称。
-        第二个参数 interfaces：需要生成的动态字节码文件所对应的接口，可以是多个接口。
-
-        <b><font color="#a52a2a">ProxyMain测试</font></b>
-        package zeh.test.demo.com.proxy;
-
-        import java.io.FileOutputStream;
-        import java.io.IOException;
-        import java.lang.reflect.Proxy;
-
-        import sun.misc.ProxyGenerator;
-
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-03-30
-         */
-        public class ProxyMain {
-
-            public static void main(String[] args) {
-                FileOutputStream out = null;
-
-                try {
-                    // 将生成的动态字节码文件保存到本地磁盘，用于反编译查看
-                    byte[] proxyClassFile = ProxyGenerator.generateProxyClass("$Proxy0", IUser.class.getInterfaces());
-                    out = new FileOutputStream(ProxyMain.class.getResource("/").getPath() + "$Proxy0.class");
-                    out.write(proxyClassFile);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    try {
-                        if (out != null) {
-                            out.flush();
-                            out.close();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-
-        <b><font color="#a52a2a">测试结果</font></b>
-        在本地磁盘生成的字节码文件为：$Proxy0.class
-
-        <b><font color="#a52a2a">结果分析</font></b>
-        反编译查看源码如下：
-
-        // Source code recreated from a .class file by IntelliJ IDEA
-        // (powered by Fernflower decompiler)
-        //
-
-        import java.lang.reflect.InvocationHandler;
-        import java.lang.reflect.Method;
-        import java.lang.reflect.Proxy;
-        import java.lang.reflect.UndeclaredThrowableException;
-
-        public final class $Proxy0 extends Proxy {
-            private static Method m1;
-            private static Method m2;
-            private static Method m0;
-
-            public $Proxy0(InvocationHandler var1) throws  {
-                super(var1);
-            }
-
-            public final boolean equals(Object var1) throws  {
-                try {
-                    return (Boolean)super.h.invoke(this, m1, new Object[]{var1});
-                } catch (RuntimeException | Error var3) {
-                    throw var3;
-                } catch (Throwable var4) {
-                    throw new UndeclaredThrowableException(var4);
-                }
-            }
-
-            public final String toString() throws  {
-                try {
-                    return (String)super.h.invoke(this, m2, (Object[])null);
-                } catch (RuntimeException | Error var2) {
-                    throw var2;
-                } catch (Throwable var3) {
-                    throw new UndeclaredThrowableException(var3);
-                }
-            }
-
-            public final int hashCode() throws  {
-                try {
-                    return (Integer)super.h.invoke(this, m0, (Object[])null);
-                } catch (RuntimeException | Error var2) {
-                    throw var2;
-                } catch (Throwable var3) {
-                    throw new UndeclaredThrowableException(var3);
-                }
-            }
-
-            static {
-                try {
-                    m1 = Class.forName("java.lang.Object").getMethod("equals", Class.forName("java.lang.Object"));
-                    m2 = Class.forName("java.lang.Object").getMethod("toString");
-                    m0 = Class.forName("java.lang.Object").getMethod("hashCode");
-                } catch (NoSuchMethodException var2) {
-                    throw new NoSuchMethodError(var2.getMessage());
-                } catch (ClassNotFoundException var3) {
-                    throw new NoClassDefFoundError(var3.getMessage());
-                }
-            }
-        }
-
-        结论：
-        jdk的动态代理为我们生成的动态字节码文件，已经继承了Proxy类。
-        <b><font color="#a52a2a">
-            tips：因为java中是单继承，而 ProxyGenerator.generateProxyClass 方法生成的动态字节码已经继承了Proxy类，因此jdk的动态代理只能代理接口，即只能为接口生成动态字节码，而不能为普通类生成动态字节码。
-        </font></b>
-
     </pre>
 </div>
 </body>
