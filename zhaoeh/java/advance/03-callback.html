@@ -1602,15 +1602,264 @@
     <b><a name='header-n0' class='md-header-anchor '></a>委托机制、方法转发和回调模式</b>
 
     <b><a name='header-n1' class='md-header-anchor '></a>1、委托机制</b><br>
+    <b><a name='header-n11' class='md-header-anchor '></a>1.1、 什么是委托机制？</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         A类持有B对象，外部程序调用A的某个方法，A再委托B去处理。
         这种基于水平扩展A对象功能的方式，就称为java中的委托机制。
-        一般来讲，如果让A对象持有B对象的引用，存在两种常见方式：
-        1.  A类中定义一个B类型的成员，专门用来注入B对象，即以成员变量的方式注入B对象（成员注入方式用的最多）。
-        2.  在调用A类某个方法时，定义一个形式参数用来注入B对象，即以局部变量的方式注入B对象。
+        一般来讲，如何让A对象持有B对象的引用，存在两种常见方式：
+        1.  通过外部注入的方式，即外部向A对象注入B对象。
+        2.  通过内建的方式，即A对象自己完成B对象的实例化和初始化过程。
+        同样，B对象在A对象中以什么身份存在，也分为两种：
+        1.  B对象作为A对象的成员变量存在。
+        2.  B对象作为A对象的方法变量存在。
+
+        那实际上，上面组合下，即得出，让A对象持有B对象的引用，共有4种方式：
+        1.  A类中定义一个B类型的成员，以成员变量的方式接收B对象，外部向A类注入B对象，即以成员变量的方式注入B对象。
+        2.  A类中定义一个B类型的成员，以成员变量的方式接收B对象，A类自己实例化B对象，即以成员变量的方式内建B对象。
+        3.  A类中定义一个B类型的局部成员，以局部成员的方式接收B对象，在调用A类某个方法时，定义一个形式参数用来注入B对象，即以局部变量的方式注入B对象。
+        4.  A类中定义一个B类型的局部成员，以局部成员的方式接收B对象，在调用A类某个方法时，A类自己负责实例化B对象，即以局部变量的方式内建B对象。
         <font color="#a52a2a">
-            tips：记住委托机制的两种注入方式，后续用到之处很多。
+            tips：委托机制的4种方式中，注入的方式用的比较多，内建的方式用的比较少。
+            因为注入的方式完全由程序外部进行控制，而内建的方式由成员内部直接固化，灵活度比较低，可扩展性不高。
         </font>
+    </pre>
+    <b><a name='header-n12' class='md-header-anchor '></a>1.2、 以成员变量的方式注入</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">ClassA</font></b>
+        package zeh.test.demo.com.call.back.weituo.waibu;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2021-04-06
+         */
+        public class ClassA {
+
+            // 使用成员变量的方式接收外部的注入
+            private ClassB classB;
+
+            public ClassA(ClassB classB) {
+                this.classB = classB;
+            }
+
+            public void testClassA() {
+                System.out.println("classA begin");
+                classB.testClassB();
+                System.out.println("classA end");
+            }
+        }
+
+        <b><font color="#a52a2a">ClassB</font></b>
+        package zeh.test.demo.com.call.back.weituo.waibu;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2021-04-06
+         */
+        public class ClassB {
+
+            public void testClassB() {
+                System.out.println("classB 提供的核心功能...");
+            }
+        }
+
+
+        <b><font color="#a52a2a">TestWaiBu</font></b>
+        package zeh.test.demo.com.call.back.weituo.waibu;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2021-04-06
+         */
+        public class TestWaiBu {
+
+            public static void main(String[] args) {
+
+                // 以成员变量的方式注入B对象
+                ClassB classB = new ClassB();
+                ClassA classA = new ClassA(classB);
+                classA.testClassA();
+            }
+        }
+
+    </pre>
+    <b><a name='header-n13' class='md-header-anchor '></a>1.3、 以成员变量的方式内建</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">ClassA</font></b>
+        package zeh.test.demo.com.call.back.weituo.neibu;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2021-04-06
+         */
+        public class ClassA {
+
+            // 使用成员变量的方式，直接内建一个B对象
+            private ClassB classB = new ClassB();
+
+            public void testClassA() {
+                System.out.println("classA begin");
+                classB.testClassB();
+                System.out.println("classA end");
+            }
+        }
+
+        <b><font color="#a52a2a">ClassB</font></b>
+        package zeh.test.demo.com.call.back.weituo.neibu;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2021-04-06
+         */
+        public class ClassB {
+
+            public void testClassB() {
+                System.out.println("classB 提供的核心功能...");
+            }
+        }
+
+        <b><font color="#a52a2a">TestNeiBu</font></b>
+        package zeh.test.demo.com.call.back.weituo.neibu;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2021-04-06
+         */
+        public class TestNeiBu {
+
+            public static void main(String[] args) {
+                // 不用向A注入B对象，A内部已经内建了B对象
+                ClassA classA = new ClassA();
+                classA.testClassA();
+            }
+        }
+
+    </pre>
+    <b><a name='header-n14' class='md-header-anchor '></a>1.4、 以局部变量的方式注入</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">ClassA</font></b>
+        package zeh.test.demo.com.call.back.weituo.waibu;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2021-04-06
+         */
+        public class ClassA {
+
+            // 定义局部变量 classB，用于接收外部的注入
+            public void testClassA(ClassB classB) {
+                System.out.println("classA begin");
+                classB.testClassB();
+                System.out.println("classA end");
+            }
+        }
+
+        <b><font color="#a52a2a">ClassB</font></b>
+        package zeh.test.demo.com.call.back.weituo.waibu;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2021-04-06
+         */
+        public class ClassB {
+
+            public void testClassB() {
+                System.out.println("classB 提供的核心功能...");
+            }
+        }
+
+        <b><font color="#a52a2a">TestNeiBu</font></b>
+        package zeh.test.demo.com.call.back.weituo.waibu;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2021-04-06
+         */
+        public class TestWaiBu {
+
+            public static void main(String[] args) {
+
+                // 以局部变量的方式注入B对象
+                ClassB classB = new ClassB();
+                ClassA classA = new ClassA();
+                classA.testClassA(classB);
+            }
+        }
+
+    </pre>
+    <b><a name='header-n14' class='md-header-anchor '></a>1.4、 以局部变量的方式内建</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">ClassA</font></b>
+        package zeh.test.demo.com.call.back.weituo.neibu;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2021-04-06
+         */
+        public class ClassA {
+
+            public void testClassA() {
+                System.out.println("classA begin");
+                // 使用局部变量的方式，直接内建一个B对象
+                ClassB classB = new ClassB();
+                classB.testClassB();
+                System.out.println("classA end");
+            }
+        }
+
+        <b><font color="#a52a2a">ClassB</font></b>
+        package zeh.test.demo.com.call.back.weituo.neibu;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2021-04-06
+         */
+        public class ClassB {
+
+            public void testClassB() {
+                System.out.println("classB 提供的核心功能...");
+            }
+        }
+
+        <b><font color="#a52a2a">TestNeiBu</font></b>
+        package zeh.test.demo.com.call.back.weituo.neibu;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2021-04-06
+         */
+        public class TestNeiBu {
+
+            public static void main(String[] args) {
+                // 不用向A注入B对象，A内部已经内建了B对象
+                ClassA classA = new ClassA();
+                classA.testClassA();
+            }
+        }
+
     </pre>
 
     <b><a name='header-n2' class='md-header-anchor '></a>2、方法转发</b><br>
@@ -1625,9 +1874,14 @@
     <b><a name='header-n22' class='md-header-anchor '></a>2.2、 实现方法转发的方式</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         正如上面所言，既然流程想从A对象的a方法转发到B对象的b方法，至少得保证：A对象必须持有B对象，才能调用B对象的b方法。
-        如何让A对象持有B对象的呢？通过上面的委托机制，已经明显知道无非是下面两种方案：
-        1.  A对象封装一个B对象的属性成员，在使用时，从外部向A对象中注入B对象实例（以成员的方式注入）；
-        2.  外部在调用A对象的a方法时，通过方法间参数传递，注入一个局部的B对象实例进去，相当于让A对象持有了一个局部的B对象实例（以参数的方式注入）。
+        如何让A对象持有B对象的呢？通过上面的委托机制，已经明显知道无非是下面四种方案：
+        1.  A对象封装一个B对象的属性成员，在使用时，从外部向A对象中注入B对象实例（以成员变量的方式注入）；
+        2.  A对象封装一个B对象的属性成员，A对象自己负责实例化B对象实例（以成员变量的方式内建）；
+        3.  A对象封装一个B对象的局部变量，外部在调用A对象的a方法时，通过方法间参数传递，注入一个局部的B对象实例进去，相当于让A对象持有了一个局部的B对象实例（以局部变量的方式注入）。
+        4.  A对象封装一个B对象的局部变量，A对象自己负责B对象的实例化（以局部变量的方式内建）。
+        <b><font color="#a52a2a">
+            tips：后续的委托、转发、回调、代理等方式都会存在注入和内建，但我们将不再明确使用内建方式，提及的都是注入的方式（因为内建用的特别少，除非像一些单例等模式）。
+        </font></b>
     </pre>
     <b><a name='header-n23' class='md-header-anchor '></a>2.3、 方法转发案例</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
@@ -1730,7 +1984,7 @@
 
         <b><font color="#a52a2a">结果分析</font></b>
         1.  成员注入方式成功的将流程从A对象的a方法转发到B对象的b方法中去了。
-        2.  方法间参数注入的方式同样也成功的完成了方法的转发。
+        2.  局部变量注入方式同样也成功的完成了方法的转发。
 
         <b><font color="#a52a2a">遗留问题</font></b>
         执行ClassA的testClassA方法，已经转发到了ClassB的testClassB方法上了。
@@ -1836,338 +2090,3 @@
         这也就实现了，访问任何业务方法，最终都统一转发到某个固定的方法中去。
         实际上这种统一的方法转发，在设计模式里，有个专门的模式，即回调设计模式。
     </pre>
-
-    <b><a name='header-n3' class='md-header-anchor '></a>3、回调设计模式</b><br>
-    <b><a name='header-n31' class='md-header-anchor '></a>3.1、 理解回调</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        常说的事件监听通知大多数是通过回调机制实现的，因为回调callback机制天生具有监听功能。
-        理解回调的思路如下：
-        1.  方法自己调用自己：递归。
-        2.  对象自己引用自己：链表。
-        3.  A对象或者其他控制程序调用B，B反过来再调用A：回调。
-        4.  A类中注入了B对象，通过B对象去实现某些功能：委托（依赖/代理）。
-    </pre>
-    <b><a name='header-n32' class='md-header-anchor '></a>3.2、 一个最基本的回调架子</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        一个最基本的回调应该包括：
-        1.  调用方A和callback回调方法的定义。
-        2.  服务方B（被调用方）和事件、以及对事件监听状态的定义。
-        3.  控制程序，负责将A对象注入给B，并触发对B的某个方法的调用（即触发事件）。这一步很关键，因为回调的前提就是你中有我。
-    </pre>
-    <b><a name='header-n33' class='md-header-anchor '></a>3.3、 回调模式的核心</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        必须将消费方A的实例对象想办法注入到服务方B中去，只有服务方B有了A的引用后，才能完成回调逻辑（因为B在执行完自己的某个方法后需要回调A的callback方法）。
-    </pre>
-    <b><a name='header-n34' class='md-header-anchor '></a>3.4、 回调模式架子升级</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        按照回调模式的思路，一个成熟的回调方案应该包含如下三种实现思路：
-        1.  回调callback：仅仅使用回调，将事件和监听都包含在B对象里面，不灵活。
-        2.  将触发事件Event通过接口抽象出去，这样就不用服务方B负责去实现事件了。
-        3.  将对事件的监听Listener通过接口抽象出去，这样就不用服务方B负责去监听事件的状态了（往往是通过另外启动一个线程去监听事件的状态）。
-        注意：不管哪种方式实现回调，回调既可用于同步回调，也可用于异步回调；而且回调天然具备监听属性，它往往多使用于异步回调中。
-    </pre>
-    <b><a name='header-n35' class='md-header-anchor '></a>3.5、 一句话总结回调</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        你中有我是回调，调用方式很灵活。
-    </pre>
-
-    <b><a name='header-n4' class='md-header-anchor '></a>4、事件驱动模型</b><br>
-    <b><a name='header-n41' class='md-header-anchor '></a>4.1、 什么是事件驱动模型</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        1.  事件驱动模型，实际上就是我们常说的事件监听机制。
-        2.  事件驱动模型中，回调模式是核心。
-    </pre>
-    <b><a name='header-n42' class='md-header-anchor '></a>4.2、 事件驱动模型三要素</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        1.  事件
-        2.  事件源
-        发生事件的实体，事件源向外提供的能力是，注册事件监听器、移除事件监听器、触发事件监听器等操作，即外部通过操作事件源对象向事件源对象中注册事件监听器、移除事件监听器、触发事件监听器。
-        注意，事件源就是回调中定义的服务端程序，事件监听器就是回调中定义的消费方钩子函数，即消费方定义的回调函数。
-        3.  事件监听器
-    </pre>
-    <b><a name='header-n43' class='md-header-anchor '></a>4.3、 一句话总结事件驱动模型</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        事件驱动模型：当事件监听器监听到事件源上发生某个事件后将执行事件监听器实现的回调逻辑。
-    </pre>
-
-    <b><a name='header-n5' class='md-header-anchor '></a>5、回调模式的应用场景</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        1.  实现监听通知机制：
-        所谓事件监听通知机制，就是“当....的时候，就....”。
-        Listener，Filter，Aop，Interceptor，Zookeeper，redis，activeMQ，observer观察者模式等都或多或少的采用回调机制实现事件监听。
-        注意：同步回调和异步回调就是用来实现同步事件监听通知或者异步事件监听通知的方案。
-        2.  实现方法统一转发
-        回调机制能够很方便地将消费方调用的B的某些方法最终统一都转发到B调用A的回调方法上。
-        通过接口设计A回调逻辑的标准，将非常容易实现一个方法转发的统一方案。
-        详细实现原理请参考动态代理，回调机制在动态代理中就是将所有对代理类的方法访问最终都统一转发到InvocationHandler接口的invoke()方法上，其实invoke()方法就是一个callback方法。
-    </pre>
-
-    <b><a name='header-n6' class='md-header-anchor '></a>6、回调模式案例</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        案例结构图:
-        <img src="03-callback-demo.png"/>
-    </pre>
-    <b><a name='header-n61' class='md-header-anchor '></a>6.1、 mode1</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        <b><font color="#a52a2a">1.  控制程序：</font></b>
-        package zeh.test.demo.com.call.back.mode1;
-
-        /**
-         * 功能描述 最简单的回调模式 充当Client端和控制程序
-         *
-         * 控制程序通过服务端对象进行事件的触发，触发事件后回调客户端提供的回调方法。由此可见，事件是发生在服务方对象上的，回调逻辑是由客户端定义的。
-         *
-         * @author zWX5331241
-         * @since 2020-06-28
-         */
-        public class Controller {
-
-            public static void main(String args[]) {
-                Server server = new Server();
-                //调用触发方法触发事件
-                server.handler();
-            }
-
-
-            public void callback() {
-                System.out.println("客户端提供的回调方法");
-            }
-        }
-
-        <b><font color="#a52a2a">2.  服务端程序</font></b>
-        package zeh.test.demo.com.call.back.mode1;
-
-        /**
-         * 功能描述 服务端程序
-         *
-         * @author zWX5331241
-         * @since 2020-06-28
-         */
-        public class Server {
-
-            private Controller controller = new Controller();
-
-            public void handler() {
-                System.out.println("服务端程序暴露的接口，提供触发能力");
-                //当服务端业务逻辑执行完毕，即执行客户端提供的回调逻辑
-                controller.callback();
-            }
-        }
-    </pre>
-    <b><a name='header-n62' class='md-header-anchor '></a>6.2、 mode2</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        <b><font color="#a52a2a">1.  控制程序</font></b>
-        package zeh.test.demo.com.call.back.mode2;
-
-        /**
-         * 功能描述 外部控制程序
-         *
-         * @author zWX5331241
-         * @since 2020-06-28
-         */
-        public class Controller {
-            public static void main(String args[]) {
-                Server server = new Server();
-                server.addClient(new Client());
-                //触发
-                server.handler();
-            }
-        }
-
-        <b><font color="#a52a2a">2.  客户端程序</font></b>
-        package zeh.test.demo.com.call.back.mode2;
-
-        /**
-         * 功能描述 客户端 提供回调逻辑
-         *
-         * 将客户端和控制程序分离
-         *
-         * @author zWX5331241
-         * @since 2020-06-28
-         */
-        public class Client {
-
-            public void callback() {
-                System.out.println("客户端提供的回调方法");
-            }
-        }
-
-        <b><font color="#a52a2a">3.  服务端程序</font></b>
-        package zeh.test.demo.com.call.back.mode2;
-
-        /**
-         * 功能描述 服务端程序 暴露触发程序和回调注册接口
-         *
-         * @author zWX5331241
-         * @since 2020-06-28
-         */
-        public class Server {
-
-            private Client client;
-
-            //服务端暴露注册客户端回调逻辑的接口
-            public void addClient(Client client) {
-                this.client = client;
-            }
-
-            public void handler() {
-                System.out.println("服务端暴露的触发接口");
-                //服务端业务逻辑执行完毕则执行客户端提供的回调逻辑
-                client.callback();
-            }
-        }
-    </pre>
-    <b><a name='header-n63' class='md-header-anchor '></a>6.3、 mode3</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        <b><font color="#a52a2a">3.  服务端程序</font></b>
-        package zeh.test.demo.com.call.back.mode3;
-
-        /**
-         * 功能描述 控制程序
-         *
-         * mode3中，将客户端抽象为了事件监听器，因为客户端实际上就是提供回调方法的一方，而事件监听器本身的作用就是提供回调逻辑。
-         * 服务方提供的能力比较多：提供触发方法（监听事件是否发生）、提供回调注册方法等。
-         *
-         * @author zWX5331241
-         * @since 2020-06-28
-         */
-        public class Controller {
-
-            public static void main(String args[]) {
-                Server server = new Server();
-                server.addListener(new Listener());
-                server.handler();
-            }
-        }
-
-        <b><font color="#a52a2a">2.  事件监听器</font></b>
-        package zeh.test.demo.com.call.back.mode3;
-
-        /**
-         * 功能描述 事件监听器
-         *
-         * 就是回调处理器，即原来定义的客户端；将客户端抽象出来，作为一个事件监听器，用来监听当事件发生后该采用的回调逻辑；
-         *
-         * @author zWX5331241
-         * @since 2020-06-28
-         */
-        public class Listener {
-
-            //事件监听器永远比较简单，只需要定义当事件被触发后要执行的回调逻辑即可
-            public void callback() {
-                System.out.println("事件监听器提供的回调逻辑，即回调执行程序");
-            }
-
-        }
-
-        <b><font color="#a52a2a">3.  服务端程序</font></b>
-        package zeh.test.demo.com.call.back.mode3;
-
-        /**
-         * 功能描述
-         *
-         * 服务端提供触发方法、提供回调注册方法。
-         * 即：事件是发生在服务端对象上的，由服务方监听事件的发生然后调用客户端对象的回调逻辑。
-         * 习惯上，服务端是用来监听事件的（因为事件永远是发生在服务端对象上的），而事件监听器并不是用来监听事件的，而是用来处理事件的，即当事件发生后应该执行的回调逻辑。
-         * 客户端==事件监听器
-         *
-         * @author zWX5331241
-         * @since 2020-06-28
-         */
-        public class Server {
-
-            private Listener listener;
-
-            //服务端暴露注册客户端回调逻辑的接口
-            public void addListener(Listener listener) {
-                this.listener = listener;
-            }
-
-            public void handler() {
-                System.out.println("服务端暴露的触发接口");
-                //服务端业务逻辑执行完毕则执行客户端提供的回调逻辑
-                listener.callback();
-            }
-        }
-    </pre>
-    <b><a name='header-n64' class='md-header-anchor '></a>6.4、 mode4</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        1.  控制程序
-
-    </pre>
-
-    <b><a name='header-n7' class='md-header-anchor '></a>7、通过方法间传递参数也可以实现回调，你见过吗？</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        上面的案例都是，A或者其他控制程序调用B，B里面委托了A，当执行了B的指定方法后，线程又回头来执行A的某个逻辑。
-        上面的A对象是注入到B中的，即A此时是作为B的一个成员变量存在的。当然，这也符合我们常规的注入、委托、依赖等定义。因为大多数的委托机制，被委托的对象都是作为成员存在的。
-        那你有没有想过，被委托的对象直接作为方法形参去接收呢？
-        请看下面的案例，也是回调的一种：
-
-        <b><font color="#a52a2a">客户端程序</font></b>
-        package zeh.test.demo.com.call.back.method;
-
-        /**
-         * 功能描述 客户端 提供回调逻辑
-         * 将客户端和控制程序分离
-         *
-         * @author zWX5331241
-         * @since 2020-06-28
-         */
-        public class Client {
-
-            public void callback() {
-                System.out.println("客户端提供的回调方法");
-            }
-        }
-
-        <b><font color="#a52a2a">服务端程序</font></b>
-        package zeh.test.demo.com.call.back.method;
-
-
-        /**
-         * 功能描述 服务端程序 暴露触发程序和回调注册接口
-         *
-         * @author zWX5331241
-         * @since 2020-06-28
-         */
-        public class Server {
-
-            public void handler(Client client) {
-                System.out.println("服务端暴露的触发接口");
-                //服务端业务逻辑执行完毕则执行客户端提供的回调逻辑
-                client.callback();
-            }
-        }
-
-        <b><font color="#a52a2a">控制程序</font></b>
-        package zeh.test.demo.com.call.back.method;
-
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-03-30
-         */
-        public class Controller {
-            public static void main(String[] args) {
-                // 回调对象实际上直接作为方法参数传递进去，而不是作为一个成员注入进去
-                new Server().handler(new Client());
-            }
-        }
-
-        <b><font color="#a52a2a">执行结果</font></b>
-        服务端暴露的触发接口
-        客户端提供的回调方法
-
-        Process finished with exit code 0
-
-        <b><font color="#a52a2a">感想</font></b>
-        是不是大吃一惊？
-        这种也叫做回调！
-        所以，平时我们创建一个目标对象，执行目标对象的某个方法，如果在这个方法里面传入了另外一个对象，则这个对象很可能就是一个回调对象。
-        因为你传递进去实际上就是为了使用这个对象的某个功能，除非你传递进去并不进行任何调用。
-    </pre>
-</div>
-</body>
-</html>
-
