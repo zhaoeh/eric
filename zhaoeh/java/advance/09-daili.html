@@ -1604,12 +1604,12 @@
     <b><a name='header-n1' class='md-header-anchor '></a>1、代理设计模式</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         1.  代理设计模式是Java中针对接口编程的一种应用模式。
-        2.  一个接口有很多实现类，其中包括真实主题实现类，和代理主题实现类。真实主题实现类执行真正的核心业务，代理主题实现类负责边缘业务。
-        3.  代理设计模式的核心：外部通过操作代理主题，间接的操作真实主题。
-        4.  代理设计模式中，代理主题实际上是个代理对象，通过委托真实主题去执行真正的操作，而代理主题本身可以在委托真实主题执行前后执行其他边缘性业务。
-        5.  在代理设计模式中，外部直接操作代理主题，真实主题是被代理类委托代理的，即代理类代理了真实主题，代理类委托真实主题处理真正业务。
-        6.  java中代理分为静态代理和动态代理。
-        7.  代理设计模式和回调设计模式实际上很类似，可以说机制完全是一样的。
+        2.  java中代理分为静态代理和动态代理。
+        3.  一个接口有很多实现类，其中包括真实主题实现类，和代理主题实现类。真实主题实现类执行真正的核心业务，代理主题实现类负责边缘业务。
+        4.  代理设计模式的核心：外部通过操作代理主题，间接的操作真实主题。
+        5.  代理设计模式中，代理主题实际上是个代理对象，通过委托真实主题去执行真正的操作，而代理主题本身可以在委托真实主题执行前后执行其他边缘性业务。
+        6.  在代理设计模式中，外部直接操作代理主题，真实主题是被代理类委托代理的，即代理类代理了真实主题，代理类委托真实主题处理真正业务。
+        7.  代理设计模式本身是对委托机制的一种具体应用场景，它是对委托机制和方法转发的一种模式化应用。
         8.  代理设计模式实现上和装饰者设计模式比较相似，但还是有区别的，区别等学习装饰者模式时再讲。
     </pre>
 
@@ -1621,7 +1621,7 @@
         4.  有时候，只想定义一个接口，不想实现它但它的方法仍然可用；或者想为任何一个目标类增加附加功能，就使用动态代理。动态代理比静态代理更灵活。
     </pre>
 
-    <b><a name='header-n3' class='md-header-anchor '></a>4、代理设计模式案例</b><br>
+    <b><a name='header-n3' class='md-header-anchor '></a>3、代理设计模式案例</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         通过案例了解下，不使用代理模式时是什么样子的，使用了代理模式是什么样子的。
         静态代理是什么样子的，动态代理又是什么样子的。
@@ -1671,7 +1671,7 @@
             }
         }
     </pre>
-    <b><a name='header-n31' class='md-header-anchor '></a>4.1、 不使用代理模式</b>
+    <b><a name='header-n31' class='md-header-anchor '></a>3.1、 不使用代理模式</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <b><font color="#a52a2a">Main</font></b>
         package zeh.test.demo.com.daili.nodaili;
@@ -1751,11 +1751,12 @@
         等等等等。
         这种情况如何解决呢？
     </pre>
-    <b><a name='header-n32' class='md-header-anchor '></a>4.2、 静态代理</b>
+    <b><a name='header-n32' class='md-header-anchor '></a>3.2、 静态代理</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         使用静态代理。
         1.  通过新增加一个代理类去代理真实主题对象，即委托真实主题去处理核心业务，而代理主题去处理边缘业务，此时代理主题处理的边缘业务对于核心业务而言，就是我们需要增强的功能。
-        2.  既然新增的代理主题是为了增强真实主题对象的功能，那么，代理主题暴露给客户端的API应该和真实主题原有的暴露方式是一致的。因此，代理主题需要和真实主题实现同一个接口，并且覆盖主题接口中的业务方法。
+        2.  既然新增的代理主题是为了增强真实主题对象的功能，那么，代理主题暴露给客户端的API应该和真实主题原有的暴露方式是一致的。因此，代理主题需要和真实主题实现同一个接口，并且覆盖主题接口中的业务方法从而对外暴露业务。
+        3.  代理主题类实现主题接口，需要实现主题接口中的所有方法。需要代理哪些方法就对哪些方法委托真实主题去处理并加入代理逻辑，可以根据诉求代理一个方法或者代理多个方法。
 
         <b><font color="#a52a2a">新增代理主题实现类 StaticProxy</font></b>
         package zeh.test.demo.com.daili.statics;
@@ -1806,10 +1807,7 @@
          */
         public class StaticProxyMain {
             public static void main(String[] args) {
-                // 静态代理和回调是不是很像，实际上它就是一个回调。
-                // 其中，真实主题对象 service 就是一个回调对象，即相当于客户端；而代理主题对象相当于一个服务端。
-                // 控制程序先向代理主题注入真实主题对象，然后直接调用代理主题的方法，当执行代理主题的方法时，线程又回过来执行真实主题的方法。
-                // 这实际上就是回调的思想。
+                // 控制程序先向代理主题注入真实主题对象，然后直接调用代理主题的方法，当执行代理主题的方法时，线程被转发到真实主题的方法。
                 IService service = new PersonService();
                 StaticProxy proxy = new StaticProxy(service);
                 proxy.handleSome();
@@ -1834,7 +1832,7 @@
         3.  真实主题实际上没有发生任何改动，只是在它上层加了一层代理类。
         4.  真实主题不直接暴露给客户端，直接暴露给客户端的是代理主题。
     </pre>
-    <b><a name='header-n33' class='md-header-anchor '></a>4.3、 静态代理的缺陷</b>
+    <b><a name='header-n33' class='md-header-anchor '></a>3.3、 静态代理的缺陷</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <b><font color="#a52a2a">新增一个主题接口 IKill</font></b>
         package zeh.test.demo.com.daili.service;
@@ -1908,10 +1906,7 @@
          */
         public class StaticProxyMain {
             public static void main(String[] args) {
-                // 静态代理和回调是不是很像，实际上它就是一个回调。
-                // 其中，真实主题对象 service 就是一个回调对象，即相当于客户端；而代理主题对象相当于一个服务端。
-                // 控制程序先向代理主题注入真实主题对象，然后直接调用代理主题的方法，当执行代理主题的方法时，线程又回过来执行真实主题的方法。
-                // 这实际上就是回调的思想。
+                // 控制程序先向代理主题注入真实主题对象，然后直接调用代理主题的方法，当执行代理主题的方法时，线程转发到真实主题的方法。
                 IService service = new PersonService();
                 StaticProxy proxy = new StaticProxy(service);
                 proxy.handleSome();
@@ -1937,15 +1932,16 @@
         Process finished with exit code 0
 
         <b><font color="#a52a2a">结果分析</font></b>
-        静态代理存在如下问题：
-        1.  静态代理为了保证客户端对代理对象和真实对象不进行感知，所以需要和真实主题实现相同的接口，如此一来，如果业务接口做了改动，不仅仅真实主题需要改动，代理主题实现类也需要进行变更。换言之，假设业务接口新增了一个方法，除了所有真实主题实现类需要覆盖该方法外，代理主题类也需要覆盖该方法。
-        2.  代理主题只能代理一种类型的真实主题，比如案例中，StaticProxy只能代理业务接口 IService 的真实主题；如果新增了一个业务接口，完蛋了，需要新增一个对应的代理主题实现。
-        总的来说，如果静态代理想为多种业务去提供增强服务，则需要创建很多代理类；如果业务接口有很多方法，则代理主题需要覆盖很多方法。
-        假设有100个接口需要的代理，每个接口有100个业务方法，那么就需要创建100个代理类，每个代理类需要覆盖100个业务方法。
-        这无形中增加了代码冗余和维护难度，除了维护真实主题外，还需要额外维护一套代理主题类。
+
     </pre>
 
-    <b><a name='header-n5' class='md-header-anchor '></a>5、死磕动态代理</b><br>
+    <b><a name='header-n4' class='md-header-anchor '></a>4、死磕动态代理</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        既然静态代理存在那么多弊端，我们设想下：
+        如果我们不用去编写代理主题类，而是能有个什么东西默认为我们去生成对应业务的代理主题类、自动的注入对应的真实主题对象、覆盖主题接口中的所有业务方法、并且在我们访问该代理对象的业务方法时能够自动的转发到真实主题对应的方法上，那该有多好啊！
+        说白了，就是我想找一个大神来帮我做静态代理这一堆事，而不是我自己去挨个编写代码！
+        很幸运，jdk就提供了这种能力：jdk的动态字节码机制可以为任何接口去生成一个存在于JVM内存中的虚拟实现类，有了这种能力，我们就可以实现上述设想了。
+    </pre>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         使用动态代理，一般只需要一个动态代理主题类用来产生动态代理对象即可。
         不论存在多少种类的业务接口，不论业务接口存在多少方法，都可以通过一个动态代理主题类就可以实现通用的代理方案。
@@ -2040,7 +2036,7 @@
         }
 
     </pre>
-    <b><a name='header-n51' class='md-header-anchor '></a>5.1、 动态代理</b>
+    <b><a name='header-n41' class='md-header-anchor '></a>4.1、 动态代理</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
 
         <b><font color="#a52a2a">动态代理工厂 DynamicProxy</font></b>
@@ -2153,7 +2149,7 @@
         1.  动态代理只需要实现一个动态代理工厂类，用于产生动态代理对象即可。
         2.  动态代理工厂可以根据传入的类型，为指定类型的接口生成指定的代理对象。
         3.  动态代理对象可以代理任何指定类型的真实主题。
-        4.  动态代理要求真实主题类至少应该实现一个接口，但不要求代理主题类实现接口。
+        4.  动态代理要求真实主题类至少应该实现一个接口，但不要求代理主题工厂类实现接口。
 
         <b><font color="#a52a2a">遗留问题？</font></b>
         JDK提供的动态代理，只能代理接口吗？
@@ -2164,7 +2160,7 @@
         JDK提供的动态代理，只能代理接口。因为动态代理底层生成的代理类的字节码，已经继承了Proxy类，因此，这个动态字节码就不能再继承其他类了。所以，它只能代理接口。
         如果需要代理普通类，请使用第三方的cglib。
     </pre>
-    <b><a name='header-n52' class='md-header-anchor '></a>5.2、 jdk动态代理总结</b>
+    <b><a name='header-n42' class='md-header-anchor '></a>4.2、 jdk动态代理总结</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         1.  jdk动态代理可以实现通用代理，即可以代理任何目标接口的实现类。
         2.  jdk动态代理的原理是底层提供的动态字节码技术，即jdk可以为任何接口都动态产生一个虚拟的实现子类，该子类字节码随着JVM启动存储在内存中，JVM销毁则销毁。
