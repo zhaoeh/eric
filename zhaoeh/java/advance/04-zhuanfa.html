@@ -3,7 +3,7 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width initial-scale=1'>
-    <title>委托机制、方法转发和回调模式.md</title>
+    <title>方法转发.md</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
           rel='stylesheet' type='text/css'/>
     <style type='text/css'>html {
@@ -1603,7 +1603,11 @@
 
 
     <b><a name='header-n1' class='md-header-anchor '></a>1、方法转发</b><br>
-    <b><a name='header-n11' class='md-header-anchor '></a>1.1、 什么是方法转发？</b>
+    <b><a name='header-n11' class='md-header-anchor '></a>1.1、 回顾委托机制？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        委托机制核心是多态，通过引用传递进行向上转型或者直接传递来委托其他对象代为处理逻辑。
+    </pre>
+    <b><a name='header-n12' class='md-header-anchor '></a>1.2、 什么是方法转发？</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         程序自上而下执行，像火箭、像水流，在线程的带领下一直往下走。
         它会流经山川、草原、森林、村庄等等。
@@ -1611,11 +1615,12 @@
         也就是说，程序从A对象出发，调用A对象的a方法；然后a对象的a方法又去调用B对象的b方法；同理，B对象的b方法又去调用C对象的c方法...
         这种程序在多个对象的多个方法间的流转就称为方法转发，即将执行流程从一个方法转发到另外一个方法。
     </pre>
+
     <b><a name='header-n2' class='md-header-anchor '></a>2、实现方法转发</b><br>
     <b><a name='header-n21' class='md-header-anchor '></a>2.1、 实现方法转发的方式</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         正如上面所言，既然流程想从A对象的a方法转发到B对象的b方法，至少得保证：A对象必须持有B对象，才能调用B对象的b方法。
-        如何让A对象持有B对象的呢？通过上面的委托机制，已经明显知道无非是下面四种方案：
+        如何让A对象持有B对象的呢？通过之前的委托机制，已经明显知道无非是下面四种方案：
         1.  A对象封装一个B对象的属性成员，在使用时，从外部向A对象中注入B对象实例（以成员变量的方式注入）；
         2.  A对象封装一个B对象的属性成员，A对象自己负责实例化B对象实例（以成员变量的方式内建）；
         3.  A对象封装一个B对象的局部变量，外部在调用A对象的a方法时，通过方法间参数传递，注入一个局部的B对象实例进去，相当于让A对象持有了一个局部的B对象实例（以局部变量的方式注入）。
@@ -1829,9 +1834,16 @@
         实际上和刚开始的思路一样，在SaveLog类中注入了PrintLog的实例对象，让其持有。
         不同点在于，在访问SaveLog的所有"saveXXX"方式时，都统一将流程转发到了PrintLog的printLog方法上了。
         这也就实现了，访问任何业务方法，最终都统一转发到某个固定的方法中去。
-        实际上这种统一的方法转发，在设计模式里，有个专门的模式，即回调设计模式。
+        实际上这种统一的方法转发，有种专门的机制做这种事，即回调机制。
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、总结方法转发</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  方法转发完全依赖委托机制，它和委托机制的底层一模一样。
+        2.  方法转发本身就是委托机制的一种体现效果，意味着只要是委托机制那么它本身的效果之一就是完成了方法转发。
+        3.  后续学习的回调机制、动态代理等，它们本身底层也依赖于委托机制。
+        4.  委托机制是种很底层的机制。
     </pre>
 </div>
 </body>
 </html>
-
