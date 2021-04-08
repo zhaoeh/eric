@@ -10,39 +10,7 @@
         overflow-x: initial !important;
     }
 
-    .CodeMirror {
-        height: auto;
-    }
-
-    .CodeMirror-scroll {
-        overflow-y: hidden;
-        overflow-x: auto;
-    }
-
-    .CodeMirror-lines {
-        padding: 4px 0px;
-    }
-
     .CodeMirror pre {
-    }
-
-    .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
-        background-color: white;
-    }
-
-    .CodeMirror-gutters {
-        border-right: 1px solid rgb(221, 221, 221);
-        background-color: rgb(247, 247, 247);
-        white-space: nowrap;
-    }
-
-    .CodeMirror-linenumbers {
-    }
-
-    .CodeMirror-linenumber {
-        padding: 0px 3px 0px 5px;
-        text-align: right;
-        color: rgb(153, 153, 153);
     }
 
     .CodeMirror div.CodeMirror-cursor {
@@ -147,11 +115,6 @@
         content: " ";
     }
 
-    .cm-startspace, .cm-tab, .cm-starttab, .cm-trailing-space-a, .cm-trailing-space-b, .cm-trailing-space-new-line {
-        font-family: monospace;
-        position: relative;
-    }
-
     .cm-s-typora-default .cm-trailing-space-new-line::after {
         content: "↓";
         opacity: 0.3;
@@ -245,46 +208,6 @@
         color: rgb(0, 0, 204);
     }
 
-    .cm-negative {
-        color: rgb(221, 68, 68);
-    }
-
-    .cm-positive {
-        color: rgb(34, 153, 34);
-    }
-
-    .cm-header, .cm-strong {
-        font-weight: bold;
-    }
-
-    .cm-del {
-        text-decoration: line-through;
-    }
-
-    .cm-em {
-        font-style: italic;
-    }
-
-    .cm-link {
-        text-decoration: underline;
-    }
-
-    .cm-error {
-        color: rgb(255, 0, 0);
-    }
-
-    .cm-invalidchar {
-        color: rgb(255, 0, 0);
-    }
-
-    .cm-constant {
-        color: rgb(38, 139, 210);
-    }
-
-    .cm-defined {
-        color: rgb(181, 137, 0);
-    }
-
     div.CodeMirror span.CodeMirror-matchingbracket {
         color: rgb(0, 255, 0);
     }
@@ -295,97 +218,6 @@
 
     .cm-s-inner .CodeMirror-activeline-background {
         background: inherit;
-    }
-
-    .CodeMirror {
-        position: relative;
-        overflow: hidden;
-    }
-
-    .CodeMirror-scroll {
-        margin-bottom: -30px;
-        margin-right: -30px;
-        padding-bottom: 30px;
-        padding-right: 30px;
-        height: 100%;
-        outline: none;
-        position: relative;
-        box-sizing: content-box;
-    }
-
-    .CodeMirror-sizer {
-        position: relative;
-    }
-
-    .CodeMirror-vscrollbar, .CodeMirror-hscrollbar, .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
-        position: absolute;
-        z-index: 6;
-        display: none;
-    }
-
-    .CodeMirror-vscrollbar {
-        right: 0px;
-        top: 0px;
-        overflow-x: hidden;
-        overflow-y: scroll;
-    }
-
-    .CodeMirror-hscrollbar {
-        bottom: 0px;
-        left: 0px;
-        overflow-y: hidden;
-        overflow-x: scroll;
-    }
-
-    .CodeMirror-scrollbar-filler {
-        right: 0px;
-        bottom: 0px;
-    }
-
-    .CodeMirror-gutter-filler {
-        left: 0px;
-        bottom: 0px;
-    }
-
-    .CodeMirror-gutters {
-        position: absolute;
-        left: 0px;
-        top: 0px;
-        padding-bottom: 30px;
-        z-index: 3;
-    }
-
-    .CodeMirror-gutter {
-        white-space: normal;
-        height: 100%;
-        box-sizing: content-box;
-        padding-bottom: 30px;
-        margin-bottom: -32px;
-        display: inline-block;
-    }
-
-    .CodeMirror-gutter-wrapper {
-        position: absolute;
-        z-index: 4;
-        background: none !important;
-        border: none !important;
-    }
-
-    .CodeMirror-gutter-background {
-        position: absolute;
-        top: 0px;
-        bottom: 0px;
-        z-index: 4;
-    }
-
-    .CodeMirror-gutter-elt {
-        position: absolute;
-        cursor: default;
-        z-index: 4;
-    }
-
-    .CodeMirror-lines {
-        cursor: text;
     }
 
     .CodeMirror pre {
@@ -419,34 +251,8 @@
         width: auto;
     }
 
-    .CodeMirror-linebackground {
-        position: absolute;
-        left: 0px;
-        right: 0px;
-        top: 0px;
-        bottom: 0px;
-        z-index: 0;
-    }
-
-    .CodeMirror-linewidget {
-        position: relative;
-        z-index: 2;
-        overflow: auto;
-    }
-
-    .CodeMirror-widget {
-    }
-
     .CodeMirror-wrap .CodeMirror-scroll {
         overflow-x: hidden;
-    }
-
-    .CodeMirror-measure {
-        position: absolute;
-        width: 100%;
-        height: 0px;
-        overflow: hidden;
-        visibility: hidden;
     }
 
     .CodeMirror-measure pre {
@@ -468,16 +274,8 @@
         visibility: inherit;
     }
 
-    .CodeMirror-selected {
-        background: rgb(217, 217, 217);
-    }
-
     .CodeMirror-focused .CodeMirror-selected {
         background: rgb(215, 212, 240);
-    }
-
-    .cm-searching {
-        background: rgba(255, 255, 0, 0.4);
     }
 
     .CodeMirror span {
@@ -487,69 +285,6 @@
         .CodeMirror div.CodeMirror-cursor {
             visibility: hidden;
         }
-    }
-
-    .CodeMirror-lint-markers {
-        width: 16px;
-    }
-
-    .CodeMirror-lint-tooltip {
-        background-color: infobackground;
-        border: 1px solid black;
-        border-radius: 4px;
-        color: infotext;
-        font-family: monospace;
-        overflow: hidden;
-        padding: 2px 5px;
-        position: fixed;
-        white-space: pre-wrap;
-        z-index: 10000;
-        max-width: 600px;
-        opacity: 0;
-        transition: opacity 0.4s;
-        font-size: 0.8em;
-    }
-
-    .CodeMirror-lint-mark-error, .CodeMirror-lint-mark-warning {
-        background-position: left bottom;
-        background-repeat: repeat-x;
-    }
-
-    .CodeMirror-lint-mark-error {
-        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAYAAAC09K7GAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sJDw4cOCW1/KIAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAAAHElEQVQI12NggIL/DAz/GdA5/xkY/qPKMDAwAADLZwf5rvm+LQAAAABJRU5ErkJggg==");
-    }
-
-    .CodeMirror-lint-marker-error, .CodeMirror-lint-marker-warning {
-        background-position: center center;
-        background-repeat: no-repeat;
-        cursor: pointer;
-        display: inline-block;
-        height: 16px;
-        width: 16px;
-        vertical-align: middle;
-        position: relative;
-    }
-
-    .CodeMirror-lint-message-error, .CodeMirror-lint-message-warning {
-        padding-left: 18px;
-        background-position: left top;
-        background-repeat: no-repeat;
-    }
-
-    .CodeMirror-lint-marker-error, .CodeMirror-lint-message-error {
-        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAHlBMVEW7AAC7AACxAAC7AAC7AAAAAAC4AAC5AAD///+7AAAUdclpAAAABnRSTlMXnORSiwCK0ZKSAAAATUlEQVR42mWPOQ7AQAgDuQLx/z8csYRmPRIFIwRGnosRrpamvkKi0FTIiMASR3hhKW+hAN6/tIWhu9PDWiTGNEkTtIOucA5Oyr9ckPgAWm0GPBog6v4AAAAASUVORK5CYII=");
-    }
-
-    .CodeMirror-lint-marker-warning, .CodeMirror-lint-message-warning {
-        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAANlBMVEX/uwDvrwD/uwD/uwD/uwD/uwD/uwD/uwD/uwD6twD/uwAAAADurwD2tQD7uAD+ugAAAAD/uwDhmeTRAAAADHRSTlMJ8mN1EYcbmiixgACm7WbuAAAAVklEQVR42n3PUQqAIBBFUU1LLc3u/jdbOJoW1P08DA9Gba8+YWJ6gNJoNYIBzAA2chBth5kLmG9YUoG0NHAUwFXwO9LuBQL1giCQb8gC9Oro2vp5rncCIY8L8uEx5ZkAAAAASUVORK5CYII=");
-    }
-
-    .CodeMirror-lint-marker-multiple {
-        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAMAAADzjKfhAAAACVBMVEUAAAAAAAC/v7914kyHAAAAAXRSTlMAQObYZgAAACNJREFUeNo1ioEJAAAIwmz/H90iFFSGJgFMe3gaLZ0od+9/AQZ0ADosbYraAAAAAElFTkSuQmCC");
-        background-repeat: no-repeat;
-        background-position: right bottom;
-        width: 100%;
-        height: 100%;
     }
 
     :root {
@@ -617,13 +352,6 @@
             padding-right: 0px;
         }
 
-        .CodeMirror-sizer {
-            margin-left: 0px !important;
-        }
-
-        .CodeMirror-gutters {
-            display: none !important;
-        }
     }
 
     .typora-export #write {
@@ -1603,27 +1331,34 @@
 
     <b><a name='header-n1' class='md-header-anchor '></a>1、代理的初衷</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        一个真实主题对象用来实现核心业务，真实主题不想暴露给客户端，这时候就需要代理主题对象上场了。代理主题持有某一类真实主题的引用（通过多态持有），当客户端访问代理主题时，代理主题将请求委托给真实主题处理，同时在委托的过程中，代理主题可以加入自己的某些逻辑。
+        <b><font color="#a52a2a">代理出现的背景</font></b>
+        一个真实主题对象用来实现核心业务，真实主题不想暴露给客户端，这时候就需要代理主题对象上场了。
+        代理主题持有某一类真实主题的引用（通过多态持有），当客户端访问代理主题时，代理主题将请求委托给真实主题处理，同时在委托的过程中，代理主题可以加入自己的某些逻辑。
         说白了就是，代理主题对真实主题进行代理，有啥事情直接找代理，边缘业务代理直接就办了，核心业务再转发给真实主题去处理。
         这里面的核心就是：转发。
         只有能将请求转发给真实主题，这才是正确的处理，否则，对真实主题的代理就失败了。
         同样，只有在转发的过程中，才能通过代理主题去处理某些边缘业务，以此来增强真实主题对象的功能，否则，没有转发就谈不上边缘业务了。
-        那如何实现转发呢？之前的文章已经讲过，此处再回顾下如何实现转发：
-        1.  A对象封装一个B对象的属性成员，在使用时，从外部向A对象中注入B对象实例（以成员的方式注入）；
-        2.  外部在调用A对象的a方法时，通过方法间参数传递，注入一个局部的B对象实例进去，相当于让A对象持有了一个局部的B对象实例（以参数的方式注入）。
 
-        也就是说，通过委托机制的两种方式都能够实现方法的转发目的。
+        那如何实现转发呢？之前的文章已经讲过，此处再回顾下如何实现转发：
+        1.  A对象封装一个B对象的属性成员，在使用时，从外部向A对象中注入B对象实例（以成员变量的方式注入）；
+        2.  外部在调用A对象的a方法时，通过方法间参数传递，注入一个局部的B对象实例进去，相当于让A对象持有了一个局部的B对象实例（以局部变量的方式注入）。
+
+        也就是说，通过委托机制就可以实现方法转发。
         比如A访问B，现在想把请求转发到C，此时在B中委托一个C的对象即可，B就可以将请求转发给C。
 
-        那如何实现统一的转发呢？
-        比如A访问B中的任何方法，都想统一转发到C的c方法上。
-        通过前面的知识学习，我们知道此时需要升级普通的委托机制，将其升级会回调模式即可，即B委托一个C对象，C对象实现一个统一的方法用来处理转发后的逻辑，这个方法就称作回调方法。
-        <font color="#a52a2a">
-            tips：在这里务必总结下：回调模式、代理模式、装饰者模式等一系列模式，都离不开委托机制。
-        </font>
+        <b><font color="#a52a2a">疑惑</font></b>
+        既然委托机制本身就可以达到方法转发的目的，那干脆使用委托机制就好了，干嘛还要专门提取一个所谓的代理模式来呢？
+        解释：
+        代理的核心在于方法转发，然而它能作为一种具体的模式，说明它本身是对委托机制和方法转发的一种升级应用。
+        它为二者的实现提供了具体的场景，即不仅仅要完成转发，更是要在转发的基础上，屏蔽真实主题。
+        所以，代理模式相对委托机制和方法转发而言，它要求对客户端暴露的业务接口透明、要求代理对象可以为真实对象增强附加功能。
+        这主要意味着代理模式需要满足以下几点：
+        1.  代理模式需要针对业务主题接口进行编程；只有存在统一的业务接口，代理主题和真实主题才能确保对客户端透明。
+        2.  代理主题需要和真实主题一样，实现接口中的业务方法；只有代理主题同样实现了业务方法，才能保证对客户端暴露完全相同的主题接口。
+        3.  代理主题委托真实主题处理核心业务，但同时可以加入自己的边缘性代理业务逻辑；即代理的目的不仅仅是为了屏蔽真实主题，它是为了屏蔽真实主题，但同时应该具备提供正式主题核心业务和自身代理业务的能力。
     </pre>
 
-    <b><a name='header-n2' class='md-header-anchor '></a>2、代理模式的原理--委托机制、方法转发、回调模式</b><br>
+    <b><a name='header-n2' class='md-header-anchor '></a>2、代理模式的原理--委托机制、方法转发、回调机制</b><br>
     <b><a name='header-n21' class='md-header-anchor '></a>2.1、 静态代理模式原理分析</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <b><font color="#a52a2a">静态代理类</font></b>
@@ -1676,14 +1411,414 @@
 
         <b><font color="#a52a2a">分析</font></b>
         1.  静态代理主题类和真实主题类实现了相同的接口，目的是对外部暴露完全相同的API。
-        2.  静态代理主题注入了真实主题对象，委托真实主题对象处理业务，即将流程从代理主题最终转发到真实主题的指定方法上。
-        3.  静态代理主题需要覆盖业务接口中的方法，从而实现对真实主题的代理。
-        4.  静态代理主题在完成流程转发前后，可以加入自己的处理逻辑。
+        2.  静态代理主题注入了真实主题对象，委托真实主题对象处理业务，即将流程从代理主题最终转发到真实主题的指定方法上，确保代理对象具备提供真实主题业务的能力。
+        3.  静态代理主题需要覆盖业务接口中的方法，从而实现对真实主题的代理，确保对外暴露的API和真实主题对外暴露的完全一致。
+        4.  静态代理主题在完成流程转发前后，可以加入自己的处理逻辑，从而实现提供边缘性业务的能力。
 
         总结：静态代理通过委托机制实现方法转发，在转发前后加入了自己的处理逻辑，从而完成了拦截器的功能。
     </pre>
 
-    <b><a name='header-n22' class='md-header-anchor '></a>2.2、 动态代理模式原理分析</b>
+    <b><a name='header-n22' class='md-header-anchor '></a>2.2、 静态代理模式实现方法统一转发</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        分析上面的案例，可以看出，静态代理主题代理了业务接口的所有方法，并且加入了自己的代理逻辑：
+        System.out.println("静态代理 begin");
+        System.out.println("静态代理 end");
+
+        如果说，代理主题代理每个真实主题方法的代理逻辑都一样，比如：
+        代理主题在代理任何真实主题方法时，都要求代理主题输出一句话 "我是一个代理SB"。
+        那么，目前的静态代理方式就不太优雅，因为它完全手动的代理了每一个真实主题，并且在代理每个真实主题时都实现了完全相同的代理逻辑，这...不是冗余吗？？
+
+        所以，我们需要一种实现：当外部访问代理主题的每一个代理方法时，能将请求统一转发某一个代理逻辑中，而代理逻辑我们自己指定就好了。
+        这样就不用每一个代理方法都编写一遍 "我是一个代理SB" 了。
+
+        而提到方法的统一转发，我们就想到了回调接口了：回调接口正适合这种场景，即回调逻辑由客户端定制，并且对于不同的请求能够达到方法的统一转发。
+        下面我们尝试改造！！！
+    </pre>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">新增一个回调接口</font></b>
+        package zeh.test.demo.com.daili.callback;
+
+        /**
+         * 功能描述 针对静态代理的回调接口
+         *
+         * @author zWX5331241
+         * @since 2021-04-08
+         */
+        public interface ICallback {
+
+            void printSB();
+        }
+
+        <b><font color="#a52a2a">改造静态代理类</font></b>
+        package zeh.test.demo.com.daili.statics;
+
+        import zeh.test.demo.com.daili.callback.ICallback;
+        import zeh.test.demo.com.daili.service.IService;
+
+        /**
+         * 功能描述 代理主题。
+         *
+         * @author zWX5331241
+         * @since 2021-03-30
+         */
+        public class StaticProxy implements IService {
+            private IService iService;
+
+            // 委托一个回调器
+            private ICallback callback;
+
+            // 改造代理类构造，传入回调器对象
+            public StaticProxy(IService iService, ICallback callback) {
+                this.iService = iService;
+                this.callback = callback;
+            }
+
+            @Override
+            public void handleSome() {
+                callback.printSB();
+                iService.handleSome();
+            }
+
+            @Override
+            public void handleOther() {
+                callback.printSB();
+                iService.handleOther();
+            }
+
+            @Override
+            public void handleEat() {
+                callback.printSB();
+                iService.handleEat();
+            }
+
+            @Override
+            public void handleDrink() {
+                callback.printSB();
+                iService.handleDrink();
+            }
+        }
+
+
+        <b><font color="#a52a2a">测试</font></b>
+        package zeh.test.demo.com.daili.statics;
+
+        import zeh.test.demo.com.daili.callback.ICallback;
+        import zeh.test.demo.com.daili.service.IService;
+        import zeh.test.demo.com.daili.service.PersonService;
+
+        /**
+         * 功能描述 测试静态代理
+         *
+         * @author zWX5331241
+         * @since 2021-03-30
+         */
+        public class StaticProxyMain {
+            public static void main(String[] args) {
+                IService service = new PersonService();
+                StaticProxy proxy = new StaticProxy(service, new ICallback() {
+                    // 回调器逻辑
+                    @Override
+                    public void printSB() {
+                        System.out.println("我是一个代理SB");
+                    }
+                });
+                proxy.handleSome();
+                proxy.handleOther();
+                proxy.handleDrink();
+                proxy.handleEat();
+            }
+        }
+
+        <b><font color="#a52a2a">测试结果</font></b>
+        我是一个代理SB
+        派出一个人去处理一些业务
+        我是一个代理SB
+        派出一个人去处理其他事情
+        我是一个代理SB
+        派出一个人去喝水
+        我是一个代理SB
+        派出一个人去吃饭
+
+        Process finished with exit code 0
+
+        <b><font color="#a52a2a">结果分析</font></b>
+        优点：
+        在静态代理的基础上，加入了回调器，回调器实现统一的代理逻辑，然后将对代理主题的任何方法的访问先转发到统一的回调器上，再委托真实主题处理。
+        缺点：
+        不灵活；
+        真实主题的调用和代理逻辑现在完全是分离的；
+        我现在要是想在真实主题调用之后再加入一个代理逻辑 “我下辈子不再做代理”，是不是回调器中还得再加一个后置方法？是不是还得显式指定必须在真实主题后调用？
+        如果我只想代理真实主题的handleSome()方法呢？是不是还得在代理类中手动进行判断？
+
+        我们来试一试！！！
+    </pre>
+
+    <b><a name='header-n23' class='md-header-anchor '></a>2.3、 采用繁琐的方式改造静态代理模式</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">改造回调接口，增加后置方法 printNoDaiLi</font></b>
+        package zeh.test.demo.com.daili.callback;
+
+        /**
+         * 功能描述 针对静态代理的回调接口
+         *
+         * @author zWX5331241
+         * @since 2021-04-08
+         */
+        public interface ICallback {
+
+            void printSB();
+
+            void printNoDaiLi();
+        }
+
+
+        <b><font color="#a52a2a">改造静态代理类</font></b>
+        package zeh.test.demo.com.daili.statics;
+
+        import zeh.test.demo.com.daili.callback.ICallback;
+        import zeh.test.demo.com.daili.service.IService;
+
+        /**
+         * 功能描述 代理主题。
+         *
+         * @author zWX5331241
+         * @since 2021-03-30
+         */
+        public class StaticProxy implements IService {
+            private IService iService;
+
+            // 委托一个回调器
+            private ICallback callback;
+
+            // 改造代理类构造，传入回调器对象
+            public StaticProxy(IService iService, ICallback callback) {
+                this.iService = iService;
+                this.callback = callback;
+            }
+
+            @Override
+            public void handleSome() {
+                // 手动编程，确保只对真实主题的 handleSome 方法进行代理
+                callback.printSB();
+                iService.handleSome();
+                // 显式转发给真实主题后，再将对代理方法的访问转发给回调器的printNoDaiLi方法
+                callback.printNoDaiLi();
+            }
+
+            @Override
+            public void handleOther() {
+                iService.handleOther();
+            }
+
+            @Override
+            public void handleEat() {
+                iService.handleEat();
+            }
+
+            @Override
+            public void handleDrink() {
+                iService.handleDrink();
+            }
+        }
+
+        <b><font color="#a52a2a">测试</font></b>
+        package zeh.test.demo.com.daili.statics;
+
+        import zeh.test.demo.com.daili.callback.ICallback;
+        import zeh.test.demo.com.daili.service.IService;
+        import zeh.test.demo.com.daili.service.PersonService;
+
+        /**
+         * 功能描述 测试静态代理
+         *
+         * @author zWX5331241
+         * @since 2021-03-30
+         */
+        public class StaticProxyMain {
+            public static void main(String[] args) {
+                IService service = new PersonService();
+                StaticProxy proxy = new StaticProxy(service, new ICallback() {
+                    // 回调器逻辑
+                    @Override
+                    public void printSB() {
+                        System.out.println("我是一个代理SB");
+                    }
+
+                    @Override
+                    public void printNoDaiLi() {
+                        System.out.println("我下辈子不再做代理");
+                    }
+                });
+                proxy.handleSome();
+                proxy.handleOther();
+                proxy.handleDrink();
+                proxy.handleEat();
+            }
+        }
+
+        <b><font color="#a52a2a">测试结果</font></b>
+        我是一个代理SB
+        派出一个人去处理一些业务
+        我下辈子不再做代理
+        派出一个人去处理其他事情
+        派出一个人去喝水
+        派出一个人去吃饭
+
+        Process finished with exit code 0
+
+        <b><font color="#a52a2a">结果分析</font></b>
+        完全实现了要求。
+        只对真实主题的 handleSome 方法进行了代理，并且在委托真实主题前后都加入了指定的代理逻辑。
+
+        但是，好复杂啊！！
+        需要改动回调接口、需要改动静态代理类、需要改动客户端程序等等。
+        真实主题的调用和代理逻辑之间几乎完全独立，完全靠在代理主题类里面手动编程。
+
+        <b>大家想一想，如何能简化这个案例呢？</b>
+        我在想，既然代理主题类现在通过回调器，已经将代理逻辑剥离到回调器中去了，那为啥不把真实主题也剥离到回调器中去呢？
+        这样代理主题就不用再既委托真实主题 iService ，又委托回调器 callback 了，只需要委托回调器一个即可。
+        而且，直接将真实主题剥离到回调器中，那么至于前置逻辑后置逻辑等等，完全就可以通过客户端自主实现了。
+    </pre>
+
+    <b><a name='header-n24' class='md-header-anchor '></a>2.4、 优雅的改造静态代理模式-最接近动态代理的改造</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">改造回调接口，增加后置方法 printNoDaiLi</font></b>
+        package zeh.test.demo.com.daili.callback;
+
+        import java.lang.reflect.Method;
+
+        /**
+         * 功能描述 针对静态代理的回调接口
+         *
+         * @author zWX5331241
+         * @since 2021-04-08
+         */
+        public interface ICallback {
+            Object invoke(Object proxy, Method method, Object[] args);
+        }
+
+        <b><font color="#a52a2a">改造静态代理类</font></b>
+        package zeh.test.demo.com.daili.statics;
+
+        import java.lang.reflect.Method;
+
+        import zeh.test.demo.com.daili.callback.ICallback;
+        import zeh.test.demo.com.daili.service.IService;
+
+        /**
+         * 功能描述 代理主题。
+         *
+         * @author zWX5331241
+         * @since 2021-03-30
+         */
+        public class StaticProxy implements IService {
+
+            private static Method m1;
+            private static Method m2;
+            private static Method m3;
+            private static Method m4;
+
+            static {
+                try {
+                    m1 = IService.class.getMethod("handleSome");
+                    m2 = IService.class.getMethod("handleOther");
+                    m3 = IService.class.getMethod("handleEat");
+                    m4 = IService.class.getMethod("handleDrink");
+                } catch (NoSuchMethodException var2) {
+                    throw new NoSuchMethodError(var2.getMessage());
+                }
+            }
+
+            // 委托一个回调器
+            private ICallback callback;
+
+            // 传入回调器对象
+            public StaticProxy(ICallback callback) {
+                this.callback = callback;
+            }
+
+            @Override
+            public void handleSome() {
+                callback.invoke(this, m1, (Object[]) null);
+            }
+
+            @Override
+            public void handleOther() {
+                callback.invoke(this, m2, (Object[]) null);
+            }
+
+            @Override
+            public void handleEat() {
+                callback.invoke(this, m3, (Object[]) null);
+            }
+
+            @Override
+            public void handleDrink() {
+                callback.invoke(this, m4, (Object[]) null);
+            }
+        }
+
+        <b><font color="#a52a2a">测试</font></b>
+        package zeh.test.demo.com.daili.statics;
+
+        import java.lang.reflect.InvocationTargetException;
+        import java.lang.reflect.Method;
+
+        import zeh.test.demo.com.daili.callback.ICallback;
+        import zeh.test.demo.com.daili.service.IService;
+        import zeh.test.demo.com.daili.service.PersonService;
+
+        /**
+         * 功能描述 测试静态代理
+         *
+         * @author zWX5331241
+         * @since 2021-03-30
+         */
+        public class StaticProxyMain {
+            public static void main(String[] args) {
+                IService service = new PersonService();
+                StaticProxy proxy = new StaticProxy(new ICallback() {
+                    @Override
+                    public Object invoke(Object proxy, Method method, Object[] args) {
+                        Object returnValue = null;
+                        try {
+                            // 根据回调传入的method实参，可以在方法粒度去决定是否需要代理真实主题的方法
+                            if (method.getName().equals("handleSome")) {
+                                System.out.println("***哈哈哈，回调逻辑终于和真实主题搞在一起了啊***");
+                                returnValue = method.invoke(service);
+                                System.out.println("***我他妈想怎么玩就怎么玩***");
+                            } else {
+                                returnValue = method.invoke(service);
+                            }
+
+                        } catch (IllegalAccessException illegalAccessException) {
+                            illegalAccessException.printStackTrace();
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                        return returnValue;
+                    }
+                });
+                proxy.handleSome();
+                proxy.handleOther();
+                proxy.handleDrink();
+                proxy.handleEat();
+            }
+        }
+        <b><font color="#a52a2a">测试结果</font></b>
+        ***哈哈哈，回调逻辑终于和真实主题搞在一起了啊***
+        派出一个人去处理一些业务
+        ***我他妈想怎么玩就怎么玩***
+        派出一个人去处理其他事情
+        派出一个人去喝水
+        派出一个人去吃饭
+
+        Process finished with exit code 0
+
+        <b><font color="#a52a2a">结果分析</font></b>
+        静态代理类做了很大的改动，通过反射业务主题接口，获取到目标接口的各个业务方法的method对象，然后将代理主题对象、主题接口的对应method对象和对应的方法参数传入回调器，最终对代理主题方法的访问都统一转发到回调器中了。
+    </pre>
+    <b><a name='header-n25' class='md-header-anchor '></a>2.5、 动态代理模式原理分析</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <b><font color="#a52a2a">JVM中的动态代理类</font></b>
         //
@@ -1779,12 +1914,13 @@
         2.  动态代理只要求开发者编写一个动态代理工厂类，用于生成动态代理对象即可，此工厂类不要求实现任何的业务主题接口。
         3.  实际上动态代理主题类完全是JVM帮我们生成的动态字节码；从反编译后的动态字节码文件来看，实际上动态代理主题类和真实主题类也实现了相同的接口。
         4.  同理，动态代理主题需要覆盖业务接口中的方法，从而实现对真实主题的代理。但实际上动态代理类并没有直接代理真实主题对象，而是代理了一个回调器对象。
-        5.  前面说过，想要完成方法的统一转发，就需要使用回调模式。因此，动态代理底层也是用了回调模式，注入了一个回调器InvocationHandler对象，通过对该回调对象进行代理，将对代理对象的所有访问都统一转发到该回调对象的invoke方法上。
-        6.  最后结合了反射，先获取指定类型的目标method对象，然后传入到回调器中，最终在指定的真实主题对象上执行了目标method，即通过回调器又将方法转发到了真实主题的目标方法上（具体哪个方法通过反射业务主题接口实例化对应的method对象进行）。
-
+        5.  前面说过，想要完成方法的统一转发，就需要使用回调机制。因此，动态代理底层也使用了回调机制，注入了一个回调器InvocationHandler对象，通过对该回调对象进行代理，将对代理对象的所有访问都统一转发到该回调对象的invoke方法上。
+        6.  最后结合了反射，先获取业务接口的目标method对象，然后传入到回调器中，最终在指定的真实主题对象上执行了目标method，即通过回调器又将方法转发到了真实主题的目标method上。
+        7.  动态代理只能代理public的方法，因为JVM生成的动态字节码中，获取method采用了getMethod()，因此只能获取到public方法。
+        8.  动态代理代理的方法不能是final的，因为它必须被代理类覆盖（实际上jdk只能代理接口已经规避了7,8两点）。
 
         总结：实际上，动态代理过程中完成了两次方法转发。
-        第一次是将对动态代理类的目标方法的访问，转发到了统一的回调器方法invoke()上。
+        第一次是将对动态代理类的代理方法的访问，统一转发到了回调器方法invoke()上。
         第二次是通过invoke()回调方法结合反射又将方法转发到指定的真实主题的对应方法上。
     </pre>
 
