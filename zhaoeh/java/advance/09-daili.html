@@ -10,39 +10,7 @@
         overflow-x: initial !important;
     }
 
-    .CodeMirror {
-        height: auto;
-    }
-
-    .CodeMirror-scroll {
-        overflow-y: hidden;
-        overflow-x: auto;
-    }
-
-    .CodeMirror-lines {
-        padding: 4px 0px;
-    }
-
     .CodeMirror pre {
-    }
-
-    .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
-        background-color: white;
-    }
-
-    .CodeMirror-gutters {
-        border-right: 1px solid rgb(221, 221, 221);
-        background-color: rgb(247, 247, 247);
-        white-space: nowrap;
-    }
-
-    .CodeMirror-linenumbers {
-    }
-
-    .CodeMirror-linenumber {
-        padding: 0px 3px 0px 5px;
-        text-align: right;
-        color: rgb(153, 153, 153);
     }
 
     .CodeMirror div.CodeMirror-cursor {
@@ -62,10 +30,6 @@
     }
 
     .CodeMirror div.CodeMirror-cursor.CodeMirror-overwrite {
-    }
-
-    .cm-tab {
-        display: inline-block;
     }
 
     .cm-s-typora-default .cm-header, .cm-s-typora-default .cm-property {
@@ -145,11 +109,6 @@
 
     .cm-starttab .cm-tab::after {
         content: " ";
-    }
-
-    .cm-startspace, .cm-tab, .cm-starttab, .cm-trailing-space-a, .cm-trailing-space-b, .cm-trailing-space-new-line {
-        font-family: monospace;
-        position: relative;
     }
 
     .cm-s-typora-default .cm-trailing-space-new-line::after {
@@ -245,46 +204,6 @@
         color: rgb(0, 0, 204);
     }
 
-    .cm-negative {
-        color: rgb(221, 68, 68);
-    }
-
-    .cm-positive {
-        color: rgb(34, 153, 34);
-    }
-
-    .cm-header, .cm-strong {
-        font-weight: bold;
-    }
-
-    .cm-del {
-        text-decoration: line-through;
-    }
-
-    .cm-em {
-        font-style: italic;
-    }
-
-    .cm-link {
-        text-decoration: underline;
-    }
-
-    .cm-error {
-        color: rgb(255, 0, 0);
-    }
-
-    .cm-invalidchar {
-        color: rgb(255, 0, 0);
-    }
-
-    .cm-constant {
-        color: rgb(38, 139, 210);
-    }
-
-    .cm-defined {
-        color: rgb(181, 137, 0);
-    }
-
     div.CodeMirror span.CodeMirror-matchingbracket {
         color: rgb(0, 255, 0);
     }
@@ -295,11 +214,6 @@
 
     .cm-s-inner .CodeMirror-activeline-background {
         background: inherit;
-    }
-
-    .CodeMirror {
-        position: relative;
-        overflow: hidden;
     }
 
     .CodeMirror-scroll {
@@ -1932,7 +1846,15 @@
         Process finished with exit code 0
 
         <b><font color="#a52a2a">结果分析</font></b>
-
+        静态代理存在如下问题：
+        1.  静态代理为了保证客户端对代理对象和真实对象不感知，所以需要和真实主题实现相同的接口，如此一来，如果业务接口做了改动，不仅仅真实主题需要改动，代理主题实现类也需要进行变更。换言之，假设业务接口新增了一个方法，除了所有真实主题实现类需要覆盖该方法外，代理主题类也需要覆盖该方法。
+        2.  代理主题只能代理一种类型的真实主题，比如案例中，StaticProxy只能代理业务接口 IService 的真实主题；如果新增了一个业务接口，完蛋了，需要新增一个对应的代理主题实现。
+        3.  代理主题尽管可以代理真实主题的一个或者多个方法，但是极端情况下，如果主题接口有成千上百个方法，则除了真实主题需要实现这100个方法外，代理主题同样需要实现这100个方法才能完成对其的代理。
+        总的来说：
+        如果静态代理想为多种业务去提供增强服务，则需要创建很多代理类；
+        如果业务接口有很多方法，则代理主题需要覆盖很多方法。
+        假设有100个接口需要的代理，每个接口有100个业务方法，那么就需要创建100个代理类，每个代理类需要覆盖100个业务方法。
+        这无形中增加了代码冗余和维护难度，除了维护真实主题外，还需要额外维护一套代理主题类。
     </pre>
 
     <b><a name='header-n4' class='md-header-anchor '></a>4、死磕动态代理</b><br>
