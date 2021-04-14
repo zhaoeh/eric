@@ -1,1626 +1,221 @@
-<!doctype html>
-<html>
-<head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width initial-scale=1'>
-    <title>java 面向对象.md</title>
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
-          rel='stylesheet' type='text/css'/>
-    <style type='text/css'>html {
-        overflow-x: initial !important;
-    }
-
-    .CodeMirror {
-        height: auto;
-    }
-
-    .CodeMirror-scroll {
-        overflow-y: hidden;
-        overflow-x: auto;
-    }
-
-    .CodeMirror-lines {
-        padding: 4px 0px;
-    }
-
-    .CodeMirror pre {
-    }
-
-    .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
-        background-color: white;
-    }
-
-    .CodeMirror-gutters {
-        border-right: 1px solid rgb(221, 221, 221);
-        background-color: rgb(247, 247, 247);
-        white-space: nowrap;
-    }
-
-    .CodeMirror-linenumbers {
-    }
-
-    .CodeMirror-linenumber {
-        padding: 0px 3px 0px 5px;
-        text-align: right;
-        color: rgb(153, 153, 153);
-    }
-
-    .CodeMirror div.CodeMirror-cursor {
-        border-left: 1px solid black;
-        z-index: 3;
-    }
-
-    .CodeMirror div.CodeMirror-secondarycursor {
-        border-left: 1px solid silver;
-    }
-
-    .CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor {
-        width: auto;
-        border: 0px;
-        background: rgb(119, 238, 119);
-        z-index: 1;
-    }
-
-    .CodeMirror div.CodeMirror-cursor.CodeMirror-overwrite {
-    }
-
-    .cm-tab {
-        display: inline-block;
-    }
-
-    .cm-s-typora-default .cm-header, .cm-s-typora-default .cm-property {
-        color: rgb(217, 79, 138);
-    }
-
-    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
-        font-size: 2rem;
-        line-height: 2rem;
-    }
-
-    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
-        font-size: 1.4rem;
-        line-height: 1.4rem;
-    }
-
-    .cm-s-typora-default .cm-atom, .cm-s-typora-default .cm-number {
-        color: rgb(149, 132, 134);
-    }
-
-    .cm-s-typora-default .cm-table-row, .cm-s-typora-default .cm-block-start {
-        font-family: monospace;
-    }
-
-    .cm-s-typora-default .cm-comment, .cm-s-typora-default .cm-code {
-        color: rgb(74, 90, 159);
-        font-family: monospace;
-    }
-
-    .cm-s-typora-default .cm-tag {
-        color: rgb(169, 68, 66);
-    }
-
-    .cm-s-typora-default .cm-string {
-        color: rgb(126, 134, 169);
-    }
-
-    .cm-s-typora-default .cm-link {
-        color: rgb(196, 122, 15);
-        text-decoration: underline;
-    }
-
-    .cm-s-typora-default .cm-variable-2, .cm-s-typora-default .cm-variable-1 {
-        color: inherit;
-    }
-
-    .cm-s-typora-default .cm-overlay {
-        font-family: monospace;
-    }
-
-    .CodeMirror.cm-s-typora-default div.CodeMirror-cursor {
-        border-left: 3px solid rgb(228, 98, 154);
-    }
-
-    .cm-s-typora-default .CodeMirror-activeline-background {
-        left: -60px;
-        right: -30px;
-        background: rgba(204, 204, 204, 0.2);
-    }
-
-    .cm-s-typora-default .CodeMirror-gutters {
-        border-right: none;
-        background-color: inherit;
-    }
-
-    .cm-s-typora-default .cm-trailing-space-new-line::after, .cm-startspace::after, .cm-starttab .cm-tab::after {
-        content: "•";
-        position: absolute;
-        left: 0px;
-        opacity: 0;
-        font-family: LetterGothicStd, monospace;
-    }
-
-    .os-windows .cm-startspace::after, .os-windows .cm-starttab .cm-tab::after {
-        left: -0.1em;
-    }
-
-    .cm-starttab .cm-tab::after {
-        content: " ";
-    }
-
-    .cm-startspace, .cm-tab, .cm-starttab, .cm-trailing-space-a, .cm-trailing-space-b, .cm-trailing-space-new-line {
-        font-family: monospace;
-        position: relative;
-    }
-
-    .cm-s-typora-default .cm-trailing-space-new-line::after {
-        content: "↓";
-        opacity: 0.3;
-    }
-
-    .cm-s-inner .cm-keyword {
-        color: rgb(119, 0, 136);
-    }
-
-    .cm-s-inner .cm-atom, .cm-s-inner.cm-atom {
-        color: rgb(34, 17, 153);
-    }
-
-    .cm-s-inner .cm-number {
-        color: rgb(17, 102, 68);
-    }
-
-    .cm-s-inner .cm-def {
-        color: rgb(0, 0, 255);
-    }
-
-    .cm-s-inner .cm-variable {
-        color: black;
-    }
-
-    .cm-s-inner .cm-variable-2 {
-        color: rgb(0, 85, 170);
-    }
-
-    .cm-s-inner .cm-variable-3 {
-        color: rgb(0, 136, 85);
-    }
-
-    .cm-s-inner .cm-property {
-        color: black;
-    }
-
-    .cm-s-inner .cm-operator {
-        color: rgb(152, 26, 26);
-    }
-
-    .cm-s-inner .cm-comment, .cm-s-inner.cm-comment {
-        color: rgb(170, 85, 0);
-    }
-
-    .cm-s-inner .cm-string {
-        color: rgb(170, 17, 17);
-    }
-
-    .cm-s-inner .cm-string-2 {
-        color: rgb(255, 85, 0);
-    }
-
-    .cm-s-inner .cm-meta {
-        color: rgb(85, 85, 85);
-    }
-
-    .cm-s-inner .cm-qualifier {
-        color: rgb(85, 85, 85);
-    }
-
-    .cm-s-inner .cm-builtin {
-        color: rgb(51, 0, 170);
-    }
-
-    .cm-s-inner .cm-bracket {
-        color: rgb(153, 153, 119);
-    }
-
-    .cm-s-inner .cm-tag {
-        color: rgb(17, 119, 0);
-    }
-
-    .cm-s-inner .cm-attribute {
-        color: rgb(0, 0, 204);
-    }
-
-    .cm-s-inner .cm-header, .cm-s-inner.cm-header {
-        color: blue;
-    }
-
-    .cm-s-inner .cm-quote, .cm-s-inner.cm-quote {
-        color: rgb(0, 153, 0);
-    }
-
-    .cm-s-inner .cm-hr, .cm-s-inner.cm-hr {
-        color: rgb(153, 153, 153);
-    }
-
-    .cm-s-inner .cm-link, .cm-s-inner.cm-link {
-        color: rgb(0, 0, 204);
-    }
-
-    .cm-negative {
-        color: rgb(221, 68, 68);
-    }
-
-    .cm-positive {
-        color: rgb(34, 153, 34);
-    }
-
-    .cm-header, .cm-strong {
-        font-weight: bold;
-    }
-
-    .cm-del {
-        text-decoration: line-through;
-    }
-
-    .cm-em {
-        font-style: italic;
-    }
-
-    .cm-link {
-        text-decoration: underline;
-    }
-
-    .cm-error {
-        color: rgb(255, 0, 0);
-    }
-
-    .cm-invalidchar {
-        color: rgb(255, 0, 0);
-    }
-
-    .cm-constant {
-        color: rgb(38, 139, 210);
-    }
-
-    .cm-defined {
-        color: rgb(181, 137, 0);
-    }
-
-    div.CodeMirror span.CodeMirror-matchingbracket {
-        color: rgb(0, 255, 0);
-    }
-
-    div.CodeMirror span.CodeMirror-nonmatchingbracket {
-        color: rgb(255, 34, 34);
-    }
-
-    .cm-s-inner .CodeMirror-activeline-background {
-        background: inherit;
-    }
-
-    .CodeMirror {
-        position: relative;
-        overflow: hidden;
-    }
-
-    .CodeMirror-scroll {
-        margin-bottom: -30px;
-        margin-right: -30px;
-        padding-bottom: 30px;
-        padding-right: 30px;
-        height: 100%;
-        outline: none;
-        position: relative;
-        box-sizing: content-box;
-    }
-
-    .CodeMirror-sizer {
-        position: relative;
-    }
-
-    .CodeMirror-vscrollbar, .CodeMirror-hscrollbar, .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
-        position: absolute;
-        z-index: 6;
-        display: none;
-    }
-
-    .CodeMirror-vscrollbar {
-        right: 0px;
-        top: 0px;
-        overflow-x: hidden;
-        overflow-y: scroll;
-    }
-
-    .CodeMirror-hscrollbar {
-        bottom: 0px;
-        left: 0px;
-        overflow-y: hidden;
-        overflow-x: scroll;
-    }
-
-    .CodeMirror-scrollbar-filler {
-        right: 0px;
-        bottom: 0px;
-    }
-
-    .CodeMirror-gutter-filler {
-        left: 0px;
-        bottom: 0px;
-    }
-
-    .CodeMirror-gutters {
-        position: absolute;
-        left: 0px;
-        top: 0px;
-        padding-bottom: 30px;
-        z-index: 3;
-    }
-
-    .CodeMirror-gutter {
-        white-space: normal;
-        height: 100%;
-        box-sizing: content-box;
-        padding-bottom: 30px;
-        margin-bottom: -32px;
-        display: inline-block;
-    }
-
-    .CodeMirror-gutter-wrapper {
-        position: absolute;
-        z-index: 4;
-        background: none !important;
-        border: none !important;
-    }
-
-    .CodeMirror-gutter-background {
-        position: absolute;
-        top: 0px;
-        bottom: 0px;
-        z-index: 4;
-    }
-
-    .CodeMirror-gutter-elt {
-        position: absolute;
-        cursor: default;
-        z-index: 4;
-    }
-
-    .CodeMirror-lines {
-        cursor: text;
-    }
-
-    .CodeMirror pre {
-        border-radius: 0px;
-        border-width: 0px;
-        background: transparent;
-        font-family: inherit;
-        font-size: inherit;
-        margin: 0px;
-        white-space: pre;
-        word-wrap: normal;
-        color: inherit;
-        z-index: 2;
-        position: relative;
-        overflow: visible;
-    }
-
-    .CodeMirror-wrap pre {
-        word-wrap: break-word;
-        white-space: pre-wrap;
-        word-break: normal;
-    }
-
-    .CodeMirror-code pre {
-        border-right: 30px solid transparent;
-        width: fit-content;
-    }
-
-    .CodeMirror-wrap .CodeMirror-code pre {
-        border-right: none;
-        width: auto;
-    }
-
-    .CodeMirror-linebackground {
-        position: absolute;
-        left: 0px;
-        right: 0px;
-        top: 0px;
-        bottom: 0px;
-        z-index: 0;
-    }
-
-    .CodeMirror-linewidget {
-        position: relative;
-        z-index: 2;
-        overflow: auto;
-    }
-
-    .CodeMirror-widget {
-    }
-
-    .CodeMirror-wrap .CodeMirror-scroll {
-        overflow-x: hidden;
-    }
-
-    .CodeMirror-measure {
-        position: absolute;
-        width: 100%;
-        height: 0px;
-        overflow: hidden;
-        visibility: hidden;
-    }
-
-    .CodeMirror-measure pre {
-        position: static;
-    }
-
-    .CodeMirror div.CodeMirror-cursor {
-        position: absolute;
-        visibility: hidden;
-        border-right: none;
-        width: 0px;
-    }
-
-    .CodeMirror div.CodeMirror-cursor {
-        visibility: hidden;
-    }
-
-    .CodeMirror-focused div.CodeMirror-cursor {
-        visibility: inherit;
-    }
-
-    .CodeMirror-selected {
-        background: rgb(217, 217, 217);
-    }
-
-    .CodeMirror-focused .CodeMirror-selected {
-        background: rgb(215, 212, 240);
-    }
-
-    .cm-searching {
-        background: rgba(255, 255, 0, 0.4);
-    }
-
-    .CodeMirror span {
-    }
-
-    @media print {
-        .CodeMirror div.CodeMirror-cursor {
-            visibility: hidden;
-        }
-    }
-
-    .CodeMirror-lint-markers {
-        width: 16px;
-    }
-
-    .CodeMirror-lint-tooltip {
-        background-color: infobackground;
-        border: 1px solid black;
-        border-radius: 4px;
-        color: infotext;
-        font-family: monospace;
-        overflow: hidden;
-        padding: 2px 5px;
-        position: fixed;
-        white-space: pre-wrap;
-        z-index: 10000;
-        max-width: 600px;
-        opacity: 0;
-        transition: opacity 0.4s;
-        font-size: 0.8em;
-    }
-
-    .CodeMirror-lint-mark-error, .CodeMirror-lint-mark-warning {
-        background-position: left bottom;
-        background-repeat: repeat-x;
-    }
-
-    .CodeMirror-lint-mark-error {
-        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAYAAAC09K7GAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sJDw4cOCW1/KIAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAAAHElEQVQI12NggIL/DAz/GdA5/xkY/qPKMDAwAADLZwf5rvm+LQAAAABJRU5ErkJggg==");
-    }
-
-    .CodeMirror-lint-marker-error, .CodeMirror-lint-marker-warning {
-        background-position: center center;
-        background-repeat: no-repeat;
-        cursor: pointer;
-        display: inline-block;
-        height: 16px;
-        width: 16px;
-        vertical-align: middle;
-        position: relative;
-    }
-
-    .CodeMirror-lint-message-error, .CodeMirror-lint-message-warning {
-        padding-left: 18px;
-        background-position: left top;
-        background-repeat: no-repeat;
-    }
-
-    .CodeMirror-lint-marker-error, .CodeMirror-lint-message-error {
-        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAHlBMVEW7AAC7AACxAAC7AAC7AAAAAAC4AAC5AAD///+7AAAUdclpAAAABnRSTlMXnORSiwCK0ZKSAAAATUlEQVR42mWPOQ7AQAgDuQLx/z8csYRmPRIFIwRGnosRrpamvkKi0FTIiMASR3hhKW+hAN6/tIWhu9PDWiTGNEkTtIOucA5Oyr9ckPgAWm0GPBog6v4AAAAASUVORK5CYII=");
-    }
-
-    .CodeMirror-lint-marker-warning, .CodeMirror-lint-message-warning {
-        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAANlBMVEX/uwDvrwD/uwD/uwD/uwD/uwD/uwD/uwD/uwD6twD/uwAAAADurwD2tQD7uAD+ugAAAAD/uwDhmeTRAAAADHRSTlMJ8mN1EYcbmiixgACm7WbuAAAAVklEQVR42n3PUQqAIBBFUU1LLc3u/jdbOJoW1P08DA9Gba8+YWJ6gNJoNYIBzAA2chBth5kLmG9YUoG0NHAUwFXwO9LuBQL1giCQb8gC9Oro2vp5rncCIY8L8uEx5ZkAAAAASUVORK5CYII=");
-    }
-
-    .CodeMirror-lint-marker-multiple {
-        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAMAAADzjKfhAAAACVBMVEUAAAAAAAC/v7914kyHAAAAAXRSTlMAQObYZgAAACNJREFUeNo1ioEJAAAIwmz/H90iFFSGJgFMe3gaLZ0od+9/AQZ0ADosbYraAAAAAElFTkSuQmCC");
-        background-repeat: no-repeat;
-        background-position: right bottom;
-        width: 100%;
-        height: 100%;
-    }
-
-    :root {
-        --bg-color: #ffffff;
-        --text-color: #333333;
-        --code-block-bg-color: inherit;
-    }
-
-    html {
-        font-size: 14px;
-        background-color: var(--bg-color);
-        color: var(--text-color);
-        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-        -webkit-font-smoothing: antialiased;
-    }
-
-    body {
-        margin: 0px;
-        padding: 0px;
-        height: auto;
-        bottom: 0px;
-        top: 0px;
-        left: 0px;
-        right: 0px;
-        font-size: 1rem;
-        line-height: 1.42857;
-        overflow-x: hidden;
-        background: inherit;
-    }
-
-    a:active, a:hover {
-        outline: 0px;
-    }
-
-    .in-text-selection, ::selection {
-        background: rgb(181, 214, 252);
-        text-shadow: none;
-    }
-
-    #write {
-        margin: 0px auto;
-        height: auto;
-        width: inherit;
-        word-break: normal;
-        word-wrap: break-word;
-        position: relative;
-        padding-bottom: 70px;
-        white-space: pre-wrap;
-        overflow-x: visible;
-    }
-
-    .for-image #write {
-        padding-left: 8px;
-        padding-right: 8px;
-    }
-
-    body.typora-export {
-        padding-left: 30px;
-        padding-right: 30px;
-    }
-
-    @media screen and (max-width: 500px) {
-        body.typora-export {
-            padding-left: 0px;
-            padding-right: 0px;
-        }
-
-        .CodeMirror-sizer {
-            margin-left: 0px !important;
-        }
-
-        .CodeMirror-gutters {
-            display: none !important;
-        }
-    }
-
-    .typora-export #write {
-        margin: 0px auto;
-    }
-
-    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
-        margin-top: 30px;
-    }
-
-    #write li > table:first-child {
-        margin-top: -20px;
-    }
-
-    img {
-        max-width: 100%;
-        vertical-align: middle;
-    }
-
-    input, button, select, textarea {
-        color: inherit;
-        font-style: inherit;
-        font-variant: inherit;
-        font-weight: inherit;
-        font-stretch: inherit;
-        font-size: inherit;
-        line-height: inherit;
-        font-family: inherit;
-    }
-
-    input[type="checkbox"], input[type="radio"] {
-        line-height: normal;
-        padding: 0px;
-    }
-
-    ::before, ::after, * {
-        box-sizing: border-box;
-    }
-
-    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
-        width: inherit;
-    }
-
-    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
-        position: relative;
-    }
-
-    h1 {
-        font-size: 2rem;
-    }
-
-    h2 {
-        font-size: 1.8rem;
-    }
-
-    h3 {
-        font-size: 1.6rem;
-    }
-
-    h4 {
-        font-size: 1.4rem;
-    }
-
-    h5 {
-        font-size: 1.2rem;
-    }
-
-    h6 {
-        font-size: 1rem;
-    }
-
-    p {
-        -webkit-margin-before: 1rem;
-        -webkit-margin-after: 1rem;
-        -webkit-margin-start: 0px;
-        -webkit-margin-end: 0px;
-    }
-
-    .typora-export p {
-        white-space: normal;
-    }
-
-    .mathjax-block {
-        margin-top: 0px;
-        margin-bottom: 0px;
-        -webkit-margin-before: 0rem;
-        -webkit-margin-after: 0rem;
-    }
-
-    .hidden {
-        display: none;
-    }
-
-    .md-blockmeta {
-        color: rgb(204, 204, 204);
-        font-weight: bold;
-        font-style: italic;
-    }
-
-    a {
-        cursor: pointer;
-    }
-
-    sup.md-footnote {
-        padding: 2px 4px;
-        background-color: rgba(238, 238, 238, 0.7);
-        color: rgb(85, 85, 85);
-        border-radius: 4px;
-    }
-
-    #write input[type="checkbox"] {
-        cursor: pointer;
-        width: inherit;
-        height: inherit;
-        margin: 4px 0px 0px;
-    }
-
-    tr {
-        break-inside: avoid;
-        break-after: auto;
-    }
-
-    thead {
-        display: table-header-group;
-    }
-
-    table {
-        border-collapse: collapse;
-        border-spacing: 0px;
-        width: 100%;
-        overflow: auto;
-        break-inside: auto;
-        text-align: left;
-    }
-
-    table.md-table td {
-        min-width: 80px;
-    }
-
-    .CodeMirror-gutters {
-        border-right: 0px;
-        background-color: inherit;
-    }
-
-    .CodeMirror {
-        text-align: left;
-    }
-
-    .CodeMirror-placeholder {
-        opacity: 0.3;
-    }
-
-    .CodeMirror pre {
-        padding: 0px 4px;
-    }
-
-    .CodeMirror-lines {
-        padding: 0px;
-    }
-
-    div.hr:focus {
-        cursor: none;
-    }
-
-    pre {
-        white-space: pre-wrap;
-    }
-
-    .CodeMirror-gutters {
-        margin-right: 4px;
-    }
-
-    .md-fences {
-        font-size: 0.9rem;
-        display: block;
-        break-inside: avoid;
-        text-align: left;
-        overflow: visible;
-        white-space: pre;
-        background: var(--code-block-bg-color);
-        position: relative !important;
-    }
-
-    .md-diagram-panel {
-        width: 100%;
-        margin-top: 10px;
-        text-align: center;
-        padding-top: 0px;
-        padding-bottom: 8px;
-        overflow-x: auto;
-    }
-
-    .md-fences .CodeMirror.CodeMirror-wrap {
-        top: -1.6em;
-        margin-bottom: -1.6em;
-    }
-
-    .md-fences.mock-cm {
-        white-space: pre-wrap;
-    }
-
-    .show-fences-line-number .md-fences {
-        padding-left: 0px;
-    }
-
-    .show-fences-line-number .md-fences.mock-cm {
-        padding-left: 40px;
-    }
-
-    .footnotes {
-        opacity: 0.8;
-        font-size: 0.9rem;
-        padding-top: 1em;
-        padding-bottom: 1em;
-    }
-
-    .footnotes + .footnotes {
-        margin-top: -1em;
-    }
-
-    .md-reset {
-        margin: 0px;
-        padding: 0px;
-        border: 0px;
-        outline: 0px;
-        vertical-align: top;
-        background: transparent;
-        text-decoration: none;
-        text-shadow: none;
-        float: none;
-        position: static;
-        width: auto;
-        height: auto;
-        white-space: nowrap;
-        cursor: inherit;
-        -webkit-tap-highlight-color: transparent;
-        line-height: normal;
-        font-weight: normal;
-        text-align: left;
-        box-sizing: content-box;
-        direction: ltr;
-    }
-
-    li div {
-        padding-top: 0px;
-    }
-
-    blockquote {
-        margin: 1rem 0px;
-    }
-
-    li p, li .mathjax-block {
-        margin: 0.5rem 0px;
-    }
-
-    li {
-        margin: 0px;
-        position: relative;
-    }
-
-    blockquote > :last-child {
-        margin-bottom: 0px;
-    }
-
-    blockquote > :first-child {
-        margin-top: 0px;
-    }
-
-    .footnotes-area {
-        color: rgb(136, 136, 136);
-        margin-top: 0.714rem;
-        padding-bottom: 0.143rem;
-    }
-
-    @media print {
-        html, body {
-            border: 1px solid transparent;
-            height: 99%;
-            break-after: avoid;
-            break-before: avoid;
-        }
-
-        .typora-export * {
-            -webkit-print-color-adjust: exact;
-        }
-
-        h1, h2, h3, h4, h5, h6 {
-            break-after: avoid-page;
-            orphans: 2;
-        }
-
-        p {
-            orphans: 4;
-        }
-
-        html.blink-to-pdf {
-            font-size: 13px;
-        }
-
-        .typora-export #write {
-            padding-left: 1cm;
-            padding-right: 1cm;
-            padding-bottom: 0px;
-            break-after: avoid;
-        }
-
-        .typora-export #write::after {
-            height: 0px;
-        }
-
-        @page {
-            margin: 20mm 0mm;
-        }
-    }
-
-    .footnote-line {
-        margin-top: 0.714em;
-        font-size: 0.7em;
-    }
-
-    a img, img a {
-        cursor: pointer;
-    }
-
-    pre.md-meta-block {
-        font-size: 0.8rem;
-        min-height: 2.86rem;
-        white-space: pre-wrap;
-        background: rgb(204, 204, 204);
-        display: block;
-        overflow-x: hidden;
-    }
-
-    p .md-image:only-child {
-        display: inline-block;
-        width: 100%;
-        text-align: center;
-    }
-
-    #write .MathJax_Display {
-        margin: 0.8em 0px 0px;
-    }
-
-    .mathjax-block {
-        white-space: pre;
-        overflow: hidden;
-        width: 100%;
-    }
-
-    p + .mathjax-block {
-        margin-top: -1.143rem;
-    }
-
-    .mathjax-block:not(:empty)::after {
-        display: none;
-    }
-
-    [contenteditable="true"]:active, [contenteditable="true"]:focus {
-        outline: none;
-        box-shadow: none;
-    }
-
-    .task-list {
-        list-style-type: none;
-    }
-
-    .task-list-item {
-        position: relative;
-        padding-left: 1em;
-    }
-
-    .task-list-item input {
-        position: absolute;
-        top: 0px;
-        left: 0px;
-    }
-
-    .math {
-        font-size: 1rem;
-    }
-
-    .md-toc {
-        min-height: 3.58rem;
-        position: relative;
-        font-size: 0.9rem;
-        border-radius: 10px;
-    }
-
-    .md-toc-content {
-        position: relative;
-        margin-left: 0px;
-    }
-
-    .md-toc::after, .md-toc-content::after {
-        display: none;
-    }
-
-    .md-toc-item {
-        display: block;
-        color: rgb(65, 131, 196);
-        text-decoration: none;
-    }
-
-    .md-toc-inner:hover {
-    }
-
-    .md-toc-inner {
-        display: inline-block;
-        cursor: pointer;
-    }
-
-    .md-toc-h1 .md-toc-inner {
-        margin-left: 0px;
-        font-weight: bold;
-    }
-
-    .md-toc-h2 .md-toc-inner {
-        margin-left: 2em;
-    }
-
-    .md-toc-h3 .md-toc-inner {
-        margin-left: 4em;
-    }
-
-    .md-toc-h4 .md-toc-inner {
-        margin-left: 6em;
-    }
-
-    .md-toc-h5 .md-toc-inner {
-        margin-left: 8em;
-    }
-
-    .md-toc-h6 .md-toc-inner {
-        margin-left: 10em;
-    }
-
-    @media screen and (max-width: 48em) {
-        .md-toc-h3 .md-toc-inner {
-            margin-left: 3.5em;
-        }
-
-        .md-toc-h4 .md-toc-inner {
-            margin-left: 5em;
-        }
-
-        .md-toc-h5 .md-toc-inner {
-            margin-left: 6.5em;
-        }
-
-        .md-toc-h6 .md-toc-inner {
-            margin-left: 8em;
-        }
-    }
-
-    a.md-toc-inner {
-        font-size: inherit;
-        font-style: inherit;
-        font-weight: inherit;
-        line-height: inherit;
-    }
-
-    .footnote-line a:not(.reversefootnote) {
-        color: inherit;
-    }
-
-    .md-attr {
-        display: none;
-    }
-
-    .md-fn-count::after {
-        content: ".";
-    }
-
-    .md-tag {
-        opacity: 0.5;
-    }
-
-    .md-comment {
-        color: rgb(162, 127, 3);
-        opacity: 0.8;
-        font-family: monospace;
-    }
-
-    code {
-        text-align: left;
-    }
-
-    h1 .md-tag, h2 .md-tag, h3 .md-tag, h4 .md-tag, h5 .md-tag, h6 .md-tag {
-        font-weight: initial;
-        opacity: 0.35;
-    }
-
-    a.md-print-anchor {
-        border-width: initial !important;
-        border-style: none !important;
-        border-color: initial !important;
-        display: inline-block !important;
-        position: absolute !important;
-        width: 1px !important;
-        right: 0px !important;
-        outline: none !important;
-        background: transparent !important;
-        text-decoration: initial !important;
-        text-shadow: initial !important;
-    }
-
-    .md-inline-math .MathJax_SVG .noError {
-        display: none !important;
-    }
-
-    .mathjax-block .MathJax_SVG_Display {
-        text-align: center;
-        margin: 1em 0em;
-        position: relative;
-        text-indent: 0px;
-        max-width: none;
-        max-height: none;
-        min-height: 0px;
-        min-width: 100%;
-        width: auto;
-        display: block !important;
-    }
-
-    .MathJax_SVG_Display, .md-inline-math .MathJax_SVG_Display {
-        width: auto;
-        margin: inherit;
-        display: inline-block !important;
-    }
-
-    .MathJax_SVG .MJX-monospace {
-        font-family: monospace;
-    }
-
-    .MathJax_SVG .MJX-sans-serif {
-        font-family: sans-serif;
-    }
-
-    .MathJax_SVG {
-        display: inline;
-        font-style: normal;
-        font-weight: normal;
-        line-height: normal;
-        zoom: 90%;
-        text-indent: 0px;
-        text-align: left;
-        text-transform: none;
-        letter-spacing: normal;
-        word-spacing: normal;
-        word-wrap: normal;
-        white-space: nowrap;
-        float: none;
-        direction: ltr;
-        max-width: none;
-        max-height: none;
-        min-width: 0px;
-        min-height: 0px;
-        border: 0px;
-        padding: 0px;
-        margin: 0px;
-    }
-
-    .MathJax_SVG * {
-        transition: none;
-    }
-
-    .md-diagram-panel > svg {
-        max-width: 100%;
-    }
-
-    [lang="flow"] svg, [lang="mermaid"] svg {
-        max-width: 100%;
-    }
-
-    :root {
-        --side-bar-bg-color: #fafafa;
-        --control-text-color: #777;
-    }
-
-    @font-face {
-        font-family: "Open Sans";
-        font-style: normal;
-        font-weight: normal;
-        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
-    }
-
-    @font-face {
-        font-family: "Open Sans";
-        font-style: italic;
-        font-weight: normal;
-        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
-    }
-
-    @font-face {
-        font-family: "Open Sans";
-        font-style: normal;
-        font-weight: bold;
-        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
-    }
-
-    @font-face {
-        font-family: "Open Sans";
-        font-style: italic;
-        font-weight: bold;
-        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
-    }
-
-    html {
-        font-size: 16px;
-    }
-
-    body {
-        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-        color: rgb(51, 51, 51);
-        line-height: 1.6;
-    }
-
-    #write {
-        max-width: 860px;
-        margin: 0px auto;
-        padding: 20px 30px 100px;
-    }
-
-    #write > ul:first-child, #write > ol:first-child {
-        margin-top: 30px;
-    }
-
-    body > :first-child {
-        margin-top: 0px !important;
-    }
-
-    body > :last-child {
-        margin-bottom: 0px !important;
-    }
-
-    a {
-        color: rgb(65, 131, 196);
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-        position: relative;
-        margin-top: 1rem;
-        margin-bottom: 1rem;
-        font-weight: bold;
-        line-height: 1.4;
-        cursor: text;
-    }
-
-    h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
-        text-decoration: none;
-    }
-
-    h1 tt, h1 code {
-        font-size: inherit;
-    }
-
-    h2 tt, h2 code {
-        font-size: inherit;
-    }
-
-    h3 tt, h3 code {
-        font-size: inherit;
-    }
-
-    h4 tt, h4 code {
-        font-size: inherit;
-    }
-
-    h5 tt, h5 code {
-        font-size: inherit;
-    }
-
-    h6 tt, h6 code {
-        font-size: inherit;
-    }
-
-    h1 {
-        padding-bottom: 0.3em;
-        font-size: 2.25em;
-        line-height: 1.2;
-        border-bottom: 1px solid rgb(238, 238, 238);
-    }
-
-    h2 {
-        padding-bottom: 0.3em;
-        font-size: 1.75em;
-        line-height: 1.225;
-        border-bottom: 1px solid rgb(238, 238, 238);
-    }
-
-    h3 {
-        font-size: 1.5em;
-        line-height: 1.43;
-    }
-
-    h4 {
-        font-size: 1.25em;
-    }
-
-    h5 {
-        font-size: 1em;
-    }
-
-    h6 {
-        font-size: 1em;
-        color: rgb(119, 119, 119);
-    }
-
-    p, blockquote, ul, ol, dl, table {
-        margin: 0.8em 0px;
-    }
-
-    li > ol, li > ul {
-        margin: 0px;
-    }
-
-    hr {
-        height: 4px;
-        padding: 0px;
-        margin: 16px 0px;
-        background-color: rgb(231, 231, 231);
-        border-width: 0px 0px 1px;
-        border-style: none none solid;
-        border-top-color: initial;
-        border-right-color: initial;
-        border-left-color: initial;
-        border-image: initial;
-        overflow: hidden;
-        box-sizing: content-box;
-        border-bottom-color: rgb(221, 221, 221);
-    }
-
-    body > h2:first-child {
-        margin-top: 0px;
-        padding-top: 0px;
-    }
-
-    body > h1:first-child {
-        margin-top: 0px;
-        padding-top: 0px;
-    }
-
-    body > h1:first-child + h2 {
-        margin-top: 0px;
-        padding-top: 0px;
-    }
-
-    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
-        margin-top: 0px;
-        padding-top: 0px;
-    }
-
-    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
-        margin-top: 0px;
-        padding-top: 0px;
-    }
-
-    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
-        margin-top: 0px;
-    }
-
-    li p.first {
-        display: inline-block;
-    }
-
-    ul, ol {
-        padding-left: 30px;
-    }
-
-    ul:first-child, ol:first-child {
-        margin-top: 0px;
-    }
-
-    ul:last-child, ol:last-child {
-        margin-bottom: 0px;
-    }
-
-    blockquote {
-        border-left: 4px solid rgb(221, 221, 221);
-        padding: 0px 15px;
-        color: rgb(119, 119, 119);
-    }
-
-    blockquote blockquote {
-        padding-right: 0px;
-    }
-
-    table {
-        padding: 0px;
-        word-break: initial;
-    }
-
-    table tr {
-        border-top: 1px solid rgb(204, 204, 204);
-        margin: 0px;
-        padding: 0px;
-    }
-
-    table tr:nth-child(2n) {
-        background-color: rgb(248, 248, 248);
-    }
-
-    table tr th {
-        font-weight: bold;
-        border: 1px solid rgb(204, 204, 204);
-        text-align: left;
-        margin: 0px;
-        padding: 6px 13px;
-    }
-
-    table tr td {
-        border: 1px solid rgb(204, 204, 204);
-        text-align: left;
-        margin: 0px;
-        padding: 6px 13px;
-    }
-
-    table tr th:first-child, table tr td:first-child {
-        margin-top: 0px;
-    }
-
-    table tr th:last-child, table tr td:last-child {
-        margin-bottom: 0px;
-    }
-
-    .CodeMirror-gutters {
-        border-right: 1px solid rgb(221, 221, 221);
-    }
-
-    .md-fences, code, tt {
-        border: 1px solid rgb(221, 221, 221);
-        background-color: rgb(248, 248, 248);
-        border-radius: 3px;
-        font-family: Consolas, "Liberation Mono", Courier, monospace;
-        padding: 2px 4px 0px;
-        font-size: 0.9em;
-    }
-
-    .md-fences {
-        margin-bottom: 15px;
-        margin-top: 15px;
-        padding: 8px 1em 6px;
-    }
-
-    .task-list {
-        padding-left: 0px;
-    }
-
-    .task-list-item {
-        padding-left: 32px;
-    }
-
-    .task-list-item input {
-        top: 3px;
-        left: 8px;
-    }
-
-    @media screen and (min-width: 914px) {
-    }
-
-    @media print {
-        html {
-            font-size: 13px;
-        }
-
-        table, pre {
-            break-inside: avoid;
-        }
-
-        pre {
-            word-wrap: break-word;
-        }
-    }
-
-    .md-fences {
-        background-color: rgb(248, 248, 248);
-    }
-
-    #write pre.md-meta-block {
-        padding: 1rem;
-        font-size: 85%;
-        line-height: 1.45;
-        background-color: rgb(247, 247, 247);
-        border: 0px;
-        border-radius: 3px;
-        color: rgb(119, 119, 119);
-        margin-top: 0px !important;
-    }
-
-    .mathjax-block > .code-tooltip {
-        bottom: 0.375rem;
-    }
-
-    #write > h3.md-focus::before {
-        left: -1.5625rem;
-        top: 0.375rem;
-    }
-
-    #write > h4.md-focus::before {
-        left: -1.5625rem;
-        top: 0.285714rem;
-    }
-
-    #write > h5.md-focus::before {
-        left: -1.5625rem;
-        top: 0.285714rem;
-    }
-
-    #write > h6.md-focus::before {
-        left: -1.5625rem;
-        top: 0.285714rem;
-    }
-
-    .md-image > .md-meta {
-        border: 1px solid rgb(221, 221, 221);
-        border-radius: 3px;
-        font-family: Consolas, "Liberation Mono", Courier, monospace;
-        padding: 2px 4px 0px;
-        font-size: 0.9em;
-        color: inherit;
-    }
-
-    .md-tag {
-        color: inherit;
-    }
-
-    .md-toc {
-        margin-top: 20px;
-        padding-bottom: 20px;
-    }
-
-    .sidebar-tabs {
-        border-bottom: none;
-    }
-
-    #typora-quick-open {
-        border: 1px solid rgb(221, 221, 221);
-        background-color: rgb(248, 248, 248);
-    }
-
-    #typora-quick-open-item {
-        background-color: rgb(250, 250, 250);
-        border-color: rgb(254, 254, 254) rgb(229, 229, 229) rgb(229, 229, 229) rgb(238, 238, 238);
-        border-style: solid;
-        border-width: 1px;
-    }
-
-    #md-notification::before {
-        top: 10px;
-    }
-
-    .on-focus-mode blockquote {
-        border-left-color: rgba(85, 85, 85, 0.12);
-    }
-
-    header, .context-menu, .megamenu-content, footer {
-        font-family: "Segoe UI", Arial, sans-serif;
-    }
-
-    .file-node-content:hover .file-node-icon, .file-node-content:hover .file-node-open-state {
-        visibility: visible;
-    }
-
-    .mac-seamless-mode #typora-sidebar {
-        background-color: var(--side-bar-bg-color);
-    }
-
-    .md-lang {
-        color: rgb(180, 101, 77);
-    }
-
-
-    </style>
-</head>
-<body class='typora-export'>
 <div id='write' class='is-node'>
-    <b><a name='header-n0' class='md-header-anchor '></a>JAVA 变量和常量的本质</b>
+    <b><a name='header-n0' class='md-header-anchor '></a>java中常量和变量</b>
 
-    <b><a name='header-n1' class='md-header-anchor '></a>1、理解变量和常量的概念</b><br>
-    <b><a name='header-n11' class='md-header-anchor '></a>1.1、 相同点</b>
+    <b><a name='header-n1' class='md-header-anchor '></a>1、常量和变量基本概念</b><br>
+    <b><a name='header-n11' class='md-header-anchor '></a>1.1、 什么是变量？</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        1.  都是操作数，本质都是一块有名称的内存空间；
-        2.  不论是变量还是常量，都必须指定数据类型。
+        java中的变量是一个可以改变其值的标记符号，通过该符号可以定位到对应的值，从而作为操作数构成程序的一部分。
+        说白了变量就是一块可以反复修改内容的有名称的内存空间。
+        变量在使用前必须进行初始化赋值操作。
+        <font color="#a52a2a">
+            tips：
+            java编译器为变量的初始化做了优化。即：“成员变量自动初始化、方法变量手动初始化”。
+            如果变量是成员变量的话，在使用前不用开发者显式初始化也可以，java编译器在编译成class文件时会自动为我们初始化成员变量，将它们初始化对应的默认值。
+            如果是方法内的局部变量的话，则需要开发者显式对其进行初始化，否则编译报错。
+        </font>
     </pre>
-    <b><a name='header-n12' class='md-header-anchor '></a>1.2、 不同点</b>
+    <b><a name='header-n12' class='md-header-anchor '></a>1.2、 什么是常量？</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        1.  同一个名称的变量其内存空间的值可以被修改，即变量可以被重置，而同一个名称的常量其内存空间一旦初始化将不能重置为其他内容，即常量的值不可以被重置。
-        2.  变量作为成员变量时，JVM将自动初始化；而常量不论作为成员常量还是方法常量都需要手动初始化，因为常量是在编译阶段就要放置在 class 常量池中的。。
-        3.  变量和常量存放的物理内存位置不同：
-        方法变量永远存放在栈内存（如果是基本类型栈中保存值，如果是引用类型栈中保存引用地址）；方法常量永远存在方法区的运行时常量池（此时方法常量复制的是class常量池中该常量的内存地址副本）。
-        静态成员变量永远存在于方法区内存的静态区；静态成员常量永远存在方法区内存的运行时常量池。
-        非静态成员变量永远存在对象的堆内存；非静态成员常量永远存在方法区内存的运行时常量池（此时方法常量复制的是class常量池中该常量的内存地址副本）。
-        备注：上面所有的保存指的都是基本值或者引用类型的引用地址，而不是对象实体，注意java中所有对象实体都保存在堆内存，这是毋庸置疑的。
+        java中的常量和变量比较类似，都是一块有名称内存空间地址，作为操作数构成程序的一部分。
+        只不过常量要求我们在使用前必须手动初始化赋值，意味着java编译器不会为我们优化常量的初始化操作。
+        而且，常量一旦手动初始化之后，其值在后续整个操作中不允许在修改，即不允许重置常量的值，如果尝试重置其值，编译器会报错。
+        <font color="#a52a2a">要注意，不论是变量还是常量，都必须明确指定数据类型，因为java是强类型语言</font>
+        下面看一个案例：
+        <font color="gray">
+            package zeh.test.demo.com.changliang;
+
+            /**
+             * @since 2021-04-12
+             */
+            public class TestConst {
+
+                public static void main(String[] args) {
+                    int a = 1;
+                    a = 100;
+                    System.out.println(a);
+
+                    final int b = 10;
+                    // 常量一旦初始化之后，则不允许重置其内容；
+                    // 此处尝试重置，编译器禁止此行为，直接编译报错
+                    b = 101;
+                }
+
+            }
+        </font>
     </pre>
+    <b><a name='header-n13' class='md-header-anchor '></a>1.3、 java中常量和变量的分类？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        基于我们的理解，java中的变量和常量往往具体划分为如下几种：
+        <b><font color="#a52a2a">按照数据类型划分：</font> </b>
+        按照变量和常量分配内存空间的大小及以何种形式存储，存储的内容是什么（值还是地址）来划分的话，分为：基本数据类型 + 引用数据类型。
+        1.  基本数据类型有八种，存储的是各种基本数据，即永远存储的是变量的具体值；比如int a = 10;则a中存储的是10。
+        2.  引用数据类型有四种(类，数组，接口，枚举)，存储的是引用（即是指向堆内存空间的地址）。
+
+        <b><font color="#a52a2a">按照存储的物理位置划分:</font> </b>
+        先分析变量：
+        1.  方法变量：定义在方法或者某个代码块中，这种变量叫做方法（局部）变量，它的作用域只是当前这个方法或者块；方法变量保存在虚拟机栈中；线程私有，当前目标线程执行完毕，生命周期结束。
+        2.  实例成员变量：定义在类中的非static变量，这种变量叫做实例成员变量，它的作用域是当前类的某个实例对象；成员变量保存在堆内存中；多个线程共享，所有目标线程执行完毕，生命周期结束。
+        3.  静态成员变量：定义在类中的static变量，这种变量叫做类成员变量，也叫做静态成员变量，它的作用域是当前类的所有实例对象；类成员变量保存在方法区的静态区中；多个线程共享，所有目标线程执行完毕，生命周期结束。
+
+        接下来分析常量，java中要想定义一个变量为常量的话，只需要对该变量使用final关键字进行修饰即可。因此，对应的常量也划分为如下几种：
+        1.  方法常量：也叫做局部常量，定义在方法或者某个块中，作用域是当前方法或者当前块；方法常量保存在虚拟机栈中；线程私有，当前目标线程执行完毕，生命周期结束。
+        2.  实例成员常量：作用域是当前类的某个实例化对象；实例成员常量保存在堆内存中；多个线程共享，所有目标线程执行完毕，生命周期结束。
+        3.  类成员常量：也叫做静态成员常量，作用域是当前类的所有实例化对象；静态成员常量保存在方法区的静态区中；多个线程共享，所有目标线程执行完毕，生命周期结束。
+
+        备注：
+        上面所有的保存指的都是基本值或者引用类型的引用地址，而不是对象实体，注意java中所有对象实体都保存在堆内存，这是毋庸置疑的。
+        变量和常量的内存分配口诀：实例成员堆内存、静态成员方法区、局部变量栈内存。
+        <font color="#a52a2a">
+            tips：
+            常量虽然最终展示的保存位置是虚拟机栈、堆内存或者方法区的静态区，但实际上这是个复杂的过程。
+            1.  java编译器对于方法常量、实例成员常量和静态成员常量的值，会首先在*.class文件中进行保存，保存的区域叫做class常量池，而保存的东西属于java字面量的一部分。
+            2.  当运行代码后，JVM装载程序，会将class常量池中的东西复制一份出来，复制到JVM方法区内存的一个地方，这个地方叫做运行时常量池。
+            3.  随着程序执行
+                如果调用的是方法常量，则将其对应的值从运行时常量池中复制一份出来，复制到当前作用域的虚拟机栈中；
+                如果调用的是实例成员常量，则将其对应的值从运行时常量池中复制一份出来，复制到当前实例对象所在的堆内存中；
+                如果是静态成员常量，同样从运行时常量池中复制一份出来，复制到方法区内存的静态区中。
+            因此，常量虽然最终保存的位置和变量完全一样，但它的加载过程比变量复杂多了。
+        </font>
+
+        下面是案例：
+        <font color="gray">
+        package zeh.test.demo.com.changliang;
+
+        /**
+         * 功能描述 常量和变量的划分
+         *
+         * @since 2021-04-12
+         */
+        public class MyConst {
+
+            // 实例成员变量，最终保存在当前对象所在的堆内存中
+            private int anInt1;
+
+            // 静态成员常量，最终保存在方法区的静态区中
+            private static int anInt2;
+
+            // 实例成员常量
+            // 1.   java编译器将字面量 100 保存在class常量池中；
+            // 2.   运行后，JVM从class常量池中载入 100 的副本到方法区的运行时常量池中；
+            // 3.   对象开辟后，将 100 从运行时常量池中复制一份副本到当前对象所在的堆内存中。
+            private final int anInt3 = 100;
+
+            // 静态成员常量
+            // 1.   java编译器将字面量 200 保存在class常量池中；
+            // 2.   运行后，JVM从class常量池中载入 200 的副本到方法区的运行时常量池中；
+            // 3.   类装载完毕后，将 200 从运行时常量池中复制一份副本到方法区内存的静态区中。
+            private final static int anInt4 = 200;
+
+            public void testConst(){
+                // 方法变量保存在虚拟机栈内存中；
+                // 方法和块中不允许定义static变量
+                int a1 = 100;
+                // 方法常量保存在虚拟机栈内存中；
+                // 1.   java编译器将字面量 200 保存在class常量池中（先这样理解，实际上JVM指令处理基本类型时不一定都保存到class常量池中的）；
+                // 2.   运行后，JVM从class常量池中载入 200 的副本到方法区的运行时常量池中；
+                // 3.   当前方法入栈后，将 200 从运行时常量池中复制一份副本到当前方法的虚拟机栈中。
+                final int a2 = 200;
+            }
+        }
+        </font>
+    </pre>
+    <b><a name='header-n14' class='md-header-anchor '></a>1.4、 常量和变量的初始化方式有什么区别呢？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        先说结论：
+        1.  方法变量和方法常量在使用前必须手动初始化赋值，可以在声明时就赋值，也可以在后续使用前赋值；否则编译报错。
+        2.  成员变量（静态和非静态）使用前可以不显式初始化，此时java编译器默认为我们初始化为对应的默认值。成员常量（静态和非静态）使用前必须手动初始化赋值。
+        3.  成员常量的初始化赋值方式具体划分为如下：
+            （1）在定义时就直接初始化赋值；
+            （2）对于实例成员常量可以在构造方法或者构造块中初始化赋值；
+            （3）对于静态成员常量可以在静态块中初始化赋值。
+        <font color="#a52a2a">
+            着重解释第3点！
+            可能我们对方法常量或者成员常量初始化赋值，最常见的操作就是定义时直接赋值，比如下面这种：
+            final int a = 100;
+            private final int b = 200;
+
+            但实际上对于成员常量来说，如果是静态成员常量的话可以在静态块中初始化赋值。如果是实例成员常量的话可以在构造块或者构造方法中初始化赋值。
+            背后原理实际上就是JVM对目标类的装载流程。
+            我们知道，JVM装载目标类的大致流程是：“加载”、“链接（验证、准备和解析）”、“初始化”、“使用”、“卸载”。
+            其中，重要的步骤体现在代码层面就是：“静静非构构初始化方法”。即静态成员的初始化操作远早于非静态成员。
+            对于静态成员常量，其初始化过程只能保证在“静静”这两步骤执行完毕；要么是直接初始化赋值，要么是在静态块中进行初始化；因为静态成员的使用不依赖于构造对象，它早于构造对象的产生，初始化完可能就需要使用，所以不能放在后续的构造中进行初始化。
+            对于实例成员常量，其初始化过程只能保证在“非构构”这三步骤执行完毕；要么是直接初始化赋值，要么在构造方法中执行，要么在构造块中执行；因为静态块不能引用实例成员，因此实例成员不能在静态块中执行，只能在构造中执行。
+
+            java编译器遵守如上的规范，一旦检查到变量或者常量的初始化过程不符合该规范（比如方法变量使用前没有初始化、静态成员常量在构造方法中初始化、初始化常量后尝试重置它等），则java编译器会报错，不允许成功编译成class字节码。
+        </font>
+
+        下面我们来看下变量和常量初始化方式的案例：
+        <font color="gray">
+            package zeh.test.demo.com.changliang;
+
+            /**
+             * 功能描述 常量和变量的初始化方式
+             *
+             * @since 2021-04-12
+             */
+            public class MyConst {
+
+                // 实例成员变量，开发者可以不显式初始化，java编译器在编译为class文件后默认替我们初始化为对应的默认值0。
+                private int anInt1;
+
+                // 静态成员常量，开发者可以不显式初始化，java编译器在编译为class文件后默认替我们初始化为对应的默认值0。
+                private static int anInt2;
+
+                // 实例成员常量，开发者必须显式初始化赋值，否则编译器报错。
+                private final int anInt3 = 100;
+
+                // 静态成员常量，开发者必须显式初始化赋值，否则编译器报错。
+                private final static int anInt4 = 200;
+
+                // 实例成员常量，可以在构造方法中初始化赋值，否则编译器报错。
+                private final int anInt5;
+
+                // 实例成员常量，可以在构造块中初始化赋值，否则编译器报错。
+                private final int anInt6;
+
+                // 静态成员常量，可以在静态块中初始化赋值，否则编译器报错。
+                private final static int anInt7;
+
+                {
+                    // 构造块，为 anInt6 进行初始化操作
+                    anInt6 = 110;
+                }
+
+                public MyConst(){
+                    // 构造方法，为 anInt5 进行初始化操作
+                    anInt5 = 120;
+                }
+
+                static {
+                    // 静态块，为 anInt7 进行初始化操作
+                    anInt7 = 119;
+                }
+
+                public void testConst() {
+                    // 方法变量，使用前必须手动初始化赋值
+                    int a1;
+                    // 方法常量，使用前必须手动初始化赋值
+                    final int a2;
+
+                    a1 = 100;
+                    a2 = 200;
+                    System.out.println(a1);
+                    System.out.println(a2);
+                }
+            }
+        </font>
+    </pre>
+    <b><a name='header-n15' class='md-header-anchor '></a>1.5、 常量的特性是java编译器限制的</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        我们务必要清楚一点，上面针对常量的所有特性限制，比如：
+        常量使用前必须初始化、常量初始化方式的规则、常量初始化后如果是基本类型则不允许重置它的值如果是引用类型则不允许重置它的引用地址等，这些限制完全是由java编译器做的校验。
+        java编译器检查到一个变量使用了final关键字修饰后，它便会根据这些规则去做检查，只有符合了final的检查规范才允许java源文件编译成class字节码，否则java编译器将报错。
+    </pre>
+
     <b><a name='header-n2' class='md-header-anchor '></a>2、深入理解常量和变量：</b><br>
     <b><a name='header-n21' class='md-header-anchor '></a>2.1、 变量的本质</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        1.  int a：告诉计算机我要申请一块4bytes的内存空间，对于编译器而言，a变量声明过了，那么在加载进JVM后a变量对应的位置永远就是为它分配的内存空间，所以后续操作a变量就是操作它的内存空间；
+        1.  int a：告诉计算机我要申请一块4bytes的内存空间，对于编译器而言，a变量声明过了，那么class常量池中会保存a，此时a就是符号引用；在加载进JVM后为a分配了内存地址，后续操作a变量时直接将a这个符号引用换成直接引用，即换成为它分配的内存地址；
         2.  a = 100;上一步声明了a变量为它分配了内存空间后，这一步初始化变量。很简单，将100这个值放在为a变量分配的内存空间中；
         3.  a = 250;为a变量初始化后，可以重置a变量的值；即将250重新放在a变量所占的内存中；此时上面的100将被回收。（注意，基本类型的包装类和String都是不可变的，它们都是重新开辟堆内存保存值，而不是直接更改原有内存空间的值）
         4.  如下图所示：
@@ -1654,17 +249,322 @@
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         1.  final int a;表示声明一个整型常量；常量是使用final修饰的变量，可以是成员常量，也可以是方法常量，一旦是常量，无论如何都得在编译阶段手动初始化。
         2.  a = 100;表示为常量a初始化为100，这个初始化操作在编译后就确定了，即此时100这个值保存在class文件的class常量池中。
-        3.  a = 235;a在前面已经被初始化为100，编译期间确定；当尝试为a重新赋值，编译器将报错。因为final会在编译成*.class文件时就确定常量的类型大小，将常量信息放置到*.class文件的class常量池中，随后随着JVM的启动动态复制到方法区的运行时常量池中，这个类型空间在编译阶段即被class常量池确定，所以整个运行期间不能更改常量，因为JVM内存中常量的最终来源是编译后的class文件确定的，它来自于静态的class文件，而不是来自JVM动态分配的内存。
+        3.  a = 235;a在前面已经被初始化为100，编译期间确定；当尝试为a重新赋值，编译器将报错。编译器会检查所有经过final修饰的变量，检查它的字面量或者符号引用在后续是否被修改，如果有地方尝试这么做，编译器将直接报错。
     </pre>
 
-    <b><a name='header-n3' class='md-header-anchor '></a>3、常量和变量案例</b><br>
+    <b><a name='header-n3' class='md-header-anchor '></a>3、深挖到final关键字的祖坟上去</b><br>
+    <b><a name='header-n31' class='md-header-anchor '></a>3.1、 什么是class常量池？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        前面讲过，对于常量的值，比如private final int a = 100;中的 100 ,java编译器首先会将其保存到编译好的class文件中，保存的地方称为class常量池。
+        1.  那什么是class常量池呢？
+        class常量池也称为静态常量池，是class字节码文件中的一块物理存储区域，它主要保存两类常量：<b>字面量</b>和<b>符号引用量</b>
+        字面量：文本字符串、被声明为final的常量值、基本数据类型的值、其他。
+        符号引用量：类和结构的权限定名、字段的名称和描述符、方法的名称和描述符等。
+
+        2.  为什么需要常量池？
+        常量池引入的目的是为了避免频繁的创建和销毁对象而影响系统性能，其实现了对象的共享。这是一种享元模式的实现。
+
+        3.  通过案例观察class常量池中保存了啥东西：
+        <b><font color="#a52a2a">看下class常量池中都保存了啥</font> </b>
+        <font color="gray">
+             package zeh.test.demo.com.changliang;
+
+             /**
+              * 功能描述 常量和变量的初始化方式
+              *
+              * @since 2021-04-12
+              */
+             public class MyConst {
+
+                 // 定义基本类型的成员变量
+                 private byte baseByte = 101;
+                 private short baseShort = 102;
+                 private int baseInt = 103;
+                 private long baseLong = 104;
+                 private float baseFloat = 105;
+                 private double baseDouble = 106;
+                 private char baseChar = 107;
+                 private boolean baseBoolean = true;
+                 private String baseString = "成员变量";
+
+                 // 定义基本类型的成员常量
+                 private final byte baseConstByte = 111;
+                 private final short baseConstShort = 112;
+                 private final int baseConstInt = 113;
+                 private final long baseConstLong = 114;
+                 private final float baseConstFloat = 115;
+                 private final double baseConstDouble = 116;
+                 private final char baseConstChar = 117;
+                 private final boolean baseConstBoolean = true;
+                 private final String baseConstString = "成员常量";
+
+                 public void testConst() {
+                     // 定义方法变量
+                     byte baseLocalByte = 11;
+                     short baseLocalShort = 12;
+                     int baseLocalInt = 13;
+                     long baseLocalLong = 14;
+                     float baseLocalFloat = 15;
+                     double baseLocalDouble = 16;
+                     char baseLocalChar = 17;
+                     boolean baseLocalBoolean = true;
+                     String baseLocalString = "方法变量";
+
+                     // 定义方法常量
+                     final byte baseLocalConstByte = 21;
+                     final short baseLocalConstShort = 22;
+                     final int baseLocalConstInt = 23;
+                     final long baseLocalConstLong = 24;
+                     final float baseLocalConstFloat = 25;
+                     final double baseLocalConstDouble = 26;
+                     final char baseLocalConstChar = 27;
+                     final boolean baseLocalConstBoolean = true;
+                     final String baseLocalConstString = "方法常量";
+                 }
+             }
+        </font>
+
+        上述代码通过一个main方法随便运行后，生成class文件，我们通过javap -v命令对class文件进行反汇编，可以看到汇编文件中的class常量池信息。
+        由于常量池内容很多，我这里直接给出结论：
+        class常量池中保存了两部分内容：
+        （1）.  字面量：文本字符串（代码中的成员变量名、成员常量名、方法变量名、方法常量名、字符串常量等）、被声明为final的常量值、基本数据类型的值、其他。
+        （2）.  符号引用量：引用的目标类的权限定名和描述符、方法的名称和描述符、字段的名称和描述符。
+        然而第1点中明确看了下，class常量池中对于基本数据类型的值，是没有 byte 、 short 、 int 、 long 、 char 、 boolean的。
+        这些类型在基本数据类型中都是属于整数类型的，这说明java编译器对整数类型的处理是有优化的。
+        我这里给出结论：java编译器在处理整数类型的值时，根据不同的取值范围会应用不同的JVM指令，对于范围较小的取值，不会放在class常量池中而是直接存储在JVM指令中，只有较大范围的取值才会加入到class常量池中去。
+        具体请参考：
+        <a target="_blank" href="https://blog.csdn.net/Viscu/article/details/87539838">《Java常量池 关于int类型数值的一些疑问的探究》</a>
+        <a target="_blank" href="https://blog.csdn.net/qq_36575163/article/details/78932513">《java中bipush与sipush的区别》</a>
+
+        4.  深入了解class常量池请参考如下大神的博客：
+        <a target="_blank" href="https://blog.csdn.net/luanlouis/article/details/39892027">《class文件基本组织结构》</a>
+        <a target="_blank" href="https://blog.csdn.net/luanlouis/article/details/39960815">《Class文件中的常量池详解（上）》</a>
+        <a target="_blank" href="https://blog.csdn.net/luanlouis/article/details/40301985">《Class文件中的常量池详解（下）》</a>
+    </pre>
+    <b><a name='header-n32' class='md-header-anchor '></a>3.2、 宏替换和符号引用替换</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  几个基础知识：
+        <b><font color="#a52a2a">字符串链接符“+”，java编译器底层是如何处理的呢？</font> </b>
+        我们知道，任何数据类型通过字符串链接符“+”与一个字符串进行运算，都会自动转换为String类型，那它底层原理是啥呢？
+        先看几个案例：
+        <b><font color="#a52a2a">验证字符串直接赋值</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.changliang;
+
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-04-12
+             */
+            public class TestMyBase {
+                public static void main(String[] args) {
+                    String name = "zhaoeh";
+                    String name1 = getName1();
+                    String name2 = getName2();
+                    System.out.println("name1 == name2 ? " + (name1 == name2));
+                    System.out.println("name == name1 ? " + (name == name1));
+
+                }
+
+                private static String getName1() {
+                    return "zhaoeh";
+                }
+
+                private static String getName2() {
+                    return "zhaoeh";
+                }
+            }
+        </font>
+        上面案例结果都是true；说明对于相同的字符串而言，只要是直接赋值的操作，则它们的内存地址都是相同的。
+        JVM对于字符串的设计实际上使用了字符串常量池来设计，关于这块，我们后续再深入了解。
+        此处只需要知道：凡是直接赋值的相同字符串，它们都来源于字符串常量池中的同一个字符串常量。
+
+        <b><font color="#a52a2a">验证字符串链接符“+”底层使用了StringBuilder</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.changliang;
+
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-04-12
+             */
+            public class TestMyBase {
+                public static void main(String[] args) {
+                    String name = "zhaoeh1";
+                    String name1 = getName1() + 1;
+                    String name2 = getName2() + 1;
+
+                    // false
+                    System.out.println("name1 == name2 ? " + (name1 == name2));
+
+                    // false
+                    System.out.println("name == name1 ? " + (name == name1));
+
+                }
+
+                private static String getName1() {
+                    return "zhaoeh";
+                }
+
+                private static String getName2() {
+                    return "zhaoeh";
+                }
+            }
+        </font>
+        改造了下案例，通过字符串链接符“+”进行了字符串的链接操作。
+        尽管链接后的字符串内容是一样的，然而直接比较地址都返回了false。
+        我们使用javap -v进行反汇编发现了“+”链接符的底层竟然使用了StringBuilder来拼接。因此StringBuilder拼接后再转换为String，其对应的内存地址当然是新的。
+
+        <b><font color="#a52a2a">验证StringBuilder每次返回的字符串都是重新开辟的堆内存地址</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.changliang;
+
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-04-12
+             */
+            public class TestMyBase {
+                public static void main(String[] args) {
+                    StringBuilder stringBuilder = new StringBuilder();
+                    String builderStr = stringBuilder.append("zhangsan").toString();
+                    String str = "zhangsan";
+
+                    // true
+                    System.out.println(builderStr.equals(str));
+
+                    // false
+                    System.out.println(builderStr == str);
+                }
+            }
+        </font>
+        使用StringBuilder、StringBuffer或者String构造每次都创建新的堆内存地址。
+    </pre>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        2.  宏替换和符号引用替换
+        上面提到，class常量池基本保存两类内容：字面量和符号引用。
+        我们先看java编译器在处理字面量时，对于变量和常量有什么区别呢？
+        请看下面案例：
+        <b><font color="#a52a2a">java虚拟机处理字面量：宏替换</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.changliang;
+
+            /**
+             * @since 2021-04-12
+             */
+            public class TestConst {
+
+                public static void main(String[] args) {
+                    // 相关变量和相关常量定义
+                    String name1 = "eric";
+                    final String name2 = "eric";
+                    final String name3 = getName();
+                    String target = "eric100";
+                    String target1 = name1 + 100;
+                    String target2 = name2 + 100;
+
+                    // false
+                    // 尽管name1的值eric已经存入class常量池
+                    // 但因为name1不是final的，因此编译器无法确定该值后续是否被修改
+                    // 所以在使用name1的地方不会把name1替换成对应的字面量"eric"，而是在运行时通过字段链接进行确定
+                    System.out.println(target1 == target);
+
+                    // true
+                    // name2的eric已经存入class常量池，name2是final，且编译阶段明确可以确定name2的值就是字面量eric
+                    // 因此后续所有使用name2的地方，编译器实际上都直接将name2替换成了字面量eric
+                    // 所以class字节码文件中，name2 + 100实际上就是字面量"eric100"，因此两者的地址是相同的
+                    System.out.println(target2 == target);
+                }
+            }
+        </font>
+        第一个为false，第二个为true。这就是java编译器在处理变量和常量的区别。
+        即：当final变量是基本数据类型以及String类型时，如果在编译期间能知道它的确切值，则编译器会把它当做编译期常量使用。
+        也就是说在用到该final变量的地方，相当于直接访问的这个常量，不需要在运行时确定。
+        需要注意：只有在编译期间能确切知道final变量值的情况下，编译器才会进行这样的优化。而对于变量和那些无法在编译期间确定值的final常量，编译器是不会进行这样的优化的。
+        这种优化称作“宏替换”。
+
+        <b><font color="#a52a2a">java虚拟机处理符号引用：符号引用替换</font> </b>
+        java虚拟机如何处理变量和编译期间无法确定值的常量呢？
+        <font color="gray">
+            package zeh.test.demo.com.changliang;
+
+            /**
+             * @since 2021-04-12
+             */
+            public class TestConst {
+
+                public static void main(String[] args) {
+                    final String name3 = getName();
+                    String target = "eric100";
+                    String target3 = name3 + 100;
+
+                    // false，虽然name3是final的常量，但是取值不明确，无法在编译阶段确定下来
+                    // 只有在运行阶段才能确定name3的取值
+                    // 所以此时name3实际上是符号引用，该符号引用能够明确定位到getName()方法，当JVM运行后，才会将该符号引用替换为直接引用
+                    // 而JVM对于字符串的链接“+”底层是使用StringBuilder进行的，因此getName()方法返回的直接引用实际上是个新的字符串地址。
+                    System.out.println(target3 == target);
+                }
+
+                public static String getName() {
+                    return "eric";
+                }
+            }
+        </font>
+        name3在编译期间无法确定其值，尽管它是final的，但实际上对于它的处理是和普通变量一样的，因为无法确定它的明确值，因此在编译阶段，name3此时实际上保存的是符号引用。
+        该符号引用明确指向getName()方法。
+        当JVM启动后，加载完当前类，才会将name3保存的符号引用替换为直接引用。
+        也就是java编译器对于变量和无法明确确定值的常量，采用的是符号引用替换的策略。
+
+        我们再深入看下面案例：
+        <font color="gray">
+            package zeh.test.demo.com.changliang;
+
+            /**
+             * @since 2021-04-12
+             */
+            public class TestConst {
+
+                public static void main(String[] args) {
+                    final Person person = new Person();
+                    System.out.println(person.hashCode());
+                }
+
+            }
+
+            class Person{
+            }
+        </font>
+        person对象是final的，但它不是基本类型和String，而是一个明确的javabean。
+        因此，编译阶段肯定无法明确知道它的地址，因为它的地址只有等到JVM运行后开辟堆内存才知道。
+        所以，编译器无法对其使用宏替换，此时使用的就是符号引用替换。
+        即：class字节码文件中person常量保存的是符号引用，等JVM加载完Person类后，再将其替换为对应的直接引用（person对象的对内存地址）。
+        <font color="#a52a2a">
+            回顾下前面讲的，比如此处，因为person是常量，所以java编译器不允许person再指向其他的地址。
+            那java编译器在编译阶段并不知道person的实际内存地址，它是如何进行校验的呢？
+            它校验的其实就是person目前的符号引用，看符号引用在后续是否被修改为其他的符号引用了。
+            因为符号引用和直接引用实际上是一一对应的，你可以理解符号引用就是直接引用的一个预置虚拟引用，等有了直接引用就直接把符号引用替换了。
+        </font>
+
+        关于宏替换和符号引用替换，请参考：
+        <a target="_blank" href="https://www.cnblogs.com/dolphin0520/p/3736238.html">《浅析Java中的final关键字》</a>
+        <a target="_blank" href="https://www.cnblogs.com/jinggod/p/8425748.html">《java基础(八) 深入解析常量池与装拆箱机制》</a>
+        关于符号引用和直接应用，请参考：
+        <a target="_blank" href="https://blog.csdn.net/weixin_42447959/article/details/81675512">《JAVA的符号引用和直接引用》</a>
+        <a target="_blank" href="https://www.cnblogs.com/qlky/p/7643524.html">《JVM的符号引用和直接引用》</a>
+        <a target="_blank" href="https://blog.csdn.net/u014656992/article/details/51107127">《JVM中的直接引用和符号引用》</a>
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、常量和变量案例</b><br>
     <img src="08-Demo03VarAndConstant.png">
     <img src="08-TestVarAndConstants.png">
-    <b><a name='header-n31' class='md-header-anchor '></a>3.1、第一阶段：编译阶段</b>
+    <b><a name='header-n41' class='md-header-anchor '></a>4.1、第一阶段：编译阶段</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         javac工具预编译*.java文件，产出物*.class文件。即生成VarAndConstant.class文件和Test.class文件。一个class对应一个*.class字节码文件。*.class文件中存放着class常量池和其他附加信息。Class常量池保存着方法的符号引用，和上述源文件中所有的字面量，也保存着final定义的常量。
     </pre>
-    <b><a name='header-n32' class='md-header-anchor '></a>3.2、 第二阶段：JVM装载阶段（加载、链接[验证，准备和解析]、初始化）</b>
+    <b><a name='header-n42' class='md-header-anchor '></a>4.2、 第二阶段：JVM装载阶段（加载、链接[验证，准备和解析]、初始化）</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         1.  加载：JVM找到main方法，加载main方法所在的class信息和其通过主动引用层层引用的其他class信息。注意，JVM本身对main方法所在的类就是主动引用。
         加载类Demo03VarAndConstant和TestVarAndConstants；
@@ -1690,25 +590,4 @@
 			2) 加载该类的ClassLoader实例被gc（启动类加载器永远不会被回收）。
             3) 该类的class实例没有在其他地方被引用。
     </pre>
-
-    <b><a name='header-n4' class='md-header-anchor '></a>4、java中变量和常量的分类</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        口诀：成员变量堆内存、方法变量栈内存（如果是常量，则不论作为成员常量还是方法常量都存在于方法区内存的常量池）。
-    </pre>
-    <b><a name='header-n41' class='md-header-anchor '></a>4.1、 按照数据类型划分变量和常量</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        按照变量分配内存空间的大小及以何种形式存储，存储的内容是什么（值还是地址）来划分的话，分为：基本数据类型 + 引用数据类型。
-        (1) 基本数据类型有八种，存储的是各种基本数据，即永远存储的是变量的具体值；比如int a = 10;则a中存储的是10。
-        (2) 引用数据类型有四种(类，数组，接口，枚举)，存储的是引用（即是指向堆内存空间的地址）。
-    </pre>
-    <b><a name='header-n42' class='md-header-anchor '></a>4.2、 按照存储的物理位置划分变量和常量</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        按照变量存储的物理位置不同，分为：成员变量(全局变量) + 方法变量(方法里的变量)。
-        (1) 成员变量存储在堆内存空间中。多个线程共享，所有目标线程执行完毕，生命周期结束。
-        (2) 方法变量存储在栈内存空间中。线程私有，当前目标线程执行完毕，生命周期结束。
-        注意：其中成员变量也叫做全局变量，指该变量在当前类中的任何地方都可以访问；方法变量也叫做局部变量或者块变量，只能在当前的块或者方法中才能够访问。
-    </pre>
 </div>
-</body>
-</html>
-
