@@ -1,5 +1,3 @@
-
-
     <b><a name='header-n2' class='md-header-anchor '></a>2、探究枚举类的底层</b><br>
     <b><a name='header-n21' class='md-header-anchor '></a>2.1、 如何获取枚举对象？</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
@@ -759,6 +757,41 @@
         使用枚举实现单例，就直接将单例对象所在的类改造成枚举。
         只有枚举对象本身才是真正的单例，其他借助枚举特性去将普通类改造成单例的方式，是存在问题的。
     </pre>
+
+    <b><a name='header-n7' class='md-header-anchor '></a>7、枚举和单例的关系</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  枚举常量本身被编译器修饰为：public static final的；而单例模式中的单例一般是 private static 的即可。
+        2.  枚举常量直接输出是枚举常量的字面量含义，因为Enum实际上覆盖了toString方法，返回的就是枚举常量的字面量名称；而单例模式中直接输出单例，输出的是单例对象的引用地址。
+        3.  枚举类可以创建多个有限的枚举实例（枚举枚举，就是有限个数的意思，可以枚举出来的实例）；而单例模式中只有一个单实例。
+        4.  枚举本身可以实现单例模式。
+    </pre>
+
+    <b><a name='header-n8' class='md-header-anchor '></a>8、枚举规范</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  枚举类通常当做常量类使用，因为枚举对象直接toString后就表示其字面量，即常量字符串。
+        2.  枚举常量命名规范：全部大写，单词之间用_分隔。
+    </pre>
+
+    <b><a name='header-n9' class='md-header-anchor '></a>9、枚举集合</b><br>
+    <b><a name='header-n91' class='md-header-anchor '></a>9.1、 枚举类本身作为单例</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n92' class='md-header-anchor '></a>9.2、 枚举类本身作为单例</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n93' class='md-header-anchor '></a>9.3、 枚举类本身作为单例</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n94' class='md-header-anchor '></a>9.4、 枚举类本身作为单例</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n95' class='md-header-anchor '></a>9.5、 枚举类本身作为单例</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n96' class='md-header-anchor '></a>9.6、 枚举类本身作为单例</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+
 </div>
 </body>
 </html>
