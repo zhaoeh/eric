@@ -1,1 +1,1056 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>java对json的支持.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    .footnotes + .footnotes {
+        margin-top: -1em;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    @media screen and (max-width: 48em) {
+
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    li p.first {
+        display: inline-block;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+
+
+    </style>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>Java对json的支持</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        既然json是一种轻量级的数据交换格式，那么各种开发语言都提供了对json的支持。
+        其中，java的开源json包很多，都对json提供了完美的支持。
+        应该说，比较优秀的json开源包是alibaba的fastJson。
+    </pre>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、fastJson简介</b><br>
+    <b><a name='header-n11' class='md-header-anchor '></a>1.1、 什么是fastJson？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        fastJson是alibaba的一个针对json的开源类库。
+        其中提供了json字符串和java对象之间的各种转换方式。
+        fastJson效率极高。
+    </pre>
+    <b><a name='header-n12' class='md-header-anchor '></a>1.2、 所需的jar</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        如要使用fastJson，则需要导入fastjson.jar，选择最新版本即可。
+    </pre>
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、回顾json</b><br>
+    <b><a name='header-n21' class='md-header-anchor '></a>2.1、 回顾json的数据类型</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  Number：数字型。
+        2.  String：字符串型。
+        3.  Boolean：布尔型。
+        4.  Array：数组。
+        5.  Object：对象。
+        6.  null：空值。
+    </pre>
+    <b><a name='header-n22' class='md-header-anchor '></a>2.2、 回顾json格式串</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        json对象格式：{"age":12,"books":[{"bookName":"平凡的世界","bookPrice":109},{"bookName":"凡尔赛装逼大全","bookPrice":17},{"bookName":"第121个老婆","bookPrice":90}],"name":"zhangsan"}
+        json数组格式：[{"bookName":"平凡的世界","bookPrice":109},{"bookName":"凡尔赛装逼大全","bookPrice":17},{"bookName":"第121个老婆","bookPrice":90}]
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、json和java</b><br>
+    <b><a name='header-n31' class='md-header-anchor '></a>3.1、 json和Java的关系如何？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  json格式中的值不区分整型还是浮点型、小数等，统一使用Number类型表示数组。
+        2.  json中的array表示数组，以中括号"[]"括起来，元素之间以逗号分隔，元素可以为任意类型。
+        3.  json中的object表示对象，以大括号"{}"括起来，类似C语言中的结构体。其元素要求为键值对，key必须是String类型（有双引号），value可以为上述几种值类型。key和value之间以冒号:表示映射关系，元组之间也是以逗号分隔。
+        4.  json中的object表示对象，类似于java中的通用对象map；json中的array表示数组，类似java中的list。
+
+        延展：实际上json的对象形式和数组形式，在java中都有对应的表示方式。
+        那为啥还需要第三方类库的支持呢？
+        fastJson搞出了JSONObject对象和JSONArray数组对象来分表映射json中的object和array，这俩对象能够方便的将java数组、java对象、java集合等和对应的json串进行转换。
+        而java本身的api并没有提供这种直接转换的能力。
+    </pre>
+    <b><a name='header-n32' class='md-header-anchor '></a>3.2、 进入fastJson的世界</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        fastJson的核心类有两个：
+        JSONObject类：public class JSONObject extends JSON implements Map&lt;String, Object&gt;, JSONAware, Cloneable, Serializable, InvocationHandler
+        JSONArray类：public class JSONArray extends JSON implements List&lt;Object&gt;, JSONAware, Cloneable, RandomAccess, Serializable
+    </pre>
+    <b><a name='header-n33' class='md-header-anchor '></a>3.3、 fastJson主要干了些啥事情？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        fastJson依靠核心的两个对象JSONObject和JSONArray，主要作为中间桥梁，在java对象和json格式串之间进行转换：
+        1.  JSONObject对象可以和json串之间互相转换。
+        2.  JSONObject对象可以和java对象之间互相转换。
+        3.  JSONArray对象可以和json数组串之间互相转换。
+        4.  JSONArray对象可以和java数组或者List之间互相转换。
+        <font color="#a52a2a">
+            tips:
+            json的开源包很多，而且里面的api很丰富，容易让人绕晕。
+            我们在使用时，只需要把握一个原则，那就是这些api是作为中间桥梁，来为json原生串和java对象之间做转换的。
+            也就是这个桥梁向左可以和javabean之间互相转换，向右可以和json传之间互相转换。
+        </font>
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、fastJson常见api探究</b><br>
+    <b><a name='header-n41' class='md-header-anchor '></a>4.1、 JSONObject对象和json对象串互相转换，JSONArray对象和json数组串互相转换</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">JSONObject对象和json对象串互相转换，JSONArray对象和json数组串互相转换</font> </b>
+        <font color="gray">
+            /**
+             * 功能描述
+             * JSONObject对象和json串之间互相转换
+             * JSONArray对象和json数组串之间互相转换
+             *
+             * @author zWX5331241
+             * @since 2021-04-19
+             */
+            public class FastJsonTest {
+                public static void main(String[] args) {
+                    jsonObjectAndArray2jsonStr();
+                    System.out.println("----------------------------------");
+                    jsonStr2jsonObjectAndArray();
+                }
+
+                // 案例1：JSONObject对象转换为json对象串；JSONArray对象转换为json数组串
+                public static void jsonObjectAndArray2jsonStr() {
+                    // 直接构造一个Json对象，将json对象转换为json串
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("name", "zhangsan");
+                    jsonObject.put("age", 12);
+                    // 构造多个内部json对象，组成数组
+                    JSONObject innerJsonObject1 = new JSONObject();
+                    innerJsonObject1.put("bookName", "平凡的世界");
+                    innerJsonObject1.put("bookPrice", 109.0d);
+                    JSONObject innerJsonObject2 = new JSONObject();
+                    innerJsonObject2.put("bookName", "凡尔赛装逼大全");
+                    innerJsonObject2.put("bookPrice", 17.0d);
+                    JSONObject innerJsonObject3 = new JSONObject();
+                    innerJsonObject3.put("bookName", "第121个老婆");
+                    innerJsonObject3.put("bookPrice", 90.0d);
+                    // 构造一个json数组对象，封装上面多个json对象
+                    JSONArray jsonArray = new JSONArray();
+                    jsonArray.add(innerJsonObject1);
+                    jsonArray.add(innerJsonObject2);
+                    jsonArray.add(innerJsonObject3);
+                    // 将这个json数组对象封装到最上面的json对象中去
+                    jsonObject.put("books", jsonArray);
+                    // 将json对象转换为json串，注意，toString和toJsonString的实现完全一样。
+                    System.out.println(jsonObject.toJSONString());
+                    System.out.println(jsonObject.toString());
+                    // 将json数组对象转换为json数组串，注意，toString和toJsonString的实现完全一样。
+                    System.out.println(jsonArray.toJSONString());
+                    System.out.println(jsonArray.toString());
+                }
+
+                //  案例2：json对象串转换为JSONObject对象；json数组串转换为JSONArray对象
+                public static void jsonStr2jsonObjectAndArray() {
+                    String jsonStr = "{\"age\":12,\"books\":[{\"bookName\":\"平凡的世界\",\"bookPrice\":109},{\"bookName\":\"凡尔赛装逼大全\",\"bookPrice\":17},{\"bookName\":\"第121个老婆\",\"bookPrice\":90}],\"name\":\"zhangsan\"}";
+                    String jsonArrayStr = "[{\"bookName\":\"平凡的世界\",\"bookPrice\":109},{\"bookName\":\"凡尔赛装逼大全\",\"bookPrice\":17},{\"bookName\":\"第121个老婆\",\"bookPrice\":90}]";
+                    // 将json对象串转换为JSONObject对象，使用JSONObject的静态方法parseObject进行。
+                    JSONObject jsonObject = JSONObject.parseObject(jsonStr);
+                    // 将json数组串转换为JSONArray对象，使用JSONArray的静态方法parseArray进行。
+                    JSONArray jsonArray = JSONArray.parseArray(jsonArrayStr);
+                    System.out.println(jsonObject);
+                    System.out.println(jsonArray);
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">测试结果</font> </b>
+        {"age":12,"books":[{"bookName":"平凡的世界","bookPrice":109},{"bookName":"凡尔赛装逼大全","bookPrice":17},{"bookName":"第121个老婆","bookPrice":90}],"name":"zhangsan"}
+        {"age":12,"books":[{"bookName":"平凡的世界","bookPrice":109},{"bookName":"凡尔赛装逼大全","bookPrice":17},{"bookName":"第121个老婆","bookPrice":90}],"name":"zhangsan"}
+        [{"bookName":"平凡的世界","bookPrice":109},{"bookName":"凡尔赛装逼大全","bookPrice":17},{"bookName":"第121个老婆","bookPrice":90}]
+        [{"bookName":"平凡的世界","bookPrice":109},{"bookName":"凡尔赛装逼大全","bookPrice":17},{"bookName":"第121个老婆","bookPrice":90}]
+        ----------------------------------
+        {"age":12,"books":[{"bookName":"平凡的世界","bookPrice":109},{"bookName":"凡尔赛装逼大全","bookPrice":17},{"bookName":"第121个老婆","bookPrice":90}],"name":"zhangsan"}
+        [{"bookName":"平凡的世界","bookPrice":109},{"bookName":"凡尔赛装逼大全","bookPrice":17},{"bookName":"第121个老婆","bookPrice":90}]
+    </pre>
+    <b><a name='header-n42' class='md-header-anchor '></a>4.2、 JSONObject对象和map对象互相转换，JSONArray对象和list对象互相转换</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        我们从JSONObject类的定义和JSONArray类的定义就可以知道，JSONObject类实际上是Map接口的一个实现类，JSONArray类实际上是List接口的一个实现类，因此这两者之间可以转换。
+        但实际上一般没有人直接跟map或者list进行转换，而是直接和javabean之间进行转换。
+        我们先来看和map与list的转换。
+        <b><font color="#a52a2a">JSONObject对象和map对象互相转换，JSONArray对象和list对象互相转换</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.json.test;
+
+            import com.alibaba.fastjson.JSONArray;
+            import com.alibaba.fastjson.JSONObject;
+
+            import java.util.ArrayList;
+            import java.util.HashMap;
+            import java.util.List;
+            import java.util.Map;
+
+            /**
+             * 功能描述
+             * JSONObject对象和map对象互相转换
+             * JSONArray对象和list对象互相转换
+             *
+             * @author zWX5331241
+             * @since 2021-04-19
+             */
+            public class FastJsonTest {
+                public static void main(String[] args) {
+                    jsonObjectAndArray2javaBean();
+                    System.out.println("----------------------------------");
+                    mapAndList2jsonObjectAndArray();
+                }
+
+                // 案例1：JSONObject对象转换为map对象；JSONArray对象转换为list对象
+                public static void jsonObjectAndArray2javaBean() {
+                    // 直接构造一个Json对象，将json对象转换为json串
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("name", "zhangsan");
+                    jsonObject.put("age", 12);
+                    // 构造多个内部json对象，组成数组
+                    JSONObject innerJsonObject1 = new JSONObject();
+                    innerJsonObject1.put("bookName", "平凡的世界");
+                    innerJsonObject1.put("bookPrice", 109.0d);
+                    JSONObject innerJsonObject2 = new JSONObject();
+                    innerJsonObject2.put("bookName", "凡尔赛装逼大全");
+                    innerJsonObject2.put("bookPrice", 17.0d);
+                    JSONObject innerJsonObject3 = new JSONObject();
+                    innerJsonObject3.put("bookName", "第121个老婆");
+                    innerJsonObject3.put("bookPrice", 90.0d);
+                    // 构造一个json数组对象，封装上面多个json对象
+                    JSONArray jsonArray = new JSONArray();
+                    jsonArray.add(innerJsonObject1);
+                    jsonArray.add(innerJsonObject2);
+                    jsonArray.add(innerJsonObject3);
+                    // 将这个json数组对象封装到最上面的json对象中去
+                    jsonObject.put("books", jsonArray);
+
+                    // 将jsonObject对象转换为map对象
+                    Map&lt;String, Object&gt; map = (Map) jsonObject;
+                    // 将jsonArray对象转换为list对象
+                    List&lt;Object> list = (List) jsonArray;
+                    System.out.println(map);
+                    System.out.println(list);
+                }
+
+                //  案例2：map对象转换为JSONObject对象；list对象转换为JSONArray对象
+                public static void mapAndList2jsonObjectAndArray() {
+                    Map&lt;String, Object&gt; map = new HashMap<>();
+                    map.put("name", "lisi");
+                    map.put("age", 25);
+                    // 构造多个内部map对象，组成数组
+                    Map&lt;String, Object&gt; innerMap1 = new HashMap<>();
+                    innerMap1.put("bookName", "玛瑙河边的少女");
+                    innerMap1.put("bookPrice", 20.0d);
+                    Map&lt;String, Object&gt; innerMap2 = new HashMap<>();
+                    innerMap2.put("bookName", "一千零一夜");
+                    innerMap2.put("bookPrice", 12.5d);
+                    Map&lt;String, Object&gt; innerMap3 = new HashMap<>();
+                    innerMap3.put("bookName", "再见，若兰");
+                    innerMap3.put("bookPrice", 100.5d);
+                    // 构造一个List数组对象，封装上面多个json对象
+                    List&lt;Object&gt; list = new ArrayList<>();
+                    list.add(innerMap1);
+                    list.add(innerMap2);
+                    list.add(innerMap3);
+                    // 将这个json数组对象封装到最上面的json对象中去
+                    map.put("books", list);
+
+                    // 将map对象转换为JSONObject对象
+                    JSONObject jsonObject = (JSONObject) JSONObject.toJSON(map);
+                    System.out.println(jsonObject);
+                    // 还可以直接通过构造进行转换
+                    jsonObject = new JSONObject(map);
+                    System.out.println(jsonObject);
+
+                    // 将list对象转换为JSONArray对象
+                    JSONArray jsonArray = (JSONArray) JSONArray.toJSON(list);
+                    System.out.println(jsonArray);
+                    // 还可以直接通过构造进行转换
+                    jsonArray = new JSONArray(list);
+                    System.out.println(jsonArray);
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">测试结果</font> </b>
+        {"age":12,"books":[{"bookName":"平凡的世界","bookPrice":109},{"bookName":"凡尔赛装逼大全","bookPrice":17},{"bookName":"第121个老婆","bookPrice":90}],"name":"zhangsan"}
+        [{"bookName":"平凡的世界","bookPrice":109},{"bookName":"凡尔赛装逼大全","bookPrice":17},{"bookName":"第121个老婆","bookPrice":90}]
+        ----------------------------------
+        {"age":25,"books":[{"bookName":"玛瑙河边的少女","bookPrice":20},{"bookName":"一千零一夜","bookPrice":12.5},{"bookName":"再见，若兰","bookPrice":100.5}],"name":"lisi"}
+        {"age":25,"books":[{"bookName":"玛瑙河边的少女","bookPrice":20},{"bookName":"一千零一夜","bookPrice":12.5},{"bookName":"再见，若兰","bookPrice":100.5}],"name":"lisi"}
+        [{"bookName":"玛瑙河边的少女","bookPrice":20},{"bookName":"一千零一夜","bookPrice":12.5},{"bookName":"再见，若兰","bookPrice":100.5}]
+        [{"bookName":"玛瑙河边的少女","bookPrice":20},{"bookName":"一千零一夜","bookPrice":12.5},{"bookName":"再见，若兰","bookPrice":100.5}]
+    </pre>
+    <b><a name='header-n43' class='md-header-anchor '></a>4.3、 JSONArray对象和java数组对象互相转换</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        既然jsonArray对象都能和list进行转换，而java中的list能直接和数组进行转换，因此，jsonArray对象能和java数组对象之间互相转换。
+        <b><font color="#a52a2a">JSONArray对象和java数组对象互相转换</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.json.test;
+
+            import com.alibaba.fastjson.JSONArray;
+            import com.alibaba.fastjson.JSONObject;
+
+            import java.util.Arrays;
+            import java.util.HashMap;
+            import java.util.Map;
+
+            /**
+             * 功能描述
+             * JSONArray对象和java数组互相转换
+             *
+             * @author zWX5331241
+             * @since 2021-04-19
+             */
+            public class FastJsonTest {
+                public static void main(String[] args) {
+                    jsonArray2javaArray();
+                    System.out.println("----------------------------------");
+                    javaArray2jsonArray();
+                }
+
+                // 案例1：JSONArray对象转换为java数组对象
+                public static void jsonArray2javaArray() {
+                    JSONObject innerJsonObject1 = new JSONObject();
+                    innerJsonObject1.put("bookName", "平凡的世界");
+                    innerJsonObject1.put("bookPrice", 109.0d);
+                    JSONObject innerJsonObject2 = new JSONObject();
+                    innerJsonObject2.put("bookName", "凡尔赛装逼大全");
+                    innerJsonObject2.put("bookPrice", 17.0d);
+                    JSONObject innerJsonObject3 = new JSONObject();
+                    innerJsonObject3.put("bookName", "第121个老婆");
+                    innerJsonObject3.put("bookPrice", 90.0d);
+                    JSONArray jsonArray = new JSONArray();
+                    jsonArray.add(innerJsonObject1);
+                    jsonArray.add(innerJsonObject2);
+                    jsonArray.add(innerJsonObject3);
+
+                    // jsonArray对象转换为java数组对象
+                    Object[] javaArrays = jsonArray.toArray();
+                    System.out.println(Arrays.toString(javaArrays));
+
+                }
+
+                //  案例2：java数组对象转换为JSONArray对象
+                public static void javaArray2jsonArray() {
+                    Map&lt;String, Object&gt; innerMap1 = new HashMap<>();
+                    innerMap1.put("bookName", "玛瑙河边的少女");
+                    innerMap1.put("bookPrice", 20.0d);
+                    Map&lt;String, Object&gt; innerMap2 = new HashMap<>();
+                    innerMap2.put("bookName", "一千零一夜");
+                    innerMap2.put("bookPrice", 12.5d);
+                    Map&lt;String, Object&gt; innerMap3 = new HashMap<>();
+                    innerMap3.put("bookName", "再见，若兰");
+                    innerMap3.put("bookPrice", 100.5d);
+                    // 构造一个java数组对象，封装上面多个json对象
+                    Object[] objects = new Object[]{innerMap1,innerMap2,innerMap3};
+
+                    // java数组对象转换为jsonArray对象
+                    JSONArray jsonArray = (JSONArray) JSONArray.toJSON(objects);
+                    System.out.println(jsonArray);
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">测试结果</font> </b>
+        [{"bookName":"平凡的世界","bookPrice":109}, {"bookName":"凡尔赛装逼大全","bookPrice":17}, {"bookName":"第121个老婆","bookPrice":90}]
+        ----------------------------------
+        [{"bookName":"玛瑙河边的少女","bookPrice":20},{"bookName":"一千零一夜","bookPrice":12.5},{"bookName":"再见，若兰","bookPrice":100.5}]
+    </pre>
+    <b><a name='header-n44' class='md-header-anchor '></a>4.4、 JSONObject对象和javabean对象互相转换，JSONArray对象和对象数组互相转换</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        既然jsonArray对象都能和list进行转换，而java中的list能直接和数组进行转换，因此，jsonArray对象能和java数组对象之间互相转换。
+        <b><font color="#a52a2a">JSONArray对象和java数组对象互相转换</font> </b>
+        <font color="gray">
+        </font>
+    </pre>
+
+    <b><a name='header-n5' class='md-header-anchor '></a>5、里氏替换原则</b><br>
+    <b><a name='header-n51' class='md-header-anchor '></a>5.1、 什么是里氏替换原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n52' class='md-header-anchor '></a>5.2、 为何遵循里氏替换原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n53' class='md-header-anchor '></a>5.3、 如何实现里氏替换原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+
+    <b><a name='header-n6' class='md-header-anchor '></a>6、依赖倒转原则</b><br>
+    <b><a name='header-n61' class='md-header-anchor '></a>6.1、 什么是依赖倒转原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n62' class='md-header-anchor '></a>6.2、 为何遵循依赖倒转原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n63' class='md-header-anchor '></a>6.3、 如何实现依赖倒转原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+
+    <b><a name='header-n7' class='md-header-anchor '></a>7、组合/聚合复用原则</b><br>
+    <b><a name='header-n71' class='md-header-anchor '></a>7.1、 什么是组合/聚合复用原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n72' class='md-header-anchor '></a>7.2、 为何遵循组合/聚合复用原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n73' class='md-header-anchor '></a>7.3、 如何实现组合/聚合复用原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+</div>
+</body>
+</html>
 
