@@ -965,8 +965,8 @@
                     Arrays.sort(students);
                     System.out.println(Arrays.toString(students));
 
-                    // 场景1：Collections.sort()使用场景
-                    List<Student> studentList = new ArrayList<>();
+                    // 场景2：Collections.sort()使用场景
+                    List&lt;Student&gt; studentList = new ArrayList<>();
                     studentList.add(s1);
                     studentList.add(s2);
                     studentList.add(s3);
@@ -974,8 +974,8 @@
                     Collections.sort(studentList);
                     System.out.println(studentList);
 
-                    // 场景1：tree系列使用场景
-                    Set<Student> treeSet = new TreeSet<>();
+                    // 场景3：tree系列使用场景
+                    Set&lt;Student&gt; treeSet = new TreeSet<>();
                     treeSet.add(s1);
                     treeSet.add(s2);
                     treeSet.add(s3);
@@ -1182,6 +1182,131 @@
     <b><a name='header-n41' class='md-header-anchor '></a>4.1、 Comparator比较器使用方式</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         Comparator接口和Comparable接口的底层原理一模一样，唯一不同的就是使用方式。
+        Comparable接口一般是在设计类之初，就使类实现该接口，指定大小比较规则；这样在后续遇到Arrays.sort()、Collections.sort()或者treeSet系列时，就可以按照自定义的大小规则，根据二叉树排序原理从小到大排序。
+        那，试想一下，如果一个List中的javabean已经都上线了，现在不想改动这个javabean，但是又想对该list进行sort处理，这时候怎么办呢？
+
+        jdk不仅提供了Comparable这个一劳永逸的比较器接口，也提供了临时性的补救式的比较器接口，即Comparator接口。
+        这个接口不要求javabean实现其，只需要在使用Arrays.sort()、Collections.sort()或者treeSet系列时传入一个该接口的实现对象即可。
+        最常见的方式实际上是直接通过匿名内部类的方式去传入该接口的对象，或者采用lambda表达式的方式传入即可。
+    </pre>
+    <b><a name='header-n42' class='md-header-anchor '></a>4.2、 Comparator比较器案例</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">Comparator比较器</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.compare;
+
+            import java.util.ArrayList;
+            import java.util.Arrays;
+            import java.util.Collections;
+            import java.util.Comparator;
+            import java.util.List;
+            import java.util.Set;
+            import java.util.TreeSet;
+
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-04-19
+             */
+            public class CompareMain {
+                public static void main(String[] args) {
+                    // 实例化javaBean
+                    Person person1 = new Person("zhangsan", 22);
+                    Person person2 = new Person("lisi", 25);
+                    Person person3 = new Person("wangwu", 46);
+
+                    // 下面使用Comparator比较器进行大小比较的补救
+
+                    // 方式1：Arrays.sort()
+                    Person[] people = new Person[]{person1, person2, person3};
+                    Arrays.sort(people, new Comparator&lt;Person&gt;() {
+                        @Override
+                        public int compare(Person o1, Person o2) {
+                            if (o1.getAge() > o2.getAge()) {
+                                return -1;
+                            } else if (o1.getAge() < o2.getAge()) {
+                                return 1;
+                            } else {
+                                return 0;
+                            }
+                        }
+                    });
+                    System.out.println(Arrays.toString(people));
+
+                    // 方式2：Collections.sort()
+                    List&lt;Person&gt; personList = new ArrayList<>();
+                    personList.add(person1);
+                    personList.add(person2);
+                    personList.add(person3);
+                    Collections.sort(personList, new &lt;Person&gt;() {
+                        @Override
+                        public int compare(Person o1, Person o2) {
+                            if (o1.getAge() > o2.getAge()) {
+                                return -1;
+                            } else if (o1.getAge() < o2.getAge()) {
+                                return 1;
+                            } else {
+                                return 0;
+                            }
+                        }
+                    });
+                    System.out.println(personList);
+
+                    // 方式3：TreeSet
+                    Set&lt;Person&gt; personSet = new TreeSet<>(new Comparator&lt;Person&gt;() {
+                        @Override
+                        public int compare(Person o1, Person o2) {
+                            if (o1.getAge() > o2.getAge()) {
+                                return -1;
+                            } else if (o1.getAge() < o2.getAge()) {
+                                return 1;
+                            } else {
+                                return 0;
+                            }
+                        }
+                    });
+                    personSet.add(person1);
+                    personSet.add(person2);
+                    personSet.add(person3);
+                    System.out.println(personSet);
+                }
+            }
+
+            class Person {
+                private String name;
+                private int age;
+
+                public Person(String name, int age) {
+                    this.setName(name);
+                    this.setAge(age);
+                }
+
+                public String getName() {
+                    return name;
+                }
+
+                public void setName(String name) {
+                    this.name = name;
+                }
+
+                public int getAge() {
+                    return age;
+                }
+
+                public void setAge(int age) {
+                    this.age = age;
+                }
+
+                public String toString() {
+                    return "name = " + this.getName() + ";age = " + this.getAge();
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">测试结果</font> </b>
+        [name = wangwu;age = 46, name = lisi;age = 25, name = zhangsan;age = 22]
+        [name = wangwu;age = 46, name = lisi;age = 25, name = zhangsan;age = 22]
+        [name = wangwu;age = 46, name = lisi;age = 25, name = zhangsan;age = 22]
     </pre>
 </div>
 </body>
