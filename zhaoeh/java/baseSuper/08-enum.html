@@ -552,7 +552,6 @@
         height: 100%;
     }
 
-
     :root {
         --bg-color: #ffffff;
         --text-color: #333333;
@@ -1197,7 +1196,6 @@
     [lang="flow"] svg, [lang="mermaid"] svg {
         max-width: 100%;
     }
-
 
     :root {
         --side-bar-bg-color: #fafafa;
@@ -1870,3 +1868,800 @@
         构造方法私有化--》单例模式/多例模式；
         单例模式/多例模式--》枚举类。
     </pre>
+    <b><a name='header-n2' class='md-header-anchor '></a>2、探究枚举类的底层</b><br>
+    <b><a name='header-n21' class='md-header-anchor '></a>2.1、 如何获取枚举对象？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        前面通过javap -v反汇编class字节码后，知道java编译器默认为每个枚举类提供了两个方法：
+        public static zeh.test.demo.com.enum1.EnumType[] values();
+        public static zeh.test.demo.com.enum1.EnumType valueOf(java.lang.String);
+        这两个方法都是用来获取枚举类的枚举常量的。
+        并且枚举类中定义的枚举对象默认被修饰成了public static final;因此可以直接通过当前枚举类获取对应的枚举常量。
+        其次，我们知道任何一个枚举类编译后都默认继承Enum类，我们在Enum的API中同样找到了一个方法（该方法是static，因此可以被子类继承但是不能覆盖）：
+        public static &lt;T extends Enum&lt;T&gt;&gt; T valueOf(Class&lt;T&gt; enumType,String name);
+        最后，观察Class类提供了一个 public T[] getEnumConstants()方法，这个方法可以返回当前枚举类的所有枚举常量。
+
+        所以，现在知道了获取一个目标枚举对象共有5种常见方式：
+        （1） 枚举类.枚举常量 直接获取；
+        （2） 通过当前枚举类中的values()方法获取所有枚举常量，然后遍历；
+        （3） 通过当前枚举类中的valueOf()方法获取指定名称的枚举常量；
+        （4） 通过Enum.valueOf()方法来获取指定枚举类型的指定名称的枚举常量。
+        （5） 通过Class对象的getEnumConstants()来反射获取枚举常量。
+        下面我们通过案例来验证前4种方式，反射获取枚举常量的方式后面再学习（EnumType枚举类和上面案例中保持一样，只修改主程序）：
+        <font color="gray">
+            package zeh.test.demo.com.enum1;
+
+            /**
+             * 功能描述 获取目标枚举对象的方式
+             *
+             * @author zWX5331241
+             * @since 2021-04-09
+             */
+            public class EnumMain {
+                public static void main(String[] args) {
+                    // 方式1：枚举类.枚举常量 直接获取
+                    EnumType lisi = EnumType.LISI;
+                    // 通过获取后的枚举对象调用其方法
+                    lisi.testMyEnum();
+                    System.out.println("lisi is :" + lisi);
+
+                    // 方式2：通过当前枚举类自带的values方法返回所有枚举常量进行遍历
+                    EnumType[] enumTypes = EnumType.values();
+                    for(EnumType enumType : enumTypes){
+                        // 通过获取后的枚举对象调用其方法
+                        enumType.testMyEnum();
+                        System.out.println("enumType is :" + enumType);
+                    }
+
+                    // 方式3：通过当前枚举类自带的valueOf方法获取当前枚举类指定名称的枚举常量
+                    EnumType zhangsan = EnumType.valueOf("ZHANGSAN");
+                    // 通过获取后的枚举对象调用其方法
+                    zhangsan.testMyEnum();
+                    System.out.println("zhangsan is :" + zhangsan);
+
+                    // 方式4：通过Enum类提供的valueOf(Class,String)方法获取指定枚举类中的指定名称的枚举对象
+                    EnumType enumType = Enum.valueOf(EnumType.class,"LISI");
+                    enumType.testMyEnum();
+                    System.out.println("enumType is :" + enumType);
+                    // 因此valueOf(Class,String)方法是Enum类的且是public static的，因此子类EnumType也继承了它，所以可以直接使用（static方法可以被继承但是不能被覆盖）
+                    enumType = EnumType.valueOf(EnumType.class,"ZHANGSAN");
+                    enumType.testMyEnum();
+                    System.out.println("enumType is :" + enumType);
+                }
+            }
+        </font>
+    </pre>
+    <b><a name='header-n22' class='md-header-anchor '></a>2.2、 枚举常量</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        我们知道，枚举对象实际上就是枚举常量，因为编译器默认将它们优化为public static final。
+        接下来我们深入了解下枚举常量：
+        1.  枚举常量本质是当前枚举类的public、static、final的实例化对象；因为它是final的，因此编译器禁止重置它的引用值；因为它是static的，因此随着JVM加载当前枚举类，它会首先被初始化到方法区的静态区中（静静非构构初始化方法）；
+        2.  直接输出枚举常量，输出的是枚举常量的字面量字符串，而不是枚举对象的引用地址。因为枚举类继承了Enum类，而Enum覆盖了toString()方法，覆盖后的toString方法返回的就是对应枚举常量的字面量值；
+        3.  在声明枚举常量时，实际上调用的是当前枚举类对应的构造方法。如果是有参构造，则枚举常量声明时需要传递实际参数。
+    </pre>
+    <b><a name='header-n23' class='md-header-anchor '></a>2.3、 Enum类提供的API</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        前面已经清楚，任何一个使用enum定义的枚举类，在编译后默认继承Enum类。
+        那么，任何一个枚举对象都可以使用Enum提供的方法。
+        1.  Enum类中提供的方法大多数都是final的，意味着这些方法不允许子类去覆盖。
+        2.  Enum提供的clone方法直接抛出异常并且是protected，这意味着哪怕使用反射去调用clone方法，也无法创建一个枚举对象的副本，保证了枚举对象在整个JVM中的单例特性。
+        3.  Enum提供的finalize方法是final的，意味着不允许覆盖；且默认是空实现，说明枚举类不能有finalize方法。
+        4.  Enum是抽象类。
+        5.  Enum本身有构造方法 protected Enum(String name, int ordinal)；该方法是protected的，只能由java编译器调用。
+        6.  Enum类本身实现了Comparable 和 Serializable接口。
+
+        下面通过案例测试下Enum类的API:
+        <font color="gray">
+            package zeh.test.demo.com.enum1;
+
+            /**
+             * 功能描述 获取目标枚举对象的方式
+             *
+             * @author zWX5331241
+             * @since 2021-04-09
+             */
+            public class EnumMain {
+                public static void main(String[] args) {
+                    EnumType enumType = EnumType.LISI;
+                    // 比较两个枚举对象；如果当前枚举对象大于目标枚举对象，则返回1；等于则返回0；小于则返回-1。比较的顺序就是枚举类中声明枚举常量的顺序。
+                    int result = enumType.compareTo(EnumType.ZHANGSAN);
+                    System.out.println(result);
+
+                    // 判断两个枚举对象是否是同一个对象，即引用地址是否相同
+                    boolean isEqual = enumType.equals(EnumType.LISI);
+                    System.out.println(isEqual);
+
+                    // 返回描述此枚举对象的class对象
+                    Class&lt;EnumType&gt; enumTypeClass = enumType.getDeclaringClass();
+                    System.out.println(enumTypeClass);
+
+                    // 返回此枚举常量的hashCode
+                    int hashCode = enumType.hashCode();
+                    System.out.println(hashCode);
+
+                    // 返回当前枚举常量的名称，就是枚举常量的字面量含义。其实Enum覆盖的toString方法也是返回的枚举中的name
+                    String name = enumType.name();
+                    System.out.println(name);
+                    name = enumType.toString();
+                    System.out.println(name);
+
+                    // 返回当前枚举常量的序数，即当前枚举常量在枚举中的声明位置，序数从0开始
+                    int ordinal = enumType.ordinal();
+                    System.out.println(ordinal);
+
+                    // Enum提供的静态方法，返回指定枚举类型中的指定名称的枚举常量
+                    EnumType zhangsan = Enum.valueOf(EnumType.class, "ZHANGSAN");
+                    System.out.println(zhangsan);
+
+                }
+            }
+        </font>
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、枚举类常见注意点</b><br>
+    <b><a name='header-n31' class='md-header-anchor '></a>3.1、 equals方法</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  任何一个枚举类都继承Enum类的equals()，Enum类对该方法的实现就是直接使用==比较两个枚举对象的引用是否相同；因此通过枚举常量调用equals()方法时一定要注意它比较的是地址，即使用Enum的equals()方法和直接使用==是完全相同的。
+        2.  任何一个字符串覆盖的equals()方法，是比较两个字符串的内容是否相同的；因此如果使用字符串的equals()去和一个枚举常量进行比较结果返回的是false。
+        3.  在枚举的使用中，我们很少直接使用枚举的equals去比较两个枚举对象是否相同；而是直接通过枚举对象获取其中的属性，再去比较属性是否相同（因为枚举的属性大多数都是基本数据类型和String）。
+        备注：
+        因为枚举常量本身是常量，而且直接输出的话返回的是该枚举常量的字面量字符串；所以很多时候我们会潜意识的认为枚举常量本质是个字符串，从而使用枚举常量的equals()方法区比较，这是错误的！
+        枚举常量直接toString后返回的是其字面量字符串，但它本质仍旧是个java对象，并不是字符串。
+
+        下面通过案例去测试：
+        <font color="gray">
+            package zeh.test.demo.com.enum1;
+
+            /**
+             * 功能描述 获取目标枚举对象的方式
+             *
+             * @author zWX5331241
+             * @since 2021-04-09
+             */
+            public class EnumMain {
+                public static void main(String[] args) {
+                    EnumType enumType = EnumType.LISI;
+
+                    // 比较两个枚举对象，返回true
+                    boolean result = enumType.equals(EnumType.LISI);
+                    System.out.println(result);
+                    // 使用==和使用枚举的equals()方法作用完全相同，返回true
+                    result = enumType == EnumType.LISI;
+                    System.out.println(result);
+
+                    // 使用字符串的equals比较枚举对象，返回false
+                    result = "LISI".equals(enumType);
+                    System.out.println(result);
+
+                    // 获取枚举对象的name属性值，然后再比较，返回true
+                    result = "lisi".equals(enumType.getName());
+                    System.out.println(result);
+                }
+            }
+        </font>
+    </pre>
+    <b><a name='header-n32' class='md-header-anchor '></a>3.2、 编译器为枚举类生成的valueOf方法和values方法</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  valueOf(String)方法和values()方法是编译器为枚举类自动生成的方法；这两个方法是static的。
+        2.  因为是static的，所以由当前枚举类名直接调用。
+        3.  当前枚举类向上转型为Enum后，无法调用这两个方法，因为Enum类中没有这两个方法。
+
+        下面通过案例验证：
+        <font color="gray">
+            package zeh.test.demo.com.enum1;
+
+            /**
+             * 功能描述 获取目标枚举对象的方式
+             *
+             * @author zWX5331241
+             * @since 2021-04-09
+             */
+            public class EnumMain {
+                public static void main(String[] args) {
+                    EnumType enumType = EnumType.LISI;
+                    Enum e = enumType;
+                    // 向上转型后无法调用values()方法和valueOf()方法（valueOf方法是一个参数的那个方法）；因为Enum类中并没有这两个方法
+                    e.values();
+                    e.valueOf();
+                }
+            }
+        </font>
+    </pre>
+    <b><a name='header-n33' class='md-header-anchor '></a>3.3、 通过反射也可以获取枚举类的所有枚举对象</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        Class类中提供了两个枚举相关的方法：
+        public boolean isEnum()：返回当前class对象是否表示的是枚举类型。
+        public T[] getEnumConstants()：如果当前class表示枚举类型，则返回枚举类的所有枚举常量，否则返回null。
+
+        所以，我们也可以通过class对象来获取枚举类的所有枚举对象。
+
+        下面通过案例验证：
+        <font color="gray">
+            package zeh.test.demo.com.enum1;
+
+            import java.util.Arrays;
+
+            /**
+             * 功能描述 获取目标枚举对象的方式
+             *
+             * @author zWX5331241
+             * @since 2021-04-09
+             */
+            public class EnumMain {
+                public static void main(String[] args) {
+                    Class&gt;?&lt; clazz = EnumType.class;
+                    if(clazz.isEnum()){
+                        EnumType[] enumTypes = (EnumType[])clazz.getEnumConstants();
+                        System.out.println("enumTypes is :" + Arrays.toString(enumTypes));
+                    }
+                }
+            }
+        </font>
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、枚举对象的单例特性</b><br>
+    <b><a name='header-n41' class='md-header-anchor '></a>4.1、 枚举对象不能被克隆</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        前面说明过，Enum类中的clone方法是final、protected的，而且实现是直接抛出了异常。这意味着一个枚举对象无法clone出另外一个枚举对象。
+        <b><font color="#a52a2a">案例</font></b>
+        <font color="gray">
+            package zeh.test.demo.com.enum1;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-04-09
+             */
+            public enum EnumType {
+                ZHOUJIELUN, WANGLIHONG, LINJUNJIE;
+
+                public static void main(String[] args) throws CloneNotSupportedException {
+                    // Enum类中的clone()方法是protected的，因此只能由Enum的子类调用；其直接抛出异常，表示枚举对象不支持clone
+                    ZHOUJIELUN.clone();
+                }
+
+            }
+        </font>
+        <b><font color="#a52a2a">测试结果</font></b>
+        Exception in thread "main" java.lang.CloneNotSupportedException
+            at java.lang.Enum.clone(Enum.java:163)
+            at zeh.test.demo.com.enum1.EnumType.main(EnumType.java:14)
+
+        Process finished with exit code 1
+    </pre>
+    <b><a name='header-n42' class='md-header-anchor '></a>4.2、 不能反射出一个枚举对象</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        通过反射创建枚举对象，直接抛出异常。即Class的newInstance()方法不允许反射枚举对象。
+        下面通过案例演示：
+        <b><font color="#a52a2a">定义枚举类EnumType</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.enum1;
+
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-04-09
+             */
+            public enum EnumType {
+                ZHANGSAN("zhangsan", 22), LISI("lisi", 18);
+
+                private String name;
+                private int age;
+
+                // 枚举空构造，编译后编译器默认为编译为两个参数的构造即：EnumType(String name,int ordinal)
+                EnumType() {
+                }
+
+                // 枚举两参构造，编译后将成为：EnumType(String name,int ordinal,String name, int age)
+                EnumType(String name, int age) {
+                    this.setName(name);
+                    this.setAge(age);
+                }
+
+                public String getName() {
+                    return name;
+                }
+
+                public void setName(String name) {
+                    this.name = name;
+                }
+
+                public int getAge() {
+                    return age;
+                }
+
+                public void setAge(int age) {
+                    this.age = age;
+                }
+
+            }
+        </font>
+        <b><font color="#a52a2a">通过Class的newInstance()方法反射创建枚举对象</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.enum1;
+
+            /**
+             * 功能描述 获取目标枚举对象的方式
+             *
+             * @author zWX5331241
+             * @since 2021-04-09
+             */
+            public class EnumMain {
+                public static void main(String[] args) throws IllegalAccessException, InstantiationException {
+                    Class&lt;?&gt; clazz = EnumType.class;
+                    // 方式1：直接使用Class类的newInstance()方法去创建当前类的对象；该方法要求当前类必须具备public的无参构造方法
+                    // 但是我们知道枚举类编译后，其实是没有无参构造的，哪怕有也是private的，因此该方法始终报错，即找不到指定的构造方法
+                    clazz.newInstance();
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">测试结果：</font> </b>
+        <font color="gray">
+            Exception in thread "main" java.lang.InstantiationException: zeh.test.demo.com.enum1.EnumType
+                at java.lang.Class.newInstance(Class.java:427)
+                at zeh.test.demo.com.enum1.EnumMain.main(EnumMain.java:14)
+            Caused by: java.lang.NoSuchMethodException: zeh.test.demo.com.enum1.EnumType.&lt;init&gt;()
+                at java.lang.Class.getConstructor0(Class.java:3082)
+                at java.lang.Class.newInstance(Class.java:412)
+                ... 1 more
+
+            Process finished with exit code 1
+        </font>
+        原因分析：
+        枚举类编译后实际上并没有无参构造方法，因此Class类的newInstance()方法永远无法创建枚举对象。
+         <b><font color="#a52a2a">通过Constructor反射指定参数的构造器去创建枚举对象</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.enum1;
+
+            import java.lang.reflect.Constructor;
+            import java.lang.reflect.InvocationTargetException;
+
+            /**
+             * 功能描述 获取目标枚举对象的方式
+             *
+             * @author zWX5331241
+             * @since 2021-04-09
+             */
+            public class EnumMain {
+                public static void main(String[] args) throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+                    Class&lt;?&gt; clazz = EnumType.class;
+                    // 方式2：只能使用Constructor的newInstance()方法去获取指定参数的构造器。现在获取EnumType中两参构造器，所以得传入4个参数。
+                    Constructor&lt;?&gt; constructor = clazz.getDeclaredConstructor(String.class, int.class, String.class, int.class);
+                    constructor.setAccessible(true);
+                    EnumType enumType = (EnumType) constructor.newInstance("zhangsan", 12);
+                    System.out.println(enumType);
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">测试结果：</font> </b>
+        <font color="gray">
+            Exception in thread "main" java.lang.IllegalArgumentException: Cannot reflectively create enum objects
+                at java.lang.reflect.Constructor.newInstance(Constructor.java:417)
+                at zeh.test.demo.com.enum1.EnumMain.main(EnumMain.java:18)
+
+            Process finished with exit code 1
+        </font>
+        原因分析：
+        我们可以观察Class类提供的newInstance()方法的源代码：
+        if ((clazz.getModifiers() & Modifier.ENUM) != 0)
+            throw new IllegalArgumentException("Cannot reflectively create enum objects");
+        也就是说，源码内部限制了去反射创建枚举对象。
+    </pre>
+    <b><a name='header-n43' class='md-header-anchor '></a>4.3、 枚举对象不允许序列化和反序列化</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+
+    </pre>
+
+    <b><a name='header-n5' class='md-header-anchor '></a>5、像使用普通class一样使用枚举</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        通过前面知道：我们通过enum关键字定义的一个枚举类，java编译器优化后会继承Enum类、使构造方法私有并且默认调用Enum的构造器、通过静态块初始化枚举实例等。
+        因此，除了这些区别之外，枚举类实际上和普通类没有其他区别了。
+        因此我们可以把枚举类当做普通类，实现接口、添加内部类、添加成员和方法、甚至是添加main方法。
+    </pre>
+    <b><a name='header-n51' class='md-header-anchor '></a>5.1、 向枚举中添加普通成员和方法等</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">EnumType</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.enum1;
+
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-04-09
+             */
+            public enum EnumType {
+                ZHANGSAN("zhangsan", 22), LISI("lisi", 18);
+
+                private String name;
+                private int age;
+                public static String school;
+                private final String city = "西北工业大学";
+
+                {
+                    System.out.println("枚举类自己的构造块");
+                }
+
+                static {
+                    System.out.println("枚举类自己的静态块");
+                }
+
+                EnumType(String name, int age) {
+                    this.setName(name);
+                    this.setAge(age);
+                }
+
+                public String getName() {
+                    return name;
+                }
+
+                public void setName(String name) {
+                    this.name = name;
+                }
+
+                public int getAge() {
+                    return age;
+                }
+
+                public void setAge(int age) {
+                    this.age = age;
+                }
+
+                public void testMyEnum() {
+                    System.out.println("枚举类自己提供的业务方法，city = " + this.city + "；school = " + EnumType.school);
+                }
+
+                public static void main(String[] args) {
+                    EnumType enumTypes[] = EnumType.values();
+                    System.out.println("enumTypes is :" + Arrays.toString(enumTypes));
+                    EnumType.school = "西南石油大学";
+                    EnumType enumType = EnumType.valueOf("ZHANGSAN");
+                    enumType.testMyEnum();
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">执行结果</font> </b>
+        <font color="gray">
+            枚举类自己的构造块
+            枚举类自己的构造块
+            枚举类自己的静态块
+            enumTypes is :[ZHANGSAN, LISI]
+            枚举类自己提供的业务方法，city = 西北工业大学；school = 西南石油大学
+
+            Process finished with exit code 0
+        </font>
+    </pre>
+    <b><a name='header-n52' class='md-header-anchor '></a>5.2、 枚举类覆盖方法</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        既然枚举类继承Enum类，那么枚举类就可以覆盖Enum中的方法。
+        很遗憾，Enum类中的实例方法只有一个不是final的，那就是toString()方法。
+        言外之意，允许我们自定义枚举对象的输出格式。
+    </pre>
+    <b><a name='header-n53' class='md-header-anchor '></a>5.3、 枚举类中定义抽象方法</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  普通类定义了抽象方法后，则该类必须使用abstract进行修饰；并且需要子类去实现该抽象方法。
+        2.  枚举和普通类类似，也可以定义抽象方法，只不过枚举对象只能由自己产生，因此枚举的抽象方法需要枚举类自己负责实现；既然必须枚举自己负责实现抽象方法，那么枚举类势必不能再使用abstract去修饰。
+        3.  枚举内部定义抽象方法，表现出了一定的多态特性。
+        <font color="gray">
+            package zeh.test.demo.com.enum1;
+
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-04-09
+             */
+            public enum EnumType {
+                TEST1 {
+                    @Override
+                    public void testEnum() {
+                        System.out.println("TEST1的实现");
+                    }
+                },
+                TEST2 {
+                    @Override
+                    public void testEnum() {
+                        System.out.println("TEST2的实现");
+                    }
+                };
+
+                public abstract void testEnum();
+
+                // 枚举类中直接定义main方法
+                public static void main(String[] args) {
+                    TEST1.testEnum();
+                    TEST2.testEnum();
+                }
+            }
+        </font>
+    </pre>
+    <b><a name='header-n54' class='md-header-anchor '></a>5.4、 枚举和接口</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  枚举类只是不能继承其他类，但它可以实现多个接口。
+        2.  一般通过接口来组织多种类型的枚举，使得枚举看起来优雅。
+
+        <b><font color="#a52a2a">枚举实现多个接口</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.enum1;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-04-15
+             */
+            interface IEat {
+                void eat();
+            }
+
+            interface IDrink {
+                void drink();
+            }
+
+            public enum MyEnum implements IEat, IDrink {
+                EAT, DRINK;
+
+                @Override
+                public void drink() {
+                    System.out.println("drink");
+                }
+
+                @Override
+                public void eat() {
+                    System.out.println("eat");
+                }
+
+                public static void main(String[] args) {
+                    EAT.drink();
+                    DRINK.eat();
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">通过接口组织枚举</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.enum1;
+
+            /**
+             * 功能描述 通过接口中定义内部枚举类并实现接口，来组织枚举分类并实现一定的多态性
+             *
+             * @since 2021-04-15
+             */
+            public interface Food {
+                enum Mianshi implements Food {
+                    YOUPO, DAOXIAO, SAOZOMIAN;
+                }
+
+                enum Mifan implements Food {
+                    HUANGMENJI, GAIJIAOFAN, ZHUTIFAN;
+                }
+
+                enum Roushi implements Food {
+                    JITUI, DAROU, HONGSHAOROU, PAIGU;
+                }
+
+                static void main(String[] args) {
+                    Food food = Mianshi.DAOXIAO;
+                    food = Mifan.GAIJIAOFAN;
+                    food = Roushi.HONGSHAOROU;
+                }
+            }
+        </font>
+    </pre>
+    <b><a name='header-n55' class='md-header-anchor '></a>5.5、 枚举和switch case</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  switch case语句用于选择结构中的一种，当匹配条件很多时使用switch case比较方便。
+        2.  switch后面的条件参数一般是int和char，jdk的后续版本支持了枚举和String。
+        3.  case后面的匹配值使用枚举时，不能使用枚举类型去引用枚举对象，直接使用枚举对象即可。
+        <b><font color="#a52a2a">枚举结合switch case使用</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.enum1;
+
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-04-15
+             */
+            enum Color {
+                RED, GREEN, YELLOW;
+            }
+
+            public class Switch {
+                public static void printColor(Color color) {
+                    switch (color) {
+                        case RED: // 无须使用Color引用
+                            System.out.println("红色");
+                            break;
+                        case YELLOW:
+                            System.out.println("黄色");
+                            break;
+                        case GREEN:
+                            System.out.println("绿色");
+                            break;
+                        default:
+                            System.out.println("没有匹配的颜色");
+                    }
+                }
+
+                public static void main(String[] args) {
+                    printColor(Color.GREEN);
+                }
+            }
+        </font>
+    </pre>
+
+    <b><a name='header-n6' class='md-header-anchor '></a>6、枚举实现单例</b><br>
+    <b><a name='header-n61' class='md-header-anchor '></a>6.1、 枚举类本身作为单例</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        通过上面的学习，我们已经知道，jdk底层对于枚举有诸多的限制。
+        总之一句话，枚举对象只能是有限的，且不能通过克隆、序列化、反射等方式创建。
+        枚举对象是static的，其只随着目标类的装载而实例化一次。
+        JVM保证了枚举对象在整个JVM生命周期中都是唯一的。
+        因此，通过枚举实现的单例模式是最经典的。
+
+        最简单的枚举实现单例，我们需要的单例就是枚举本身。
+        <b><font color="#a52a2a">枚举实现单例1</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.enum1;
+
+            public enum SingletonEnum {
+                // 需要使用时，直接通过SingletonEnum.INSTANCE获取该单例对象。
+                // 该对象只有在第一次引用时才被装载，因此是懒加载的。
+                INSTANCE;
+            }
+        </font>
+
+        有时候我们想加上一个static方法专门用来返回枚举单例，这更符合我们的编程习惯。
+        <b><font color="#a52a2a">枚举实现单例2</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.enum1;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-04-16
+             */
+            public enum SingletonEnum {
+                INSTANCE;
+
+                public static SingletonEnum getInstance() {
+                    return INSTANCE;
+                }
+            }
+        </font>
+
+        往往我们需要的单例对象是比较复杂的，不会是个空对象，意味着需要的单例对象是属性和方法的。
+        <b><font color="#a52a2a">枚举实现单例3</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.enum1;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-04-16
+             */
+            public enum SingletonEnum {
+                INSTANCE("单例枚举对象");
+
+                public static SingletonEnum getInstance() {
+                    return INSTANCE;
+                }
+
+                // 定义单例枚举自己的属性
+                private String name;
+
+                // 编写带参构造
+                SingletonEnum(String name) {
+                    this.name = name;
+                }
+
+                // 枚举单例提供的业务方法
+                public void invoke() {
+                    System.out.println("name = " + name);
+                }
+            }
+        </font>
+    </pre>
+    <b><a name='header-n62' class='md-header-anchor '></a>6.2、 借助枚举改造已有类</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        实际上很多时候，我们需要的单例对象是独立的一个Class，可能这个类已经编写好久了，我们不想把这个类修改成枚举，这时我们可以通过枚举来改造这个类。
+        <b><font color="#a52a2a">我们将现有的MySingleton类改造为枚举单例</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.enum1;
+
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-04-16
+             */
+            public class MySingleton {
+
+                private MySingleton() {
+                }
+
+                public enum SingletonEnum {
+                    SINGLETON_ENUM;
+                    private MySingleton instance;
+
+                    SingletonEnum() {
+                        instance = new MySingleton();
+                    }
+
+                    public MySingleton getInstance() {
+                        return instance;
+                    }
+                }
+            }
+        </font>
+
+        <b><font color="#a52a2a">这种借助枚举改造已有类为单例的方式存在严重问题</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.enum1;
+
+            import java.lang.reflect.Constructor;
+            import java.lang.reflect.InvocationTargetException;
+
+            public class EnumMain {
+                public static void main(String[] args) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+                    MySingleton mySingleton1 = MySingleton.SingletonEnum.SINGLETON_ENUM.getInstance();
+                    MySingleton mySingleton2 = MySingleton.SingletonEnum.SINGLETON_ENUM.getInstance();
+                    // 返回true
+                    System.out.println("mySingleton1 == mySingleton2 ?" + (mySingleton1 == mySingleton2));
+
+                    Constructor&lt;?&gt; constructor = MySingleton.class.getDeclaredConstructor();
+                    constructor.setAccessible(true);
+                    MySingleton mySingleton3 = (MySingleton) constructor.newInstance();
+                    // 返回false
+                    System.out.println("mySingleton1 == mySingleton3 ? " + (mySingleton1 == mySingleton3));
+                }
+            }
+        </font>
+
+        <b><font color="#a52a2a">分析</font> </b>
+        类似这种，借助枚举类的外壳，包一个普通类的对象。
+        然后利用枚举类的各种特性去保证该枚举类的对象是唯一的，既然枚举对象都是唯一的，那么枚举中包装的那个普通类的对象也是唯一的了？
+        这块实际上和借助静态内部类去创建单例的思想是相同的，但实际上这种并没有真正保证单例特性，因为毕竟枚举包装的类是个普通类，尽管它的构造已经私有，然而我们依旧无法避免通过反射去创建它的一个新对象。
+    </pre>
+    <b><a name='header-n63' class='md-header-anchor '></a>6.3、 枚举实现单例的总结</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        使用枚举实现单例，就直接将单例对象所在的类改造成枚举。
+        只有枚举对象本身才是真正的单例，其他借助枚举特性去将普通类改造成单例的方式，是存在问题的。
+    </pre>
+
+    <b><a name='header-n7' class='md-header-anchor '></a>7、枚举和单例的关系</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  枚举常量本身被编译器修饰为：public static final的；而单例模式中的单例一般是 private static 的即可。
+        2.  枚举常量直接输出是枚举常量的字面量含义，因为Enum实际上覆盖了toString方法，返回的就是枚举常量的字面量名称；而单例模式中直接输出单例，输出的是单例对象的引用地址。
+        3.  枚举类可以创建多个有限的枚举实例（枚举枚举，就是有限个数的意思，可以枚举出来的实例）；而单例模式中只有一个单实例。
+        4.  枚举本身可以实现单例模式。
+    </pre>
+
+    <b><a name='header-n8' class='md-header-anchor '></a>8、枚举规范</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  枚举类通常当做常量类使用，因为枚举对象直接toString后就表示其字面量，即常量字符串。
+        2.  枚举常量命名规范：全部大写，单词之间用_分隔。
+    </pre>
+
+    <b><a name='header-n9' class='md-header-anchor '></a>9、枚举集合</b><br>
+    <b><a name='header-n91' class='md-header-anchor '></a>9.1、 枚举类本身作为单例</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n92' class='md-header-anchor '></a>9.2、 枚举类本身作为单例</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n93' class='md-header-anchor '></a>9.3、 枚举类本身作为单例</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n94' class='md-header-anchor '></a>9.4、 枚举类本身作为单例</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n95' class='md-header-anchor '></a>9.5、 枚举类本身作为单例</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n96' class='md-header-anchor '></a>9.6、 枚举类本身作为单例</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+
+</div>
+</body>
+</html>
