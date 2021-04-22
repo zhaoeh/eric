@@ -690,6 +690,14 @@
         1.  有的时候，我们需要修改一个成员变量的值，但是该成员在jar包中或者在其他位置且没有提供对应的修改方法或者成员是私有的，导致我们不能从代码层面修改。
         2.  有的时候，代码是别人提供的，并且成员定义成了private私有的且没有提供setter方法，而公司规则不允许直接修改别人提供的代码。
         基于这些常见的原因，因此可能需要我们通过非常规手段去修改目标对象的指定成员值。
+
+        使用反射修改目标类字段的核心API是Field类的set()方法：
+        public void set(Object obj, Object value) throws IllegalArgumentException, IllegalAccessException;
+        这个方法我们需要注意的是：如果底层需要设置的字段是static的话，则第一个参数可以忽略，直接传null值即可。
+        这个特性很重要，意味着我们通过反射设置一个static字段的值的时候，可以不用传递实例对象进去，比如反射设置接口中的常量字段，我们无法传递一个接口实例进去，就可以直接传递null。
+        <font color="#a52a2a">
+            实际上对于底层字段是static的，传递一个明确的实例对象进去毫无意义，因为static字段不是实例对象自己的，而是隶属于类。
+        </font>
     </pre>
     <b><a name='header-n11' class='md-header-anchor '></a>1.1、 使用反射设置普通成员变量的值</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
@@ -923,8 +931,8 @@
                     Field nameField = Cat.class.getDeclaredField("name");
                     // 设置对该字段可访问
                     nameField.setAccessible(true);
-                    // 对cat对象的当前属性进行赋值操作
-                    nameField.set(cat, "珍珠");
+                    // 对Cat类的静态属性进行赋值操作，注意第一个参数可以直接传null。
+                    nameField.set(null, "珍珠");
                     System.out.println(cat);
                 }
             }
@@ -967,8 +975,8 @@
                     Field nameField = Cat.class.getDeclaredField("name");
                     // 设置对该字段可访问
                     nameField.setAccessible(true);
-                    // 对cat对象的当前属性进行赋值操作
-                    nameField.set(cat, new StringBuilder("珍珠"));
+                    // 对Cat类的静态属性进行赋值操作，注意第一个参数可以直接传null。
+                    nameField.set(null, new StringBuilder("珍珠"));
                     System.out.println(cat);
                 }
             }
@@ -1024,8 +1032,8 @@
                     Field modifiersField = nameField.getClass().getDeclaredField("modifiers");
                     modifiersField.setAccessible(true);
                     modifiersField.set(nameField, nameField.getModifiers() & ~Modifier.FINAL);
-                    // 3.   对cat对象的当前属性进行赋值操作
-                    nameField.set(cat, new StringBuilder("珍珠"));
+                    // 3.   对Cat类的静态属性进行赋值操作，注意第一个参数可以直接传null。
+                    nameField.set(null, new StringBuilder("珍珠"));
                     // 4.   将final修饰符再添加回去
                     modifiersField.set(nameField, nameField.getModifiers() & ~Modifier.FINAL);
                     System.out.println(cat);
