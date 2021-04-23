@@ -683,7 +683,7 @@
 <div id='write' class='is-node'>
     <b><a name='header-n0' class='md-header-anchor '></a>反射的常见操作</b>
 
-    <b><a name='header-n1' class='md-header-anchor '></a>1、使用反射设置目标属性值</b><br>
+    <b><a name='header-n1' class='md-header-anchor '></a>1、为什么使用反射修改目标属性值？</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         为什么要使用反射修改目标对象的指定字段值？直接通过对象去设置或者直接修改代码设置字段值不香吗？
         答：
@@ -1056,7 +1056,15 @@
     </pre>
 
     <b><a name='header-n2' class='md-header-anchor '></a>2、使用反射调用目标对象的指定方法</b><br>
-    <b><a name='header-n21' class='md-header-anchor '></a>2.1、 反射执行目标对象各种方法</b>
+    <b><a name='header-n21' class='md-header-anchor '></a>2.1、 为什么要使用反射调用目标对象的方法？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        目标对象的方法可能是private的，我们无法直接调用的情况下就可以使用反射强制调用。
+
+        使用反射调用目标方法的核心API是Method类的invoke()方法：
+        public Object invoke(Object obj, Object... args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException;
+        同File一样，这个方法我们需要注意的是，如果要调用的底层方法是static方法的话，则第一个参数obj可以忽略，直接传递null值即可。
+    </pre>
+    <b><a name='header-n22' class='md-header-anchor '></a>2.2、 反射执行目标对象各种方法</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         有的时候，目标方法是private的，只能本类自己调用。这时候如果想要调用private方法，可以采用反射强制调用执行。
         <font color="gray">
