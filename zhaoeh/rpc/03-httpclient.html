@@ -1,0 +1,1361 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>httpClient.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    .footnotes + .footnotes {
+        margin-top: -1em;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    @media screen and (max-width: 48em) {
+
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    li p.first {
+        display: inline-block;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+
+
+    </style>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>HttpClient</b>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、什么是httpClient？</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        我们学习完了java的socket和javaweb知识后，对网络传输实际上有了基本的了解。
+        尤其是在javaweb中，我们知道java主要是在web中做后台程序开发的，而需要访问的话则要使用浏览器去访问java开发的web访问。
+        浏览器是基于Http请求的，那如果我们需要通过java代码去使用http协议访问远端服务怎么办呢？
+        那就需要我们使用java去编写http请求的客户端代码，这就是我们常说的httpClient。
+
+        通过httpClient客户端去访问http服务器，也是非常典型的一种RPC远程调用方式。
+    </pre>
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、java中实现http客户端请求的常见方式</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        java以及目前各种常见开源jar包中提供了httpClient的几种常见实现方式：
+        1.  通过JDK网络类Java.net.HttpURLConnection去实现，这是jdk最原生的操作。
+        2.  通过HttpClient3.1去实现，HttpClient3.1 是 org.apache.commons.httpclient下操作远程 url的工具包，已经不再维护。
+        3.  通过HttpClient4.5去实现，HttpClient4.5是 org.apache.http.client下操作远程 url的工具包，最新的。
+        4.  通过Apache封装好的CloseableHttpClient去实现。
+        5.  通过spring系列封装好的restTemplate对象。
+        <font color="#a52a2a">
+            tips：
+            注意：只有第一种方式是java中jdk提供的原生方式，只不过原生方式提供的功能不够丰富，而且需要开发者编写很多非业务性代码；因此后面各种开源框架才对原生方式进行了各种包装。
+        </font>
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、案例</b><br>
+    <b><a name='header-n31' class='md-header-anchor '></a>3.1、 通过jdk的HttpURLConnection实现HttpClient</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">jdk原生方式实现HttpClient</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.socket.http;
+
+            import java.io.BufferedReader;
+            import java.io.IOException;
+            import java.io.InputStream;
+            import java.io.InputStreamReader;
+            import java.io.OutputStream;
+            import java.net.HttpURLConnection;
+            import java.net.MalformedURLException;
+            import java.net.URL;
+
+            /**
+             * 功能描述 纯jdk api实现http客户端，基于 HttpURLConnection
+             *
+             * @author zWX5331241
+             * @since 2021-04-23
+             */
+            public class HttpClient4Java {
+
+                // java原生方式 HttpURLConnection 实现http客户端 get方式
+                public static String doGet(String targetHttpUrl) {
+                    HttpURLConnection httpURLConnection = null;
+                    // 输入流
+                    InputStream inputStream = null;
+                    BufferedReader bufferedReader = null;
+                    // 结果字符串
+                    String result = null;
+
+                    try {
+                        // 创建远程url连接对象
+                        URL url = new URL(targetHttpUrl);
+                        // 通过远程url连接对象打开一个连接，并强转成HttpURLConnection对象
+                        httpURLConnection = (HttpURLConnection) url.openConnection();
+                        // 设置连接方式为 GET
+                        httpURLConnection.setRequestMethod("GET");
+                        // 设置连接主机服务器的超时时间：15000毫秒
+                        httpURLConnection.setConnectTimeout(15000);
+                        // 设置读取远程返回的数据时间：60000毫秒
+                        httpURLConnection.setReadTimeout(60000);
+
+                        //连接目标服务器
+                        httpURLConnection.connect();
+
+                        // 处理响应结果
+                        // 通过connection连接，获取输入流
+                        if (httpURLConnection.getResponseCode() == 200) {
+                            inputStream = httpURLConnection.getInputStream();
+                            // 封装输入流对象为bufferReader，并制定字符集
+                            bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+
+                            // 从输入流中读取响应并保存到字符串中
+                            StringBuilder stringBuilder = new StringBuilder();
+                            String temp = null;
+                            while ((temp = bufferedReader.readLine()) != null) {
+                                stringBuilder.append(temp);
+                                stringBuilder.append("\r\n");
+                            }
+                            result = stringBuilder.toString();
+                        }
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        if (null != bufferedReader) {
+                            try {
+                                bufferedReader.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        if (null != inputStream) {
+                            try {
+                                inputStream.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        // 关闭远程连接
+                        httpURLConnection.disconnect();
+                    }
+                    return result;
+                }
+
+                // java原生方式 HttpURLConnection 实现http客户端 post方式
+                public static String doPost(String targetHttpUrl, String param) {
+                    HttpURLConnection connection = null;
+                    InputStream is = null;
+                    OutputStream os = null;
+                    BufferedReader br = null;
+                    String result = null;
+                    try {
+                        URL url = new URL(targetHttpUrl);
+                        // 通过远程url连接对象打开连接
+                        connection = (HttpURLConnection) url.openConnection();
+                        // 设置连接请求方式
+                        connection.setRequestMethod("POST");
+                        // 设置连接主机服务器超时时间：15000毫秒
+                        connection.setConnectTimeout(15000);
+                        // 设置读取主机服务器返回数据超时时间：60000毫秒
+                        connection.setReadTimeout(60000);
+
+                        // DoOutput设置是否向httpUrlConnection输出，DoInput设置是否从httpUrlConnection读入，此外发送post请求必须设置这两个
+                        // 默认值为：false，当向远程服务器传送数据/写数据时，需要设置为true
+                        connection.setDoOutput(true);
+                        // 默认值为：true，当前向远程服务读取数据时，设置为true，该参数可有可无
+                        connection.setDoInput(true);
+
+                        // 设置传入参数的格式:请求参数应该是 name1=value1&name2=value2 的形式。
+                        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                        // 当然如果是json格式的参数，就设置成如下的类型：
+            //            connection.setRequestProperty("Content-Type", "application/json;charset=utf-8");
+                        // 设置鉴权信息：Authorization: Bearer da3efcbf-0845-4fe3-8aba-ee040be542c0
+                        connection.setRequestProperty("Authorization", "Bearer da3efcbf-0845-4fe3-8aba-ee040be542c0");
+                        // 通过连接对象获取一个输出流
+                        os = connection.getOutputStream();
+                        // 通过输出流对象将参数写出去/传输出去,它是通过字节数组写出的
+                        os.write(param.getBytes());
+                        // 通过连接对象获取一个输入流，向远程读取
+                        if (connection.getResponseCode() == 200) {
+
+                            is = connection.getInputStream();
+                            // 对输入流对象进行包装:charset根据工作项目组的要求来设置
+                            br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+
+                            StringBuffer sbf = new StringBuffer();
+                            String temp = null;
+                            // 循环遍历一行一行读取数据
+                            while ((temp = br.readLine()) != null) {
+                                sbf.append(temp);
+                                sbf.append("\r\n");
+                            }
+                            result = sbf.toString();
+                        }
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        // 关闭资源
+                        if (null != br) {
+                            try {
+                                br.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (null != os) {
+                            try {
+                                os.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (null != is) {
+                            try {
+                                is.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        // 断开与远程地址url的连接
+                        connection.disconnect();
+                    }
+                    return result;
+                }
+            }
+        </font>
+    </pre>
+    <b><a name='header-n32' class='md-header-anchor '></a>3.2、 apache HttpClient3.1方式实现httpClient</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        httpClient的get或post请求方式步骤：
+        生成一个HttpClient对象并设置相应的参数；
+        生成一个GetMethod对象或PostMethod并设置响应的参数；
+        用HttpClient生成的对象来执行GetMethod生成的Get方法；
+        处理响应状态码；
+        若响应正常，处理HTTP响应内容；
+        释放连接。
+        <b><font color="#a52a2a">HttpClient3系列实现httpClient</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.socket.http;
+
+            import com.alibaba.fastjson.JSONObject;
+
+            import org.apache.commons.httpclient.*;
+            import org.apache.commons.httpclient.methods.GetMethod;
+            import org.apache.commons.httpclient.methods.PostMethod;
+            import org.apache.commons.httpclient.params.HttpMethodParams;
+
+            import java.io.IOException;
+
+            /**
+             * @author riemann
+             * @date 2019/05/25 0:58
+             */
+            public class HttpClientUtil {
+                /**
+                 * httpClient的get请求方式
+                 * 使用GetMethod来访问一个URL对应的网页实现步骤：
+                 * 1.生成一个HttpClient对象并设置相应的参数；
+                 * 2.生成一个GetMethod对象并设置响应的参数；
+                 * 3.用HttpClient生成的对象来执行GetMethod生成的Get方法；
+                 * 4.处理响应状态码；
+                 * 5.若响应正常，处理HTTP响应内容；
+                 * 6.释放连接。
+                 *
+                 * @param url
+                 * @param charset
+                 * @return
+                 */
+                public static String doGet(String url, String charset) {
+                    //1.生成HttpClient对象并设置参数
+                    HttpClient httpClient = new HttpClient();
+                    //设置Http连接超时为5秒
+                    httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(5000);
+                    //2.生成GetMethod对象并设置参数
+                    GetMethod getMethod = new GetMethod(url);
+                    //设置get请求超时为5秒
+                    getMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 5000);
+                    //设置请求重试处理，用的是默认的重试处理：请求三次
+                    getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
+                    String response = "";
+                    //3.执行HTTP GET 请求
+                    try {
+                        int statusCode = httpClient.executeMethod(getMethod);
+                        //4.判断访问的状态码
+                        if (statusCode != HttpStatus.SC_OK) {
+                            System.err.println("请求出错：" + getMethod.getStatusLine());
+                        }
+                        //5.处理HTTP响应内容
+                        //HTTP响应头部信息，这里简单打印
+                        Header[] headers = getMethod.getResponseHeaders();
+                        for (Header h : headers) {
+                            System.out.println(h.getName() + "---------------" + h.getValue());
+                        }
+                        //读取HTTP响应内容，这里简单打印网页内容
+                        //读取为字节数组
+                        byte[] responseBody = getMethod.getResponseBody();
+                        response = new String(responseBody, charset);
+                        System.out.println("-----------response:" + response);
+                        //读取为InputStream，在网页内容数据量大时候推荐使用
+                        //InputStream response = getMethod.getResponseBodyAsStream();
+                    } catch (HttpException e) {
+                        //发生致命的异常，可能是协议不对或者返回的内容有问题
+                        System.out.println("请检查输入的URL!");
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        //发生网络异常
+                        System.out.println("发生网络异常!");
+                    } finally {
+                        //6.释放连接
+                        getMethod.releaseConnection();
+                    }
+                    return response;
+                }
+
+                /**
+                 * post请求
+                 *
+                 * @param url
+                 * @param json
+                 * @return
+                 */
+                public static String doPost(String url, JSONObject json) {
+                    HttpClient httpClient = new HttpClient();
+                    PostMethod postMethod = new PostMethod(url);
+
+                    postMethod.addRequestHeader("accept", "*/*");
+                    postMethod.addRequestHeader("connection", "Keep-Alive");
+                    //设置json格式传送
+                    postMethod.addRequestHeader("Content-Type", "application/json;charset=GBK");
+                    //必须设置下面这个Header
+                    postMethod.addRequestHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36");
+                    //添加请求参数
+                    postMethod.addParameter("commentId", json.getString("commentId"));
+
+                    String res = "";
+                    try {
+                        int code = httpClient.executeMethod(postMethod);
+                        if (code == 200) {
+                            res = postMethod.getResponseBodyAsString();
+                            System.out.println(res);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return res;
+                }
+        </font>
+    </pre>
+    <b><a name='header-n33' class='md-header-anchor '></a>3.3、 通过HttpClient4系列实现httpClient</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">HttpClient4系列实现httpClient</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.socket.http;
+
+            import java.io.IOException;
+            import java.io.UnsupportedEncodingException;
+            import java.util.ArrayList;
+            import java.util.Iterator;
+            import java.util.List;
+            import java.util.Map;
+            import java.util.Map.Entry;
+            import java.util.Set;
+
+            import org.apache.http.HttpEntity;
+            import org.apache.http.NameValuePair;
+            import org.apache.http.client.ClientProtocolException;
+            import org.apache.http.client.config.RequestConfig;
+            import org.apache.http.client.entity.UrlEncodedFormEntity;
+            import org.apache.http.client.methods.CloseableHttpResponse;
+            import org.apache.http.client.methods.HttpGet;
+            import org.apache.http.client.methods.HttpPost;
+            import org.apache.http.impl.client.CloseableHttpClient;
+            import org.apache.http.impl.client.HttpClients;
+            import org.apache.http.message.BasicNameValuePair;
+            import org.apache.http.util.EntityUtils;
+
+            public class HttpClient4 {
+
+                public static String doGet(String url) {
+                    CloseableHttpClient httpClient = null;
+                    CloseableHttpResponse response = null;
+                    String result = "";
+                    try {
+                        // 通过址默认配置创建一个httpClient实例
+                        httpClient = HttpClients.createDefault();
+                        // 创建httpGet远程连接实例
+                        HttpGet httpGet = new HttpGet(url);
+                        // 设置请求头信息，鉴权
+                        httpGet.setHeader("Authorization", "Bearer da3efcbf-0845-4fe3-8aba-ee040be542c0");
+                        // 设置配置请求参数
+                        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(35000)// 连接主机服务超时时间
+                                .setConnectionRequestTimeout(35000)// 请求超时时间
+                                .setSocketTimeout(60000)// 数据读取超时时间
+                                .build();
+                        // 为httpGet实例设置配置
+                        httpGet.setConfig(requestConfig);
+                        // 执行get请求得到返回对象
+                        response = httpClient.execute(httpGet);
+                        // 通过返回对象获取返回数据
+                        HttpEntity entity = response.getEntity();
+                        // 通过EntityUtils中的toString方法将结果转换为字符串
+                        result = EntityUtils.toString(entity);
+                    } catch (ClientProtocolException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        // 关闭资源
+                        if (null != response) {
+                            try {
+                                response.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (null != httpClient) {
+                            try {
+                                httpClient.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    return result;
+                }
+
+                public static String doPost(String url, Map&lt;String, Object&gt; paramMap) {
+                    CloseableHttpClient httpClient = null;
+                    CloseableHttpResponse httpResponse = null;
+                    String result = "";
+                    // 创建httpClient实例
+                    httpClient = HttpClients.createDefault();
+                    // 创建httpPost远程连接实例
+                    HttpPost httpPost = new HttpPost(url);
+                    // 配置请求参数实例
+                    RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(35000)// 设置连接主机服务超时时间
+                            .setConnectionRequestTimeout(35000)// 设置连接请求超时时间
+                            .setSocketTimeout(60000)// 设置读取数据连接超时时间
+                            .build();
+                    // 为httpPost实例设置配置
+                    httpPost.setConfig(requestConfig);
+                    // 设置请求头
+                    httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+                    // 封装post请求参数
+                    if (null != paramMap && paramMap.size() > 0) {
+                        List&lt;NameValuePair&gt; nvps = new ArrayList&lt;NameValuePair&gt;();
+                        // 通过map集成entrySet方法获取entity
+                        Set&lt;Entry&lt;String, Object&gt;&gt; entrySet = paramMap.entrySet();
+                        // 循环遍历，获取迭代器
+                        Iterator&lt;Entry&lt;String, Object&gt;&gt; iterator = entrySet.iterator();
+                        while (iterator.hasNext()) {
+                            Entry&lt;String, Object&gt; mapEntry = iterator.next();
+                            nvps.add(new BasicNameValuePair(mapEntry.getKey(), mapEntry.getValue().toString()));
+                        }
+
+                        // 为httpPost设置封装好的请求参数
+                        try {
+                            httpPost.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    try {
+                        // httpClient对象执行post请求,并返回响应参数对象
+                        httpResponse = httpClient.execute(httpPost);
+                        // 从响应对象中获取响应内容
+                        HttpEntity entity = httpResponse.getEntity();
+                        result = EntityUtils.toString(entity);
+                    } catch (ClientProtocolException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        // 关闭资源
+                        if (null != httpResponse) {
+                            try {
+                                httpResponse.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (null != httpClient) {
+                            try {
+                                httpClient.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    return result;
+                }
+            }
+        </font>
+    </pre>
+    <b><a name='header-n34' class='md-header-anchor '></a>3.4、 通过Apache封装好的CloseableHttpClient实现httpClient</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">通过Apache封装好的CloseableHttpClient实现httpClient</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.socket.http;
+
+            import com.alibaba.fastjson.JSONObject;
+
+            import org.apache.http.HttpResponse;
+            import org.apache.http.HttpStatus;
+            import org.apache.http.client.methods.CloseableHttpResponse;
+            import org.apache.http.client.methods.HttpGet;
+            import org.apache.http.client.methods.HttpPost;
+            import org.apache.http.entity.StringEntity;
+            import org.apache.http.impl.client.CloseableHttpClient;
+            import org.apache.http.impl.client.HttpClientBuilder;
+            import org.apache.http.util.EntityUtils;
+
+            import java.io.IOException;
+            import java.io.UnsupportedEncodingException;
+
+            /**
+             * @author riemann
+             * @date 2019/05/25 1:35
+             */
+            public class CloseableHttpClientUtil {
+
+                private static String tokenString = "";
+                private static String AUTH_TOKEN_EXPIRED = "AUTH_TOKEN_EXPIRED";
+                private static CloseableHttpClient httpClient = null;
+
+                /**
+                 * 以get方式调用第三方接口
+                 *
+                 * @param url
+                 * @param token
+                 * @return
+                 */
+                public static String doGet(String url, String token) {
+                    //创建HttpClient对象
+                    CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+                    HttpGet httpGet = new HttpGet(url);
+                    if (null != tokenString && !tokenString.equals("")) {
+                        tokenString = getToken();
+                    }
+                    //api_gateway_auth_token自定义header头，用于token验证使用
+                    httpGet.addHeader("api_gateway_auth_token", tokenString);
+                    httpGet.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36");
+                    try {
+                        HttpResponse response = httpClient.execute(httpGet);
+                        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                            //返回json格式
+                            String res = EntityUtils.toString(response.getEntity());
+                            return res;
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+
+                /**
+                 * 以post方式调用第三方接口
+                 *
+                 * @param url
+                 * @param json
+                 * @return
+                 */
+                public static String doPost(String url, JSONObject json) {
+                    if (null == httpClient) {
+                        httpClient = HttpClientBuilder.create().build();
+                    }
+                    HttpPost httpPost = new HttpPost(url);
+                    if (null != tokenString && tokenString.equals("")) {
+                        tokenString = getToken();
+                    }
+                    //api_gateway_auth_token自定义header头，用于token验证使用
+                    httpPost.addHeader("api_gateway_auth_token", tokenString);
+                    httpPost.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36");
+                    try {
+                        StringEntity se = new StringEntity(json.toString());
+                        se.setContentEncoding("UTF-8");
+                        //发送json数据需要设置contentType
+                        se.setContentType("application/x-www-form-urlencoded");
+                        //设置请求参数
+                        httpPost.setEntity(se);
+                        HttpResponse response = httpClient.execute(httpPost);
+                        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                            //返回json格式
+                            String res = EntityUtils.toString(response.getEntity());
+                            return res;
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        if (httpClient != null) {
+                            try {
+                                httpClient.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    return null;
+                }
+
+                /**
+                 * 获取第三方接口的token
+                 */
+                public static String getToken() {
+                    String token = "";
+                    JSONObject object = new JSONObject();
+                    object.put("appid", "appid");
+                    object.put("secretkey", "secretkey");
+                    if (null == httpClient) {
+                        httpClient = HttpClientBuilder.create().build();
+                    }
+                    HttpPost httpPost = new HttpPost("http://localhost/login");
+                    httpPost.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36");
+                    try {
+                        StringEntity se = new StringEntity(object.toString());
+                        se.setContentEncoding("UTF-8");
+                        //发送json数据需要设置contentType
+                        se.setContentType("application/x-www-form-urlencoded");
+                        //设置请求参数
+                        httpPost.setEntity(se);
+                        HttpResponse response = httpClient.execute(httpPost);
+                        //这里可以把返回的结果按照自定义的返回数据结果，把string转换成自定义类
+                        //ResultTokenBO result = JSONObject.parseObject(response, ResultTokenBO.class);
+                        //把response转为jsonObject
+                        JSONObject result = (JSONObject) JSONObject.parseObject(String.valueOf(response));
+                        if (result.containsKey("token")) {
+                            token = result.getString("token");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return token;
+                }
+
+                /**
+                 * 测试
+                 */
+                public static void test(String telephone) {
+
+                    JSONObject object = new JSONObject();
+                    object.put("telephone", telephone);
+
+                    //首先获取token
+                    tokenString = getToken();
+                    String response = doPost("http://localhost/searchUrl", object);
+                    //如果返回的结果是list形式的，需要使用JSONObject.parseArray转换
+                    //List&lt;Result%gt; list = JSONObject.parseArray(response, Result.class);
+                    System.out.println(response);
+                }
+
+                public static void main(String[] args) {
+                    test("12345678910");
+                }
+            }
+        </font>
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、单一职责原则</b><br>
+    <b><a name='header-n41' class='md-header-anchor '></a>4.1、 什么是单一职责原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n42' class='md-header-anchor '></a>4.2、 为何遵循单一职责原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n43' class='md-header-anchor '></a>4.3、 如何实现单一职责原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+
+    <b><a name='header-n5' class='md-header-anchor '></a>5、里氏替换原则</b><br>
+    <b><a name='header-n51' class='md-header-anchor '></a>5.1、 什么是里氏替换原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n52' class='md-header-anchor '></a>5.2、 为何遵循里氏替换原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n53' class='md-header-anchor '></a>5.3、 如何实现里氏替换原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+
+    <b><a name='header-n6' class='md-header-anchor '></a>6、依赖倒转原则</b><br>
+    <b><a name='header-n61' class='md-header-anchor '></a>6.1、 什么是依赖倒转原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n62' class='md-header-anchor '></a>6.2、 为何遵循依赖倒转原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n63' class='md-header-anchor '></a>6.3、 如何实现依赖倒转原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+
+    <b><a name='header-n7' class='md-header-anchor '></a>7、组合/聚合复用原则</b><br>
+    <b><a name='header-n71' class='md-header-anchor '></a>7.1、 什么是组合/聚合复用原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n72' class='md-header-anchor '></a>7.2、 为何遵循组合/聚合复用原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n73' class='md-header-anchor '></a>7.3、 如何实现组合/聚合复用原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+</div>
+</body>
+</html>
