@@ -1,0 +1,804 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>spring容器原理和基本使用.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    .footnotes + .footnotes {
+        margin-top: -1em;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    @media screen and (max-width: 48em) {
+
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    li p.first {
+        display: inline-block;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+
+
+    </style>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>spring容器的基本使用和原理</b>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、IOC容器</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        IOC容器是具有依赖注入功能的容器，负责对象的实例化、对象的初始化、对象和对象之间的依赖关系组装、对象的销毁、对外提供对象的查找等操作。
+        对象的整个生命周期都由IOC容器进行控制，IOC容器就是spring容器。
+        我们需要的任何对象都可以交给IOC容器进行管理，不需要我们再手动通过new的方式创建对象，由IOC容器直接帮我们创建并组装好，当我们需要使用对象时，直接去IOC容器中进行查找就行了。
+
+        <b><font color="#a52a2a">那么spring IOC容器是如何知道需要管理哪些对象呢？</font> </b>
+        我们要给spring容器一个配置清单，这个配置清单支持xml格式和java注解的方式，在配置清单中列出需要让IOC容器管理的java对象，以及可以指定让IOC容器如何构建这些对象，当spring容器启动的时候，就会去加载这个配置清单，然后将这些对象创建并组装好放入到缓存中，外部需要使用时直接去spring容器中查找即可。
+    </pre>
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、什么是Bean？</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        我们在接触spring之前，几乎没有bean的概念。
+        bean实际上就是java对象，任何一个java对象只要交给spring去管理，我们都统称为Bean对象。
+        bean就是普通的java对象，和我们new出来的对象一模一样。
+        只不过我们需要将这些bean对象的相关信息提供给spring容器，这样spring容器才能根据我们提供的bean清单去帮我们管理这些bean。
+        这些提供给spring容器的bean清单信息，统称为bean的配置元数据定义信息，spring通过读取这些bean元数据信息来帮我们构建和组装这些bean。
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、spring容器对象</b><br>
+    <b><a name='header-n31' class='md-header-anchor '></a>3.1、 啥叫spring容器对象？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        spring容器既然帮我们创建bean并且组装bean的关系，那么spring容器必然需要向外部暴露容器对象。
+        这样当我们需要使用某些目标bean时，才能够通过spring容器对象去获取指定的目标bean。
+        spring容器既然是个容器，就可一将其理解成一个大缓存对象。
+        spring内部提供了很多表示spring容器的接口和对象，我们先看几个比较常见的容器接口和实现类。
+    </pre>
+    <b><a name='header-n32' class='md-header-anchor '></a>3.2、 BeanFactory接口</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            org.springframework.beans.factory.BeanFactory;
+        </font>
+        spring容器中具有代表性的容器就是BeanFactory接口，这是spring容器的顶层接口，提供了容器最基本的功能。
+        <b><font color="#a52a2a">常用的几个方法：</font> </b>
+        <font color="gray">
+            // 根据bean的id配置或者别名配置查找容器中的bean对象
+            Object getBean(String var1) throws BeansException;
+
+            // 这是一个泛型方法，按照bean的id配置或者别名查找指定类型的bean，返回指定类型的bean对象
+            &lt;T&gt; T getBean(String var1, Class&lt;T&gt; var2) throws BeansException;
+
+            // 返回容器中指定类型的bean对象
+            &lt;T&gt; T getBean(Class&lt;T&gt; var1) throws BeansException;
+
+            // 根据bean的id配置或者别名，返回目标bean的所有别名
+            String[] getAliases(String var1);
+
+            // 根据bean的id配置或者别名，返回bean的Class实例
+            Class&lt;?&gt; getType(String var1) throws NoSuchBeanDefinitionException;
+        </font>
+    </pre>
+    <b><a name='header-n33' class='md-header-anchor '></a>3.3、 ApplicationContext接口</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            org.springframework.context.ApplicationContext;
+        </font>
+        这个接口继承了BeanFactory接口，所以其内部包含了BeanFactory接口的所有功能，并且在其基础上进行了很多扩展，增加很多企业级的功能，比如AOP、国际化、事件支持等。
+    </pre>
+    <b><a name='header-n34' class='md-header-anchor '></a>3.4、 ClassPathXmlApplicationContext类</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            org.springframework.context.support.ClassPathXmlApplicationContext;
+        </font>
+        这个类实现了ApplicationContext接口，注意这个类名包含了ClassPath Xml，说明这个容器类可以从classpath中加载bean xml配置文件，然后创建xml中配置的bean对象。
+    </pre>
+    <b><a name='header-n35' class='md-header-anchor '></a>3.5、 AnnotationConfigApplicationContext类</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            org.springframework.context.annotation.AnnotationConfigApplicationContext;
+        </font>
+        这个类也实现了ApplicationContext接口，注意这个类名包含Annotation和Config这俩单词，说明当我们需要使用注解的方式来定义bean时，就需要使用这个容器类来装载bean了。
+        这个容器内部会解析注解标注的类，用来构建和管理我们需要的bean对象。
+        注解的方式相较于xml的方式更加灵活方便，也是我们非常推荐的方式。
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、案例</b><br>
+    <b><a name='header-n41' class='md-header-anchor '></a>4.1、 新建bean xml配置文件</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        在classpath下指定目录创建bean的定义文件，一般叫做applicationContext.xml。
+        其中注意配置bean的元信息。
+        &lt;bean id="person" class="com.zeh.main.pojo.Person" /&gt;
+    </pre>
+    <b><a name='header-n42' class='md-header-anchor '></a>4.2、 测试程序</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        创建程序，测试代码执行：
+        <font color="gray">
+        package com.zeh.main.controller;
+
+        import com.zeh.main.pojo.Person;
+
+        import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2021-04-25
+         */
+        public class PersonController {
+            public static void main(String[] args) {
+                // 1. bean配置文件位置
+                String beanXml = "classpath:/spring/applicationContext.xml";
+
+                // 2. 创建classPathXmlApplicationContext容器对象，给容器指定需要加载的bean xml文件
+                ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(beanXml);
+
+                // 3. 从容器中获取需要的bean
+                Person person = applicationContext.getBean("person", Person.class);
+
+                // 4. 使用bean
+                person.testPerson();
+
+            }
+        }
+        </font>
+    </pre>
+</div>
+</body>
+</html>
