@@ -1,1 +1,903 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>xml方式描述spring的bean.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    .footnotes + .footnotes {
+        margin-top: -1em;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    @media screen and (max-width: 48em) {
+
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    li p.first {
+        display: inline-block;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+
+
+    </style>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>xml中bean定义详解</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        被spring管理的java对象统称为java bean。
+        我们在程序中需要用到很多java对象，之前都是自己new出来然后使用；应用spring之后，spring就是个容器，可以将我们需要用到的java对象列一个清单，交给spring容器。
+        spring会帮我们创建、管理、组装清单中的bean对象，放置在IOC容器中。
+        当我们需要使用某个java对象时，我们只需要从spring容器中根据目标bean的名称进行获取即可。
+        也就是说，当我们向spring容器中提供这份清单时，是需要提供给spring一个目标bean的名称，这样spring才能将实例化好的bean对象和我们提供的bean名称之间进行映射绑定。
+        当我们需要使用某个目标bean时，我们只需要将我们提供的目标bean的名称提交给spring容器，spring就可以根据这个bean名称查找到指定的目标bean实例返回给我们使用。
+        我们提供给spring的bean名称，在整个spring容器中都必须是唯一的，否则spring容器将不知道该返回哪个bean实例。
+    </pre>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、bean xml</b><br>
+    <b><a name='header-n11' class='md-header-anchor '></a>1.1、 bean xml 配置文件格式</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        从前面知道，我们提交给spring的bean列表清单文件，支撑xml文件格式和java注解的方式去提供。
+        我们先来看xml文件的格式去提供bean配置元数据定义信息。
+        <font color="gray">
+            &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+            &lt;beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans"
+                   xsi:schemaLocation="http://www.springframework.org/schema/beans
+                   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd"&gt;
+
+                &lt;import resource="引用其他bean xml配置文件"/&gt;
+                &lt;bean id="bean名称标识，spring容器中唯一" class="当前bean的类型，即权限定名" /&gt;
+                &lt;alias name="bean名称表示" alias="bean别名"/&gt;
+            &lt;/beans&gt;
+        </font>
+        beans是根元素，下面可以包含任意数量的import、bean、alias元素。
+    </pre>
+    <b><a name='header-n12' class='md-header-anchor '></a>1.2、 bean元素</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        bean元素用来定义一个bean对象。
+        格式如下：
+        <font color="gray">
+        &lt;bean id="bean名称标识，spring容器中唯一" name="bean别名" class="当前bean的类型，即权限定名" factory-bean="工厂bean名称" factory-method="工厂方法"/&gt;
+        </font>
+
+        <b><font color="#a52a2a">bean名称</font> </b>
+        每个bean都必须有一个名称，通过id指定，在整个spring容器中bean名称必须唯一，否则spring装载bean会报错。spring通过bean名称可以从其容器中获取对应的bean对象。
+
+        <b><font color="#a52a2a">bean别名</font> </b>
+        就和人的外号一样，一个人有自己的名称，也可能有很多外号，当别人通过这个人的名称和这个人的外号都可以找到这个人。
+        外号就相当于这个人的别名。
+        spring管理的bean既可以有自己的名称，也可以有多个别名。spring允许使用者通过名称或者别名获取容器中对应的bean实例对象。
+
+        <b><font color="#a52a2a">bean的名称和别名的定义规则</font> </b>
+        bean名称和别名可以通过bean元素中的id和name去定义，具体定义规则如下：
+        1.  当id存在时，name不存在，spring在实例化bean时，取id为bean的名称。
+        2.  当id不存在，此时需要看name，name的值可以通过<font color="#a52a2a">,;或者空格</font>分割，最后会按照分割符得到一个String数组，数组的第一个元素作为bean的名称，其他的作为bean的别名。
+        3.  当id和name都存时，id为bean的名称，name用来定义多个别名。
+        4.  当id和name都不指定时，bean名称会自动生成，别名不会生成。
+
+        <b><font color="#a52a2a">bean名称和别名的各种写法</font> </b>
+        <font color="gray">
+            &lt;?xml version="1.0" encoding="UTF-8"?>
+            &lt;beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans"
+                   xsi:schemaLocation="http://www.springframework.org/schema/beans
+                   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd"&gt;
+
+                &lt;!-- 通过id定义bean名称为person-->
+                &lt;bean id="person1" class="com.zeh.main.pojo.Person" /&gt;
+
+                &lt;!-- 当id不存在，name存在时，则此时name的第一个名称作为bean名称，此时没有别名。bean名称为person -->
+                &lt;bean name="person2" class="com.zeh.main.pojo.Person" /&gt;
+
+                &lt;!-- 当id和name都存在，此时id定义bean的名称，name定义bean的别名。bean名称为person，bean别名只有一个person2 -->
+                &lt;bean id="person3" name="person3_1" class="com.zeh.main.pojo.Person" /&gt;
+
+                &lt;!-- bean名称为person，bean别名有多个，分别为person2,person3,person4,person5 -->
+                &lt;bean id="person4" name="person4_1,person4_2;person4_3 person4_5" class="com.zeh.main.pojo.Person" /&gt;
+
+                &lt;!-- bean名称为person，bean别名有多个，分别为person2,person3,person4,person5 -->
+                &lt;bean name="person5,person5_1,person5_2;person5_3 person5_4" class="com.zeh.main.pojo.Person" /&gt;
+            &lt;/beans&gt;
+        </font>
+        <b><font color="#a52a2a">写个Java程序获取上面的bean名称和别名</font> </b>
+        <font color="gray">
+        package com.zeh.main.controller;
+
+        import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+        import java.util.Arrays;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2021-04-25
+         */
+        public class PersonController {
+            public static void main(String[] args) {
+                String beanXml = "classpath:/spring/applicationContext.xml";
+                ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(beanXml);
+                for (String beanName : Arrays.asList("person1", "person2", "person3", "person4", "person5")) {
+                    // 根据bean名称获取当前bean名称配置的所有别名
+                    String[] aliases = applicationContext.getAliases(beanName);
+                    System.out.println(String.format("beanName：%s，别名：[%s]", beanName, String.join(",", aliases)));
+                }
+
+                System.out.println("spring容器中所有的bean名称如下：");
+                for (String beanName : applicationContext.getBeanDefinitionNames()) {
+                    // 根据bean名称获取当前bean名称配置的所有别名
+                    String[] aliases = applicationContext.getAliases(beanName);
+                    System.out.println(String.format("beanName：%s，别名：[%s]", beanName, String.join(",", aliases)));
+                }
+
+                int beanCount = applicationContext.getBeanDefinitionCount();
+                System.out.println(String.format("spring容器中的bean总数 is %s", beanCount));
+
+            }
+        }
+        </font>
+        <b><font color="#a52a2a">输出结果</font> </b>
+        <font color="gray">
+        beanName：person1，别名：[]
+        beanName：person2，别名：[]
+        beanName：person3，别名：[person3_1]
+        beanName：person4，别名：[person4_1,person4_3,person4_2,person4_5]
+        beanName：person5，别名：[person5_2,person5_1,person5_4,person5_3]
+        spring容器中所有的bean名称如下：
+        beanName：person1，别名：[]
+        beanName：person2，别名：[]
+        beanName：person3，别名：[person3_1]
+        beanName：person4，别名：[person4_1,person4_3,person4_2,person4_5]
+        beanName：person5，别名：[person5_2,person5_1,person5_4,person5_3]
+        spring容器中的bean总数 is 5
+        </font>
+        <b><font color="#a52a2a">上面程序中的新方法</font> </b>
+        getAliases：通过beanName获取bean的别名。
+        getBeanDefinitionNames：返回spring容器中所有bean的名称。
+        getBeanDefinitionCount：返回spring容器中bean的数量。
+
+        <b><font color="#a52a2a">当bean xml中的id和name都未指定时</font> </b>
+        当id和name都未指定时，bean的名称和别名又是什么呢？
+        此时spring容器会自动生成bean的名称和别名。
+        spring自动生成的bean的名称规则如下：
+        <font color="gray">bean的class完整类名#编号</font>
+        上面的编号是从0开始的，相同class类型的bean没有指定名称的依次递增。
+
+        spring自动生成的bean的别名规则如下：
+        <font color="gray">bean的class完整类名</font>
+        相同class类型的bean没有指定名称，只会为第一个，即上面编号为0的bean生成别名，其他的同类型bean的自动别名不生成。
+
+        修改applicationContext.xml文件，添加两个相同类型的bean元素，不指定id和name：
+        <font color="gray">
+        &lt;!-- id和name都不指定 -->
+        &lt;bean class="com.zeh.main.pojo.Person" />
+        &lt;!-- id和name都不指定 -->
+        &lt;bean class="com.zeh.main.pojo.Person" />
+        </font>
+        执行程序，结果如下：
+        <font color="gray">
+        beanName：person1，别名：[]
+        beanName：person2，别名：[]
+        beanName：person3，别名：[person3_1]
+        beanName：person4，别名：[person4_1,person4_3,person4_2,person4_5]
+        beanName：person5，别名：[person5_2,person5_1,person5_4,person5_3]
+        spring容器中所有的bean名称如下：
+        beanName：person1，别名：[]
+        beanName：person2，别名：[]
+        beanName：person3，别名：[person3_1]
+        beanName：person4，别名：[person4_1,person4_3,person4_2,person4_5]
+        beanName：person5，别名：[person5_2,person5_1,person5_4,person5_3]
+        beanName：com.zeh.main.pojo.Person#0，别名：[com.zeh.main.pojo.Person]
+        beanName：com.zeh.main.pojo.Person#1，别名：[]
+        spring容器中的bean总数 is 7
+        </font>
+        倒数第2第3行，为Person类自动生成了名称，分别为 com.zeh.main.pojo.Person#0 和 com.zeh.main.pojo.Person#1。因为是相同的类型，即Person，所以只会第一个bean实例生成了别名，别名为com.zeh.main.pojo.Person。
+    </pre>
+    <b><a name='header-n13' class='md-header-anchor '></a>1.3、 alias元素</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        alias元素也可以用来给某个bean定义别名，语法为：
+        <font color="gray">
+        &lt;alias name="需要定义别名的bean名称" alias="别名"/>
+        </font>
+        <b><font color="#a52a2a">修改applicationContext.xml</font> </b>
+        <font color="gray">
+        &lt;!-- alias标签使用 -->
+        &lt;alias name="person1" alias="person1_11"/>
+        &lt;alias name="person2" alias="person2_22"/>
+        &lt;alias name="person3" alias="person3_33"/>
+        &lt;alias name="person4" alias="person4_44"/>
+        &lt;alias name="person5" alias="person5_55"/>
+        </font>
+        <a><font color="#a52a2a">运行主程序，结果如下：</font> </a>
+        <font color="gray">
+        beanName：person1，别名：[person1_11]
+        beanName：person2，别名：[person2_22]
+        beanName：person3，别名：[person3_33,person3_1]
+        beanName：person4，别名：[person4_44,person4_1,person4_3,person4_2,person4_5]
+        beanName：person5，别名：[person5_2,person5_1,person5_4,person5_3,person5_55]
+        spring容器中所有的bean名称如下：
+        beanName：person1，别名：[person1_11]
+        beanName：person2，别名：[person2_22]
+        beanName：person3，别名：[person3_33,person3_1]
+        beanName：person4，别名：[person4_44,person4_1,person4_3,person4_2,person4_5]
+        beanName：person5，别名：[person5_2,person5_1,person5_4,person5_3,person5_55]
+        beanName：com.zeh.main.pojo.Person#0，别名：[com.zeh.main.pojo.Person]
+        beanName：com.zeh.main.pojo.Person#1，别名：[]
+        spring容器中的bean总数 is 7
+        </font>
+    </pre>
+    <b><a name='header-n14' class='md-header-anchor '></a>1.4、 import元素</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        当系统体量比较大的时候，会分成很多模块，每个模块都会对应一个bean xml文件，这时候我们可以在一个总的bean xml文件中对其他bean xml进行汇总。
+        相当于把多个bean xml的内容合并到一个里面了，可以通过import元素引入其他bean xml配置文件。
+        语法：
+        <font color="gray">
+        &lt;import resource="其他配置文件的位置"/>
+        </font>
+        比如：
+        <font color="gray">
+        &lt;import resource="otherBean.xml"/>
+        </font>
+        import元素导入外部bean xml后，就相当于把外部所有的配置引入到当前文件中来了。
+    </pre>
+</div>
+</body>
+</html>
 
