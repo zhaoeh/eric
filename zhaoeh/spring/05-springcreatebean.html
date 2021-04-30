@@ -1,1 +1,957 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>spring创建bean的方式.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
 
+    .CodeMirror pre {
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    .footnotes + .footnotes {
+        margin-top: -1em;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    @media screen and (max-width: 48em) {
+
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    li p.first {
+        display: inline-block;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+
+
+    </style>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>spring管理bean对象，都通过哪些方式创建bean实例呢？</b>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、spring创建bean实例</b><br>
+    <b><a name='header-n11' class='md-header-anchor '></a>1.1、 spring创建bean实例的方式</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        spring容器内部创建bean实例对象常见的有如下4种方式：
+        1.  通过反射调用构造方法创建bean对象。
+        2.  通过静态工厂方法创建bean对象。
+        3.  通过实例工厂方法创建bean对象。
+        4.  通过FactoryBean创建bean对象。
+    </pre>
+    <b><a name='header-n12' class='md-header-anchor '></a>1.2、 constructor-arg标签</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        &lt;constructor-arg>&lt;/constructor-arg>标签是&lt;bean>&lt;/bean>标签下的子标签。
+        其主要是用来定义构造器参数的，有如下两种使用方式：
+        1.  通过构造器参数序号，来执行构造器参数的初始化方式。
+        &lt;constructor-arg name="当前参数在构造器中的序号，指定0表示第一个参数，1表示第二个参数" type="当前参数在构造器中的参数类型" value="当前属性如果是简单类型则表示当前属性的值" ref="当前属性如果是引用类型则表示引用的bean名称"/>
+        2.  通过构造器参数名称，来执行构造器参数的初始化方式。
+        &lt;constructor-arg name="当前参数在构造器中的参数名称" type="当前参数在构造器中的参数类型" value="当前属性如果是简单类型则表示当前属性的值" ref="当前属性如果是引用类型则表示引用的bean名称"/>
+
+        其中，value和ref只能二选一，当参数是简单类型时，通过value指定参数实际值；当参数是引用类型时，通过ref指定引用的bean名称。
+    </pre>
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、spring 4种创建对象方式详解</b><br>
+    <b><a name='header-n21' class='md-header-anchor '></a>2.1、 通过反射调用构造方法创建bean对象？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        调用bean的指定构造器来反射创建bean实例，是用的最多的方式。
+        这种方式只需要在bean xml中的bean元素里面执行class属性，spring容器内部会根据constructor-arg去自动匹配指定参数和类型的构造器去创建bean实例。
+        如果不指定constructor-arg元素表示调用的是默认无参构造器，则此时要求被创建的bean必须存在无参构造器。
+        <b><font color="#a52a2a">语法</font> </b>
+        <font color="gray">
+            &lt;bean id="bean名称" name="bean名称或者别名" class="bean的完整类路径">
+                &lt;constructor-arg index="0" value="bean的简单属性的值" type="该参数的类型" name="bean的属性名称" ref="该属性引用的其他bean名称"/>
+                &lt;constructor-arg index="1" value="bean的简单属性的值" type="该参数的类型" name="bean的属性名称" ref="该属性引用的其他bean名称"/>
+                &lt;constructor-arg index="2" value="bean的简单属性的值" type="该参数的类型" name="bean的属性名称" ref="该属性引用的其他bean名称"/>
+                ...
+                &lt;constructor-arg index="n" value="bean的简单属性的值" type="该参数的类型" name="bean的属性名称" ref="该属性引用的其他bean名称"/>
+            &lt;/bean>
+        </font>
+        其中，constructor-arg用于指定构造方法参数的值。
+        index和name二选一，可以选择使用参数索引来匹配，也可以使用参数名称来匹配。index指定构造方法中参数的位置，从0开始，依次递增即可。
+        value和ref二选一，当构造器指定参数是简单类型时，使用value设置值；当是其他引用bean时，使用ref设置值。
+        <b><font color="#a52a2a">bean xml配置</font> </b>
+        <font color="gray">
+        &lt;bean id="person1" class="com.zeh.main.pojo.Person" />
+        &lt;bean id="person2" class="com.zeh.main.pojo.Person">
+            &lt;constructor-arg name="name" value="eric" type="java.lang.String" />
+            &lt;constructor-arg name="age" value="22" type="int" />
+        &lt;/bean>
+        &lt;bean id="person3" class="com.zeh.main.pojo.Person">
+            &lt;constructor-arg index="0" value="daisy" type="java.lang.String" />
+            &lt;constructor-arg index="1" value="18" type="int" />
+        &lt;/bean>
+        </font>
+        其中 constructor-arg 元素用来指定目标bean的构造器中对应的构造参数，传入指定构造参数，spring会通过反射目标bean的指定构造器去创建目标bean对象。
+
+        <b><font color="#a52a2a">测试程序</font> </b>
+        <font color="gray">
+            public class PersonController {
+                public static void main(String[] args) {
+                    String beanXml = "classpath:/spring/applicationContext.xml";
+                    ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(beanXml);
+                    for (String beanName : applicationContext.getBeanDefinitionNames()) {
+                        System.out.println(String.format("beanName is %s; bean is [%s]", beanName, applicationContext.getBean(beanName)));
+                    }
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">执行结果</font> </b>
+        <font color="gray">
+            beanName is person1; bean is [name is null，age is 0]
+            beanName is person2; bean is [name is eric，age is 22]
+            beanName is person3; bean is [name is daisy，age is 18]
+        </font>
+    </pre>
+    <b><a name='header-n22' class='md-header-anchor '></a>2.2、 通过静态工厂创建bean对象</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        我们可以创建一个静态的工厂，内部提供一些静态方法专门用来帮我们生成我们需要的对象，然后将这些静态方法生成的bean实例交给spring管理即可。
+        <b><font color="#a52a2a">语法</font> </b>
+        <font color="gray">
+            &lt;bean id="bean名称" name="bean名称或者别名" class="静态工厂完整类路径" factory-method="静态工厂的方法">
+                &lt;constructor-arg index="0" value="静态方法中的简单属性的值" type="该参数的类型" name="静态方法中的属性名称" ref="该属性引用的其他bean名称"/>
+                &lt;constructor-arg index="1" value="静态方法中的简单属性的值" type="该参数的类型" name="静态方法中的属性名称" ref="该属性引用的其他bean名称"/>
+                &lt;constructor-arg index="2" value="静态方法中的简单属性的值" type="该参数的类型" name="静态方法中的属性名称" ref="该属性引用的其他bean名称"/>
+                ...
+                &lt;constructor-arg index="n" value="静态方法中的简单属性的值" type="该参数的类型" name="静态方法中的属性名称" ref="该属性引用的其他bean名称"/>
+            &lt;/bean>
+        </font>
+        class：指定静态工厂类的权限定名。
+        factory-method：静态工厂中的静态方法，返回需要的bean对象。
+        constructor-arg：用于指定静态方法中的参数值，用法和前面一样。
+        spring会自动调用静态工厂的静态方法获取指定的bean实例对象，并将其放入spring容器中。
+        <b><font color="#a52a2a">创建静态工厂类</font> </b>
+        <font color="gray">
+        public class PersonStaticFactory {
+
+            // 静态无参方法创建无参数bean实例
+            public static Person buildPerson() {
+                return new Person();
+            }
+
+            // 静态有参方法创建有参数bean实例
+            public static Person buildPerson2(String name, int age) {
+                return new Person(name, age);
+            }
+        }
+        </font>
+        <b><font color="#a52a2a">bean xml配置</font> </b>
+        <font color="gray">
+            &lt;!-- 通过静态工厂的无参静态方法创建bean对象 -->
+            &lt;bean id="createPersonByStaticFactoryMethod1" class="com.zeh.main.PersonStaticFactory"
+                  factory-method="buildPerson" />
+
+            &lt;!-- 通过静态工厂的有参静态方法创建有参bean对象 -->
+            &lt;bean id="createPersonByStaticFactoryMethod2" class="com.zeh.main.PersonStaticFactory"
+                  factory-method="buildPerson2">
+                &lt;constructor-arg index="0" value="daisy" type="java.lang.String" />
+                &lt;constructor-arg index="1" value="18" type="int" />
+            &lt;/bean>
+        </font>
+        上述配置文件中，spring容器启动时会自动调用PersonStaticFactory工厂的工厂方法buildPerson去创建Person对象，将其作为createPersonByStaticFactoryMethod1名称对应的bean实例放入到spring容器中。
+        会自动调用PersonStaticFactory工厂的工厂方法buildPerson2，并且传入两个指定参数，去创建Person对象，将其作为createPersonByStaticFactoryMethod2名称对应的bean实例放入到spring容器中。
+        <b><font color="#a52a2a">执行结果</font> </b>
+        <font color="gray">
+            beanName is createPersonByStaticFactoryMethod1; bean is [name is null，age is 0]
+            beanName is createPersonByStaticFactoryMethod2; bean is [name is daisy，age is 18]
+        </font>
+    </pre>
+    <b><a name='header-n23' class='md-header-anchor '></a>2.3、 通过实例工厂方法创建bean对象</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        spring通过调用某些实例bean的某些实例方法来创建bean对象然后放在spring容器中以供使用。
+        <b><font color="#a52a2a">语法</font> </b>
+        <font color="gray">
+            &lt;bean id="bean名称" name="bean名称或者别名" factory-bean="需要调用的实例bean名称" factory-method="实例bean的实例方法">
+                &lt;constructor-arg index="0" value="实例方法中的简单属性的值" type="该参数的类型" name="实例方法中的属性名称" ref="该属性引用的其他bean名称"/>
+                &lt;constructor-arg index="1" value="实例方法中的简单属性的值" type="该参数的类型" name="实例方法中的属性名称" ref="该属性引用的其他bean名称"/>
+                &lt;constructor-arg index="2" value="实例方法中的简单属性的值" type="该参数的类型" name="实例方法中的属性名称" ref="该属性引用的其他bean名称"/>
+                ...
+                &lt;constructor-arg index="n" value="实例方法中的简单属性的值" type="该参数的类型" name="实例方法中的属性名称" ref="该属性引用的其他bean名称"/>
+            &lt;/bean>
+        </font>
+        spring容器以factory-bean指定的bean名称去查找到对应的bean对象，然后调用该bean对象中factory-method指定的方法，将这个方法返回的bean实例对象作为当前bean对象放在容器中以供使用。
+        <b><font color="#a52a2a">创建实例工厂类</font> </b>
+        <font color="gray">
+            public class PersonInstanceFactory {
+                // 实例无参方法创建无参数bean实例
+                public Person buildPerson() {
+                    return new Person();
+                }
+
+                // 实例有参方法创建有参数bean实例
+                public Person buildPerson2(String name, int age) {
+                    return new Person(name, age);
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">bean xml配置</font> </b>
+            &lt;!-- 创建实例工厂对象 -->
+            &lt;bean id="personInstanceFactory" class="com.zeh.main.PersonInstanceFactory"/>
+
+            &lt;!-- 通过实例工厂的无参静态方法创建bean对象 -->
+            &lt;bean id="createPersonByInstanceFactoryMethod1" factory-bean="personInstanceFactory"
+                  factory-method="buildPerson" />
+
+            &lt;!-- 通过静态工厂的有参静态方法创建有参bean对象 -->
+            &lt;bean id="createPersonByInstanceFactoryMethod2" factory-bean="personInstanceFactory"
+                  factory-method="buildPerson2">
+                &lt;constructor-arg index="0" value="zhangsan" type="java.lang.String" />
+                &lt;constructor-arg index="1" value="22" type="int" />
+            &lt;/bean>
+        <b><font color="#a52a2a">执行结果</font> </b>
+        <font color="gray">
+            beanName is createPersonByInstanceFactoryMethod1; bean is [name is null，age is 0]
+            beanName is createPersonByInstanceFactoryMethod2; bean is [name is zhangsan，age is 22]
+        </font>
+    </pre>
+    <b><a name='header-n24' class='md-header-anchor '></a>2.4、 通过FactoryBean来创建bean对象</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        之前学习过了BeanFactory接口，BeanFactory接口是spring的顶层接口。
+        而这里我们说的是FactoryBean，也是一个接口，这俩接口很容易搞混淆。
+        FactoryBean可以让spring容器通过这个接口的实现类来创建我们需要的bean对象。
+
+        <b><font color="#a52a2a">FactoryBean接口源码</font> </b>
+        <font color="gray">
+        package org.springframework.beans.factory;
+
+        public interface FactoryBean&lt;T> {
+            // 返回创建好的bean对象
+            T getObject() throws Exception;
+
+            // 返回需要创建的bean对象的类型
+            Class&lt;?> getObjectType();
+
+            // bean对象是否是单例的
+            boolean isSingleton();
+        }
+        </font>
+        从FactoryBean的应用场景来看，这个接口实际上是spring暴露给客户端的一个回调接口。
+        getObject方法由开发者去实现对象的创建逻辑，实现了之后return即可，便可以将创建好的bean对象返回给spring容器。
+        getObjectType方法需要开发者去实现，返回我们创建的bean的类型，即对象的class对象。
+        isSingleton方法需要开发者实现，表示通过这个接口的实现类创建的bean是否是单例的；如果自己覆盖为true，则创建的bean对象就是单例的；如果自己覆盖之后返回false，则客户端每次从spring容器中获取对象时都会调用这个接口的getObject()方法去生成bean对象。
+        <b><font color="#a52a2a">语法</font> </b>
+        <font color="gray">
+            &lt;bean id="bean名称" class="FactoryBean接口实现类" />
+        </font>
+        <b><font color="#a52a2a">创建FactoryBean接口实现类</font> </b>
+        <font color="gray">
+            public class FactoryBeanImpl implements FactoryBean&lt;Person> {
+
+                @Override
+                public Person getObject() {
+                    Person person = new Person("Lisi", 19);
+                    System.out.println("我是通过FactoryBean创建的bean对象");
+                    return person;
+                }
+
+                @Override
+                public Class&lt;?> getObjectType() {
+                    return Person.class;
+                }
+
+                @Override
+                public boolean isSingleton() {
+                    return true;
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">bean xml配置</font> </b>
+        <font color="gray">
+            &lt;bean id="createByFactoryBean" class="com.zeh.main.FactoryBeanImpl" />
+        </font>
+        <b><font color="#a52a2a">测试程序</font> </b>
+        <font color="gray">
+            public class PersonController {
+            public static void main(String[] args) {
+                String beanXml = "classpath:/spring/applicationContext.xml";
+                ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(beanXml);
+                // 多次从spring容器中获取目标bean createByFactoryBean
+                Object bean1 = applicationContext.getBean("createByFactoryBean");
+                Object bean2 = applicationContext.getBean("createByFactoryBean");
+                System.out.println(String.format("bean1 is [%s]", bean1));
+                System.out.println(String.format("bean2 is [%s]", bean2));
+                System.out.println(bean1 == bean2);
+            }
+        }
+        </font>
+        <b><font color="#a52a2a">执行结果</font> </b>
+        <font color="gray">
+            我是通过FactoryBean创建的bean对象
+            bean1 is [name is Lisi，age is 19]
+            bean2 is [name is Lisi，age is 19]
+            true
+        </font>
+        多次从spring容器中获取这个bean对象，发现获取的bean对象引用地址完全相同，说明多次获取的bean对象是同一个bean对象，即这个bean实例是单例的。
+
+        <b><font color="#a52a2a">修改isSingleton()方法，让其返回false，运行结果如下</font> </b>
+        <font color="gray">
+            我是通过FactoryBean创建的bean对象
+            我是通过FactoryBean创建的bean对象
+            bean1 is [name is Lisi，age is 19]
+            bean2 is [name is Lisi，age is 19]
+            false
+        </font>
+        当isSingleton()被我们实现返回false后，多次从spring容器中获取当前bean对象，每获取一次就会执行一次getObject()方法，而且多次获取的bean对象是两个完全不同的对象。
+        说明此时的bean对象是多例的，每从spring容器中获取一次就重新创建一次。
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、总结</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        spring容器提供了4种创建bean对象的方式，除了构造方法的方式外，其他3种方式都可以让我们手动去控制bean对象的创建。
+    </pre>
+</div>
+</body>
+</html>
