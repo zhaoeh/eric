@@ -757,6 +757,31 @@
         这个容器内部会解析注解标注的类，用来构建和管理我们需要的bean对象。
         注解的方式相较于xml的方式更加灵活方便，也是我们非常推荐的方式。
     </pre>
+    <b><a name='header-n36' class='md-header-anchor '></a>3.6、 DefaultListableBeanFactory类</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            org.springframework.beans.factory.support.DefaultListableBeanFactory;
+        </font>
+        这个类简直太重要了。
+        很有必要梳理一下spring暴露给我们的容器对象。
+        首先BeanFactory是容器根接口；ApplicationContext是继承了BeanFactory接口的一个子接口，扩展了很多顶层方法。
+        其次，向ClassPathXmlApplicationContext类、AnnotationConfigApplicationContext类都是ApplicationContext接口的实现类。
+        讲到这里，那 DefaultListableBeanFactory类是个啥玩意儿呢？
+        DefaultListableBeanFactory类的继承结构很复杂，关于它的继承图解可以上网搜一下。
+        总的来说，DefaultListableBeanFactory类也是顶层容器接口BeanFactory的一个实现类。并且可以明确的说，DefaultListableBeanFactory类才是spring容器对象中唯一的一个功能完备、可以直接暴露给客户端使用的容器类。
+        DefaultListableBeanFactory类只有XmlBeanFactory一个子类，它还被标记过时了的。
+        我们可以直接编码使用 DefaultListableBeanFactory：
+        <font color="gray">
+            DefaultListableBeanFactory defaultListableBeanFactory = new DefaultListableBeanFactory();
+            XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(defaultListableBeanFactory);
+            reader.loadBeanDefinitions(new FileSystemResource("/spring/applicationContext.xml"));
+            defaultListableBeanFactory.getBean("person");
+        </font>
+
+        实际上spring暴露的容器只有 DefaultListableBeanFactory。
+        我们观察ClassPathXmlApplicationContext或者AnnotationConfigApplicationContext类的源码，可以看到这两个类虽然也是BeanFactory接口的实现类，但是他们是通过持有一个DefaultListableBeanFactory引用来运行spring容器的。
+        因此，真正核心拉动spring容器的类只有 DefaultListableBeanFactory。
+    </pre>
 
     <b><a name='header-n4' class='md-header-anchor '></a>4、案例</b><br>
     <b><a name='header-n41' class='md-header-anchor '></a>4.1、 新建bean xml配置文件</b>
