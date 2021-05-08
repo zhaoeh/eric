@@ -1621,6 +1621,10 @@
         <font color="#a52a2a">
             tips：委托机制的4种方式中，注入的方式用的比较多，内建的方式用的比较少。
             因为注入的方式完全由程序外部进行控制，而内建的方式由成员内部直接固化，灵活度比较低，可扩展性不高。
+            并且作为成员变量被外部注入的方式尤其使用的最多，像spring中牛逼哄哄的依赖注入，实际上就是外部向目标bean注入成员变量。
+            在这里很有必要对外部注入成员变量的方式细分下，常见的具体注入成员变量的操作有两种：
+            1.  外部直接通过构造方法向目标类注入成员变量，这要求目标类存在有参构造。
+            2.  外部直接通过setter方法向目标类注入成员变量，这要求目标类存在setter方法。
         </font>
     </pre>
 
@@ -1641,7 +1645,13 @@
             // 使用成员变量的方式接收外部的注入
             private ClassB classB;
 
+            // 直接提供有参构造器的方式，暴露给客户端以便注入成员
             public ClassA(ClassB classB) {
+                this.classB = classB;
+            }
+
+            // 也可以提供对应的setter方法，暴露给客户端以便注入成员，它和构造方法的方式二选一即可
+            public void setClassB(ClassB classB){
                 this.classB = classB;
             }
 
@@ -1684,7 +1694,14 @@
 
                 // 以成员变量的方式注入B对象
                 ClassB classB = new ClassB();
+
+                // 通过有参构造的方式注入外部成员classB
                 ClassA classA = new ClassA(classB);
+                classA.testClassA();
+
+                // 通过setter方法注入外部成员classB
+                classA = new ClassA(null);
+                classA.setClassB(classB);
                 classA.testClassA();
             }
         }
