@@ -695,11 +695,13 @@
     <b><a name='header-n12' class='md-header-anchor '></a>1.2、 constructor-arg标签</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         &lt;constructor-arg>&lt;/constructor-arg>标签是&lt;bean>&lt;/bean>标签下的子标签。
-        其主要是用来定义构造器参数的，有如下两种使用方式：
-        1.  通过构造器参数序号，来执行构造器参数的初始化方式。
-        &lt;constructor-arg name="当前参数在构造器中的序号，指定0表示第一个参数，1表示第二个参数" type="当前参数在构造器中的参数类型" value="当前属性如果是简单类型则表示当前属性的值" ref="当前属性如果是引用类型则表示引用的bean名称"/>
-        2.  通过构造器参数名称，来执行构造器参数的初始化方式。
-        &lt;constructor-arg name="当前参数在构造器中的参数名称" type="当前参数在构造器中的参数类型" value="当前属性如果是简单类型则表示当前属性的值" ref="当前属性如果是引用类型则表示引用的bean名称"/>
+        其主要是用来定义构造器参数的，有如下3种使用方式：
+        1.  通过构造器参数序号，来指定构造器参数的初始化方式。
+        &lt;constructor-arg index="当前参数在构造器中的序号，指定0表示第一个参数，1表示第二个参数" value="当前属性如果是简单类型则表示当前属性的值" ref="当前属性如果是引用类型则表示引用的bean名称"/>
+        2.  通过构造器参数名称，来指定构造器参数的初始化方式。
+        &lt;constructor-arg name="当前参数在构造器中的参数名称" value="当前属性如果是简单类型则表示当前属性的值" ref="当前属性如果是引用类型则表示引用的bean名称"/>
+        3.  通过构造器参数类型，来指定构造器参数的初始化方式。
+        &lt;constructor-arg type="当前参数在构造器中的参数类型" value="当前属性如果是简单类型则表示当前属性的值" ref="当前属性如果是引用类型则表示引用的bean名称"/>
 
         其中，value和ref只能二选一，当参数是简单类型时，通过value指定参数实际值；当参数是引用类型时，通过ref指定引用的bean名称。
     </pre>
@@ -708,7 +710,7 @@
     <b><a name='header-n21' class='md-header-anchor '></a>2.1、 通过反射调用构造方法创建bean对象？</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         调用bean的指定构造器来反射创建bean实例，是用的最多的方式。
-        这种方式只需要在bean xml中的bean元素里面执行class属性，spring容器内部会根据constructor-arg去自动匹配指定参数和类型的构造器去创建bean实例。
+        这种方式只需要在bean xml中的bean元素里面指定class属性，spring容器内部会根据constructor-arg去自动匹配指定参数索引、或者指定参数名称或者指定参数类型的构造器去创建bean实例。
         如果不指定constructor-arg元素表示调用的是默认无参构造器，则此时要求被创建的bean必须存在无参构造器。
         <b><font color="#a52a2a">语法</font> </b>
         <font color="gray">
@@ -721,7 +723,7 @@
             &lt;/bean>
         </font>
         其中，constructor-arg用于指定构造方法参数的值。
-        index和name二选一，可以选择使用参数索引来匹配，也可以使用参数名称来匹配。index指定构造方法中参数的位置，从0开始，依次递增即可。
+        index、name、type三选一，可以选择使用参数索引来匹配，也可以使用参数名称来匹配，也可以使用参数类型来匹配。index指定构造方法中参数的位置，从0开始，依次递增即可。
         value和ref二选一，当构造器指定参数是简单类型时，使用value设置值；当是其他引用bean时，使用ref设置值。
         <b><font color="#a52a2a">bean xml配置</font> </b>
         <font color="gray">
