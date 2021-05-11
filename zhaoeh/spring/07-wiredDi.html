@@ -1,0 +1,1590 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>spring手动注入依赖.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    .footnotes + .footnotes {
+        margin-top: -1em;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    @media screen and (max-width: 48em) {
+
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    li p.first {
+        display: inline-block;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+
+
+    </style>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>spring手动注入依赖</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        之前在引出spring时，就明确了如果要水平组装两个java对象的话，通过开发人员编程式组装是很不友好的。
+        所以，spring出现的目的就是解决了java对象的实例化问题，和java对象之间的组装问题。
+        我们把一个A对象需要依赖B对象去处理某些功能的场景，称之为A对象依赖B对象，也叫做向A对象中注入B对象。
+        我们很明确了，java对象之间的依赖就是我们所谓的委托机制。
+        一般而言，系统中的类和类之间都存在依赖关系，即一个类会委托另外一个类去处理某些功能。
+        这个时候我们就需要向目标类中注入被依赖的对象。
+        学习委托机制时，我们知道想让A对象持有B对象，总的来说有4种方式，而其中最常见的方式就是B对象作为A对象的成员变量，通过外部注入。即以成员变量的方式注入B对象。
+        而spring的DI依赖注入机制，实际上就是采用这种方式来注入依赖关系的。
+        这种以成员变量的方式注入B对象，一般有2种具体操作：
+        1.  外部直接通过构造方法向目标类注入成员变量，这要求目标类存在有参构造。
+        2.  外部直接通过setter方法向目标类注入成员变量，这要求目标类存在setter方法。
+
+        下面我们来详细介绍spring提供的DI！
+    </pre>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、回顾依赖</b><br>
+    <b><a name='header-n11' class='md-header-anchor '></a>1.1、 什么是依赖关系？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        当一个对象A对外提供的功能需要其他对象来完成的时候，我们就称对象A和其他对象之间存在依赖关系。
+        如下：
+        <font color="gray">
+            class DiService{
+                public void test(){
+
+                }
+            }
+
+            public class DiController {
+
+                private DiService diService;
+
+                public void test(){
+                    this.diService.test();
+                }
+
+            }
+        </font>
+        DiController中的test方法需要调用DiService中的test方法，说明DiController依赖DiService，此时如果diService对象不存在，则DiController无法对外提供test功能。
+        那么我们在创建DiController对象时是如何向其中设置diService对象呢？
+        上面我们已经给出了答案，常见的就两种方式：
+        通过构造器设置依赖对象；
+        通过setter方法设置依赖对象。
+    </pre>
+    <b><a name='header-n12' class='md-header-anchor '></a>1.2、 通过构造器设置依赖对象</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        DiController中添加一个有参构造，如下：
+        <font color="gray">
+            public class DiController {
+
+                private DiService diService;
+
+                public DiController(DiService diService) {
+                    this.diService = diService;
+                }
+
+                public void test() {
+                    this.diService.test();
+                }
+            }
+        </font>
+        这样，外部在创建DiController对象时，就可以直接通过其提供的有参构造将diService对象给注入进去，然后DiController内部就可以使用diService对象了。
+        <font color="gray">
+            DiController diController = new DiController(new DiService());
+        </font>
+    </pre>
+    <b><a name='header-n13' class='md-header-anchor '></a>1.3、 通过set方法设置依赖对象</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        DiController中为diService添加一个setter方法，如下：
+        <font color="gray">
+            public class DiController {
+
+                private DiService diService;
+
+                public DiService getDiService() {
+                    return diService;
+                }
+
+                public void setDiService(DiService diService) {
+                    this.diService = diService;
+                }
+
+                public void test() {
+                    this.diService.test();
+                }
+            }
+        </font>
+        这样，外部在创建DiController对象时，就可以直接通过其提供的setter方法将diService对象给注入进去。
+        <font color="gray">
+            DiController diController = new DiController();
+            diController.setDiService(new DiService());
+        </font>
+    </pre>
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、依赖注入</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        上面通过编程的方式向DiController中注入了diService对象，将被依赖的对象设置到依赖的对象中，spring容器本身对这种操作提供了支持。
+        这在spring中叫做依赖注入。
+
+        spring中依赖注入主要分为手动注入和自动注入，本文介绍手动注入，手动注入需要我们明确配置需要注入的对象。
+        刚才我们回顾了，将被依赖的对象注入到依赖方中，通常有2种方式：
+        通过构造方法的方式完成注入。
+        通过set属性的方式完成注入。
+        spring也是通过这两种方式完成依赖注入的。
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、spring完成依赖注入的方式-通过构造器注入</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        通过构造器完成注入时，构造器中的参数就是被依赖的对象，这从侧面证实了使用构造器注入依赖的话，构造器必须是有参构造。
+        构造器注入又分为3种注入方式，这3种方式我们在之前学习spring通过构造器反射实例化bean的时候学习过，分别是：
+        1.  根据构造器参数索引注入
+        2.  根据构造器参数类型注入
+        3.  根据构造器参数名称注入
+    </pre>
+    <b><a name='header-n31' class='md-header-anchor '></a>3.1、 根据构造器参数索引注入依赖</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">用法</font> </b>
+        <font color="gray">
+            &lt;bean id="diModel" class="com.zeh.main.pojo.DiModel">
+                &lt;constructor-arg index="0" value="eric" />
+                &lt;constructor-arg index="1" value="我是通过构造器的参数索引位置注入的" />
+            &lt;/bean>
+        </font>
+        constructor-arg标签用于让用户指定构造器参数。
+        index：构造器参数的索引位置，从0开始，指定0则表示构造器第1个参数，指定1则表示构造器第2个参数，以此类推。
+        value：指定的构造器参数的值，value只能用来给简单类型的参数设置值，value设置值时对应的属性类型只能为 string、byte、int、long、float、double、boolean、Byte、Long、Float、Double、枚举等，spring容器内部注入时会将value的值转换为对应的类型。
+        <b><font color="#a52a2a">DiModel</font> </b>
+        <font color="gray">
+            package com.zeh.main.pojo;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-10
+             */
+            public class DiModel {
+                private String name;
+                private int age;
+                private String desc;
+
+                public DiModel() {
+                }
+
+                public DiModel(String name, String desc) {
+                    this.name = name;
+                    this.desc = desc;
+                }
+
+                public DiModel(String name, int age, String desc) {
+                    this.name = name;
+                    this.age = age;
+                    this.desc = desc;
+                }
+
+                @Override
+                public String toString() {
+                    return "DiModel{" + "name = '" + this.name + "',age = '" + this.age + "',desc = '" + this.desc + "'}";
+                }
+
+            }
+        </font>
+        注意上面bean里面的3个构造方法。
+        <b><font color="#a52a2a">bean xml</font> </b>
+        <font color="gray">
+            &lt;!-- 通过构造器参数的索引注入 -->
+            &lt;bean id="diModel" class="com.zeh.main.pojo.DiModel">
+                &lt;constructor-arg index="0" value="eric" />
+                &lt;constructor-arg index="1" value="我是通过构造器的参数索引位置注入的" />
+            &lt;/bean>
+        </font>
+        上面bean xml配置创建的DiModel相当于如下java代码：
+        <font color="gray">
+            DiModel diModel = new DiModel("eric", "我是通过构造器的参数索引位置注入的");
+        </font>
+        <b><font color="#a52a2a">工具类IocUtil</font> </b>
+        <font color="gray">
+            package com.zeh.main.util;
+
+            import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+            /**
+             * 功能描述 工具类，根据bean xml配置获取spring容器对象
+             *
+             * @since 2021-05-10
+             */
+            public class IocUtil {
+                public static ClassPathXmlApplicationContext getIocContext(String beanXml) {
+                    return new ClassPathXmlApplicationContext(beanXml);
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">测试</font> </b>
+        <font color="gray">
+            package com.zeh.main.controller;
+
+            import com.zeh.main.util.IocUtil;
+
+            import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-10
+             */
+            public class DiModelController {
+                public static void main(String[] args) {
+                    String beanXml = "classpath:/spring/applicationContext.xml";
+                    ClassPathXmlApplicationContext context = IocUtil.getIocContext(beanXml);
+                    System.out.println(String.format("bean is %s", context.getBean("diModel")));
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">测试结果</font> </b>
+        <font color="gray">
+            bean is DiModel{name = 'eric',age = '0',desc = '我是通过构造器的参数索引位置注入的'}
+        </font>
+        <b><font color="#a52a2a">优缺点</font> </b>
+        参数位置的注入对参数顺序有很强的依赖性，若构造方法的参数位置被人调整过，会导致注入出错。
+        不过一般情况下，不建议在代码中去修改构造方法，如果需要新增参数，可以新增一个构造方法来实现，这算是一种扩展，不会影响目前已有的功能。
+    </pre>
+    <b><a name='header-n32' class='md-header-anchor '></a>3.2、 根据构造器参数类型注入依赖</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">用法</font> </b>
+        <font color="gray">
+            &lt;!-- 通过构造器参数的类型注入 -->
+            &lt;bean id="diModel" class="com.zeh.main.pojo.DiModel">
+                &lt;constructor-arg type="参数类型" value="参数值" />
+                &lt;constructor-arg type="参数类型" value="参数值" />
+            &lt;/bean>
+        </font>
+        constructor-arg标签用于让用户指定构造器参数。
+        type：构造方法参数的完整类型，比如 java.lang.String，int，double
+        value：构造方法参数的值，value只能用来给简单类型设置值
+        <b><font color="#a52a2a">bean xml</font> </b>
+        <font color="gray">
+            &lt;!-- 通过构造器参数的类型注入 -->
+            &lt;bean id="diModel" class="com.zeh.main.pojo.DiModel">
+                &lt;constructor-arg type="int" value="22"/>
+                &lt;constructor-arg type="java.lang.String" value="eric" />
+                &lt;constructor-arg type="java.lang.String" value="我是通过构造器的参数类型注入的" />
+            &lt;/bean>
+        </font>
+        上面bean xml配置创建的DiModel相当于如下java代码：
+        <font color="gray">
+            DiModel diModel = new DiModel("eric", 22, "我是通过构造器的参数类型注入的");
+        </font>
+        <b><font color="#a52a2a">测试结果</font> </b>
+        <font color="gray">
+            bean is DiModel{name = 'eric',age = '22',desc = '我是通过构造器的参数类型注入的'}
+        </font>
+        <b><font color="#a52a2a">优缺点</font> </b>
+        实际上按照参数类型或者参数位置去注入都存在一个明显的问题，很难通过bean的配置文件，知道这个参数对应DiModel中的哪个属性。
+        代码的可读性不好，比如我想知道每个参数对应DiModel中的哪个属性，必须去看DiModel的源码。
+        下面介绍按照构造器参数名称去注入的方式比上面这2种注入方式更优雅一些。
+    </pre>
+    <b><a name='header-n33' class='md-header-anchor '></a>3.3、 根据构造器参数名称注入依赖</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">用法</font> </b>
+        <font color="gray">
+            &lt;!-- 通过构造器参数的名称注入 -->
+            &lt;bean id="diModel" class="com.zeh.main.pojo.DiModel">
+                &lt;constructor-arg name="参数名称" value="参数值" />
+                &lt;constructor-arg name="参数名称" value="参数值" />
+            &lt;/bean>
+        </font>
+        constructor-arg标签用于让用户指定构造器参数。
+        name：构造方法参数名称
+        value：构造方法参数的值，value只能用来给简单类型设置值
+
+        <b><font color="#a52a2a">关于使用构造方法参数名称存在的问题</font> </b>
+        java通过反射的方式可以获取到方法的参数名称，不过源码中的参数经过编译之后变成class文件，通常情况下源码编译成class文件之后，编译器会对参数名称做优化。
+        即源码中的参数真实名称会丢失，参数名称会编译成arg0,arg1,arg2之类的，和实际参数不一样了。
+        如果需要将源码中的参数名称保留到编译后的class文件中，编译的时候需要使用下面的命令：
+        <font color="gray">
+            javac -parameters java源码
+        </font>
+        然而我们很难保证在编译代码的时候，开发人员一定会带上-parameters参数，所以方法的参数可能会在class文件中丢失，导致反射获取到的参数名称和实际参数名称不符，这个需要了解下。
+        参数名称可能不稳定的问题，spring本身也提供了解决方案，通过ConstructorProperties注解来定义构造方法参数的名称，将这个直接加到构造方法上面，如下：
+        <font color="gray">
+            @ConstructorProperties({"第1个参数名称", "第2个参数名称",...})
+            public 类名(String p1,String p2,String p3,....,参数n){}
+        </font>
+        <b><font color="#a52a2a">bean xml</font> </b>
+        <font color="gray">
+            &lt;!-- 通过构造器参数的名称注入 -->
+            &lt;bean id="diModel" class="com.zeh.main.pojo.DiModel">
+                &lt;constructor-arg name="age" value="19"/>
+                &lt;constructor-arg name="name" value="eric" />
+                &lt;constructor-arg name="desc" value="我是通过构造器的参数名称注入的" />
+            &lt;/bean>
+        </font>
+        上面bean xml配置创建的DiModel相当于如下java代码：
+        <font color="gray">
+            DiModel diModel = new DiModel("eric", 22, "我是通过构造器的参数名称注入的");
+        </font>
+        <b><font color="#a52a2a">修改DiModel的构造方法</font> </b>
+        <font color="gray">
+            @ConstructorProperties({"name", "desc"})
+            public DiModel(String name, String desc) {
+                this.name = name;
+                this.desc = desc;
+            }
+
+            @ConstructorProperties({"name", "age", "desc"})
+            public DiModel(String name, int age, String desc) {
+                this.name = name;
+                this.age = age;
+                this.desc = desc;
+            }
+        </font>
+        <b><font color="#a52a2a">测试结果</font> </b>
+        <font color="gray">
+            bean is DiModel{name = 'eric',age = '19',desc = '我是通过构造器的参数名称注入的'}
+        </font>
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、spring完成依赖注入的方式-通过set属性注入</b><br>
+    <b><a name='header-n41' class='md-header-anchor '></a>4.1、 setter属性注入的前提</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        通常情况下，我们的类都是标准的javabean，javabean类的特点：
+        1.  属性都是private访问级别的。
+        2.  属性通常通过一组setter(修改器)和getter(访问器)方法来访问。
+        3.  setter方法，以set开头，后跟首字母大写的属性名，比如：setUserName，简单属性一般只有一个方法参数，方法返回值通常是void。
+        4.  getter方法，以get开头，对于boolean类型的属性一般以is开头，后跟首字母大写的属性名，比如：getUserName，isOk。
+        spring对符合javabean特点的类，提供了setter属性方式的注入，会调用对应属性的setter方法将被依赖的对象注入进去。
+    </pre>
+    <b><a name='header-n42' class='md-header-anchor '></a>4.2、 setter属性方式注入</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">用法</font> </b>
+        <font color="gray">
+            &lt;!-- 通过setter属性方式注入 -->
+            &lt;bean id="diModel" class="com.zeh.main.pojo.DiModel">
+                &lt;property name="属性名称" value="属性值"/>
+                ...
+                &lt;property name="属性名称" value="属性值"/>
+            &lt;/bean>
+        </font>
+        property标签用于对当前bean中的属性的值进行配置，可以有多个。
+        name：属性的名称。
+        value：属性的值。
+        <b><font color="#a52a2a">bean xml</font> </b>
+        <font color="gray">
+            &lt;!-- 通过setter属性方式注入 -->
+            &lt;bean id="diModel" class="com.zeh.main.pojo.DiModel">
+                &lt;property name="name" value="eric"/>
+                &lt;property name="age" value="18"/>
+                &lt;property name="desc" value="我是通过setter属性注入的"/>
+            &lt;/bean>
+        </font>
+         上面bean xml配置创建的DiModel相当于如下java代码：
+        <font color="gray">
+            DiModel diModel = new DiModel();
+            diModel.setName("eric");
+            diModel.setAge(18);
+            diModel.setDesc("我是通过setter属性注入的");
+        </font>
+        <b><font color="#a52a2a">修改DiModel，删除有参构造，加上对应的setter方法</font> </b>
+        <font color="gray">
+            package com.zeh.main.pojo;
+
+            import java.beans.ConstructorProperties;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-10
+             */
+            public class DiModel {
+                private String name;
+                private int age;
+                private String desc;
+
+                public DiModel() {
+                }
+
+                public String getName() {
+                    return name;
+                }
+
+                public void setName(String name) {
+                    this.name = name;
+                }
+
+                public int getAge() {
+                    return age;
+                }
+
+                public void setAge(int age) {
+                    this.age = age;
+                }
+
+                public String getDesc() {
+                    return desc;
+                }
+
+                public void setDesc(String desc) {
+                    this.desc = desc;
+                }
+
+                @Override
+                public String toString() {
+                    return "DiModel{" + "name = '" + this.name + "',age = '" + this.age + "',desc = '" + this.desc + "'}";
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">测试结果</font> </b>
+        <font color="gray">
+            bean is DiModel{name = 'eric',age = '18',desc = '我是通过setter属性注入的'}
+        </font>
+        <b><font color="#a52a2a">优缺点</font> </b>
+        setter注入相比较于构造方法注入要灵活一些，构造方法注入属性的话，需要指定对应构造方法中所有参数的值，而setter注入的方式没有这种限制。
+        只要对应属性有setter方法，就可以按照需要，选择注入哪些属性的值。
+    </pre>
+
+    <b><a name='header-n5' class='md-header-anchor '></a>5、注入容器中的其他bean-引用对象注入</b><br>
+    <b><a name='header-n51' class='md-header-anchor '></a>5.1、 引用对象的注入</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        上面为目标bean注入的都是普通类型的属性对象，即简单类型。通过value属性来设置需要注入的对象的值，value属性的值是String类型的，spring容器内部会自动将value的值转换为对象的实际类型。
+        如果我们依赖的属性是容器中的其他bean对象时，需要使用下面的方式进行注入。
+    </pre>
+    <b><a name='header-n52' class='md-header-anchor '></a>5.2、 注入容器中的bean</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        注入容器中的bean有2种写法：
+        1.  ref属性方式注入
+        2.  内置bean的方式注入
+    </pre>
+    <b><a name='header-n53' class='md-header-anchor '></a>5.3、 ref属性方式注入</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        将上面介绍的constructor-arg标签或者property标签中的value属性替换为ref属性，ref属性的值为容器中其他bean的名称。
+        比如：
+        构造器方式，将value替换为ref：
+        <font color="gray">
+            &lt;constructor-arg ref="需要注入的bean名称" />
+        </font>
+        setter方式，将value替换为ref：
+        <font color="gray">
+            &lt;property name="属性名称" ref="需要注入的bean名称"/>
+        </font>
+    </pre>
+    <b><a name='header-n54' class='md-header-anchor '></a>5.4、 内置bean方式注入</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        构造器方式：
+        <font color="gray">
+            &lt;constructor-arg index="">
+                &lt;bean class=""/>
+            &lt;/constructor-arg>
+        </font>
+        setter方式：
+        <font color="gray">
+            &lt;property name="">
+                &lt;bean class=""/>
+            &lt;/property>
+        </font>
+    </pre>
+    <b><a name='header-n55' class='md-header-anchor '></a>5.5、 案例</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">DiModel</font> </b>
+        <font color="gray">
+            package com.zeh.main.pojo;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-10
+             */
+            public class DiModel {
+                private String name;
+                private int age;
+                private String desc;
+
+                public DiModel() {
+                }
+
+                public String getName() {
+                    return name;
+                }
+
+                public void setName(String name) {
+                    this.name = name;
+                }
+
+                public int getAge() {
+                    return age;
+                }
+
+                public void setAge(int age) {
+                    this.age = age;
+                }
+
+                public String getDesc() {
+                    return desc;
+                }
+
+                public void setDesc(String desc) {
+                    this.desc = desc;
+                }
+
+                @Override
+                public String toString() {
+                    return "DiModel{" + "name = '" + this.name + "',age = '" + this.age + "',desc = '" + this.desc + "'}";
+                }
+
+            }
+        </font>
+
+        <b><font color="#a52a2a">UserModel</font> </b>
+        <font color="gray">
+            package com.zeh.main.pojo;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-10
+             */
+            public class UserModel {
+
+                private String userName;
+
+                private int userAge;
+
+                public String getUserName() {
+                    return userName;
+                }
+
+                public void setUserName(String userName) {
+                    this.userName = userName;
+                }
+
+                public int getUserAge() {
+                    return userAge;
+                }
+
+                public void setUserAge(int userAge) {
+                    this.userAge = userAge;
+                }
+
+                @Override
+                public String toString() {
+                    return "UserModel{" + "userName = '" + this.userName + "',userAge = '" + this.userAge + "'}";
+                }
+            }
+        </font>
+
+        <b><font color="#a52a2a">PersonModel</font> </b>
+        <font color="gray">
+            package com.zeh.main.pojo;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-10
+             */
+            public class PersonModel {
+
+                private DiModel diModel;
+
+                private UserModel userModel;
+
+                public DiModel getDiModel() {
+                    return diModel;
+                }
+
+                public void setDiModel(DiModel diModel) {
+                    this.diModel = diModel;
+                }
+
+                public UserModel getUserModel() {
+                    return userModel;
+                }
+
+                public void setUserModel(UserModel userModel) {
+                    this.userModel = userModel;
+                }
+
+                @Override
+                public String toString() {
+                    return "PersonModel{" + "diModel = '" + this.diModel + ",userModel = '" + this.userModel + "'}";
+                }
+            }
+        </font>
+
+        <b><font color="#a52a2a">bean xml配置</font> </b>
+        <font color="gray">
+            &lt;!-- 通过setter属性方式注入 -->
+            &lt;bean id="diModel" class="com.zeh.main.pojo.DiModel">
+                &lt;property name="name" value="eric"/>
+                &lt;property name="age" value="18"/>
+                &lt;property name="desc" value="我是通过setter属性注入的"/>
+            &lt;/bean>
+
+            &lt;!-- 实例化 PersonModel -->
+            &lt;bean id="personModel" class="com.zeh.main.pojo.PersonModel">
+                &lt;!-- diModel通过ref方式注入 -->
+                &lt;property name="diModel" ref="diModel"/>
+                &lt;property name="userModel">
+                    &lt;!-- userModel通过内部bean方式注入 -->
+                    &lt;bean class="com.zeh.main.pojo.UserModel">
+                        &lt;property name="userName" value="daisy"/>
+                        &lt;property name="userAge" value="15"/>
+                    &lt;/bean>
+                &lt;/property>
+            &lt;/bean>
+        </font>
+        <b><font color="#a52a2a">测试程序</font> </b>
+        <font color="gray">
+            package com.zeh.main.controller;
+
+            import com.zeh.main.util.IocUtil;
+
+            import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-10
+             */
+            public class DiModelController {
+                public static void main(String[] args) {
+                    String beanXml = "classpath:/spring/applicationContext.xml";
+                    ClassPathXmlApplicationContext context = IocUtil.getIocContext(beanXml);
+                    System.out.println(String.format("bean is %s", context.getBean("personModel")));
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">测试结果</font> </b>
+        <font color="gray">
+            bean is PersonModel{diModel = 'DiModel{name = 'eric',age = '18',desc = '我是通过setter属性注入的'},userModel = 'UserModel{userName = 'daisy',userAge = '15'}'}
+        </font>
+    </pre>
+
+    <b><a name='header-n6' class='md-header-anchor '></a>6、其他复合类型注入</b><br>
+    <b><a name='header-n61' class='md-header-anchor '></a>6.1、 语法</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">注入java.util.List(list元素)</font> </b>
+        <font color="gray">
+            &lt;bean id="" class="">
+                &lt;property name="">
+                    &lt;list>
+                        &lt;value>spring&lt;/value>
+                        或
+                        &lt;ref bean="bean名称"/>
+                        或
+                        &lt;list>&lt;/list>
+                        或
+                        &lt;bean>&lt;/bean>
+                        或
+                        &lt;array>&lt;/array>
+                        或
+                        &lt;map>&lt;/map>
+                    &lt;/list>
+                &lt;/property>
+            &lt;/bean>
+        </font>
+
+        <b><font color="#a52a2a">注入java.util.Set(set元素)</font> </b>
+        <font color="gray">
+            &lt;bean id="" class="">
+                &lt;property name="">
+                    &lt;set>
+                        &lt;value>spring&lt;/value>
+                        或
+                        &lt;ref bean="bean名称"/>
+                        或
+                        &lt;list>&lt;/list>
+                        或
+                        &lt;bean>&lt;/bean>
+                        或
+                        &lt;array>&lt;/array>
+                        或
+                        &lt;map>&lt;/map>
+                    &lt;/set>
+                &lt;/property>
+            &lt;/bean>
+        </font>
+
+        <b><font color="#a52a2a">注入java.util.Map(map元素)</font> </b>
+        <font color="gray">
+            &lt;bean id="" class="">
+                &lt;property name="">
+                    &lt;map>
+                        &lt;entry key="eric" value="30" key-ref="key引用的bean名称" value-ref="value引用的bean名称" value-type="value的类型"/>
+                        或
+                        &lt;entry>
+                            &lt;key>
+                                key的名称
+                            &lt;/key>
+                            &lt;value>
+                                value的值，可以为任意类型
+                            &lt;/value>
+                        &lt;/entry>
+                    &lt;/map>
+                &lt;/property>
+            &lt;/bean>
+        </font>
+
+        <b><font color="#a52a2a">注入数组(array元素)</font> </b>
+        <font color="gray">
+            &lt;bean id="" class="">
+                &lt;property name="">
+                    &lt;array>
+                        &lt;value>spring&lt;/value>
+                        或
+                        &lt;ref bean="bean名称"/>
+                        或
+                        &lt;list>&lt;/list>
+                        或
+                        &lt;bean>&lt;/bean>
+                        或
+                        &lt;array>&lt;/array>
+                        或
+                        &lt;map>&lt;/map>
+                    &lt;/array>
+                &lt;/property>
+            &lt;/bean>
+        </font>
+
+        <b><font color="#a52a2a">注入java.util.Properties(props元素)</font> </b>
+        Properties类相当于键值都是String类型的Map对象，使用props进行注入，如下：
+        <font color="gray">
+            &lt;bean id="" class="">
+                &lt;property name="">
+                    &lt;props>
+                        &lt;prop key="key1">java高并发&lt;/prop>
+                        &lt;prop key="key2">java多线程&lt;/prop>
+                        &lt;prop key="key3">spring进阶大全&lt;/prop>
+                    &lt;/props>
+                &lt;/property>
+            &lt;/bean>
+        </font>
+    </pre>
+    <b><a name='header-n62' class='md-header-anchor '></a>6.2、 复合类型注入综合案例</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">OtherModel</font> </b>
+        <font color="gray">
+            package com.zeh.main.pojo;
+
+            import java.util.Arrays;
+            import java.util.List;
+            import java.util.Map;
+            import java.util.Properties;
+            import java.util.Set;
+
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-05-11
+             */
+            public class OtherModel {
+                private List&lt;String> myList;
+                private Set&lt;UserModel> mySet;
+                private Map&lt;String, Integer> myMap;
+                private int[] myArray;
+                private Properties myProperties;
+
+                public List&lt;String> getMyList() {
+                    return myList;
+                }
+
+                public void setMyList(List&lt;String> myList) {
+                    this.myList = myList;
+                }
+
+                public Set&lt;UserModel> getMySet() {
+                    return mySet;
+                }
+
+                public void setMySet(Set&lt;UserModel> mySet) {
+                    this.mySet = mySet;
+                }
+
+                public Map&lt;String, Integer> getMyMap() {
+                    return myMap;
+                }
+
+                public void setMyMap(Map&lt;String, Integer> myMap) {
+                    this.myMap = myMap;
+                }
+
+                public int[] getMyArray() {
+                    return myArray;
+                }
+
+                public void setMyArray(int[] myArray) {
+                    this.myArray = myArray;
+                }
+
+                public Properties getMyProperties() {
+                    return myProperties;
+                }
+
+                public void setMyProperties(Properties myProperties) {
+                    this.myProperties = myProperties;
+                }
+
+                @Override
+                public String toString() {
+                    return "OtherModel{" + "myList = '" +
+                            this.myList + "',mySet = '" +
+                            this.mySet + "',myMap = " +
+                            this.myMap + "',myArray = '" +
+                            Arrays.toString(myArray) + "',myProperties = '" +
+                            this.myProperties + "'}";
+                }
+            }
+        </font>
+
+        <b><font color="#a52a2a">bean xml</font> </b>
+        <font color="gray">
+            &lt;bean id="user1" class="com.zeh.main.pojo.UserModel">
+                &lt;property name="userName" value="eric" />
+                &lt;property name="userAge" value="18" />
+            &lt;/bean>
+
+            &lt;bean id="user2" class="com.zeh.main.pojo.UserModel">
+                &lt;property name="userName" value="daisy" />
+                &lt;property name="userAge" value="17" />
+            &lt;/bean>
+
+            &lt;bean id="other" class="com.zeh.main.pojo.OtherModel">
+                &lt;!-- 注入java.util.List对象 -->
+                &lt;property name="myList">
+                    &lt;list>
+                        &lt;value>spring&lt;/value>
+                        &lt;value>springboot&lt;/value>
+                    &lt;/list>
+                &lt;/property>
+
+                &lt;!-- 注入java.util.Set对象 -->
+                &lt;property name="mySet">
+                    &lt;set>
+                        &lt;ref bean="user1" />
+                        &lt;ref bean="user2" />
+                        &lt;bean class="com.zeh.main.pojo.UserModel">
+                            &lt;property name="userName" value="内置bean" />
+                            &lt;property name="userAge" value="100" />
+                        &lt;/bean>
+                        &lt;ref bean="user1"/>
+                    &lt;/set>
+                &lt;/property>
+
+                &lt;!-- 注入java.util.Map对象 -->
+                &lt;property name="myMap">
+                    &lt;map>
+                        &lt;entry key="yu" value="18"/>
+                        &lt;entry key="zhao" value="22"/>
+                    &lt;/map>
+                &lt;/property>
+
+                &lt;!-- 注入数组对象 -->
+                &lt;property name="myArray">
+                    &lt;array>
+                        &lt;value>123&lt;/value>
+                        &lt;value>158&lt;/value>
+                        &lt;value>789&lt;/value>
+                    &lt;/array>
+                &lt;/property>
+
+                &lt;!-- 注入java.util.Properties对象 -->
+                &lt;property name="myProperties">
+                    &lt;props>
+                        &lt;prop key="key1">java开发实战&lt;/prop>
+                        &lt;prop key="key2">java高并发系列&lt;/prop>
+                        &lt;prop key="key3">java框架详解&lt;/prop>
+                    &lt;/props>
+                &lt;/property>
+            &lt;/bean>
+        </font>
+
+        <b><font color="#a52a2a">测试</font> </b>
+        <font color="gray">
+            package com.zeh.main.controller;
+
+            import com.zeh.main.util.IocUtil;
+
+            import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-11
+             */
+            public class OtherController {
+                public static void main(String[] args) {
+                    String beanXml = "classpath:/spring/applicationContext.xml";
+                    ClassPathXmlApplicationContext context = IocUtil.getIocContext(beanXml);
+                    System.out.println(String.format("bean is %s", context.getBean("other")));
+                }
+            }
+        </font>
+
+        <b><font color="#a52a2a">测试结果</font> </b>
+        <font color="gray">
+            bean is OtherModel{myList = '[spring, springboot]',mySet = '[UserModel{userName = 'eric',userAge = '18'}, UserModel{userName = 'daisy',userAge = '17'}, UserModel{userName = '内置bean',userAge = '100'}]',myMap = {yu=18, zhao=22}',myArray = '[123, 158, 789]',myProperties = '{key3=java框架详解, key2=java高并发系列, key1=java开发实战}'}
+        </font>
+    </pre>
+
+    <b><a name='header-n7' class='md-header-anchor '></a>7、总结</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  本文主要讲解了xml中bean的依赖注入方式，都是采用硬编码到xml文件中的方式进行的，这种方式算是手动注入的方式。
+        2.  注入简单类型通过value属性或者value标签设置需要注入的值即可；注入对象如果是容器中的其他bean的时候，需要使用ref属性或者ref标签或者内置bean元素的方式注入即可。
+        3.  还有其他几种类型的注入，比如List,Set,Map,Array,Properties类型的注入。
+    </pre>
+</div>
+</body>
+</html>
