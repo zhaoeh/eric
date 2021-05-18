@@ -754,6 +754,7 @@
         3.  constructor：按照构造方法进行注入
         4.  default：默认注入方式
         5.  no：不使用自动注入，相当于不配置autowire属性
+        <font color="#a52a2a">其中byName和byType都是基于setter属性注入，要求目标bean存在setter方法；constructor基于构造器注入，要求目标bean存在对应参数的构造方法。</font>
     </pre>
     <b><a name='header-n31' class='md-header-anchor '></a>3.1、 按照名称进行注入(byName)</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
@@ -937,6 +938,33 @@
             setService2_test->Service2{desc = '我是service2_test'}
             bean is AutowireModel{service1 = 'Service1{desc = '我是service1_test'}',service2 = 'Service2{desc = '我是service2_test'}'}
         </font>
+        如果上面的bean xml中对于同一个类型的bean有多个满足Service.isAssignableFrom(bean)的bean实例，则通过byType完成自动注入会报错。
+        <b><font color="#a52a2a">bean xml对于Service2类型注册多个实例</font> </b>
+        <font color="gray">
+            &lt;bean id="service1-1-1" class="com.zeh.main.pojo.Service1">
+                &lt;property name="desc" value="我是service1_test" />
+            &lt;/bean>
+            &lt;bean id="service2-2-2" class="com.zeh.main.pojo.Service2">
+                &lt;property name="desc" value="我是service2_test" />
+            &lt;/bean>
+            &lt;bean id="service2-2-3" class="com.zeh.main.pojo.Service2">
+                &lt;property name="desc" value="我是service2_test" />
+            &lt;/bean>
+            &lt;bean id="autowireBean" class="com.zeh.main.pojo.AutowireModel" autowire="byType" />
+        </font>
+        上面的bean xml中对于Service2类型添加了一个新的bean实例，即service2-2-3。
+        此时容器中，Service2类型的实例有两个：service2-2-2、service2-2-3。
+        spring容器启动后会遍历AutowireModel类中的所有setter方法，得到需要注入的实例类型列表，本案例中是{"com.zeh.main.pojo.Service1","com.zeh.main.pojo.Service2"}；
+        根据得到的类型列表，分别去spring容器中去找和对应类型存在isAssignableFrom关系的bean实例。
+        比如，本案例中会先从spring容器中查找所有满足 com.zeh.main.pojo.Service1.class.sAssignableFrom(目标bean) 关系的目标bean，找到了就注入；
+        然后再查找满足 com.zeh.main.pojo.Service2.class.sAssignableFrom(目标bean) 关系的目标bean，找到了就注入，如果找到了多个，spring不知道该注入哪个，就会抛出异常。
+        很明显，spring从容器中找到了两个Service2的实例，service2-2-2和service2-2-3，因此spring报错了。
+        <b><font color="#a52a2a">报错如下:</font> </b>
+        <font color="gray">
+            Caused by: org.springframework.beans.factory.NoUniqueBeanDefinitionException: No qualifying bean of type 'com.zeh.main.pojo.Service2' available: expected single matching bean but found 2: service2-2-2,service2-2-3
+        </font>
+        上面报错也就是说，spring对于com.zeh.main.pojo.Service2类型，没有找到唯一的bean定义。
+        这个问题后面文章会给出解决方案。
 
         <b><font color="#a52a2a">案例原理分析</font> </b>
         1.  遍历AutowireModel中所有setter方法，找到其参数类型对应的列表集合，比如案例中就是{"Service1","Service2"}；
@@ -946,53 +974,463 @@
         <b><font color="#a52a2a">优缺点</font> </b>
         相比较手动注入，节省了代码开发，新增或者删除属性，只需要增减对应的set方法即可，更容易进行扩展。
     </pre>
-    <b><a name='header-n33' class='md-header-anchor '></a>3.3、 如何实现迪米特原则？</b>
+    <b><a name='header-n33' class='md-header-anchor '></a>3.3、 byType扩展：注入类型匹配的所有bean（重点）</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        按照类型自动完成依赖注入，还有2种比较牛逼的用法如下：
+        1.  一个spring容器中满足某种类型的bean可以存在很多个（比如上面Service2的bean就存在两个），将容器中某种类型的所有bean，通过set方法注入给一个java.util.List&lt;需要注入的bean类型或者其父类型或者其接口>对象。
+        2.  将容器中某种类型的所有bean，通过set方法注入给一个java.util.Map&lt;需要注入的bean类型或者其父类型或者其接口>对象。
+        <b><font color="#a52a2a">AutowireModel</font> </b>
+        <font color="gray">
+            package com.zeh.main.pojo;
+
+            import java.util.List;
+            import java.util.Map;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-11
+             */
+            public class AutowireModel {
+                private List&lt;Service> serviceList;
+                private Map&lt;String, Service> serviceMap;
+
+                public List&lt;Service> getServiceList() {
+                    return serviceList;
+                }
+
+                public void setServiceList(List&lt;Service> serviceList) {
+                    this.serviceList = serviceList;
+                }
+
+                public Map&lt;String, Service> getServiceMap() {
+                    return serviceMap;
+                }
+
+                public void setServiceMap(Map&lt;String, Service> serviceMap) {
+                    this.serviceMap = serviceMap;
+                }
+
+                @Override
+                public String toString() {
+                    return "AutowireModel{" + "serviceList = '" + this.serviceList + "',serviceMap = '" + this.serviceMap + "'}";
+                }
+            }
+
+            interface Service {
+
+            }
+
+            class Service1 implements Service {
+                private String desc;
+
+                public String getDesc() {
+                    return desc;
+                }
+
+                public void setDesc(String desc) {
+                    this.desc = desc;
+                }
+
+                @Override
+                public String toString() {
+                    return "Service1{" + "desc = '" + this.getDesc() + "'}";
+                }
+            }
+
+            class Service2 implements Service {
+                private String desc;
+
+                public String getDesc() {
+                    return desc;
+                }
+
+                public void setDesc(String desc) {
+                    this.desc = desc;
+                }
+
+                @Override
+                public String toString() {
+                    return "Service2{" + "desc = '" + this.getDesc() + "'}";
+                }
+            }
+
+            class Service3 implements Service {
+                private String desc;
+
+                public String getDesc() {
+                    return desc;
+                }
+
+                public void setDesc(String desc) {
+                    this.desc = desc;
+                }
+
+                @Override
+                public String toString() {
+                    return "Service3{" + "desc = '" + this.getDesc() + "'}";
+                }
+            }
+        </font>
+        上述目标bean定义了两个属性：serviceList和serviceMap，它们需要注入的类型都是Service。
+
+        <b><font color="#a52a2a">bean xml</font> </b>
+        <font color="gray">
+            &lt;bean id="service1-1-1" class="com.zeh.main.pojo.Service1">
+                &lt;property name="desc" value="service1-1-1" />
+            &lt;/bean>
+            &lt;bean id="service1-1-2" class="com.zeh.main.pojo.Service1">
+                &lt;property name="desc" value="service1-1-2" />
+            &lt;/bean>
+            &lt;bean id="service2-2-1" class="com.zeh.main.pojo.Service2">
+                &lt;property name="desc" value="service2-2-1" />
+            &lt;/bean>
+            &lt;bean id="service2-2-2" class="com.zeh.main.pojo.Service2">
+                &lt;property name="desc" value="service2-2-2" />
+            &lt;/bean>
+            &lt;bean id="autowireBean" class="com.zeh.main.pojo.AutowireModel" autowire="byType" />
+        </font>
+        上述配置文件中，Service1类注册了两个bean，Service2注册了两个bean。因为Service1和Service2都是Service接口的实现类，因此相当于上面4个bean实例都是Service接口的实例。
+        此时，spring容器中Service类型的实例总共有4个：service1-1-1、service1-1-2、service2-2-1、service2-2-2。
+
+        <b><font color="#a52a2a">测试程序</font> </b>
+        <font color="gray">
+            package com.zeh.main.controller;
+
+            import com.zeh.main.pojo.AutowireModel;
+            import com.zeh.main.util.IocUtil;
+
+            import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-05-11
+             */
+            public class AutowireController {
+                public static void main(String[] args) {
+                    String beanXml = "classpath:/spring/applicationContext.xml";
+                    ClassPathXmlApplicationContext context = IocUtil.getIocContext(beanXml);
+                    AutowireModel bean = context.getBean(AutowireModel.class);
+                    System.out.println(String.format("bean is %s", bean));
+                    System.out.println(String.format("serviceList is %s", bean.getServiceList()));
+                    System.out.println(String.format("serviceMap is %s", bean.getServiceMap()));
+                }
+            }
+        </font>
+
+        <b><font color="#a52a2a">测试结果</font> </b>
+        <font color="gray">
+            bean is AutowireModel{serviceList = '[Service1{desc = 'service1-1-1'}, Service1{desc = 'service1-1-2'}, Service2{desc = 'service2-2-1'}, Service2{desc = 'service2-2-2'}]',serviceMap = '{service1-1-1=Service1{desc = 'service1-1-1'}, service1-1-2=Service1{desc = 'service1-1-2'}, service2-2-1=Service2{desc = 'service2-2-1'}, service2-2-2=Service2{desc = 'service2-2-2'}}'}
+            serviceList is [Service1{desc = 'service1-1-1'}, Service1{desc = 'service1-1-2'}, Service2{desc = 'service2-2-1'}, Service2{desc = 'service2-2-2'}]
+            serviceMap is {service1-1-1=Service1{desc = 'service1-1-1'}, service1-1-2=Service1{desc = 'service1-1-2'}, service2-2-1=Service2{desc = 'service2-2-1'}, service2-2-2=Service2{desc = 'service2-2-2'}}
+        </font>
     </pre>
 
-    <b><a name='header-n4' class='md-header-anchor '></a>4、单一职责原则</b><br>
-    <b><a name='header-n41' class='md-header-anchor '></a>4.1、 什么是单一职责原则？</b>
+    <b><a name='header-n34' class='md-header-anchor '></a>3.4、 按照构造方法进行注入(constructor)</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-    <b><a name='header-n42' class='md-header-anchor '></a>4.2、 为何遵循单一职责原则？</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-    <b><a name='header-n43' class='md-header-anchor '></a>4.3、 如何实现单一职责原则？</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">用法</font> </b>
+        autowire设置为constructor
+        <font color="gray">
+            &lt;bean id="bean名称" class="类权限定名" autowire="constructor"/>
+        </font>
+        原理分析：
+        spring会找到目标类中的所有构造方法（一个类可能有多个构造方法），然后将这些构造方法进行排序（先按照修饰符进行排序，public的在前面，其他的在后面；如果修饰符一样的，会按照构造方法参数数量倒序，即采用贪婪的模式进行匹配，spring容器会尽量多注入一些需要的对象）得到一个构造方法列表，会轮询这个构造器列表，判断当前构造器所有参数是否在容器中都可以找到匹配的bean对象，如果可以找到就是用这个构造器进行注入；如果不能找到，那么会跳过这个构造器，继续采用同样的方式匹配下一个构造器，直到找到一个合适的为止。
+        <b><font color="#a52a2a">AutowireModel</font> </b>
+        <font color="gray">
+            package com.zeh.main.pojo;
+
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-05-11
+             */
+            public class AutowireModel {
+
+                private Service1 service1;
+                private Service2 service2;
+
+                public AutowireModel() {
+                    System.out.println("AutowireModel()");
+                }
+
+                public AutowireModel(Service1 service1) {
+                    System.out.println("AutowireModel(Service1 service1)");
+                    this.service1 = service1;
+                }
+
+                public AutowireModel(Service1 service1, Service2 service2) {
+                    System.out.println("AutowireModel(Service1 service1, Service2 service2)");
+                    this.service1 = service1;
+                    this.service2 = service2;
+                }
+
+                @Override
+                public String toString() {
+                    return "AutowireModel{" + "service1 = '" + this.service1 + "',service2 = '" + this.service2 + "'}";
+                }
+            }
+
+            interface Service {
+
+            }
+
+            class Service1 implements Service {
+                private String desc;
+
+                public String getDesc() {
+                    return desc;
+                }
+
+                public void setDesc(String desc) {
+                    this.desc = desc;
+                }
+
+                @Override
+                public String toString() {
+                    return "Service1{" + "desc = '" + this.getDesc() + "'}";
+                }
+            }
+
+            class Service2 implements Service {
+                private String desc;
+
+                public String getDesc() {
+                    return desc;
+                }
+
+                public void setDesc(String desc) {
+                    this.desc = desc;
+                }
+
+                @Override
+                public String toString() {
+                    return "Service2{" + "desc = '" + this.getDesc() + "'}";
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">bean xml</font> </b>
+        <font color="gray">
+            &lt;bean id="service1" class="com.zeh.main.pojo.Service1">
+                &lt;property name="desc" value="service1" />
+            &lt;/bean>
+            &lt;bean id="autowireBean" class="com.zeh.main.pojo.AutowireModel" autowire="constructor" />
+        </font>
+        注意上面只交给spring容器注册了一个Service1的实例。
+        <b><font color="#a52a2a">测试程序</font> </b>
+        <font color="gray">
+            package com.zeh.main.controller;
+
+            import com.zeh.main.pojo.AutowireModel;
+            import com.zeh.main.util.IocUtil;
+
+            import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-11
+             */
+            public class AutowireController {
+                public static void main(String[] args) {
+                    String beanXml = "classpath:/spring/applicationContext.xml";
+                    ClassPathXmlApplicationContext context = IocUtil.getIocContext(beanXml);
+                    AutowireModel bean = context.getBean(AutowireModel.class);
+                    System.out.println(String.format("bean is %s", bean));
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">测试结果</font> </b>
+        <font color="gray">
+            AutowireModel(Service1 service1)
+            bean is AutowireModel{service1 = 'Service1{desc = 'service1'}',service2 = 'null'}
+        </font>
+        因为上面的bean xml中只注册了一个Service1的bean，因此通过贪婪模式在遍历AutowireModel中的构造器时，跳过了2个参数的构造器，只匹配到了1个参数的构造器。
+        如果bean xml中再注册Service2的bean，则会匹配2个参数的构造器进行注入。
+        <b><font color="#a52a2a">bean xml追加Service2实例的注册</font> </b>
+        <font color="gray">
+            &lt;bean id="service1" class="com.zeh.main.pojo.Service1">
+                &lt;property name="desc" value="service1" />
+            &lt;/bean>
+            &lt;bean id="service2" class="com.zeh.main.pojo.Service2">
+                &lt;property name="desc" value="service2" />
+            &lt;/bean>
+            &lt;bean id="autowireBean" class="com.zeh.main.pojo.AutowireModel" autowire="constructor" />
+        </font>
+        <b><font color="#a52a2a">测试结果</font> </b>
+        <font color="gray">
+            AutowireModel(Service1 service1, Service2 service2)
+            bean is AutowireModel{service1 = 'Service1{desc = 'service1'}',service2 = 'Service2{desc = 'service2'}'}
+        </font>
+        发现匹配到了2个参数的构造器进行注入，满足了贪婪模式的注入原则，最大限度的注入所有依赖的对象。
     </pre>
 
-    <b><a name='header-n5' class='md-header-anchor '></a>5、里氏替换原则</b><br>
-    <b><a name='header-n51' class='md-header-anchor '></a>5.1、 什么是里氏替换原则？</b>
+    <b><a name='header-n35' class='md-header-anchor '></a>3.5、 autowire="default"</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">用法</font> </b>
+        bean xml的根元素是beans，注意根元素有个default-autowire属性，这个属性可选值有：
+        （no|byName|byType|constructor|default）。
+        这个属性可以批量设置当前bean xml文件中所有bean的自动注入的方式，bean元素中如果省略了autowire属性，那么会取default-autowire属性的值作为其autowire的值，而每个bean元素还可以单独设置自己的autowire覆盖default-autowire的配置，如下：
+        <font color="gray">
+            &lt;?xml version="1.0" encoding="UTF-8"?>
+            &lt;beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans"
+                xsi:schemaLocation="http://www.springframework.org/schema/beans
+                   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd"
+                    default-autowire="byName">
+
+            &lt;/beans>
+        </font>
+        如果default-autowire属性设置为default或者no，则相当于没有设置全局自动注入功能。
+        此时bean xml中对应的bean如果要使用自动注入功能，则必须自己指定autowire属性。
+        <b><font color="#a52a2a">AutowireModel</font> </b>
+        <font color="gray">
+            package com.zeh.main.pojo;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-11
+             */
+            public class AutowireModel {
+
+                private Service1 service1;
+                private Service2 service2;
+
+                public AutowireModel() {
+                    System.out.println("AutowireModel()");
+                }
+
+                public AutowireModel(Service1 service1) {
+                    System.out.println("AutowireModel(Service1 service1)");
+                    this.service1 = service1;
+                }
+
+                public Service1 getService1() {
+                    return service1;
+                }
+
+                public void setService1(Service1 service1) {
+                    this.service1 = service1;
+                }
+
+                public Service2 getService2() {
+                    return service2;
+                }
+
+                public void setService2(Service2 service2) {
+                    this.service2 = service2;
+                }
+
+                @Override
+                public String toString() {
+                    return "AutowireModel{" + "service1 = '" + this.service1 + "',service2 = '" + this.service2 + "'}";
+                }
+            }
+
+            interface Service {
+
+            }
+
+            class Service1 implements Service {
+                private String desc;
+
+                public String getDesc() {
+                    return desc;
+                }
+
+                public void setDesc(String desc) {
+                    this.desc = desc;
+                }
+
+                @Override
+                public String toString() {
+                    return "Service1{" + "desc = '" + this.getDesc() + "'}";
+                }
+            }
+
+            class Service2 implements Service {
+                private String desc;
+
+                public String getDesc() {
+                    return desc;
+                }
+
+                public void setDesc(String desc) {
+                    this.desc = desc;
+                }
+
+                @Override
+                public String toString() {
+                    return "Service2{" + "desc = '" + this.getDesc() + "'}";
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">bean xml</font> </b>
+        <font color="gray">
+            &lt;?xml version="1.0" encoding="UTF-8"?>
+            &lt;beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans"
+                xsi:schemaLocation="http://www.springframework.org/schema/beans
+                   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd"
+                    default-autowire="byName">
+                &lt;bean id="service1" class="com.zeh.main.pojo.Service1">
+                    &lt;property name="desc" value="service1"/>
+                &lt;/bean>
+                &lt;bean id="service2" class="com.zeh.main.pojo.Service2">
+                    &lt;property name="desc" value="service2"/>
+                &lt;/bean>
+                &lt;!-- 采用全局默认的autowire方式 -->
+                &lt;bean id="autowireModel1" class="com.zeh.main.pojo.AutowireModel" autowire="default"/>
+                &lt;!-- 还可以自己指定自己的autowire方式以覆盖全局的方式 -->
+                &lt;bean id="autowireModel2" class="com.zeh.main.pojo.AutowireModel" autowire="constructor"/>
+                &lt;!-- 手动注入属性的方式优先级最高，可以覆盖自己的autowire方式和全局的autowire方式 -->
+                &lt;bean id="autowireModel3" class="com.zeh.main.pojo.AutowireModel" autowire="constructor">
+                    &lt;property name="service1" ref="service1"/>
+                    &lt;property name="service2" ref="service2"/>
+                &lt;/bean>
+            &lt;/beans>
+        </font>
+        <b><font color="#a52a2a">测试程序</font> </b>
+        <font color="gray">
+            package com.zeh.main.controller;
+
+            import com.zeh.main.pojo.AutowireModel;
+            import com.zeh.main.util.IocUtil;
+
+            import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-05-11
+             */
+            public class AutowireController {
+                public static void main(String[] args) {
+                    String beanXml = "classpath:/spring/applicationContext.xml";
+                    ClassPathXmlApplicationContext context = IocUtil.getIocContext(beanXml);
+                    System.out.println(context.getBean("autowireModel1"));
+                    System.out.println(context.getBean("autowireModel2"));
+                    System.out.println(context.getBean("autowireModel3"));
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">测试结果</font> </b>
+        <font color="gray">
+            AutowireModel(Service1 service1)
+            AutowireModel{service1 = 'Service1{desc = 'service1'}',service2 = 'Service2{desc = 'service2'}'}
+            AutowireModel{service1 = 'Service1{desc = 'service1'}',service2 = 'null'}
+            AutowireModel{service1 = 'Service1{desc = 'service1'}',service2 = 'Service2{desc = 'service2'}'}
+        </font>
     </pre>
-    <b><a name='header-n52' class='md-header-anchor '></a>5.2、 为何遵循里氏替换原则？</b>
+    <b><a name='header-n4' class='md-header-anchor '></a>4、总结</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-    <b><a name='header-n53' class='md-header-anchor '></a>5.3、 如何实现里氏替换原则？</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  xml手动注入存在不足之处，可以通过自动注入的方式来解决。总共介绍3种自动注入方式：通过setXXX的名称自动注入、通过setXXX的参数类型自动注入、通过构造器自动注入。
+        2.  按照setXXX的参数类型自动注入有个比较牛逼的用法，可以将参数类型匹配到的所有bean注入给一个List对象，可以将参数类型匹配到的所有bean按照“bean名称->bean对象”的映射方式注入给一个Map对象，这种用法比较重要，用途很大。
+        3.  spring中还有其他自动注入的方式，用起来更牛逼，后续会讲解。
     </pre>
 
-    <b><a name='header-n6' class='md-header-anchor '></a>6、依赖倒转原则</b><br>
-    <b><a name='header-n61' class='md-header-anchor '></a>6.1、 什么是依赖倒转原则？</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-    <b><a name='header-n62' class='md-header-anchor '></a>6.2、 为何遵循依赖倒转原则？</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-    <b><a name='header-n63' class='md-header-anchor '></a>6.3、 如何实现依赖倒转原则？</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-
-    <b><a name='header-n7' class='md-header-anchor '></a>7、组合/聚合复用原则</b><br>
-    <b><a name='header-n71' class='md-header-anchor '></a>7.1、 什么是组合/聚合复用原则？</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-    <b><a name='header-n72' class='md-header-anchor '></a>7.2、 为何遵循组合/聚合复用原则？</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-    <b><a name='header-n73' class='md-header-anchor '></a>7.3、 如何实现组合/聚合复用原则？</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
 </div>
 </body>
 </html>
