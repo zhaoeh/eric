@@ -1,0 +1,998 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>spring自动注入依赖.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    .footnotes + .footnotes {
+        margin-top: -1em;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    @media screen and (max-width: 48em) {
+
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    li p.first {
+        display: inline-block;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+
+
+    </style>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>spring自动注入依赖</b>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、spring手动注入依赖的不足</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        之前已经知道，spring提供了手动注入依赖的方式：通过构造器注入和通过setter属性注入。
+        手动注入依赖需要我们显式编写bean xml配置，即采用硬编码的方式进行依赖注入。
+        手动注入依赖的方式存在如下不足：
+        <font color="gray">
+            public class A{
+                private B b;
+                private C c;
+                private D d;
+                private E e;
+                ...
+                private N n;
+                //上面每个private属性的set和get方法
+            }
+        </font>
+        使用spring容器来管理，bean xml配置如下：
+        <font color="gray">
+            &lt;bean id="b" class="B"/>
+            &lt;bean id="c" class="C"/>
+            &lt;bean id="d" class="D"/>
+            &lt;bean id="e" class="E"/>
+            ...
+            &lt;bean id="a" class="A">
+                &lt;property name="b" ref="b"/>
+                &lt;property name="c" ref="c"/>
+                &lt;property name="d" ref="d"/>
+                &lt;property name="e" ref="e"/>
+                ...
+            &lt;/bean>
+        </font>
+        上面手动注入存在的问题：
+        1.  如果需要注入的对象比较多，比如A类中有几十个属性的话，那么上面的property标签就得写几十个，测试配置文件代码量暴增。
+        2.  如果A类中新增或者删除了一些依赖，还需要手动调整bean xml中的依赖配置信息，否则会报错。
+        3.  像这种手动注入的配置不利于维护和扩展。
+        为了解决上述问题，spring为我们提供了更加强大的功能：自动注入。
+    </pre>
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、自动注入的基础知识</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="#a52a2a">class.isAssignableFrom()</font>
+        我们在学习反射时，知道Class类中有一个isAssignableFrom方法，该方法定义如下：
+        <font color="gray">public native boolean isAssignableFrom(Class&lt;?> cls);</font>
+        它是一个本地方法，用法如下：
+        <font color="gray">
+            c1.isAssignableFrom(c2);
+        </font>
+        判断c1对象描述的类或者接口，是否与c2描述的类或者接口相同，或者是c2描述的类或接口的父类或者父接口。
+        即用来表示"c1是不是c2的爸爸"。
+        spring底层按照属性类型自动注入时，就是通过该方法来判断两个对象的类型是否是兼容的。
+        <font color="gray">
+            System.out.println(Object.class.isAssignableFrom(Integer.class)); //true
+            System.out.println(Object.class.isAssignableFrom(int.class)); //false
+            System.out.println(Object.class.isAssignableFrom(List.class)); //true
+            System.out.println(Collection.class.isAssignableFrom(List.class)); //true
+            System.out.println(List.class.isAssignableFrom(Collection.class)); //false
+        </font>
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、spring依赖注入之自动注入</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        自动注入是采用约定大于配置的方式实现的。程序和spring之间都约定好，遵守某种双方都认可的规则，来实现自动注入。
+        xml中可以在bean元素中通过autowire属性来设置自动注入的方式：
+        <font color="gray">
+            &lt;bean id="" class="" autowire="byName|byType|constructor|default|no"/>
+        </font>
+        1.  byName：按照名称进行注入
+        2.  byType：按照类型进行注入
+        3.  constructor：按照构造方法进行注入
+        4.  default：默认注入方式
+        5.  no：不使用自动注入，相当于不配置autowire属性
+    </pre>
+    <b><a name='header-n31' class='md-header-anchor '></a>3.1、 按照名称进行注入(byName)</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">用法</font> </b>
+        autowire设置为byName
+        <font color="gray">
+            &lt;bean id="bean名称" class="类权限定名" autowire="byName"/>
+        </font>
+        原理分析：
+        spring容器会按照set属性的名称（注意是setter方法后面跟的名称，首字母自动会转换为小写，而不是属性名称）去容器中查找同名的bean对象，然后将查找到的对象注入到对应的bean中。
+        未找到对应名称的bean对象，则不会调用set方法进行注入。
+        需要注入的setter属性的名称和被注入的bean的名称必须保持一致。
+        <font color="#a52a2a">
+            tips：spring在反射setter方法时，实际上是将setter方法后面的名称首字母转换为小写，然后和容器中的所有bean进行比对，而不是直接反射属性名称。
+            比如：
+            Class A{
+                private String name;
+                public void setTest(String name){
+                    this.name = name;
+                }
+            }
+            这个时候要注入的bean的名称就是test，而不是name。
+            当然一般的bean，setter和getter方法都是直接按照属性名称去命名的，这种案例只是为了说明它反射的是setter方法而不是属性。
+        </font>
+
+        <b><font color="#a52a2a">AutowireModel</font> </b>
+        <font color="gray">
+            package com.zeh.main.pojo;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-11
+             */
+            public class AutowireModel {
+                private Service1 service1;
+                private Service2 service2;
+
+                public void setService1_test(Service1 service1) {
+                    System.out.println(String.format("setService1_test->%s", service1));
+                    this.service1 = service1;
+                }
+
+                public void setService2_test(Service2 service2) {
+                    System.out.println(String.format("setService2_test->%s", service2));
+                    this.service2 = service2;
+                }
+
+                @Override
+                public String toString() {
+                    return "AutowireModel{" + "service1 = '" + this.service1 + "',service2 = '" + this.service2 + "'}";
+                }
+            }
+
+            class Service1 {
+                private String desc;
+
+                public String getDesc() {
+                    return desc;
+                }
+
+                public void setDesc(String desc) {
+                    this.desc = desc;
+                }
+
+                @Override
+                public String toString() {
+                    return "Service1{" + "desc = '" + this.getDesc() + "'}";
+                }
+            }
+
+            class Service2 {
+                private String desc;
+
+                public String getDesc() {
+                    return desc;
+                }
+
+                public void setDesc(String desc) {
+                    this.desc = desc;
+                }
+
+                @Override
+                public String toString() {
+                    return "Service2{" + "desc = '" + this.getDesc() + "'}";
+                }
+            }
+        </font>
+        这个类中有两个属性，名称为：
+        service1
+        service2
+        它们有对应的set方法，名称为：
+        setService1_test
+        setService2_test
+
+        <b><font color="#a52a2a">bean xml</font> </b>
+        <font color="gray">
+            &lt;bean id="service1_test" class="com.zeh.main.pojo.Service1">
+                &lt;property name="desc" value="我是service1_test" />
+            &lt;/bean>
+            &lt;bean id="service2_test" class="com.zeh.main.pojo.Service2">
+                &lt;property name="desc" value="我是service2_test" />
+            &lt;/bean>
+            &lt;bean id="autowireBean" class="com.zeh.main.pojo.AutowireModel" autowire="byName" />
+        </font>
+        注意上面的bean名称，service1_test和service2_test，是和需要注入的属性的setter方法后面的名称一致，而不是和属性名称一致。
+
+        <b><font color="#a52a2a">测试</font> </b>
+        <font color="gray">
+            package com.zeh.main.controller;
+
+            import com.zeh.main.util.IocUtil;
+
+            import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-11
+             */
+            public class AutowireController {
+                public static void main(String[] args) {
+                    String beanXml = "classpath:/spring/applicationContext.xml";
+                    ClassPathXmlApplicationContext context = IocUtil.getIocContext(beanXml);
+                    System.out.println(String.format("bean is %s", context.getBean("autowireBean")));
+                }
+            }
+        </font>
+
+        <b><font color="#a52a2a">测试结果</font> </b>
+        <font color="gray">
+            setService1_test->Service1{desc = '我是service1_test'}
+            setService2_test->Service2{desc = '我是service2_test'}
+            bean is AutowireModel{service1 = 'Service1{desc = '我是service1_test'}',service2 = 'Service2{desc = '我是service2_test'}'}
+        </font>
+        如果将bean xml中的service1_test和service2_test换成对应的属性名称，即service1和service2的话，执行结果如下：
+        <font color="gray">
+            bean is AutowireModel{service1 = 'null',service2 = 'null'}
+        </font>
+        发现如果spring在容器中找不到和要注入的setter方法后面的名称匹配的bean，则不会反射调用对应的setter方法去注入属性，因为没有找到和setter方法匹配的bean。
+
+        <b><font color="#a52a2a">案例原理分析</font> </b>
+        1.  AutowireModel中定义了名称为service1和service2的两个属性。
+        2.  这两个属性有对应的setter方法，分别是setService1_test和setService2_test。
+        3.  xml bean中定义了名称为service1_test的bean和名称为service2_test的bean。
+        4.  xml bean中定义autowireBean时，需要将autowire属性设置为byName，表示按照setter名称进行自动注入。
+        5.  spring容器创建autowireBean对应的bean时，会遍历AutowireModel类中所有的setter方法，然后得到setter方法对应的属性列表：{"setService1_test","setService2_test"}，然后遍历该setter属性列表，在容器中查找和该列表中同名的bean对象，找到了则调用对应的set方法，将bean对象注入进去；找不到则不调用。
+
+        <b><font color="#a52a2a">优缺点</font> </b>
+        按名称进行依赖注入的时候，要求需要注入的setter方法的属性名称必须和被注入的bean名称保持一致，相比较于硬编码的方式，节省了不少配置。
+    </pre>
+    <b><a name='header-n32' class='md-header-anchor '></a>3.2、 按照类型进行注入(byType)</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">用法</font> </b>
+        autowire设置为byType
+        <font color="gray">
+            &lt;bean id="bean名称" class="类权限定名" autowire="byType"/>
+        </font>
+        原理分析：
+        spring容器会遍历目标类中所有set方法，会在容器中查找和set方法参数类型相同的bean对象（byName是查找和setXXX后面的XXX相同的bean），将其通过set方法进行注入，找不到对应类型的bean对象，则不调用对应的set方法进行注入。
+        <font color="#a52a2a">需要注入的set属性的参数类型和被注入的bean的类型需要满足isAssignableFrom的关系，即，set属性参数的类型应该和被注入的bean的类型相同，或者是其父类型。</font>
+        按照类型进行自动注入时，如果按照类型找到了多个符合条件的bean对象，则系统会报错。
+        set方法的的参数如果是下面的类型或者下面类型的数组时，这个set方法会被跳过注入：
+        <font color="#a52a2a">Object，Boolean，boolean，Byte，byte，Character，char，Double，double，Float，float，Integer，int，Long，long，Short，short，Enum，CharSequence，Number，Date，java.time.temporal.Temporal，java.net.URI，java.util.Local，java.lang.Class</font>
+
+        <b><font color="#a52a2a">bean xml</font> </b>
+        <font color="gray">
+            &lt;bean id="service1-1-1" class="com.zeh.main.pojo.Service1">
+                &lt;property name="desc" value="我是service1_test" />
+            &lt;/bean>
+            &lt;bean id="service2-2-2" class="com.zeh.main.pojo.Service2">
+                &lt;property name="desc" value="我是service2_test" />
+            &lt;/bean>
+            &lt;bean id="autowireBean" class="com.zeh.main.pojo.AutowireModel" autowire="byType" />
+        </font>
+        注意上面的bean名称，专门将bean名称修改成service1-1-1和service2-2-2，表示此时的注入和setter属性名称完全无关。
+        autowire设置为byType。
+        <b><font color="#a52a2a">测试结果</font> </b>
+        <font color="gray">
+            setService1_test->Service1{desc = '我是service1_test'}
+            setService2_test->Service2{desc = '我是service2_test'}
+            bean is AutowireModel{service1 = 'Service1{desc = '我是service1_test'}',service2 = 'Service2{desc = '我是service2_test'}'}
+        </font>
+
+        <b><font color="#a52a2a">案例原理分析</font> </b>
+        1.  遍历AutowireModel中所有setter方法，找到其参数类型对应的列表集合，比如案例中就是{"Service1","Service2"}；
+        2.  根据对应的类型列表，挨个在spring容器中查找和其满足isAssignableFrom关系的bean实例，即列表中的类型.isAssignableFrom(spring容器中的实例)；
+        3.  如果在spring容器中找到了多个实例bean，则报错；否则找到对应的bean实例和对应的setter方法，调用setter方法将实例bean注入进去。
+
+        <b><font color="#a52a2a">优缺点</font> </b>
+        相比较手动注入，节省了代码开发，新增或者删除属性，只需要增减对应的set方法即可，更容易进行扩展。
+    </pre>
+    <b><a name='header-n33' class='md-header-anchor '></a>3.3、 如何实现迪米特原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、单一职责原则</b><br>
+    <b><a name='header-n41' class='md-header-anchor '></a>4.1、 什么是单一职责原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n42' class='md-header-anchor '></a>4.2、 为何遵循单一职责原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n43' class='md-header-anchor '></a>4.3、 如何实现单一职责原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+
+    <b><a name='header-n5' class='md-header-anchor '></a>5、里氏替换原则</b><br>
+    <b><a name='header-n51' class='md-header-anchor '></a>5.1、 什么是里氏替换原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n52' class='md-header-anchor '></a>5.2、 为何遵循里氏替换原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n53' class='md-header-anchor '></a>5.3、 如何实现里氏替换原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+
+    <b><a name='header-n6' class='md-header-anchor '></a>6、依赖倒转原则</b><br>
+    <b><a name='header-n61' class='md-header-anchor '></a>6.1、 什么是依赖倒转原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n62' class='md-header-anchor '></a>6.2、 为何遵循依赖倒转原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n63' class='md-header-anchor '></a>6.3、 如何实现依赖倒转原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+
+    <b><a name='header-n7' class='md-header-anchor '></a>7、组合/聚合复用原则</b><br>
+    <b><a name='header-n71' class='md-header-anchor '></a>7.1、 什么是组合/聚合复用原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n72' class='md-header-anchor '></a>7.2、 为何遵循组合/聚合复用原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+    <b><a name='header-n73' class='md-header-anchor '></a>7.3、 如何实现组合/聚合复用原则？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+</div>
+</body>
+</html>
