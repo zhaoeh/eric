@@ -1164,6 +1164,71 @@
 
             }
         </font>
+        反射目标类的指定方法，还有个特别的用法，那就是method对象可以通过反射目标接口来获得，然后可以执行该接口对应的实现类的指定方法。
+        这一点在jdk的动态代理中很有用。
+        <b><font color="#a52a2a">目标接口FanSheService</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.fanshe;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-19
+             */
+            public interface FanSheService {
+                void method1();
+
+                void method2();
+            }
+        </font>
+        <b><font color="#a52a2a">目标接口实现类FanSheServiceImpl</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.fanshe;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-19
+             */
+            public class FanSheServiceImpl implements FanSheService {
+                @Override
+                public void method1() {
+                    System.out.println("我是method1");
+                    this.method2();
+                }
+
+                @Override
+                public void method2() {
+                    System.out.println("我是method2");
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">FanSheServiceMain测试</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.fanshe;
+
+            import java.lang.reflect.InvocationTargetException;
+            import java.lang.reflect.Method;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-19
+             */
+            public class FanSheServiceMain {
+                public static void main(String[] args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+                    // 下面获取的是接口的目标方法 method1
+                    Method method1 = FanSheService.class.getMethod("method1");
+                    // 通过接口的method1描述，在实例对象FanSheServiceImpl上去执行目标方法
+                    method1.invoke(new FanSheServiceImpl());
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">测试结果</font> </b>
+        <font color="gray">
+            我是method1
+            我是method2
+        </font>
     </pre>
 
     <b><a name='header-n3' class='md-header-anchor '></a>3、使用反射实例化目标对象</b><br>
