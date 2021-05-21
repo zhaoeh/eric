@@ -1,0 +1,494 @@
+
+    <b><a name='header-n26' class='md-header-anchor '></a>2.6、 案例6:不同的方法注册不同的拦截器（CallbackFilter）</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">真实主题类：MyService6</font> </b>
+        <font color="gray">
+            package com.zeh.main.cglib.service;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-19
+             */
+            public class MyService6 {
+                public void eatApple() {
+                    System.out.println("吃苹果");
+                }
+
+                public void eatOrange() {
+                    System.out.println("吃橙子");
+                }
+
+                public String buyBook() {
+                    System.out.println("买书");
+                    return "hello:book";
+                }
+
+                public String buyCar() {
+                    System.out.println("买车");
+                    return "hello:car";
+                }
+
+                public void insertLog() {
+                    System.out.println("插入日志");
+                }
+
+                public void insertRecord() {
+                    System.out.println("插入记录");
+                }
+            }
+
+        </font>
+        <b><font color="#a52a2a">创建代理</font> </b>
+        <font color="gray">
+            @Test
+            public void testMyService6() {
+                Enhancer enhancer = new Enhancer();
+                enhancer.setSuperclass(MyService6.class);
+                // 创建3个Callback实例，分别作为eatXXX，buyXXX，insertXXX对应的回调器
+                Callback[] callbacks = {
+                        // 对于真实主题的eatXXX统一输出“我是个吃货”
+                        new MethodInterceptor() {
+                            @Override
+                            public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+                                System.out.println("代理的方法：" + method.getName());
+                                System.out.println("我是个吃货");
+                                Object result = methodProxy.invokeSuper(o, objects);
+                                return result;
+                            }
+                        },
+                        // 对于真实主题的buyXXX统一输出“eric”
+                        new FixedValue() {
+                            @Override
+                            public Object loadObject() throws Exception {
+                                return "eric";
+                            }
+                        },
+                        // 对于真实主题的insertXXX统一统计耗时
+                        new MethodInterceptor() {
+                            @Override
+                            public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+                                long startTime = System.nanoTime();
+                                Object result = methodProxy.invokeSuper(o, objects);
+                                long endTime = System.nanoTime();
+                                System.out.println(method + ",耗时（纳秒）：" + (endTime - startTime));
+                                return result;
+                            }
+                        }
+                };
+                // 注册callbacks
+                enhancer.setCallbacks(callbacks);
+                // 对应不同的方法注册不同的回调器，当调用代理对象的方法时，如何判断对应的方法走哪个回调器呢？此时会通过CallbackFilter中的accept方法来判断。
+                // 设置回调器过滤规则CallbackFilter：返回值对应回调器数组callbacks中的数组索引
+                enhancer.setCallbackFilter(new CallbackFilter() {
+                    @Override
+                    public int accept(Method method) {
+                        if (method.getName().startsWith("eat")) {
+                            return 0;
+                        }
+                        if (method.getName().startsWith("buy")) {
+                            return 1;
+                        }
+                        if (method.getName().startsWith("insert")) {
+                            return 2;
+                        }
+                        return 0;
+                    }
+                });
+
+                MyService6 proxy = (MyService6) enhancer.create();
+                System.out.println("******************************");
+                proxy.eatApple();
+                proxy.eatOrange();
+                System.out.println("******************************");
+                proxy.insertLog();
+                proxy.insertRecord();
+                System.out.println("******************************");
+                System.out.println(proxy.buyCar());
+                System.out.println(proxy.buyBook());
+            }
+        </font>
+        <b><font color="#a52a2a">测试结果</font> </b>
+        <font color="gray">
+            ******************************
+            代理的方法：eatApple
+            我是个吃货
+            吃苹果
+            代理的方法：eatOrange
+            我是个吃货
+            吃橙子
+            ******************************
+            插入日志
+            public void com.zeh.main.cglib.service.MyService6.insertLog(),耗时（纳秒）：74700
+            插入记录
+            public void com.zeh.main.cglib.service.MyService6.insertRecord(),耗时（纳秒）：77300
+            ******************************
+            eric
+            eric
+        </font>
+    </pre>
+    <b><a name='header-n27' class='md-header-anchor '></a>2.7、 案例7:对案例6的优化</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">创建代理</font> </b>
+        <font color="gray">
+            @Test
+            public void testMyService66() {
+                Enhancer enhancer = new Enhancer();
+                // 创建对应的回调器
+                Callback eatCallback = (MethodInterceptor) (o, method, objects, methodProxy) -> {
+                    System.out.println("代理的方法：" + method.getName());
+                    System.out.println("我是个吃货");
+                    Object result = methodProxy.invokeSuper(o, objects);
+                    return result;
+                };
+                Callback buyCallback = (FixedValue) () -> "eric";
+                Callback insertCallback = (MethodInterceptor) (o, method, objects, methodProxy) -> {
+                    long startTime = System.nanoTime();
+                    Object result = methodProxy.invokeSuper(o, objects);
+                    long endTime = System.nanoTime();
+                    System.out.println(method + ",耗时（纳秒）：" + (endTime - startTime));
+                    return result;
+                };
+
+                // 创建 CallbackHelper 对象，第1个参数表示需要代理的类，第二个参数表示需要代理的接口。
+                // 注意，CallbackHelper的构造器做了很多事情，不清楚原理的可以跟进去看看源码。
+                CallbackHelper callbackHelper = new CallbackHelper(MyService6.class, null) {
+                    // getCallback方法是CallbackHelper中的回调方法，需要我们去实现。主要用来根据method对象返回对应的回调器。
+                    @Override
+                    protected Object getCallback(Method method) {
+                        if (method.getName().startsWith("eat")) {
+                            return eatCallback;
+                        }
+                        if (method.getName().startsWith("buy")) {
+                            return buyCallback;
+                        }
+                        if (method.getName().startsWith("insert")) {
+                            return insertCallback;
+                        }
+                        return eatCallback;
+                    }
+                };
+                enhancer.setSuperclass(MyService6.class);
+                enhancer.setCallbacks(callbackHelper.getCallbacks());
+                enhancer.setCallbackFilter(callbackHelper);
+                MyService6 proxy = (MyService6) enhancer.create();
+                System.out.println("******************************");
+                proxy.insertLog();
+                proxy.insertRecord();
+                System.out.println("******************************");
+                proxy.eatApple();
+                proxy.eatOrange();
+                System.out.println("******************************");
+                System.out.println(proxy.buyCar());
+                System.out.println(proxy.buyBook());
+            }
+        </font>
+        <b><font color="#a52a2a">测试结果</font> </b>
+        <font color="gray">
+            ******************************
+            插入日志
+            public void com.zeh.main.cglib.service.MyService6.insertLog(),耗时（纳秒）：8415500
+            插入记录
+            public void com.zeh.main.cglib.service.MyService6.insertRecord(),耗时（纳秒）：56800
+            ******************************
+            代理的方法：eatApple
+            我是个吃货
+            吃苹果
+            代理的方法：eatOrange
+            我是个吃货
+            吃橙子
+            ******************************
+            eric
+            eric
+        </font>
+    </pre>
+    <b><a name='header-n28' class='md-header-anchor '></a>2.8、 案例8:回调器中使用method.invoke</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        前面的案例，对应的回调器中全部使用的是methodProxy.invokeSuper(o, objects);这种方式去执行代理类中的代理方法的。
+        我们可以看到回调器参数中还有一个method参数，这个参数也能够实现回调逻辑。
+        <b><font color="#a52a2a">真实主题类：MyService7</font> </b>
+        <font color="gray">
+            package com.zeh.main.cglib.service;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-20
+             */
+            public class MyService7 {
+
+                public void method1(){
+                    System.out.println("我是method1方法");
+                    this.method2();
+                }
+
+                public void method2(){
+                    System.out.println("我是method2方法");
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">创建代理</font> </b>
+        <font color="gray">
+            /**
+             * 前面的案例都是在回调器中通过 methodProxy.invokeSuper(o, objects); 去执行代理对象中的代理方法。
+             * 实际上，回调器中也可以直接通过 method.invoke(new MyService7(), objects); 这种方式，直接反射去调用真实主题对象中的目标方法（和jdk的机制相同）。
+             * 到此，我们应该知道cglib的回调器代理真实主题方法有两种方式：
+             * （1）methodProxy.invokeSuper(o, objects);流程对象最终是代理对象
+             * （2）method.invoke(new MyService7(), objects);流程对象最终是真实主题对象
+             * 注意两种方式的区别。
+             */
+            @Test
+            public void testMyService7() {
+                Enhancer enhancer = new Enhancer();
+                enhancer.setSuperclass(MyService7.class);
+                enhancer.setCallback(new MethodInterceptor() {
+                    @Override
+                    public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+                        System.out.println("代理的方法：" + method.getName());
+                        // 注意，使用 method.invoke() ，第1个参数是真实主题对象，而不能是代理对象o；
+                        // 如果是代理对象o的话，则method.invoke()方法会再次转发到代理类覆盖后的目标方法上比如method1上，而method1内部又会转发到当前回调器上，如此便形成方法的循环调用。
+                        // 方法循环调用会导致栈内存溢出。
+                        // 不过有一点需要注意：method.invoke这种方式就和Jdk的代理一样的了，它对于method1方法中通过this.method2这种，就不会代理method2了。
+                        // 因为此时的流程对象是真实主题对象，而不再是代理子类对象。
+                        Object result = method.invoke(new MyService7(), objects);
+                        return result;
+                    }
+                });
+                MyService7 proxy = (MyService7) enhancer.create();
+                proxy.method1();
+            }
+        </font>
+        <b><font color="#a52a2a">测试结果</font> </b>
+        <font color="gray">
+            代理的方法：method1
+            我是method1方法
+            我是method2方法
+        </font>
+    </pre>
+    <b><a name='header-n29' class='md-header-anchor '></a>2.9、 案例9:methodProxy.invokeSuper实现通用代理</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">我们写一个通用的代理类专门为任意类型负责创建代理</font> </b>
+        <font color="gray">
+            package com.zeh.main.cglib.proxy;
+
+            import org.springframework.cglib.proxy.Enhancer;
+            import org.springframework.cglib.proxy.MethodInterceptor;
+            import org.springframework.cglib.proxy.MethodProxy;
+
+            import java.lang.reflect.Method;
+
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-05-20
+             */
+            public class CostTimeProxy implements MethodInterceptor {
+
+                /**
+                 * 创建指定类型的代理对象
+                 *
+                 * @param clazz 指定类型
+                 * @param &lt;T>   泛型
+                 * @return 返回指定类型的代理对象
+                 */
+                public static &lt;T> T createProxy(Class&lt;T> clazz) {
+                    Enhancer enhancer = new Enhancer();
+                    enhancer.setSuperclass(clazz);
+                    enhancer.setCallback(new CostTimeProxy());
+                    return (T) enhancer.create();
+                }
+
+                @Override
+                public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+                    long startTime = System.nanoTime();
+                    Object result = methodProxy.invokeSuper(o, objects);
+                    long endTime = System.nanoTime();
+                    System.out.println(method + "，耗时（纳秒）：" + (endTime - startTime));
+                    return result;
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">创建代理</font> </b>
+        <font color="gray">
+            @Test
+            public void testCostTimeProxy() {
+                // 根据传入的类型创建MyService7的代理对象
+                // 注意，当前使用methodProxy.invokeSuper方式实现的回调，观察MyService7的执行结果
+                MyService7 myService7Proxy = CostTimeProxy.createProxy(MyService7.class);
+                myService7Proxy.method1();
+                myService7Proxy.method2();
+
+                // 根据传入的类型创建MyService6的代理对象
+                MyService6 myService6Proxy = CostTimeProxy.createProxy(MyService6.class);
+                myService6Proxy.eatApple();
+                myService6Proxy.eatOrange();
+                myService6Proxy.buyCar();
+                myService6Proxy.buyBook();
+                myService6Proxy.insertLog();
+                myService6Proxy.insertRecord();
+            }
+        </font>
+        <b><font color="#a52a2a">测试结果</font> </b>
+        <font color="gray">
+            我是method1方法
+            我是method2方法
+            public void com.zeh.main.cglib.service.MyService7.method2()，耗时（纳秒）：47200
+            public void com.zeh.main.cglib.service.MyService7.method1()，耗时（纳秒）：8341000
+            我是method2方法
+            public void com.zeh.main.cglib.service.MyService7.method2()，耗时（纳秒）：15000
+            吃苹果
+            public void com.zeh.main.cglib.service.MyService6.eatApple()，耗时（纳秒）：3457700
+            吃橙子
+            public void com.zeh.main.cglib.service.MyService6.eatOrange()，耗时（纳秒）：40100
+            买车
+            public java.lang.String com.zeh.main.cglib.service.MyService6.buyCar()，耗时（纳秒）：38200
+            买书
+            public java.lang.String com.zeh.main.cglib.service.MyService6.buyBook()，耗时（纳秒）：35000
+            插入日志
+            public void com.zeh.main.cglib.service.MyService6.insertLog()，耗时（纳秒）：34800
+            插入记录
+            public void com.zeh.main.cglib.service.MyService6.insertRecord()，耗时（纳秒）：35000
+        </font>
+        <b><font color="#a52a2a">结果分析</font> </b>
+        当前的回调实现采用了methodProxy.invokeSuper(o, objects);方式，流程对象是代理子类对象。
+        因此我们看下method1和method2的耗时输出。
+        我们先回顾下MyService7的定义：
+        <font color="gray">
+            public class MyService7 {
+
+                public void method1(){
+                    System.out.println("我是method1方法");
+                    this.method2();
+                }
+
+                public void method2(){
+                    System.out.println("我是method2方法");
+                }
+            }
+        </font>
+        method1中通过this调用了method2，在当前这种方式中，method2也会被代理。
+        如果不想method2也被代理，则需要使用下面那种方式。
+    </pre>
+    <b><a name='header-n210' class='md-header-anchor '></a>2.10、 案例10:method.invoke实现通用代理</b>
+    <b><font color="#a52a2a">通用的代理类专门为任意类型负责创建代理</font> </b>
+    <font color="gray">
+        package com.zeh.main.cglib.proxy;
+
+        import org.springframework.cglib.proxy.Enhancer;
+        import org.springframework.cglib.proxy.MethodInterceptor;
+        import org.springframework.cglib.proxy.MethodProxy;
+
+        import java.lang.reflect.Method;
+
+        /**
+        * 功能描述
+        *
+        * @author zWX5331241
+        * @since 2021-05-20
+        */
+        public class CostTimeProxy implements MethodInterceptor {
+
+        // 因为要使用method.invoke()的方式实现回调，因此需要接受外部传入的真实主题对象。
+        private Object target;
+
+        public CostTimeProxy(Object target) {
+        this.target = target;
+        }
+
+        /**
+        * 创建指定类型的代理对象
+        *
+        * @param target 真实主题对象
+        * @param &lt;T>    泛型
+        * @return 返回指定类型的代理对象
+        */
+        public static &lt;T> T createProxy(T target) {
+            Enhancer enhancer = new Enhancer();
+            enhancer.setSuperclass(target.getClass());
+            // 创建当前类对象即回调器，注入target主题对象
+            enhancer.setCallback(new CostTimeProxy(target));
+            return (T) enhancer.create();
+            }
+
+            @Override
+            public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+            long startTime = System.nanoTime();
+            // 直接调用被代理对象（即真实主题对象target）的目标方法，获取结果
+            Object result = method.invoke(target, objects);
+            long endTime = System.nanoTime();
+            System.out.println(method + "，耗时（纳秒）：" + (endTime - startTime));
+            return result;
+            }
+        }
+    </font>
+    <b><font color="#a52a2a">创建代理</font> </b>
+    <font color="gray">
+        @Test
+        public void testCostTimeProxy() {
+            // 根据传入的真实主题对象创建MyService7的代理对象
+            // 注意，当前使用method.invoke方式实现的回调，观察MyService7的执行结果
+            MyService7 myService7Proxy = CostTimeProxy.createProxy(new MyService7());
+            myService7Proxy.method1();
+            myService7Proxy.method2();
+
+            // 根据传入的真实主题对象创建MyService6的代理对象
+            MyService6 myService6Proxy = CostTimeProxy.createProxy(new MyService6());
+            myService6Proxy.eatApple();
+            myService6Proxy.eatOrange();
+            myService6Proxy.buyCar();
+            myService6Proxy.buyBook();
+            myService6Proxy.insertLog();
+            myService6Proxy.insertRecord();
+        }
+    </font>
+    <b><font color="#a52a2a">测试结果</font> </b>
+    <font color="gray">
+        我是method1方法
+        我是method2方法
+        public void com.zeh.main.cglib.service.MyService7.method1()，耗时（纳秒）：61100
+        我是method2方法
+        public void com.zeh.main.cglib.service.MyService7.method2()，耗时（纳秒）：15200
+        吃苹果
+        public void com.zeh.main.cglib.service.MyService6.eatApple()，耗时（纳秒）：32500
+        吃橙子
+        public void com.zeh.main.cglib.service.MyService6.eatOrange()，耗时（纳秒）：16300
+        买车
+        public java.lang.String com.zeh.main.cglib.service.MyService6.buyCar()，耗时（纳秒）：16300
+        买书
+        public java.lang.String com.zeh.main.cglib.service.MyService6.buyBook()，耗时（纳秒）：15700
+        插入日志
+        public void com.zeh.main.cglib.service.MyService6.insertLog()，耗时（纳秒）：15900
+        插入记录
+        public void com.zeh.main.cglib.service.MyService6.insertRecord()，耗时（纳秒）：16400
+    </font>
+    <b><font color="#a52a2a">结果分析</font> </b>
+    当前的回调实现采用了method.invoke(target, objects);方式，流程对象是传入的真实主题对象即target。
+    在本案例中就是传入的MyService7和MyService6的实例对象。
+    因此我们看下method1和method2的耗时输出。
+    我们先回顾下MyService7的定义：
+    <font color="gray">
+        public class MyService7 {
+
+        public void method1(){
+        System.out.println("我是method1方法");
+        this.method2();
+        }
+
+        public void method2(){
+        System.out.println("我是method2方法");
+        }
+        }
+    </font>
+    method1中通过this调用了method2，在当前这种方式中，method2肯定不会被代理的，因为流程对象实际上就是MyService7的实例，而不是代理对象。
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、CGLIB和Java动态代理的区别</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1. Java动态代理只能够对接口生成代理类，不能对普通的类生成代理（因为jdk生成的代理类继承了Proxy类，java类的继承机制不允许多重继承）；CGLIB既能够为接口生成代理类也能够为普通类生成代理类。
+        2. Java动态代理使用Java原生的反射API进行操作，在生成代理类上比较高效；CGLIB使用ASM框架直接对字节码进行操作，在类的执行过程中比较高效。
+    </pre>
+
+</div>
+</body>
+</html>
