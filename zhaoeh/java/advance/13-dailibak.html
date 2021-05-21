@@ -1,26 +1,4 @@
-<body class='typora-export'>
-<div id='write' class='is-node'>
-    <b><a name='header-n0' class='md-header-anchor '></a>java 代理设计模式</b>
 
-    <b><a name='header-n1' class='md-header-anchor '></a>1、代理设计模式</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        1.  代理设计模式是Java中针对接口编程的一种应用模式。
-        2.  java中代理分为静态代理和动态代理。
-        3.  一个接口有很多实现类，其中包括真实主题实现类，和代理主题实现类。真实主题实现类执行真正的核心业务，代理主题实现类负责边缘业务。
-        4.  代理设计模式的核心：外部通过操作代理主题，间接的操作真实主题。
-        5.  代理设计模式中，代理主题实际上是个代理对象，通过委托真实主题去执行真正的操作，而代理主题本身可以在委托真实主题执行前后执行其他边缘性业务。
-        6.  在代理设计模式中，外部直接操作代理主题，真实主题是被代理类委托代理的，即代理类代理了真实主题，代理类委托真实主题处理真正业务。
-        7.  代理设计模式本身是对委托机制的一种具体应用场景，它是对委托机制和方法转发的一种模式化应用。
-        8.  代理设计模式实现上和装饰者设计模式比较相似，但还是有区别的，区别等学习装饰者模式时再讲。
-    </pre>
-
-    <b><a name='header-n2' class='md-header-anchor '></a>2、到底为什么要使用代理模式？</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        1.  有时候，真实主题的某些成员是隐私，不便暴露给客户端，此时可以使用代理主题去代理真实主题，这样，避免了客户端直接操作真实主题。
-        2.  有时候，真实主题不具备处理某些附加操作的能力，真实主题不愿因承担过多的边缘性业务能力，真实主题只想处理核心功能，此时可通过代理主题去代理真实主题，这样便可以不用改动真实主题逻辑，而直接在代理主题上强化那些边缘性业务即可。
-        3.  有时候，实例化真实主题很慢（比如真实主题去解析大批量文件或者链接数据库等），而真实主题的实例化往往是在系统启动时进行的，这时候就可以使用代理主题，屏蔽掉真实主题耗时的实例化过程，实现真实主题的延迟加载。这样只有在需要调用真实主题的时候再去通过代理主题实例化真实主题并调用真实主题的功能。
-        4.  有时候，只想定义一个接口，不想实现它但它的方法仍然可用；或者想为任何一个目标类增加附加功能，就使用动态代理。动态代理比静态代理更灵活。
-    </pre>
 
     <b><a name='header-n3' class='md-header-anchor '></a>3、代理设计模式案例</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
@@ -705,8 +683,6 @@
         如果需要代理普通类，请使用第三方的cglib。
     </pre>
 
-
-
     <b><a name='header-n6' class='md-header-anchor '></a>6、jdk动态代理总结</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         1.  jdk动态代理可以实现通用代理，即可以代理任何目标接口的实现类。
@@ -716,3 +692,5 @@
 
 </div>
 </body>
+</html>
+
