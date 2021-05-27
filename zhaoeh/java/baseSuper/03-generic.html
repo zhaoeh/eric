@@ -1,0 +1,1073 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>泛型.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    .footnotes + .footnotes {
+        margin-top: -1em;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    @media screen and (max-width: 48em) {
+
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    li p.first {
+        display: inline-block;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+
+
+    </style>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>Java中的泛型</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        参考链接：
+        <a href="https://blog.csdn.net/u011240877/article/details/53545041" target="_blank">理解java中的泛型</a>
+        <a href="https://blog.csdn.net/sunxianghuang/article/details/51982979" target="_blank">java中的泛型</a>
+    </pre>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、泛型</b><br>
+    <b><a name='header-n11' class='md-header-anchor '></a>1.1、 什么是泛型？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        当定义一个Class类、定义一个Interface接口、或者定义一个方法Method时，对于这些类、接口和方法中需要使用到的变量不去明确声明其变量的数据类型，而是采用泛型去声明其类型。
+        泛型就是一种泛指的数据类型，用&lt;T>来表示。其中的T可以是任何你习惯使用的字母。
+        其本质就是定义一种通用的数据类型，用一种参数变量来表示某种通用的类型，即参数化类型；用一个变量来表示类型。
+        用泛型声明的类、接口或者方法，想要使用这些类、接口和方法时，建议在使用时明确地指定其中泛型变量的真实类型，否则编译器将自动擦除泛型使用Object替换。
+        <font color="#a52a2a">“泛型” 意味着编写的代码可以被不同类型的对象所重用。</font>
+    </pre>
+    <b><a name='header-n12' class='md-header-anchor '></a>1.2、 泛型的作用</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="#a52a2a">口诀：一保护，两避免。</font>
+        保护数据安全性，避免客户端误操作、避免类转换异常。
+        jdk1.5之后提供的泛型，目的是提供<font color="#a52a2a">编译时类型检查</font>，尤其是消除了集合类使用时的ClassCastException。
+    </pre>
+    <b><a name='header-n13' class='md-header-anchor '></a>1.3、 泛型的安全警告</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        对于使用泛型声明的接口、类和方法，在实例化对象时如果未指定泛型对应的具体的数据类型，将会出现安全警告信息。
+        此时泛型将被擦除，使用Object类型接收。
+        擦除后和直接使用Object接收没有任何区别，所以使用了泛型就一定要指定具体的泛型类型。
+        如果擦除泛型后使用Object类型进行接收，则客户端误操作后会报类转换异常。
+        但是如果显式指定了泛型类型的具体类型，则在设置内容时一旦类型不符则编译报错，即通过提前暴露的机制避免了在运行时发生类转换异常。
+    </pre>
+    <b><a name='header-n14' class='md-header-anchor '></a>1.4、 泛型只在编译阶段有效</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        泛型的出现就是为了避免类型转换异常，在java编译器对源码进行编译时就进行校验，一旦存在类型转换异常则编译器报错。
+        在深入学习泛型前，必须首先指出，java中引入的泛型，只是在源码中声明的，以方便java编译器对泛型的设置进行检查，一旦不符合规范则编译器报错。
+        jdk1.5之后为了加入泛型，java编译器也做了很多的改造适配工作。
+        当java编译器完成了对源码中泛型的检查后，编译成字节码时会擦除掉所有和泛型相关的内容，所有的泛型变量统一使用Object替换，然后在获取泛型变量修饰的方法返回值时，编译器会自动替我们进行强制转换。
+        <font color="#a52a2a">也就是说，泛型实际上只是编译器提供的一个语法糖，编译后的字节码文件中完全没有泛型的任何相关内容。</font>
+        下面看个例子：
+        <b><font color="#a52a2a">定义一个泛型方法</font> </b>
+        <font color="gray">
+            package com.zeh.main.generic;
+
+            public class MyGeneric {
+
+                public &lt;K> K getName(K kk) {
+                    return kk;
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">调用上面的泛型方法</font> </b>
+        <font color="gray">
+            package com.zeh.main.generic.test;
+
+            import com.zeh.main.generic.MyGeneric;
+
+            public class TestMyGeneric {
+                public static void main(String[] args) {
+                    MyGeneric myGeneric = new MyGeneric();
+                    String result = myGeneric.getName("123");
+                    System.out.println(result);
+                }
+            }
+        </font>
+        下面使用jad对编译后的MyGeneric.class和TestMyGeneric.class进行反编译，观察编译器将这两个玩意儿最终处理成了啥样
+        <b><font color="#a52a2a">反编译MyGeneric.class</font> </b>
+        <font color="gray">
+            package com.zeh.main.generic;
+
+            public class MyGeneric
+            {
+
+                public MyGeneric()
+                {
+                }
+
+                public Object getName(Object kk)
+                {
+                    return kk;
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">反编译TestMyGeneric.class</font> </b>
+        <font color="gray">
+            package com.zeh.main.generic.test;
+
+            import com.zeh.main.generic.MyGeneric;
+            import java.io.PrintStream;
+
+            public class TestMyGeneric
+            {
+
+                public TestMyGeneric()
+                {
+                }
+
+                public static void main(String args[])
+                {
+                    MyGeneric myGeneric = new MyGeneric();
+                    String result = (String)myGeneric.getName("123");
+                    System.out.println(result);
+                }
+            }
+        </font>
+        通过jad反编译class文件，可以看出，java编译器在将泛型编译成class文件后，删除了所有和泛型相关定义，泛型变量直接使用了Object进行替换。
+        在获取泛型返回值时，也直接将Object类型和动态设置进去的真实类型进行了强转。
+        <b><font color="#a52a2a">因此，java中的泛型实际上是伪泛型，其底层利用编译器对类型之间进行各种强转来实现。</font> </b>
+    </pre>
+    <b><a name='header-n14' class='md-header-anchor '></a>1.5、 java中的类型以及泛型中相关概念</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">java中所有的类型只有5种：</font> </b>
+        1.  泛型（参数化）类型：java中使用接口ParameterizedType表示。
+        2.  泛型数组类型：java中使用接口GenericArrayType表示。
+        3.  通配符类型类型：java中使用接口WildcardType表示。
+        4.  泛型变量类型：java中使用接口TypeVariable表示。
+        5.  类类型：java中使用类Class表示。
+        <b><font color="#a52a2a">泛型相关的几个概念：</font> </b>
+        1.  类类型
+        <font color="gray">
+            public class MyGenericDemo01
+        </font>
+        其中class定义的MyGenericDemo01就是类类型，在java中class，interface，enum，数组等都是类类型。
+
+        2.  泛型变量类型：
+        <font color="gray">
+            public class MyGenericDemo02&lt;T1, T2 extends Integer, T3 extends GenericDemo02I1 & GenericDemo02I2>
+        </font>
+        其中的T1,T2,T3就是泛型变量类型。泛型变量类型使用前需要在类上或者方法上进行声明。
+
+        3.  泛型类型：
+        就拿上面声明的泛型类MyGenericDemo02来说明。
+        <font color="gray">MyGenericDemo02&lt;T1,T2,T3> demo;</font>
+        1>.  泛型类型： <font color="gray">MyGenericDemo02&lt;T1,T2,T3></font>就是泛型类型。
+        2>.  原始类型：针对泛型类型而言，只有泛型类型才有原始类型， <font color="gray">MyGenericDemo02</font>就是原始类型。
+        3>.  实际类型： <font color="gray"><></font>中的内容叫做实际类型。
+        4>.  实际类型可以取值5种类型中的任意一种。
+        （1）、当实际类型取值为类类型时，我们称此时实际类型为<font color="#a52a2a">具体类型</font>。
+        （2）、实际类型也可以为<font color="#a52a2a">泛型变量类型</font>。
+        （3）、实际类型也可以为<font color="#a52a2a">通配符类型</font>。
+        （4）、实际类型也可以为<font color="#a52a2a">反省类型</font>。
+        （5）、实际类型也可以为<font color="#a52a2a">泛型数组类型</font>。
+
+        如上描述，泛型类型<>中的实际类型可以取值为其他5种类型的任意一种，这样一来泛型类型组合起来是比较复杂的。如下：
+        <font color="gray">List&lt;Map&lt;List&lt;?>, Map&lt;String,?>>> list;</font>
+        <font color="gray">List&lt;Map&lt;?,Integer>[]> list1;</font>
+
+        4.  通配符类型：
+        java中使用?表示通配符类型。通配符必须作为泛型类型的实际类型存在，结合泛型类型一起使用，不能单独用于修饰变量。
+        <font color="gray">List&lt?></font>，其中的?就是通配符类型，
+
+        5.  泛型数组类型：
+        数组中的元素是泛型类型的数组，就是泛型数组类型。
+        <font color="gray">List&lt;String> list[];</font>
+        <font color="gray">List&lt;?> list[];</font>
+    </pre>
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、泛型变量类型的声明</b><br>
+    <b><a name='header-n21' class='md-header-anchor '></a>2.1、 声明泛型</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        java中用于声明泛型变量的地方总共有3处：接口、类、方法。
+        接口名称后使用<>声明泛型变量。
+        类名称后使用<>声明泛型。
+        方法返回值前使用<>声明泛型。
+        <font color="#a52a2a">口诀：接口类方法，泛型声明处</font>
+
+        在类中声明泛型，叫做泛型类；
+        在接口中声明泛型，叫做泛型接口。
+        在方法中声明泛型，叫做泛型方法。
+    </pre>
+    <b><a name='header-n22' class='md-header-anchor '></a>2.2、 泛型接口</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            [接口修饰符] interface 接口名称&lt;泛型类型名称>{
+            }
+        </font>
+        示例如下：
+        <font color="gray">
+            public interface IGeneric&lt;T> {
+            }
+        </font>
+    </pre>
+    <b><a name='header-n23' class='md-header-anchor '></a>2.3、 泛型类</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            [类修饰符] class 类名称&lt;泛型类型名称>{
+            }
+        </font>
+        示例如下：
+        <font color="gray">
+            public class MyGeneric&lt;T> {
+            }
+        </font>
+    </pre>
+    <b><a name='header-n24' class='md-header-anchor '></a>2.4、 泛型方法（包括泛型构造方法）</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  泛型构造方法
+        <font color="gray">
+            [方法修饰符] &lt;泛型类型名称> 构造方法名称(){
+            }
+        </font>
+        示例如下：
+        <font color="gray">
+            public &lt;S> MyGeneric(S ss){
+            }
+        </font>
+        2.  泛型方法
+        <font color="gray">
+            [方法修饰符] &lt;泛型类型名称> 返回值类型 方法名称(){
+            }
+        </font>
+        示例如下：
+        <font color="gray">
+            public &lt;K> K getName(K s){
+                return s;
+            }
+        </font>
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、泛型成员</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        泛型成员是在泛型类的基础之上指定的，成员本身不能声明泛型，只能使用已经声明的泛型类型。
+        如下案例：
+        <font color="gray">
+            public class MyGeneric&lt;T> {
+
+                // 使用类中声明的泛型变量去定义成员
+                private T name;
+
+                // 构造方法1：构造方法自己声明了泛型变量&lt;S>，则在其方法内，可以使用该泛型变量S去定义其他变量的类型
+                public &lt;S> MyGeneric(S ss) {
+                    S s = null;
+                }
+
+                // 构造方法2：构造方法自己声明了泛型变量&lt;S>，类本身也声明了泛型变量&lt;T>。
+                // 则构造方法内部既可以使用自己声明的泛型变量S，也可以使用类中声明的泛型变量T。
+                public &lt;S> MyGeneric(S ss, T tt) {
+                    T t = null;
+                    S s = null;
+                }
+
+                // 普通方法1：同理，普通方法声明了自己的泛型变量&lt;K>，则在其方法内，可以使用该泛型变量去定义其他变量的类型。
+                public &lt;K> K getName(K kk) {
+                    K k = (K) new Object();
+                    return k;
+                }
+
+                // 普通方法2：普通方法自己声明了泛型变量&lt;K>，类本身也声明了泛型变量&lt;T>。
+                // 则在其方法内部既可以使用自己声明的泛型变量S，也可以使用类中声明的泛型变量T。
+                public &lt;K> T getName(K kk, T tt) {
+                    T t = (T) new Object();
+                    return t;
+                }
+            }
+        </font>
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、泛型的具体类型指定</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        前面在接口、类和方法上面声明了泛型，实际上相当于定义了一个泛型变量，这个泛型变量是需要在真正使用时指定其具体的类型的。
+        1.  实例化泛型类对象时指定泛型变量的具体类型（对于基本类型必须指定其对应的包装类型）。
+        2.  在子类实现接口或者继承父类（抽象类）时，指定父类泛型变量的具体类型。
+    </pre>
+
+    <b><a name='header-n5' class='md-header-anchor '></a>5、泛型对象在引用传递中的限制</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        引用传递传递的是引用地址，对于泛型对象而言，应该也能够传递引用。
+        普通java对象传递引用时，可以传递相同类型的引用，也可以向上转型，但是泛型对象不同。
+        对于普通java对象而言，person对象就是Object类的子类对象，所以person在引用传递时，被调用方可以使用Object接收。
+        但是对于泛型java对象而言，Person&lt;String>就不是Person&lt;Object>的子类，因此不能向上转型，此时引用传递编译器会报错。
+
+        解决方案：
+        1.  被调用方不使用泛型类型去接收泛型对象，此时会直接擦除泛型类型。
+        2.  被调用方使用通配符类型?来接受任意的泛型对象，但是不能设置泛型对象的属性值（null值除外）。
+        3.  被调用方指定和调用方一致的泛型类型。
+    </pre>
+
+    <b><a name='header-n6' class='md-header-anchor '></a>6、通配符类型</b><br>
+    <b><a name='header-n61' class='md-header-anchor '></a>6.1、 什么是通配符类型？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        java泛型中的通配符用?表示，这玩意儿看起来挺玄乎，实际上它就是一种类型，表示任意类型，不清楚的类型。
+        由于泛型对象在引用传递中的限制，所以引出了通配符的概念。
+        通配符类型只能依赖泛型类型生存，而不能单独使用。
+        比如：
+        <font color="gray">private ? name;</font>
+        单独使用?修饰成员，编译器报错。
+        <font color="gray">private List&lt;?> list;</font>
+        通配符类型作为泛型类型的实际类型，结合泛型类型使用，这种才是通配符打开的唯一正确方式，就如上面的List&lt;?> 。
+
+        <font color="#a52a2a">下面我们说的通配符类型，指的就是结合泛型类型的这种方式，类似List&lt;?></font>
+
+        当一个对象被通配符类型修饰时，表示该泛型对象可以接受一个实际类型为任意类型的泛型对象，如下：
+        <font color="gray">public List&lt;?> list;</font>
+        上面的list对象就是通配符类型的，意味着这个对象可以被传入任意实际类型的list对象，比如：
+        <font color="gray">list = new ArrayList&lt;String>();list = new ArrayList&lt;Integer>();</font>
+
+        当一个变量被通配符修饰时，该变量不能设置具体的值，只能设置null值。因为该变量的实际类型是通配符类型，表示不清楚的类型，所以向其中设置具体值时，是会编译报错的，如下：
+        <font color="gray">
+            List&lt;?> list = new ArrayList&lt;String>();   // list使用通配符修饰
+            list.add(0);    // 向list中设置具体值0，编译报错。因为list容器中的实际类型此时是通配符类型，表示不清楚的类型，因此不能设置具体值。
+            list.add(null); // 向list中设置null值，编译正常。因为null值就表示不清楚的值，和通配符的含义相同。
+        </font>
+        要向其中设置具体值，则应该将通配符类型强转成泛型类型（实际类型为具体类型）。
+        <font color="gray">
+            List&lt;?> list = new ArrayList<>(); // 通配符类型修饰，不能设置具体值
+            List&lt;String> myList = (List&lt;String>)list; // 将其强转成泛型类型（实际类型为具体类型）
+        </font>
+
+        通配符使用场景：修饰一个成员、一个方法变量、方法参数、方法返回值时，我们不清楚修饰的这些目标的具体成员到底是什么，这个时候就可以使用泛型的通配符类型进行修饰。
+        <font color="#a52a2a">通配符的出现实际上就是应付泛型对象在引用传递中的限制，通配符类型修饰的泛型对象可以接受实际类型为任意类型的泛型对象。</font>
+    </pre>
+    <b><a name='header-n62' class='md-header-anchor '></a>6.2、 受限泛型</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        通配符类型修饰泛型对象时，表示该对象可以接受实际类型为任意类型的泛型对象。
+        但是也可以设置通配符类型的上限和下限。
+        指定通配符类型的上限，即通配符类型可以接受的实际类型必须是Number类型或者其子类型：
+        <font color="gray">List&lt;? extends Number></font>
+        指定通配符类型的下限，即通配符类型可以接受的实际类型必须是Integer类型或者其父类型：
+        <font color="gray">List&lt;? super Integer></font>
+    </pre>
+    <b><a name='header-n63' class='md-header-anchor '></a>6.3、 通配符案例</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">通配符案例</font> </b>
+        <font color="gray">
+            package com.zeh.main.generic.basemygeneric;
+
+            /**
+             * 因为通配符类型必须集合泛型类型，所以先声明一个泛型类
+             */
+            class Generic&lt;T> { // 声明泛型变量类型，表示该类是一个泛型类
+
+                // 该类中的成员、方法参数、返回值都使用泛型变量类型进行修饰
+                private T name;
+
+                public T getName() {
+                    return name;
+                }
+
+                public void setName(T name) {
+                    this.name = name;
+                }
+
+                public T test(T t) {
+                    System.out.println("t is :" + t);
+                    return getName();
+                }
+            }
+
+            public class MyGeneric {
+                // 使用上面的泛型类型修饰此处的成员（泛型类型的实际类型是通配符类型）
+                private Generic&lt;?> generic;
+
+                public Generic&lt;?> getGeneric() {
+                    return generic;
+                }
+
+                public void setGeneric(Generic&lt;?> generic) {
+                    this.generic = generic;
+                }
+
+                // 同理，泛型类型（实际类型是通配符类型）修饰方法参数、返回值
+                public Generic&lt;?> help(Generic&lt;?> generic) {
+                    System.out.println("generic is :" + generic);
+                    return this.getGeneric();
+                }
+
+                public static void main(String[] args) {
+                    // 实例化MyGeneric对象，使用通配符接收，意思是new出来的MyGeneric对象的实际类型可以是任意类型
+                    MyGeneric myGeneric = new MyGeneric();
+
+                    // 分别实例化多个不同实际类型的Generic对象
+                    Generic&lt;Integer> genericInteger = new Generic&lt;Integer>();
+                    Generic&lt;String> genericString = new Generic&lt;String>();
+
+                    // 给MyGeneric中的泛型成员设置了不同的泛型类型变量
+                    myGeneric.setGeneric(genericInteger);
+                    Generic&lt;Integer> result1 = (Generic&lt;Integer>) myGeneric.help(genericInteger);
+                    result1.test(123);
+
+                    myGeneric.setGeneric(genericString);
+                    Generic&lt;String> result2 = (Generic&lt;String>) myGeneric.help(genericString);
+                    result2.test("123");
+
+                    // 通配符类型和一般泛型类型之间强转
+                    Generic&lt;?> generic = new Generic<>();
+                    Generic&lt;String> generic1 = (Generic&lt;String>) generic;
+                    generic1.setName("123");
+                    generic1.test("123");
+                }
+            }
+        </font>
+    </pre>
