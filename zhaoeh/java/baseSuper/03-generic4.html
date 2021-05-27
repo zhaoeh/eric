@@ -1,0 +1,395 @@
+
+    <b><a name='header-n74' class='md-header-anchor '></a>7.4、 通配符类型</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">代码：</font> </b>
+        <font color="gray">
+            package com.zeh.main.generic.mygeneric;
+
+            import java.lang.reflect.Method;
+            import java.lang.reflect.ParameterizedType;
+            import java.lang.reflect.Type;
+            import java.lang.reflect.WildcardType;
+            import java.util.List;
+            import java.util.Map;
+
+            interface GenericDemo04I1 {
+            }
+
+            interface GenericDemo04I2 {
+            }
+
+            /**
+             * 1.   java中类型之四：通配符类型
+             * &lt;p>
+             * 2.   前面学习泛型类型时，我们知道泛型类型一般表示为 List&lt;String>或者List&lt;T>，其中List叫做原始类型，&lt;>中的叫做实际类型；实际类型可以是具体类型比如String，也可以是声明的泛型变量类型比如T。
+             * 在这里我们要新增一个类型，即实际类型也可以是通配符类型?。比如List&lt;?>。
+             * 通配符和前面学习的类类型、泛型变量类型不同，类类型和泛型变量类型都可以单独作为一种类型，而且在使用前必须声明。
+             * 而通配符是java编译器默认为我们创建的，用?表示，直接使用，没法声明；
+             * 并且通配符类型必须作为泛型类型的实际类型一起使用，而不能单独使用，比如下面：
+             * private ? name;
+             * 这种直接尝试使用?去修饰成员，编译器是禁止的。
+             * 可以这样理解，通配符类型?是对泛型变量类型的一个特例，表示可以接受任何实际类型。
+             * 因此，本案例实际上和Demo03很类似，都是通过泛型类型去修饰成员、方法参数和返回值，只不过泛型类型的实际参数变成了通配符类型而已。
+             * &lt;p>
+             * 3.   java中任何类型允许修饰的目标只有3种：
+             * （1）、修饰成员变量（方法变量也可以修饰，只是无法通过反射获取方法变量）
+             * （2）、修饰方法参数
+             * （3）、修饰方法返回值
+             * &lt;p>
+             * 4.   步骤：
+             * （1）、   声明类型（通配符类型不用声明）
+             * （2）、   获取第1步声明的类型信息（通配符类型不能获取声明信息）
+             * （3）、   使用声明的类型修饰成员变量、方法参数、方法返回值
+             * （4）、   获取第3步成员变量、方法参数、方法返回值的类型信息
+             */
+            public class MyGenericDemo04&lt;T extends GenericDemo04I1 & GenericDemo04I2> {
+
+                // 使用泛型类型修饰成员变量，只是和前面相比，该泛型类型的实际类型不是具体类型、也不是泛型变量类型，而是通配符类型
+                private MyGenericDemo04&lt;?> myGenericDemo04;
+
+                public MyGenericDemo04&lt;? extends GenericDemo04I1> method1(MyGenericDemo04&lt;?> myGenericDemo04, List&lt;?> list, Map&lt;? extends GenericDemo04I1, ? super GenericDemo04I2> map) {
+                    return myGenericDemo04;
+                }
+
+                /**
+                 * 打印方法参数类型列表
+                 */
+                private static void printMethodParamType(String methodName) throws NoSuchMethodException {
+                    // 获取当前method方法
+                    Method method = MyGenericDemo04.class.getDeclaredMethod(methodName, MyGenericDemo04.class, List.class, Map.class);
+                    // 获取当前method方法的所有参数类型信息
+                    Type[] genericParameterTypes = method.getGenericParameterTypes();
+                    System.out.println("--------------------" + methodName + "方法参数类型信息--------------------");
+                    // 遍历当前method的所有参数类型列表
+                    for (Type genericParameterType : genericParameterTypes) {
+                        // 当前method方法参数类型列表中都是泛型类型，泛型类型在java中用 ParameterizedType 表示
+                        if (genericParameterType instanceof ParameterizedType) {
+                            System.out.println(methodName + "方法" + genericParameterType.getTypeName() + "类型是泛型类型！！！");
+                            // 将当前参数类型强制转换成 ParameterizedType 类型
+                            ParameterizedType parameterizedType = (ParameterizedType) genericParameterType;
+                            // 获取当前参数类型的原始类型
+                            Type rawType = parameterizedType.getRawType();
+                            System.out.println(methodName + "方法" + genericParameterType.getTypeName() + "类型的原始类型：" + rawType);
+                            // 获取当前参数类型的所属类型
+                            Type ownerType = parameterizedType.getOwnerType();
+                            System.out.println(methodName + "方法" + genericParameterType.getTypeName() + "类型的所属类型：" + ownerType);
+                            // 获取当前参数类型的实际类型列表，因为method1方法的2个参数类型分别是MyGenericDemo04&lt;?>和List&lt;?>，都是泛型类型，因此它们都有实际类型
+                            Type[] actualTypes = parameterizedType.getActualTypeArguments();
+                            for (Type actualType : actualTypes) {
+                                // 如果实际类型是通配符类型，在java中使用 WildcardType 表示
+                                if (actualType instanceof WildcardType) {
+                                    System.out.println(actualType + "实际参数类型是个通配符类型！！！");
+                                    // 强转当前实际类型为 WildcardType 通配符类型
+                                    WildcardType currentActualType = (WildcardType) actualType;
+                                    // 获取通配符的名称 输出是 ?
+                                    System.out.println("该通配符类型的名称：" + currentActualType.getTypeName());
+                                    Type[] upperBounds = currentActualType.getUpperBounds();
+                                    System.out.println("该通配符类型的上边界数量：" + upperBounds.length);
+                                    System.out.println("该通配符类型的上边界清单：");
+                                    for (Type bound : upperBounds) {
+                                        System.out.println(bound.getTypeName());
+                                    }
+
+                                    Type[] lowerBounds = currentActualType.getLowerBounds();
+                                    System.out.println("该通配符类型的下边界数量：" + lowerBounds.length);
+                                    System.out.println("该通配符类型的下边界清单：");
+                                    for (Type bound : lowerBounds) {
+                                        System.out.println(bound.getTypeName());
+                                    }
+                                }
+                            }
+                        }
+                        System.out.println("---------------------------------------------");
+                    }
+                }
+
+                private static void printMethodReturnType(String methodName) throws NoSuchMethodException {
+                    // 获取当前method方法
+                    Method method = MyGenericDemo04.class.getDeclaredMethod(methodName, MyGenericDemo04.class, List.class, Map.class);
+                    System.out.println("--------------------" + methodName + "方法返回值类型信息--------------------");
+                    // 当前method方法返回值类型是泛型类型的，泛型类型在java中用 ParameterizedType 表示
+                    // getGenericReturnType方法会返回当前方法的返回值类型信息
+                    Type returnType = method.getGenericReturnType();
+                    // 如果返回值类型是泛型类型
+                    if (returnType instanceof ParameterizedType) {
+                        System.out.println(methodName + "方法返回值类型是泛型类型！！！");
+                        ParameterizedType parameterizedType = (ParameterizedType) returnType;
+                        // 获取当前method方法返回值类型的原始类型
+                        Type rawType = parameterizedType.getRawType();
+                        System.out.println(methodName + "方法返回值类型的原始类型：" + rawType);
+                        // 获取当前method方法返回值类型的所属类型
+                        Type ownerType = parameterizedType.getOwnerType();
+                        System.out.println(methodName + "方法返回值类型的所属类型：" + ownerType);
+                        // 获取当前method方法返回值类型的实际类型列表，因为MyGenericDemo04&lt;? extends GenericDemo04I1>是泛型类型，所以它有实际类型列表
+                        Type[] actualTypes = parameterizedType.getActualTypeArguments();
+                        for (Type actualType : actualTypes) {
+                            System.out.println(methodName + "方法返回值类型当前实际类型所表示的类：" + actualType.getClass());
+                            // 如果实际类型是通配符类型，在java中使用 WildcardType 表示
+                            if (actualType instanceof WildcardType) {
+                                System.out.println(actualType + "实际参数类型是个通配符类型！！！");
+                                // 强转当前实际类型为 WildcardType 通配符类型
+                                WildcardType currentActualType = (WildcardType) actualType;
+                                // 获取通配符的名称 输出是 ?
+                                System.out.println("该通配符类型的名称：" + currentActualType.getTypeName());
+                                Type[] upperBounds = currentActualType.getUpperBounds();
+                                System.out.println("该通配符类型的上边界数量：" + upperBounds.length);
+                                System.out.println("该通配符类型的上边界清单：");
+                                for (Type bound : upperBounds) {
+                                    System.out.println(bound.getTypeName());
+                                }
+
+                                Type[] lowerBounds = currentActualType.getLowerBounds();
+                                System.out.println("该通配符类型的下边界数量：" + lowerBounds.length);
+                                System.out.println("该通配符类型的下边界清单：");
+                                for (Type bound : lowerBounds) {
+                                    System.out.println(bound.getTypeName());
+                                }
+                            }
+                        }
+                    }
+                }
+
+                public static void main(String[] args) throws NoSuchMethodException {
+                    // 步骤4：打印方法参数类型、返回值类型和成员类型
+                    System.out.println("===================获取目标方法上所有参数类型信息===================");
+                    printMethodParamType("method1");
+                    System.out.println("===================获取目标方法上返回值类型信息===================");
+                    printMethodReturnType("method1");
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">测试结果：</font> </b>
+        <font color="gray">
+            ===================获取目标方法上所有参数类型信息===================
+            --------------------method1方法参数类型信息--------------------
+            method1方法com.zeh.main.generic.mygeneric.MyGenericDemo04&lt;?>类型是泛型类型！！！
+            method1方法com.zeh.main.generic.mygeneric.MyGenericDemo04&lt;?>类型的原始类型：class com.zeh.main.generic.mygeneric.MyGenericDemo04
+            method1方法com.zeh.main.generic.mygeneric.MyGenericDemo04&lt;?>类型的所属类型：null
+            ?实际参数类型是个通配符类型！！！
+            该通配符类型的名称：?
+            该通配符类型的上边界数量：1
+            该通配符类型的上边界清单：
+            java.lang.Object
+            该通配符类型的下边界数量：0
+            该通配符类型的下边界清单：
+            ---------------------------------------------
+            method1方法java.util.List&lt;?>类型是泛型类型！！！
+            method1方法java.util.List&lt;?>类型的原始类型：interface java.util.List
+            method1方法java.util.List&lt;?>类型的所属类型：null
+            ?实际参数类型是个通配符类型！！！
+            该通配符类型的名称：?
+            该通配符类型的上边界数量：1
+            该通配符类型的上边界清单：
+            java.lang.Object
+            该通配符类型的下边界数量：0
+            该通配符类型的下边界清单：
+            ---------------------------------------------
+            method1方法java.util.Map&lt;? extends com.zeh.main.generic.mygeneric.GenericDemo04I1, ? super com.zeh.main.generic.mygeneric.GenericDemo04I2>类型是泛型类型！！！
+            method1方法java.util.Map&lt;? extends com.zeh.main.generic.mygeneric.GenericDemo04I1, ? super com.zeh.main.generic.mygeneric.GenericDemo04I2>类型的原始类型：interface java.util.Map
+            method1方法java.util.Map&lt;? extends com.zeh.main.generic.mygeneric.GenericDemo04I1, ? super com.zeh.main.generic.mygeneric.GenericDemo04I2>类型的所属类型：null
+            ? extends com.zeh.main.generic.mygeneric.GenericDemo04I1实际参数类型是个通配符类型！！！
+            该通配符类型的名称：? extends com.zeh.main.generic.mygeneric.GenericDemo04I1
+            该通配符类型的上边界数量：1
+            该通配符类型的上边界清单：
+            com.zeh.main.generic.mygeneric.GenericDemo04I1
+            该通配符类型的下边界数量：0
+            该通配符类型的下边界清单：
+            ? super com.zeh.main.generic.mygeneric.GenericDemo04I2实际参数类型是个通配符类型！！！
+            该通配符类型的名称：? super com.zeh.main.generic.mygeneric.GenericDemo04I2
+            该通配符类型的上边界数量：1
+            该通配符类型的上边界清单：
+            java.lang.Object
+            该通配符类型的下边界数量：1
+            该通配符类型的下边界清单：
+            com.zeh.main.generic.mygeneric.GenericDemo04I2
+            ---------------------------------------------
+            ===================获取目标方法上返回值类型信息===================
+            --------------------method1方法返回值类型信息--------------------
+            method1方法返回值类型是泛型类型！！！
+            method1方法返回值类型的原始类型：class com.zeh.main.generic.mygeneric.MyGenericDemo04
+            method1方法返回值类型的所属类型：null
+            method1方法返回值类型当前实际类型所表示的类：class sun.reflect.generics.reflectiveObjects.WildcardTypeImpl
+            ? extends com.zeh.main.generic.mygeneric.GenericDemo04I1实际参数类型是个通配符类型！！！
+            该通配符类型的名称：? extends com.zeh.main.generic.mygeneric.GenericDemo04I1
+            该通配符类型的上边界数量：1
+            该通配符类型的上边界清单：
+            com.zeh.main.generic.mygeneric.GenericDemo04I1
+            该通配符类型的下边界数量：0
+            该通配符类型的下边界清单：
+        </font>
+    </pre>
+    <b><a name='header-n75' class='md-header-anchor '></a>7.5、 泛型数组类型</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">代码：</font> </b>
+        <font color="gray">
+            package com.zeh.main.generic.mygeneric;
+
+            import java.lang.reflect.Field;
+            import java.lang.reflect.GenericArrayType;
+            import java.lang.reflect.ParameterizedType;
+            import java.lang.reflect.Type;
+            import java.lang.reflect.TypeVariable;
+            import java.lang.reflect.WildcardType;
+
+            interface GenericDemo05I1 {
+            }
+
+            interface GenericDemo05I2 {
+            }
+
+            class GenericDemo05 implements GenericDemo05I1, GenericDemo05I2 {
+            }
+
+            /**
+             * 1.   java中类型之五：泛型数组类型
+             * &lt;p>
+             * 2.   泛型数组类型：数组中的元素是泛型类型的数组，就是泛型数组类型。所以说泛型数组的本质还是泛型类型，因此泛型数组类型不用声明，只需要声明对应的泛型类型即可。
+             * &lt;p>
+             * 3.   java中任何类型允许修饰的目标只有3种：
+             * （1）、修饰成员变量（方法变量也可以修饰，只是无法通过反射获取方法变量）
+             * （2）、修饰方法参数
+             * （3）、修饰方法返回值
+             * &lt;p>
+             * 4.   步骤：
+             * （1）、   声明类型
+             * （2）、   获取第1步声明的类型信息
+             * （3）、   使用声明的类型修饰成员变量、方法参数、方法返回值
+             * （4）、   获取第3步成员变量、方法参数、方法返回值的类型信息
+             */
+            public class MyGenericDemo05&lt;T extends GenericDemo05I1 & GenericDemo05I2> {
+                // 我们使用前面的泛型类型，来一个比较全面的案例：获取成员的类型就够了，方法参数类型和返回值类型和前面的案例大同小异。
+
+                // 泛型数组类型修饰成员，实际类型是泛型变量类型
+                private MyGenericDemo05&lt;T> m1[];
+                // 泛型数组类型修饰成员，实际类型是类类型
+                private MyGenericDemo05&lt;GenericDemo05> m2[];
+                // 泛型数组类型修饰成员，实际类型是通配符类型
+                private MyGenericDemo05&lt;?> m3[];
+
+
+                private static void printFieldType(String fieldName) throws NoSuchFieldException {
+                    System.out.println("--------------------" + fieldName + "成员类型信息--------------------");
+                    Field field = MyGenericDemo05.class.getDeclaredField(fieldName);
+                    // 获取成员的类型信息
+                    Type fieldType = field.getGenericType();
+                    System.out.println(fieldName + "成员的类型：" + fieldType.getClass());
+                    // 当前field成员类型是泛型数组类型，在java中用 GenericArrayType 表示
+                    if (fieldType instanceof GenericArrayType) {
+                        // 将当前成员类型强转成 GenericArrayType 类型
+                        GenericArrayType genericArrayType = (GenericArrayType) fieldType;
+                        // 获取泛型数组类型的实际类型，此处的实际类型是MyGenericDemo05&lt;T>、MyGenericDemo05&lt;GenericDemo05>和MyGenericDemo05&lt;?>，都是泛型类型
+                        Type genericType = genericArrayType.getGenericComponentType();
+                        System.out.println("当前泛型数组的实际类型是：" + genericType.getClass());
+                        if (genericType instanceof ParameterizedType) {
+                            System.out.println(fieldName + "成员类型是泛型类型！！！");
+                            ParameterizedType parameterizedType = (ParameterizedType) genericType;
+                            // 获取成员类型的原始类型
+                            Type rawType = parameterizedType.getRawType();
+                            System.out.println(fieldName + "成员类型的原始类型：" + rawType);
+                            // 获取成员类型的所属类型
+                            Type ownerType = parameterizedType.getOwnerType();
+                            System.out.println(fieldName + "成员类型的所属类型：" + ownerType);
+                            // 获取成员类型的实际类型列表，因为List&lt;T>是泛型类型，所以它有实际类型列表
+                            Type[] actualTypes = parameterizedType.getActualTypeArguments();
+
+
+                            for (Type actualType : actualTypes) {
+                                System.out.println(fieldName + "成员类型的当前实际类型所表示的类：" + actualType.getClass());
+                                // 如果当前实际类型是泛型变量类型
+                                if (actualType instanceof TypeVariable) {
+                                    System.out.println("这个实际参数类型是个泛型变量类型！！！");
+                                    TypeVariable&lt;Class&lt;MyGenericDemo03>> oneActualType = (TypeVariable) actualType;
+
+                                    System.out.println("该泛型变量类型的名称：" + oneActualType.getName());
+                                    System.out.println("声明该泛型变量类型的原始类型（即该泛型变量在哪声明）：" + oneActualType.getGenericDeclaration());
+                                    Type[] bounds = oneActualType.getBounds();
+                                    System.out.println("该泛型变量类型的上边界数量：" + bounds.length);
+                                    System.out.println("该泛型变量类型的上边界清单：");
+                                    for (Type bound : bounds) {
+                                        System.out.println(bound.getTypeName());
+                                    }
+                                }
+                                // 如果当前实际类型是类类型（原始类型或者具体类型）
+                                else if (actualType instanceof Class) {
+                                    Class clazz = (Class) actualType;
+                                    System.out.println("参数类型名称：" + clazz.getTypeName());
+                                    System.out.println("参数类名：" + clazz.getName());
+                                }
+                                // 如果当前实际类型是通配符类型
+                                else if (actualType instanceof WildcardType) {
+                                    System.out.println(actualType + "实际参数类型是个通配符类型！！！");
+                                    // 强转当前实际类型为 WildcardType 通配符类型
+                                    WildcardType currentActualType = (WildcardType) actualType;
+                                    // 获取通配符的名称 输出是 ?
+                                    System.out.println("该通配符类型的名称：" + currentActualType.getTypeName());
+                                    Type[] upperBounds = currentActualType.getUpperBounds();
+                                    System.out.println("该通配符类型的上边界数量：" + upperBounds.length);
+                                    System.out.println("该通配符类型的上边界清单：");
+                                    for (Type bound : upperBounds) {
+                                        System.out.println(bound.getTypeName());
+                                    }
+
+                                    Type[] lowerBounds = currentActualType.getLowerBounds();
+                                    System.out.println("该通配符类型的下边界数量：" + lowerBounds.length);
+                                    System.out.println("该通配符类型的下边界清单：");
+                                    for (Type bound : lowerBounds) {
+                                        System.out.println(bound.getTypeName());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                public static void main(String[] args) throws NoSuchFieldException {
+                    printFieldType("m1");
+                    printFieldType("m2");
+                    printFieldType("m3");
+                }
+
+            }
+        </font>
+        <b><font color="#a52a2a">测试结果：</font> </b>
+        <font color="gray">
+            --------------------m1成员类型信息--------------------
+            m1成员的类型：class sun.reflect.generics.reflectiveObjects.GenericArrayTypeImpl
+            当前泛型数组的实际类型是：class sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl
+            m1成员类型是泛型类型！！！
+            m1成员类型的原始类型：class com.zeh.main.generic.mygeneric.MyGenericDemo05
+            m1成员类型的所属类型：null
+            m1成员类型的当前实际类型所表示的类：class sun.reflect.generics.reflectiveObjects.TypeVariableImpl
+            这个实际参数类型是个泛型变量类型！！！
+            该泛型变量类型的名称：T
+            声明该泛型变量类型的原始类型（即该泛型变量在哪声明）：class com.zeh.main.generic.mygeneric.MyGenericDemo05
+            该泛型变量类型的上边界数量：2
+            该泛型变量类型的上边界清单：
+            com.zeh.main.generic.mygeneric.GenericDemo05I1
+            com.zeh.main.generic.mygeneric.GenericDemo05I2
+            --------------------m2成员类型信息--------------------
+            m2成员的类型：class sun.reflect.generics.reflectiveObjects.GenericArrayTypeImpl
+            当前泛型数组的实际类型是：class sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl
+            m2成员类型是泛型类型！！！
+            m2成员类型的原始类型：class com.zeh.main.generic.mygeneric.MyGenericDemo05
+            m2成员类型的所属类型：null
+            m2成员类型的当前实际类型所表示的类：class java.lang.Class
+            参数类型名称：com.zeh.main.generic.mygeneric.GenericDemo05
+            参数类名：com.zeh.main.generic.mygeneric.GenericDemo05
+            --------------------m3成员类型信息--------------------
+            m3成员的类型：class sun.reflect.generics.reflectiveObjects.GenericArrayTypeImpl
+            当前泛型数组的实际类型是：class sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl
+            m3成员类型是泛型类型！！！
+            m3成员类型的原始类型：class com.zeh.main.generic.mygeneric.MyGenericDemo05
+            m3成员类型的所属类型：null
+            m3成员类型的当前实际类型所表示的类：class sun.reflect.generics.reflectiveObjects.WildcardTypeImpl
+            ?实际参数类型是个通配符类型！！！
+            该通配符类型的名称：?
+            该通配符类型的上边界数量：1
+            该通配符类型的上边界清单：
+            java.lang.Object
+            该通配符类型的下边界数量：0
+            该通配符类型的下边界清单：
+        </font>
+    </pre>
+</div>
+</body>
+</html>
