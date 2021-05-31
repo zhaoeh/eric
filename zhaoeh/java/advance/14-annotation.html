@@ -1,0 +1,999 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>Java注解.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    .footnotes + .footnotes {
+        margin-top: -1em;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    @media screen and (max-width: 48em) {
+
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    li p.first {
+        display: inline-block;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+
+
+    </style>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>玩转java注解</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        关于注解，下面的几个问题你都会吗？
+        1.  注解是干嘛的？
+        2.  同一个注解可以使用很多次吗？如果可以，怎么使用？
+        3.  @Inherited注解是干什么用的？
+        4.  @Target注解中的“TYPE_PARAMETER”和“TYPE_USE”用在什么地方啊？
+        5.  泛型你了解吧，泛型中如何使用注解？
+        6.  注解的定义可以实现继承吗？
+        7.  spring对注解有增强吗？@Aliasfor注解是干嘛的？
+    </pre>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、java注解的定义和本质</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        我们都了解代码中的注释，注释是给开发人员看的，可能是开发者自己写的给自己看，也可能是给同组其他同事看的。
+        代码中的注释可以提升代码的可读性和可维护性，但是对于java编译器和java虚拟机来说注释是没有意义的，编译后的class字节码文件中是没有注释信息的。
+
+        注解和注释有点类似，唯一的区别就是注释是给人看的，而注解是给java编译器和java虚拟机看的。编译器和虚拟机在运行过程中可以获取注解信息，然后根据这些信息做各种想做的事。
+        比如：@Override注解我们都了解。加载方法上，标注当前方法重写了父类的方法，当编译器编译代码时，会对@Override标注的方法进行验证，验证其父类中是否存在相同签名的方法，否则报错。
+        <font color="#a52a2a">总结就是：注解本身是对代码的增强，可以在代码编译或者运行期间获取注解的信息，然后根据这些信息做各种牛掰的事。</font>
+    </pre>
+    <b><a name='header-n11' class='md-header-anchor '></a>1.1、 注解的定义</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  @Annotation是java中引入的注解机制。
+        2.  注解功能是jdk1.5之后的jdk版本提供的。jdk内置三种注解，称为三种内置注解。
+        3.  Annotation可以修饰接口、类、方法和属性等，而且Annotation不影响程序运行，无论是否使用Annotation程序都可以正常运行。
+        4.  java.lang.annotation.Annotation是Annotation的接口，只要是定义的Annotation编译器都默认实现了该接口。
+        5.  jdk内置的注解和自定义的注解编译器都默认实现了java.lang.annotation.Annotation接口。
+    </pre>
+    <b><a name='header-n12' class='md-header-anchor '></a>1.2、 注解的本质</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  可拆卸化的功能，可以标注在类级别、接口级别、成员级别、方法级别等。具体的注解要看具体的实现，注解本质类似于pojo，其中可以存放多个对象，每个对象可以是基本数据类型、String、Class、枚举类型、注解类型,也可以是这些类型对应的数组。其底层是一个容器，里面可以存放很多属性值（类似Person对象有name，有age），其中每一个属性值可以是一个简单值，也可以是个数组。
+        2.  注解容器里面可以没有注解成员，也可以定义一个注解成员，也可以定义多个注解成员（每一个注解成员是基本数据类型、String、Class、枚举类型、注解类型或者其对应的的数组），具体看注解是如何实现的。
+    </pre>
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、jdk的3种内置注解</b><br>
+    <b><a name='header-n21' class='md-header-anchor '></a>2.1、 什么是内置注解？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        jdk1.5之后，内置了3种注解，用户直接使用即可。
+        1. @Override：声明方法覆盖的Annotation。
+        2. @Deprecated：不赞成使用的Annotation。
+        3. @SuppressWarnings：压制安全警告的Annotation。
+    </pre>
+    <b><a name='header-n22' class='md-header-anchor '></a>2.2、 详解jdk的3个内置注解</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        上述的3个内置注解是在java.lang包中定义的，java.lang包是自动导入的，因此可以直接使用。
+        <b><font color="#a52a2a">第1个：@Override</font></b>
+        <font color="#a52a2a">定义如下：</font>
+        <font color="gray">
+            @Target(ElementType.METHOD)
+            @Retention(RetentionPolicy.SOURCE)
+            public @interface Override {
+            }
+        </font>
+        <font color="#a52a2a">注意事项</font>
+        （1）、使用范围：@Target(ElementType.METHOD)表示@Override注解只能在方法上标注，其他地方比如类、接口或者成员属性上是不能标注该注解的。
+        （2）、作用：子类继承父类或者实现接口时，用来标注在子类覆盖或者实现的对一个方法上。目的是保证方法的覆盖是正确的（同名同参同返回），如果使用了这个注解，java编译器就会检查子类覆盖的方法是否和其父类中的方法具有相同的签名，一旦不符合方法覆盖负责，编译器将报错。
+        （3）、@Retention(RetentionPolicy.SOURCE)表示该注解只在java源文件阶段有效。
+
+        <b><font color="#a52a2a">第2个：@Deprecated</font></b>
+        <font color="#a52a2a">定义如下：</font>
+        <font color="gray">
+            @Documented
+            @Retention(RetentionPolicy.RUNTIME)
+            @Target({ElementType.CONSTRUCTOR, ElementType.FIELD, ElementType.LOCAL_VARIABLE, ElementType.METHOD, ElementType.PACKAGE, ElementType.PARAMETER, ElementType.TYPE})
+            public @interface Deprecated {
+            }
+        </font>
+        <font color="#a52a2a">注意事项</font>
+        （1）、使用范围：@Target(value={CONSTRUCTOR, FIELD, LOCAL_VARIABLE, METHOD, PACKAGE, PARAMETER, TYPE})表示@Deprecated注解可以标注在构造器、成员属性、本地变量、方法、包、参数、类|接口|枚举|注解上。
+        （2）、作用：@Deprecated注解用来标注一个不建议使用的构造器、成员属性、本地变量、方法、包、参数、类|接口|枚举|注解等，如果使用了这些，编译时将会出现警告（注意不是编译报错，仅仅是警告而已）。
+        （3）、@Retention(RetentionPolicy.RUNTIME)表示该注解在java源文件阶段、字节码阶段和jvm运行阶段都有效。
+
+        <b><font color="#a52a2a">第3个：@SuppressWarnings</font></b>
+        <font color="#a52a2a">定义如下：</font>
+        <font color="gray">
+            @Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.CONSTRUCTOR, ElementType.LOCAL_VARIABLE})
+            @Retention(RetentionPolicy.SOURCE)
+            public @interface SuppressWarnings {
+                String[] value();
+            }
+        </font>
+        <font color="#a52a2a">注意事项</font>
+        （1）、使用范围：@Target({TYPE, FIELD, METHOD, PARAMETER, CONSTRUCTOR, LOCAL_VARIABLE})表示@SuppressWarnings注解可以标注在类|接口|枚举|注解、成员属性、参数、构造器、本地变量上。
+        （2）、作用：@SuppressWarnings注解需要传递压制参数，如果需要压制一条警告信息，则传递一个字符串即可；如果需要压制多条警告信息，则传递一个字符串数组即可。作用是压制调用方调用被调用方时编译器提示的警告信息。
+        （3）、@Retention(RetentionPolicy.SOURCE)表示该注解只在java源文件阶段有效。
+        （4）、@SuppressWarnings注解定义的成员可以接收的参数：
+            deprecation：使用了不赞成使用的类或方法时的警告
+            unchecked：执行了未检查的转换时警告，比如，泛型操作中没有指定泛型类型
+            fallthrough：当使用switch操作时，case后未加入break操作，而导致程序继续执行其他case语句时出现的警告
+            path：当设置了一个错误的类路径、源文件路径时出现的警告
+            serial：当在可序列化的类上缺少serialVersionUID定义时出现的警告
+            finally：任何finally子句不能正常完成时出现的警告
+            all：关于以上所有情况的警告
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、元注解-标注注解的注解</b><br>
+    <b><a name='header-n31' class='md-header-anchor '></a>3.1、 什么是元注解？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        不论是jdk的内置注解还是自定义的注解，jdk在声明注解时同样提供了其他的注解来标注当前声明的注解，这些用来标注注解的注解称为元注解。
+        元注解的目的是规范一个注解的使用限制。
+        元注解只能在声明注解的时候用来标注注解，而不能标注普通类和方法、属性等。
+        我们始终记住，元注解是用来标注注解的注解，不能用来标注其他目标。
+    </pre>
+    <b><a name='header-n32' class='md-header-anchor '></a>3.2、 jdk提供的5种元注解</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">第1个：@Documented，使注解包含在javadoc中</font></b>
+        1. 定义如下：
+        <font color="gray">
+            package java.lang.annotation;
+
+            @Documented
+            @Retention(RetentionPolicy.RUNTIME)
+            @Target({ElementType.ANNOTATION_TYPE})
+            public @interface Documented {
+            }
+        </font>
+        2. 注解成员：
+        该元注解没有注解成员。用该元注解标注的注解将被包含在javadoc中。
+
+        <b><font color="#a52a2a">第2个：@Retention(RetentionPolicy.XXX)，指定注解的保留策略</font></b>
+        首先先解下java程序的3个过程：
+        <font color="gray">
+            源码阶段
+            源码被编译为字节码之后变成class文件
+            字节码被虚拟机加载然后执行
+        </font>
+        那么自定义的注解会被保留在上面哪个阶段呢？可以通过@Retention指定。
+
+        1. 定义如下：
+        <font color="gray">
+            package java.lang.annotation;
+
+            @Documented
+            @Retention(RetentionPolicy.RUNTIME)
+            @Target({ElementType.ANNOTATION_TYPE})
+            public @interface Retention {
+                RetentionPolicy value();
+            }
+        </font>
+        2. 注解成员：
+        该元注解定义的成员是RetentionPolicy类型的一个对象，并且没有指定默认值，意味着使用该元注解时必须设置注解参数值。
+        RetentionPolicy是一个枚举，定义如下：
+        <font color="gray">
+            package java.lang.annotation;
+
+            public enum RetentionPolicy {
+                SOURCE,
+                CLASS,
+                RUNTIME;
+
+                private RetentionPolicy() {
+                }
+            }
+        </font>
+        3. 注解成员含义：
+        RetentionPolicy.SOURCE：该元注解标注的注解，去标注其他目标时，其有效范围只保存在程序源文件*.java中，编译后的字节码文件*.class中将不再保留注解信息，即在编译后直接将失效，所以一般不用。
+        RetentionPolicy.CLASS：该元注解标注的注解，去标注其他目标时，其有效范围保存在源文件*.java和编译后的字节码文件*.class中，随着class文件被JVM装载进内存后，注解信息将失效。一般也不使用，如果一个Annotation在声明时没有指定有效范围，则默认是此范围。
+        RetentionPolicy.RUNTIME：该元注解标注的注解，去标注其他目标时，其有效范围保存在源文件*.java、编译后的字节码文件*.class和JVM内存中，一般使用注解就是为了在JVM运行中获取到注解信息然后做各种牛逼的事情，所以一般使用这个有效范围。
+        <font color="#a52a2a">正因为SOURCE和CLASS无法保留到JVM中，因此实用性不强，这2者一般都是java编译器和java虚拟机负责解析的。一般自定义注解都设置为RUNTIME，否则通过发射无法获取注解信息。</font>
+
+        4.使用
+        <font color="gray">
+            @Retention(RetentionPolicy.SOURCE)
+            public @interface MyAnnotation{
+            }
+        </font>
+        上面指定了<font color="#a52a2a">MyAnnotation</font>注解只保留到源码阶段，后面的2个阶段注解会丢失。
+
+        <b><font color="#a52a2a">第3个：@Target({ElementType.XXX,ElementType.XXX})，指定注解的使用范围</font></b>
+        1. 定义如下：
+        <font color="gray">
+            package java.lang.annotation;
+
+            @Documented
+            @Retention(RetentionPolicy.RUNTIME)
+            @Target({ElementType.ANNOTATION_TYPE})
+            public @interface Target {
+                ElementType[] value();
+            }
+        </font>
+        2. 注解成员：
+        该元注解定义的成员是ElementType类型的一个对象数组，并且没有指定默认值，意味着使用该元注解时必须设置注解参数值。
+        ElementType是一个枚举，定义如下：
+        <font color="gray">
+            package java.lang.annotation;
+
+            public enum ElementType {
+                /** Class, interface (including annotation type), or enum declaration */
+                TYPE,
+
+                /** Field declaration (includes enum constants) */
+                FIELD,
+
+                /** Method declaration */
+                METHOD,
+
+                /** Formal parameter declaration */
+                PARAMETER,
+
+                /** Constructor declaration */
+                CONSTRUCTOR,
+
+                /** Local variable declaration */
+                LOCAL_VARIABLE,
+
+                /** Annotation type declaration */
+                ANNOTATION_TYPE,
+
+                /** Package declaration */
+                PACKAGE,
+
+                /**
+                 * Type parameter declaration
+                 *
+                 * @since 1.8
+                 */
+                TYPE_PARAMETER,
+
+                /**
+                 * Use of a type
+                 *
+                 * @since 1.8
+                 */
+                TYPE_USE
+            }
+        </font>
+        3. 注解成员含义：
+        ElementType.TYPE：作用于接口、类、枚举、注解上。
+        ElementType.FIELD：作用于成员变量、枚举常量上。
+        ElementType.METHOD：作用于方法上。
+        ElementType.PARAMETER：作用于方法参数上。
+        ElementType.CONSTRUCTOR：作用于构造方法上。
+        ElementType.LOCAL_VARIABLE：作用于本地方法变量上。
+        ElementType.ANNOTATION_TYPE：作用于注解上。
+        ElementType.PACKAGE：作用于包上。
+        ElementType.TYPE_PARAMETER：作用于泛型变量类型上，注意只能作用于声明的泛型变量上，必须在<>里面的泛型变量前标注。
+        ElementType.TYPE_USE：作用于泛型类型的实际类型上，泛型类型的实际类型可能是任何类型，言外之意只能作用于<>里面的实际类型前。
+
+        4.使用
+        <font color="gray">
+            @Target({ElementType.TYPE,ElementType.METHOD})
+            public @interface MyAnnotation{
+            }
+        </font>
+        如上表示自定义的注解MyAnnotation只允许标注在接口、类、枚举、注解和方法上。
+        <font color="#a52a2a">如果自定义一个注解的时候，没有使用@Target元注解指定标注目标，则声明后的注解默认可以在任何目标上使用（上述第3点的所有目标位置）。</font>
+
+        <b><font color="#a52a2a">第4个：@Inherited，实现类之间的注解继承</font></b>
+        1. 定义如下：
+        <font color="gray">
+            package java.lang.annotation;
+
+            @Documented
+            @Retention(RetentionPolicy.RUNTIME)
+            @Target({ElementType.ANNOTATION_TYPE})
+            public @interface Inherited {
+            }
+        </font>
+        2. 注解成员：
+        该元注解没有注解成员。
+        用该元注解标注的注解，在后续标注普通类等目标时，如果该类有子类，则其子类可以继承父类的注解。即如果一个自定义注解想要被标注的类的子类继承，则自定义注解应该使用@Inherited元注解来标注。
+        <font color="#a52a2a">注意，@Inherited 在父类中标注的注解可以被子类继承，如果接口中也使用了@Inherited 标注的注解，接口的实现类是无法继承这个注解的。</font>
+        3.使用
+        <font color="gray">
+            @Inherited
+            public @interface MyAnnotation{
+            }
+
+            @MyAnnotation
+            class A{
+            }
+
+            class B extends A{
+            }
+        </font>
+        如上表示，B类会自动继承A类上的@MyAnnotation注解，因为该注解使用了@Inherited标注。
+
+        <b><font color="#a52a2a">第5个：@Repeatable(Annotation或其实现类.class)，让目标注解可以重复使用</font></b>
+        1. 定义如下：
+        <font color="gray">
+            package java.lang.annotation;
+
+            @Documented
+            @Retention(RetentionPolicy.RUNTIME)
+            @Target(ElementType.ANNOTATION_TYPE)
+            public @interface Repeatable {
+                Class&lt;? extends Annotation> value();
+            }
+        </font>
+        2. 注解成员：
+        该元注解定义的成员是一个实际类型必须是Annotation或者其实现类的class对象，说白了就是一个注解的class对象，并且没有指定默认值，意味着使用该元注解时必须设置注解参数值。
+
+        3. 注解成员含义：
+        @Repeatable的注解成员是一个容器注解。容器注解也是一个注解，其中的成员是一个注解类型的数组，用来保存一堆注解。
+
+        4.使用
+        要想重复使用目标注解，按照如下步骤进行：
+        <font color="#a52a2a">1.定义一个容器注解</font>
+        <font color="#a52a2a">2.定义目标注解，使用@Repeatable标准，@Repeatable中的value值是上面定义的容器注解</font>
+        <font color="#a52a2a">3.对目标元素重复标注目标注解</font>
+
+        重复使用注解的详细过程请参考下面的案例！！！
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、如何使用注解？</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        3个步骤：
+        <font color="#a52a2a">
+            1. 定义注解（声明注解）：注解需要先定义，定义之后才能够使用（jdk内置注解相当于已经定义好了可以直接拿来使用）。
+            2. 标注注解：在需要使用注解的地方，使用<font color="gray">@注解名称(注解参数，如果有参数的话)</font>来标注注解。
+            3. 获取注解信息做各种牛逼plus的事情：注解要想生效，则需要有一个组件通过反射机制去获取标注在某个目标上的注解，获取注解信息后进行具体的业务逻辑处理（jdk内置的注解已经实现了反射去调用了，自定义的注解要想生效则必须自己通过反射去调用）。
+        </font>
+        注意：自定义的注解，单纯定义了注解并且在指定目标上标注了注解并不能使注解生效，必须使用反射进行注解的获取才能决定标注该注解后应该执行的业务逻辑。
+        对于jdk和其他框架的注解，内部已经通过反射去获取指定目标上的注解了。我们只需要在指定目标上标注注解即可让注解生效。
+    </pre>
