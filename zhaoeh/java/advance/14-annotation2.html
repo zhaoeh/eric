@@ -1,0 +1,809 @@
+
+
+    <b><a name='header-n5' class='md-header-anchor '></a>5、自定义注解</b><br>
+    <b><a name='header-n51' class='md-header-anchor '></a>5.1、 如何自定义注解？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        自定义注解需要自己实现注解的定义，定义完注解之后才能标注注解。
+        java中注解相关的类和接口都定义在<font color="#a52a2a">java.lang.annotation</font> 包中。
+        注解语法：
+        <font color="#a52a2a">
+            [public] @interface Annotation名称{   // 如果一个java源文件已经存在public修饰的类，则此处就不需要加public
+                [[public] 数据类型 成员变量名称1() [default 成员默认值];]  // 如果注解不需要定义成员参数，则此处不用定义成员变量
+                [[public] 数据类型 成员变量名称2() [default 成员默认值];]
+                [[public] 数据类型 成员变量名称3() [default 成员默认值];]
+            }
+        </font>
+        注解中有没有注解成员都可以，也可以定义多个注解成员，注解成员也称为注解参数。
+        1.  只要使用@interface声明注解，那么该注解在编译后默认继承了java.lang.annotation.Annotation接口。
+        2.  注解使用@interface进行声明，但是在编译后这个直接实际上是个接口，里面的注解成员实际上是个抽象方法。
+        3.  在定义注解时，可以定义各种成员变量，但是注意变量后面必须有()。()不是定义方法参数，也不能在括号里定义任何参数，仅仅是个特殊的语法。
+        4.  注解成员的访问修饰符必须是public，不写默认是public。
+        5.  注解成员的类型只能是基本数据类型、String、Class、枚举类型、注解类型（体现了注解的嵌套效果）以及上述类型对应的数组类型。
+        6.  注解成员的命名一般为名词，如果注解中只定义了一个注解成员，请将其命名为value（<font
+            color="#a52a2a">当注解中只有一个名称为value的成员时，在标注注解时可以省略参数名称，直接设置其值</font> ）
+        7.  <font color="#a52a2a">default</font>表示默认值，值类型必须和相应的注解成员的类型匹配。
+        8.  如果某个注解成员没有指定默认值，代表后续使用该注解标注时必须给该注解参数设置值。
+
+        如下定义了具有一个注解成员的注解，其默认值是“zhangsan”：
+        <font color="gray">
+            public @interface MyAnnotation{
+                public String name() default "zhangsan";
+            }
+        </font>
+    </pre>
+    <b><a name='header-n52' class='md-header-anchor '></a>5.2、 自定义注解并使用jad进行反编译</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">自定义注解如下：</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.class1;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-04-08
+             */
+            @interface MyAnnocation {
+                String value() default "100";
+            }
+        </font>
+        <b><font color="#a52a2a">使用jad反编译如下：</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.class1;
+
+            import java.lang.annotation.Annotation;
+
+            interface MyAnnocation
+                extends Annotation
+            {
+                public abstract String value();
+            }
+        </font>
+    </pre>
+
+    <b><a name='header-n6' class='md-header-anchor '></a>6、自定义注解案例</b><br>
+    <b><a name='header-n61' class='md-header-anchor '></a>6.1、 案例1：声明一个不接受任何注解参数的注解</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+         <b><font color="#a52a2a">定义注解：</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.myannotation;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-24
+             */
+            // 自定义注解不使用@Retention(RetentionPolicy.XXX)元注解，则默认是@Retention(RetentionPolicy.CLASS)
+            // 如果不使用@Target(ElementType.XXX)元注解，则默认可以标注在任何目标上
+            public @interface MyDefaultAnnotationNonePram {
+                /**
+                 * 自定义注解，不定义任何注解成员，以为这不接受任何参数。
+                 * 要想使用这个自定义注解，需要定义其他的类或者接口等目标，在其类、接口、枚举、成员变量或者成员方法等目标上标注该注解，并且通过反射去获取注解信息然后做各种吊炸天的事情。
+                 */
+            }
+        </font>
+        <b><font color="#a52a2a">标注注解：</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.mytarget;
+
+            import com.zeh.main.annotation.myannotation.MyDefaultAnnotationNonePram;
+
+            // 只是在该处标注注解，并没有什么卵用，要想真正使用注解，比如反射获取注解信息才能做后续处理
+            @MyDefaultAnnotationNonePram
+            public class AnnotationNonePram {
+            }
+        </font>
+    </pre>
+    <b><a name='header-n62' class='md-header-anchor '></a>6.2、 案例2：声明一个接受一个注解参数的注解</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">定义注解：</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.myannotation;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-24
+             */
+            public @interface MyDefaultAnnotationOneParam {
+                // 定义一个String类型的注解成员变量来接受字符串类型的注解参数
+                public String value();
+            }
+        </font>
+        <b><font color="#a52a2a">标注注解：</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.mytarget;
+
+            import com.zeh.main.annotation.myannotation.MyDefaultAnnotationOneParam;
+
+            // 对于自定义注解有且只有一个成员并且成员名称为value，则可以直接设置成员值。
+            // @MyDefaultAnnotationOneParam("eric")
+            // 当然也可以显式指定成员的名称通过 key = value 形式进行赋值。比如 value =
+            @MyDefaultAnnotationOneParam(value = "eric")
+            public class AnnotationOneParam {
+            }
+        </font>
+    </pre>
+    <b><a name='header-n63' class='md-header-anchor '></a>6.3、 案例3：声明一个接受多个注解参数的注解</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">定义注解：</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.myannotation;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-24
+             */
+            public @interface MyDefaultAnnotationMoreParam {
+                // 定义一个String类型的注解成员变量接受字符串参数
+                public String key();
+
+                // 定义一个String类型的注解成员变量接受字符串参数
+                public String value();
+            }
+        </font>
+        <b><font color="#a52a2a">标注注解：</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.mytarget;
+
+            import com.zeh.main.annotation.myannotation.MyDefaultAnnotationMoreParam;
+
+            // 当自定义注解有多个成员定义时，不论其中是否有value命名的成员，都必须显式使用 key = value 的形式进行注解参数赋值（如果其中其他不叫value的成员都有默认值的话，只设置value值时也可直接设置）
+            @MyDefaultAnnotationMoreParam(key = "name", value = "eric")
+            public class AnnotationMoreParam {
+            }
+        </font>
+    </pre>
+    <b><a name='header-n64' class='md-header-anchor '></a>6.4、 案例4：声明一个接受一个注解参数的注解，但是这个注解参数是个数组容器</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">定义注解：</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.myannotation;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-24
+             */
+            public @interface MyDefaultAnnotationOneParamArray {
+                // 定义一个String数组类型的注解成员变量用于接收一堆String类型的注解参数。
+                String[] value();
+            }
+        </font>
+        <b><font color="#a52a2a">标注注解：</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.mytarget;
+
+            import com.zeh.main.annotation.myannotation.MyDefaultAnnotationOneParamArray;
+
+            // 当自定义注解中有且仅有一个注解成员且其名称为value时（或者有多个注解成员，但是其他成员都有默认值，则单独设置value值时也可以直接设置），可以直接设置值，也可以通过key=value的形式设置值。
+            // 当其成员是数组时，如果数组只有一个元素，则可以省略{}；如果有多个元素，则需要添加{}
+            // @MyDefaultAnnotationOneParamArray({"eric","daisy"})
+            // @MyDefaultAnnotationOneParamArray("zhangsan")
+            // @MyDefaultAnnotationOneParamArray(value = "lisi")
+            // @MyDefaultAnnotationOneParamArray(value = {"zhangsan"})
+            @MyDefaultAnnotationOneParamArray(value = {"zhangsan", "lisi"})
+            public class AnnotationOneParamArray {
+            }
+        </font>
+    </pre>
+    <b><a name='header-n65' class='md-header-anchor '></a>6.5、 案例5：声明一个接受多个注解参数的注解，且声明时注解参数指定默认值</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">定义注解：</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.myannotation;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-24
+             */
+            public @interface MyDefaultAnnotationMoreParamDefaultValue {
+
+                // 定义注解成员同时指定注解成员的默认值，如果不指定默认值则标注注解时必须显式指定注解参数值，否则编译报错；如果此处指定了默认值，则标注注解时可以传递实际参数值，这时取此处的默认值
+                String name1() default "eric";
+
+                String name2() default "daisy";
+
+                // 数组类型设置默认值使用{}
+                String name3()[] default {"A", "B"};
+
+                // 如果数组类型默认值只有一个的话则省略{}
+                int[] score() default 99;
+            }
+        </font>
+        <b><font color="#a52a2a">标注注解：</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.mytarget;
+
+            import com.zeh.main.annotation.myannotation.MyDefaultAnnotationMoreParamDefaultValue;
+
+            // 自定义注解有默认值的成员，可以不用设置值，此时取的是默认值
+            // @MyDefaultAnnotationMoreParamDefaultValue
+            // 也可以对其中部分注解参数进行设置，此时取的是设置进去的值
+            @MyDefaultAnnotationMoreParamDefaultValue(name1 = "zhangsan", name2 = "lisi")
+            public class AnnotationMoreParamDefaultValue {
+            }
+        </font>
+    </pre>
+    <b><a name='header-n66' class='md-header-anchor '></a>6.6、 案例6：声明一个接受多个注解参数的注解，且使用枚举限制注解参数的取值范围</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">定义枚举：</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.myenum;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-24
+             */
+            public enum MyEnum {
+                // 自定义一个枚举类，保存如下枚举常量
+                // 每个枚举常量默认是public的、static的、final的
+                // 每个枚举常量都是当前枚举类的实例对象
+                ERIC, DAISY, ZHAOEH;
+            }
+        </font>
+        <b><font color="#a52a2a">定义注解：</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.myannotation;
+
+            import com.zeh.main.annotation.myenum.MyEnum;
+
+            public @interface MyDefaultAnnotationMoreParamUseEnum {
+                // 定义两个MyEnum类型的注解成员接收注解参数，则外部传入注解参数的取值范围只能是MyEnum枚举类型的那几个枚举常量。
+                MyEnum name1();
+
+                // 限制name2成员的取值只能是MyEnum类型，即只能是MyEnum枚举类的几个枚举常量值，并且name2指定了默认取值为MyEnum枚举的枚举常量对象DAISY。
+                MyEnum name2() default MyEnum.DAISY;
+            }
+        </font>
+        <b><font color="#a52a2a">标注注解：</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.mytarget;
+
+            import com.zeh.main.annotation.myannotation.MyDefaultAnnotationMoreParamUseEnum;
+            import com.zeh.main.annotation.myenum.MyEnum;
+
+            // name1和name2都得从MyEnum枚举常量中取值，name2有默认值所以此处可以不进行设置
+            @MyDefaultAnnotationMoreParamUseEnum(name1 = MyEnum.ERIC)
+            public class AnnotationMoreParamUseEnum {
+            }
+        </font>
+    </pre>
+    <b><a name='header-n67' class='md-header-anchor '></a>6.7、 案例7：声明一个接受多个注解参数的注解，且在声明注解时使用元注解（先使用4种，重复注解下个案例看）</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">定义注解：</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.myannotation;
+
+            import java.lang.annotation.Documented;
+            import java.lang.annotation.ElementType;
+            import java.lang.annotation.Inherited;
+            import java.lang.annotation.Retention;
+            import java.lang.annotation.RetentionPolicy;
+            import java.lang.annotation.Target;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-05-24
+             */
+            // 该元注解没有注解参数
+            // 使用该元注解标注自定义注解表示自定义注解将会被保存在javadoc中
+            @Documented
+            // 该元注解有注解参数，在标注时必须设置注解参数
+            // 使用该元注解标注自定义注解表示自定义注解的有效保留范围
+            // 可以是源文件、class字节码或者JVM内存中
+            // 如果不使用该注解，则默认保存范围是CLASS
+            @Retention(RetentionPolicy.RUNTIME)
+            // 该元注解有注解参数，在标注时比如设置注解参数
+            // 使用该元注解标注自定义注解表示自定义注解的有效标注目标
+            // 可以是类、接口、注解、方法、成员、本地变量等
+            // 如果不使用该元注解标注自定义注解，则默认自定义注解可以在任何目标上进行标注
+            @Target({ElementType.TYPE,ElementType.METHOD})
+            // 该元注解没有注解参数
+            // 使用该元注解标注自定义注解表示自定义注解标注父类后，该父类的后续子类都会默认继承该自定义注解
+            @Inherited
+            public @interface MyDefaultAnnotationMoreParamMeta {
+
+                String name1();
+
+                String name2();
+            }
+        </font>
+        <b><font color="#a52a2a">标注注解：</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.mytarget;
+
+            import com.zeh.main.annotation.myannotation.MyDefaultAnnotationMoreParamMeta;
+
+            // 多个注解参数设置值，只能使用key = value的形式进行设置
+            @MyDefaultAnnotationMoreParamMeta(name1 = "daisy", name2 = "eric")
+            public class AnnotationMoreParamMeta {
+            }
+        </font>
+    </pre>
+    <b><a name='header-n68' class='md-header-anchor '></a>6.8、 案例8：注解重复使用，元注解@Repeatable</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">第1步：定义容器注解MyDefaultAnnotationRepeats</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.myannotation;
+
+            import java.lang.annotation.Documented;
+            import java.lang.annotation.ElementType;
+            import java.lang.annotation.Retention;
+            import java.lang.annotation.RetentionPolicy;
+            import java.lang.annotation.Target;
+
+            /**
+             * 功能描述 定义一个容器注解
+             */
+            @Documented
+            @Target({ElementType.TYPE, ElementType.FIELD})
+            @Retention(RetentionPolicy.RUNTIME)
+            public @interface MyDefaultAnnotationRepeats {
+                // 该容器注解成员表示：保存一堆MyDefaultAnnotationRepeat注解。
+                MyDefaultAnnotationRepeat[] value();
+            }
+        </font>
+        <b><font color="#a52a2a">第2步：定义目标注解MyDefaultAnnotationRepeat</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.myannotation;
+
+            import java.lang.annotation.Documented;
+            import java.lang.annotation.ElementType;
+            import java.lang.annotation.Repeatable;
+            import java.lang.annotation.Retention;
+            import java.lang.annotation.RetentionPolicy;
+            import java.lang.annotation.Target;
+
+            /**
+             * 功能描述 定义一个要使用的目标注解，并为当前注解通过@Repeatable指定容器注解
+             */
+            // 要让当前注解可以重复使用，需在当前注解上加上@Repeatable注解，@Repeatable中的value值是自定义的容器注解。
+            @Repeatable(MyDefaultAnnotationRepeats.class)
+            @Documented
+            @Target({ElementType.TYPE, ElementType.FIELD})
+            @Retention(RetentionPolicy.RUNTIME)
+            public @interface MyDefaultAnnotationRepeat {
+                String name();
+            }
+        </font>
+        <b><font color="#a52a2a">第3步：在目标AnnotationRepeat上重复标注MyDefaultAnnotationRepeat注解</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.mytarget;
+
+            import com.zeh.main.annotation.myannotation.MyDefaultAnnotationRepeat;
+            import com.zeh.main.annotation.myannotation.MyDefaultAnnotationRepeats;
+
+            // 重复标注注解方式1：直接在目标上标注相同的注解多次
+            @MyDefaultAnnotationRepeat(name = "zhangsan")
+            @MyDefaultAnnotationRepeat(name = "zhangsan")
+            public class AnnotationRepeat {
+                // 重复标注注解方式2：在目标上标注容器注解，容器注解的成员设置一个目标注解数组进去
+                @MyDefaultAnnotationRepeats({@MyDefaultAnnotationRepeat(name = "wangwu"),@MyDefaultAnnotationRepeat(name = "lisi")})
+                private String field;
+            }
+        </font>
+    </pre>
+
+    <b><a name='header-n7' class='md-header-anchor '></a>7、注解信息的获取</b><br>
+    <b><a name='header-n71' class='md-header-anchor '></a>7.1、 如何获取注解？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        上面的案例都是使用注解3步骤中的前2步：定义注解、标注注解。
+        而使用注解的关键在第3步，即获取注解信息然后做各种牛逼的事儿。
+        为了运行时能够准确的获取注解信息，java在<font color="#a52a2a">java.lang.reflect</font>反射包下新增了AnnotatedElement接口，它主要用于表示目前正在虚拟机运行的程序中已经使用的注解的元素。
+        通过该接口可以利用反射技术读取注解信息。
+
+        <b><font color="#a52a2a">AnnotatedElement接口的子接口和子类有：</font> </b>
+        <font color="#a52a2a">
+            Package：表示包的信息。
+            Class：表示类的信息。
+            Constructor：表示构造方法信息。
+            Field：表示类中属性信息。
+            Method：表示方法信息。
+            Parameter：表示方法参数信息。
+            TypeVariable：表示泛型变量类型信息，比如：类上声明的泛型类型变量，方法上声明的泛型类型变量。
+        </font>
+
+        <b><font color="#a52a2a">AnnotatedElement接口常用方法：</font> </b>
+        <font color="gray">
+            &lt;A extends Annotation> getAnnotation(Class&lt;A> annotationClass)：目标元素如果存在指定注解，则返回指定注解，否则返回null。
+            Annotation[] getAnnotations()：返回目标元素上的所有注解，包括从父类继承的。
+            boolean isAnnotationPresent(Class&lt;? extends Annotation> annotationClass)：如果指定注解存在于目标元素上，则返回true，否则返回false。
+            Annotation[] getDeclaredAnnotations()：返回直接存在于目标元素上的所有注解，注意，不包括从父类继承的注解，调用者可以随意修改返回的注解数组，这不会对其他调用者返回的注解数组产生任何影响，没有则返回长度为0的空数组。
+        </font>
+    </pre>
+    <b><a name='header-n72' class='md-header-anchor '></a>7.2、 综合案例：完整使用注解</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">定义需要标注的注解MyDefaultAnnotationReflect1</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.myannotation.all;
+
+            import java.lang.annotation.Documented;
+            import java.lang.annotation.ElementType;
+            import java.lang.annotation.Inherited;
+            import java.lang.annotation.Repeatable;
+            import java.lang.annotation.Retention;
+            import java.lang.annotation.RetentionPolicy;
+            import java.lang.annotation.Target;
+
+            @Documented
+            @Retention(RetentionPolicy.RUNTIME)
+            @Target({ElementType.TYPE,
+                    ElementType.FIELD,
+                    ElementType.METHOD,
+                    ElementType.PARAMETER,
+                    ElementType.CONSTRUCTOR,
+                    ElementType.LOCAL_VARIABLE,
+                    ElementType.ANNOTATION_TYPE,
+                    ElementType.PACKAGE,
+                    ElementType.TYPE_PARAMETER,
+                    ElementType.TYPE_USE})
+            @Inherited
+            // 该注解可以重复使用，其依赖的容器注解是 MyDefaultAnnotationReflectRepeats
+            @Repeatable(MyDefaultAnnotationReflectRepeats.class)
+            public @interface MyDefaultAnnotationReflect1 {
+                String value();
+            }
+        </font>
+
+        <b><font color="#a52a2a">为上面的注解定义容器注解MyDefaultAnnotationReflectRepeats</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.myannotation.all;
+
+            import java.lang.annotation.Documented;
+            import java.lang.annotation.ElementType;
+            import java.lang.annotation.Retention;
+            import java.lang.annotation.RetentionPolicy;
+            import java.lang.annotation.Target;
+
+            // 综合案例：容器注解
+            @Documented
+            // 容器注解的使用范围应该和其托管的注解的范围一致，否则如果目标注解可以标注在方法参数上，而容器注解不能标注的话，那么目标注解是无法在方法参数上重复标注的
+            @Target({ElementType.TYPE,
+                    ElementType.FIELD,
+                    ElementType.METHOD,
+                    ElementType.PARAMETER,
+                    ElementType.CONSTRUCTOR,
+                    ElementType.LOCAL_VARIABLE,
+                    ElementType.ANNOTATION_TYPE,
+                    ElementType.PACKAGE,
+                    ElementType.TYPE_PARAMETER,
+                    ElementType.TYPE_USE})
+            @Retention(RetentionPolicy.RUNTIME)
+            @Inherited
+            public @interface MyDefaultAnnotationReflectRepeats {
+                // 使用容器注解托管自定义注解，便可以重复使用自定义注解了
+                MyDefaultAnnotationReflect1[] value();
+            }
+        </font>
+
+        <b><font color="#a52a2a">再定义一个需要使用的注解MyDefaultAnnotationReflect1，该注解不重复标注</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.myannotation.all;
+
+            import java.lang.annotation.Documented;
+            import java.lang.annotation.ElementType;
+            import java.lang.annotation.Inherited;
+            import java.lang.annotation.Retention;
+            import java.lang.annotation.RetentionPolicy;
+            import java.lang.annotation.Target;
+
+            @Documented
+            @Retention(RetentionPolicy.RUNTIME)
+            @Target({ElementType.TYPE,
+                    ElementType.FIELD,
+                    ElementType.METHOD,
+                    ElementType.PARAMETER,
+                    ElementType.CONSTRUCTOR,
+                    ElementType.LOCAL_VARIABLE,
+                    ElementType.ANNOTATION_TYPE,
+                    ElementType.PACKAGE,
+                    ElementType.TYPE_PARAMETER,
+                    ElementType.TYPE_USE})
+            @Inherited
+            @MyDefaultAnnotationReflect1("标注在注解上；对应ElementType.ANNOTATION_TYPE")
+            public @interface MyDefaultAnnotationReflect1_1 {
+                int value();
+            }
+        </font>
+        <font color="#a52a2a">上面定义了两个注解MyDefaultAnnotationReflect1和MyDefaultAnnotationReflect1_1，其中MyDefaultAnnotationReflect1使用了容器注解MyDefaultAnnotationReflectRepeats，因此它可以重复标注。</font>
+
+        <b><font color="#a52a2a">定义一个类AnnotationReflect，标注上述注解</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.mytarget.all;
+
+            import com.zeh.main.annotation.myannotation.all.MyDefaultAnnotationReflect1;
+            import com.zeh.main.annotation.myannotation.all.MyDefaultAnnotationReflect1_1;
+
+            import java.util.Map;
+
+            @MyDefaultAnnotationReflect1("标注在类上；对应ElementType.TYPE")
+            @MyDefaultAnnotationReflect1("标注在类上；重复标注")
+            @MyDefaultAnnotationReflect1_1(1)
+            public class AnnotationReflect&lt;
+                    @MyDefaultAnnotationReflect1(value = "标注在泛型变量类型T1上，T1是在类上声明的一个泛型变量类型；对应ElementType.TYPE_PARAMETER")
+                            @MyDefaultAnnotationReflect1(value = "标注在泛型变量类型T1上，重复标注")
+                            @MyDefaultAnnotationReflect1_1(2) T1,
+                    @MyDefaultAnnotationReflect1(value = "标注在泛型变量类型T2上，T2是在类上声明的一个泛型变量类型；对应ElementType.TYPE_PARAMETER")
+                            @MyDefaultAnnotationReflect1(value = "标注在泛型变量类型T2上，重复标注")
+                            @MyDefaultAnnotationReflect1_1(3) T2> {
+
+                @MyDefaultAnnotationReflect1("标注在成员属性上；对应ElementType.FIELD")
+                @MyDefaultAnnotationReflect1("标注在成员属性上；重复标注")
+                @MyDefaultAnnotationReflect1_1(4)
+                private String name;
+
+                private Map&lt;@MyDefaultAnnotationReflect1("标注在泛型类型的实际类型上；对应ElementType.TYPE_USE")
+                @MyDefaultAnnotationReflect1("标注在泛型类型的实际类型上；重复标注") String,
+                        @MyDefaultAnnotationReflect1_1(5) ?> map;
+
+                @MyDefaultAnnotationReflect1("标注在构造方法上；对应ElementType.CONSTRUCTOR")
+                @MyDefaultAnnotationReflect1("标注在构造方法上；重复标注")
+                @MyDefaultAnnotationReflect1_1(10)
+                public AnnotationReflect() {
+                }
+
+                @MyDefaultAnnotationReflect1("标注在方法method1上；对应ElementType.METHOD")
+                @MyDefaultAnnotationReflect1("标注在方法method1上；重复标注")
+                @MyDefaultAnnotationReflect1_1(78)
+                public &lt;@MyDefaultAnnotationReflect1("标注在泛型变量类型T3上，T3是在类上声明的一个泛型变量类型；对应ElementType.TYPE_PARAMETER")
+                        @MyDefaultAnnotationReflect1("标注在泛型变量类型T3上，重复标注")
+                        @MyDefaultAnnotationReflect1_1(12) T3,
+                        @MyDefaultAnnotationReflect1("标注在泛型变量类型T4上，T4是在类上声明的一个泛型变量类型；对应ElementType.TYPE_PARAMETER")
+                                @MyDefaultAnnotationReflect1("标注在泛型变量类型T4上，重复标注")
+                                @MyDefaultAnnotationReflect1_1(18) T4>
+                T3 method1(@MyDefaultAnnotationReflect1("标注在方法参数上；对应ElementType.PARAMETER")
+                           @MyDefaultAnnotationReflect1("标注在方法参数上；重复标注")
+                           @MyDefaultAnnotationReflect1_1(0) T3 t3,
+                           @MyDefaultAnnotationReflect1("标注在方法参数上；对应ElementType.PARAMETER")
+                           @MyDefaultAnnotationReflect1("标注在方法参数上；重复标注")
+                           @MyDefaultAnnotationReflect1_1(19) T4 t4) {
+                    return t3;
+                }
+            }
+        </font>
+
+        <b><font color="#a52a2a">获取注解 TestMyAnnotationReflect</font> </b>
+        <font color="gray">
+            package com.zeh.main.annotation.test;
+
+            import com.zeh.main.annotation.myannotation.all.MyDefaultAnnotationReflect1;
+            import com.zeh.main.annotation.myannotation.all.MyDefaultAnnotationReflect1_1;
+            import com.zeh.main.annotation.mytarget.all.AnnotationReflect;
+
+            import org.junit.Test;
+
+            import java.lang.annotation.Annotation;
+            import java.lang.reflect.AnnotatedParameterizedType;
+            import java.lang.reflect.AnnotatedType;
+            import java.lang.reflect.Constructor;
+            import java.lang.reflect.Field;
+            import java.lang.reflect.Method;
+            import java.lang.reflect.Parameter;
+            import java.lang.reflect.ParameterizedType;
+            import java.lang.reflect.Type;
+            import java.lang.reflect.TypeVariable;
+
+            /**
+             * 解析注解做各种牛逼的事儿
+             * 对于Jdk和其他框架实现好的注解，只需要在指定的目标上标注即可，不用关注如何解析。因为jdk内部和框架底层已经实现了通过反射去自动扫描注解并获取注解信息进行后续的逻辑处理。
+             */
+            public class TestMyAnnotationReflect {
+
+                /**
+                 * 解析标注在类上的注解：对应ElementType.TYPE
+                 */
+                @Test
+                public void getAnnotationFromClass() {
+                    Class&lt;AnnotationReflect> annotationReflectClass = AnnotationReflect.class;
+                    System.out.println("标注在" + annotationReflectClass.getName() + "类上的注解如下：");
+                    Annotation[] annotations = annotationReflectClass.getAnnotations();
+                    for (Annotation annotation : annotations) {
+                        System.out.println(annotation);
+                    }
+                }
+
+                /**
+                 * 解析标注在成员上的注解：对应ElementType.FIELD
+                 */
+                @Test
+                public void getAnnotationFromField() throws NoSuchFieldException {
+                    Field nameField = AnnotationReflect.class.getDeclaredField("name");
+                    System.out.println("标注在" + nameField.getName() + "属性上的注解如下：");
+                    Annotation[] annotations = nameField.getAnnotations();
+                    for (Annotation annotation : annotations) {
+                        System.out.println("annotation is :" + annotation);
+                        System.out.println("当前 annotation 的类型：" + annotation.getClass());
+                        if (annotation instanceof MyDefaultAnnotationReflect1) {
+                            // 如果当前注解是 MyDefaultAnnotationReflect1 类型，则强转后获取注解中的属性值
+                            MyDefaultAnnotationReflect1 myDefaultAnnotationReflect = (MyDefaultAnnotationReflect1) annotation;
+                            System.out.println("该注解的value：" + myDefaultAnnotationReflect.value());
+                        }
+                        if (annotation instanceof MyDefaultAnnotationReflect1_1) {
+                            // 如果当前注解是 MyDefaultAnnotationReflect1_1 类型，则强转后获取注解中的属性值
+                            MyDefaultAnnotationReflect1_1 myDefaultAnnotationReflect1_1 = (MyDefaultAnnotationReflect1_1) annotation;
+                            System.out.println("该注解的value：" + myDefaultAnnotationReflect1_1.value());
+                        }
+                    }
+                }
+
+                /**
+                 * 解析标注在构造方法上的注解：对应ElementType.CONSTRUCTOR
+                 */
+                @Test
+                public void getAnnotationFromConstructor() throws NoSuchMethodException {
+                    // 反射获取无参构造器
+                    Constructor&lt;AnnotationReflect> annotationReflectConstructor = AnnotationReflect.class.getConstructor();
+                    // 手动获取构造方法上的指定注解。
+                    System.out.println("标注在" + annotationReflectConstructor.getName() + "构造方法上的注解如下：");
+
+                    // 如果当前构造器上存在 MyDefaultAnnotationReflect1 注解标注的话
+                    if (annotationReflectConstructor.isAnnotationPresent(MyDefaultAnnotationReflect1.class)) {
+                        // 获取构造器上 MyDefaultAnnotationReflect1 类型的注解
+                        MyDefaultAnnotationReflect1 myDefaultAnnotationReflect1 = annotationReflectConstructor.getAnnotation(MyDefaultAnnotationReflect1.class);
+                        System.out.println("annotation is :" + myDefaultAnnotationReflect1);
+                        System.out.println("当前 annotation 的类型：" + myDefaultAnnotationReflect1.getClass());
+                        System.out.println("该注解的value：" + myDefaultAnnotationReflect1.value());
+                    }
+
+                    // 如果当前构造器上存在 MyDefaultAnnotationReflect1_1 注解标注的话
+                    if (annotationReflectConstructor.isAnnotationPresent(MyDefaultAnnotationReflect1_1.class)) {
+                        // 获取构造器上 MyDefaultAnnotationReflect1_1 类型的注解
+                        MyDefaultAnnotationReflect1_1 myDefaultAnnotationReflect1_1 = annotationReflectConstructor.getAnnotation(MyDefaultAnnotationReflect1_1.class);
+                        System.out.println("annotation is :" + myDefaultAnnotationReflect1_1);
+                        System.out.println("当前 annotation 的类型：" + myDefaultAnnotationReflect1_1.getClass());
+                        System.out.println("该注解的value：" + myDefaultAnnotationReflect1_1.value());
+                    }
+                }
+
+                /**
+                 * 解析标注在类上声明的泛型变量类型上的注解：对应ElementType.TYPE_PARAMETER
+                 */
+                @Test
+                public void getAnnotationFromTypeVariableOnClass() {
+                    // 获取在类上声明的泛型变量类型列表，类上可能声明了多个泛型变量类型，因此得到的是一个数组
+                    TypeVariable&lt;Class&lt;AnnotationReflect>>[] classTypeVariable = AnnotationReflect.class.getTypeParameters();
+
+                    // 遍历类上声明的所有泛型变量类型列表
+                    for (TypeVariable&lt;Class&lt;AnnotationReflect>> typeVariable : classTypeVariable) {
+                        System.out.println("标注在" + AnnotationReflect.class.getSimpleName() + "类上声明的" + typeVariable.getName() + "泛型变量类型上的注解如下：");
+                        for (Annotation annotation : typeVariable.getAnnotations()) {
+                            System.out.println("annotation is :" + annotation);
+                            System.out.println("当前 annotation 的类型：" + annotation.getClass());
+                            if (annotation instanceof MyDefaultAnnotationReflect1) {
+                                // 如果当前注解是 MyDefaultAnnotationReflect1 类型，则强转后获取注解中的属性值
+                                MyDefaultAnnotationReflect1 myDefaultAnnotationReflect = (MyDefaultAnnotationReflect1) annotation;
+                                System.out.println("该注解的value：" + myDefaultAnnotationReflect.value());
+                            }
+                            if (annotation instanceof MyDefaultAnnotationReflect1_1) {
+                                // 如果当前注解是 MyDefaultAnnotationReflect1_1 类型，则强转后获取注解中的属性值
+                                MyDefaultAnnotationReflect1_1 myDefaultAnnotationReflect1_1 = (MyDefaultAnnotationReflect1_1) annotation;
+                                System.out.println("该注解的value：" + myDefaultAnnotationReflect1_1.value());
+                            }
+                        }
+                        System.out.println("------------------------------------------");
+                    }
+                }
+
+                /**
+                 * 解析标注在方法上声明的泛型变量类型上的注解：对应ElementType.TYPE_PARAMETER
+                 */
+                @Test
+                public void getAnnotationFromTypeVariableOnMethod() throws NoSuchMethodException {
+                    // 获取method1方法对象，对于方法参数是泛型变量类型的，其对应的参数类型传入Object.class即可，因为泛型在JVM中实际上是被擦除了的，替换成了Object
+                    Method method1 = AnnotationReflect.class.getDeclaredMethod("method1", Object.class, Object.class);
+                    // 获取当前method1方法上声明的所有泛型变量类型
+                    TypeVariable&lt;Method>[] typeVariable = method1.getTypeParameters();
+                    // 遍历方法上声明的所有泛型变量类型列表
+                    for (TypeVariable&lt;Method> typeParameter : typeVariable) {
+                        System.out.println("标注在" + method1.getName() + "方法上声明的" + typeParameter.getName() + "泛型变量类型上的注解如下：");
+                        for (Annotation annotation : typeParameter.getAnnotations()) {
+                            System.out.println("annotation is :" + annotation);
+                            System.out.println("当前 annotation 的类型：" + annotation.getClass());
+                            if (annotation instanceof MyDefaultAnnotationReflect1) {
+                                // 如果当前注解是 MyDefaultAnnotationReflect1 类型，则强转后获取注解中的属性值
+                                MyDefaultAnnotationReflect1 myDefaultAnnotationReflect = (MyDefaultAnnotationReflect1) annotation;
+                                System.out.println("该注解的value：" + myDefaultAnnotationReflect.value());
+                            }
+                            if (annotation instanceof MyDefaultAnnotationReflect1_1) {
+                                // 如果当前注解是 MyDefaultAnnotationReflect1_1 类型，则强转后获取注解中的属性值
+                                MyDefaultAnnotationReflect1_1 myDefaultAnnotationReflect1_1 = (MyDefaultAnnotationReflect1_1) annotation;
+                                System.out.println("该注解的value：" + myDefaultAnnotationReflect1_1.value());
+                            }
+                        }
+                        System.out.println("------------------------------------------");
+                    }
+                }
+
+
+                /**
+                 * 解析标注在泛型类型的实际类型上的注解：对应ElementType.TYPE_USE
+                 */
+                @Test
+                public void getAnnotationFromParameterizedType() throws NoSuchFieldException {
+                    // 获取map成员
+                    Field map = AnnotationReflect.class.getDeclaredField("map");
+                    // 获取该成员的类型
+                    Type genericType = map.getGenericType();
+                    if (genericType instanceof ParameterizedType) {
+                        System.out.println("标注在泛型类型" + genericType.getTypeName() + "上的注解如下：");
+                        // 获取该成员可能使用注解的类型，说白了就是一个成员的类型中如果标注了注解，就使用AnnotatedType接口来描述其类型，而不再使用Type接口描述
+                        AnnotatedType annotatedType = map.getAnnotatedType();
+                        // 如果类型是可能被注解标注的泛型类型
+                        if (annotatedType instanceof AnnotatedParameterizedType) {
+                            // 获取该泛型类型的真实类型
+                            AnnotatedType[] annotatedActualTypeArguments = ((AnnotatedParameterizedType) annotatedType).getAnnotatedActualTypeArguments();
+                            // 遍历可能被注解修饰的真实类型列表
+                            for (AnnotatedType annotatedActualTypeArgument : annotatedActualTypeArguments) {
+                                System.out.println(annotatedActualTypeArgument.getType().getTypeName() + "类型上的注解：");
+                                for (Annotation annotation : annotatedActualTypeArgument.getAnnotations()) {
+                                    System.out.println(annotation);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                /**
+                 * 解析标注在方法上的注解：对应ElementType.METHOD
+                 */
+                @Test
+                public void getAnnotationFromMethod() throws NoSuchMethodException {
+                    Method method1 = AnnotationReflect.class.getDeclaredMethod("method1", Object.class, Object.class);
+                    System.out.println("标注在" + method1.getName() + "方法上的注解如下：");
+                    // 如果当前method1上存在 MyDefaultAnnotationReflect1 注解标注的话
+                    if (method1.isAnnotationPresent(MyDefaultAnnotationReflect1.class)) {
+                        // 获取method1上 MyDefaultAnnotationReflect1 类型的注解
+                        MyDefaultAnnotationReflect1 myDefaultAnnotationReflect1 = method1.getAnnotation(MyDefaultAnnotationReflect1.class);
+                        System.out.println("annotation is :" + myDefaultAnnotationReflect1);
+                        System.out.println("当前 annotation 的类型：" + myDefaultAnnotationReflect1.getClass());
+                        System.out.println("该注解的value：" + myDefaultAnnotationReflect1.value());
+                    }
+
+                    // 如果当前method1上存在 MyDefaultAnnotationReflect1_1 注解标注的话
+                    if (method1.isAnnotationPresent(MyDefaultAnnotationReflect1_1.class)) {
+                        // 获取method1上 MyDefaultAnnotationReflect1_1 类型的注解
+                        MyDefaultAnnotationReflect1_1 myDefaultAnnotationReflect1_1 = method1.getAnnotation(MyDefaultAnnotationReflect1_1.class);
+                        System.out.println("annotation is :" + myDefaultAnnotationReflect1_1);
+                        System.out.println("当前 annotation 的类型：" + myDefaultAnnotationReflect1_1.getClass());
+                        System.out.println("该注解的value：" + myDefaultAnnotationReflect1_1.value());
+                    }
+                }
+
+                /**
+                 * 解析标注在方法参数上的注解：对应ElementType.PARAMETER
+                 */
+                @Test
+                public void getAnnotationFromMethodParameter() throws NoSuchMethodException {
+                    // 获取method1方法
+                    Method method1 = AnnotationReflect.class.getDeclaredMethod("method1", Object.class, Object.class);
+                    // 获取method1方法的参数列表（注意获取的是参数列表，而不是参数类型列表，比如String str是方法参数，则str是参数，String是参数类型）
+                    Parameter[] parameters = method1.getParameters();
+                    for (Parameter parameter : parameters) {
+                        System.out.println("标注在" + parameter.getName() + "参数上的注解如下：");
+                        // 如果当前parameter上存在 MyDefaultAnnotationReflect1_1 注解标注的话
+                        if (parameter.isAnnotationPresent(MyDefaultAnnotationReflect1.class)) {
+                            // 获取parameter上 MyDefaultAnnotationReflect1 类型的注解
+                            MyDefaultAnnotationReflect1 myDefaultAnnotationReflect1 = method1.getAnnotation(MyDefaultAnnotationReflect1.class);
+                            System.out.println("annotation is :" + myDefaultAnnotationReflect1);
+                            System.out.println("当前 annotation 的类型：" + myDefaultAnnotationReflect1.getClass());
+                            System.out.println("该注解的value：" + myDefaultAnnotationReflect1.value());
+                        }
+
+                        // 如果当前parameter上存在 MyDefaultAnnotationReflect1_1 注解标注的话
+                        if (parameter.isAnnotationPresent(MyDefaultAnnotationReflect1_1.class)) {
+                            // 获取parameter上 MyDefaultAnnotationReflect1_1 类型的注解
+                            MyDefaultAnnotationReflect1_1 myDefaultAnnotationReflect1_1 = method1.getAnnotation(MyDefaultAnnotationReflect1_1.class);
+                            System.out.println("annotation is :" + myDefaultAnnotationReflect1_1);
+                            System.out.println("当前 annotation 的类型：" + myDefaultAnnotationReflect1_1.getClass());
+                            System.out.println("该注解的value：" + myDefaultAnnotationReflect1_1.value());
+                        }
+                        System.out.println("------------------------------------------");
+                    }
+                }
+            }
+        </font>
+    </pre>
