@@ -3,73 +3,14 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width initial-scale=1'>
-    <title>回调机制.md</title>
+    <title>@Configuration注解和@Bean注解.md</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
           rel='stylesheet' type='text/css'/>
     <style type='text/css'>html {
         overflow-x: initial !important;
     }
 
-    .CodeMirror {
-        height: auto;
-    }
-
-    .CodeMirror-scroll {
-        overflow-y: hidden;
-        overflow-x: auto;
-    }
-
-    .CodeMirror-lines {
-        padding: 4px 0px;
-    }
-
     .CodeMirror pre {
-    }
-
-    .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
-        background-color: white;
-    }
-
-    .CodeMirror-gutters {
-        border-right: 1px solid rgb(221, 221, 221);
-        background-color: rgb(247, 247, 247);
-        white-space: nowrap;
-    }
-
-    .CodeMirror-linenumbers {
-    }
-
-    .CodeMirror-linenumber {
-        padding: 0px 3px 0px 5px;
-        text-align: right;
-        color: rgb(153, 153, 153);
-    }
-
-    .CodeMirror div.CodeMirror-cursor {
-        border-left: 1px solid black;
-        z-index: 3;
-    }
-
-    .CodeMirror div.CodeMirror-secondarycursor {
-        border-left: 1px solid silver;
-    }
-
-    .CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor {
-        width: auto;
-        border: 0px;
-        background: rgb(119, 238, 119);
-        z-index: 1;
-    }
-
-    .CodeMirror div.CodeMirror-cursor.CodeMirror-overwrite {
-    }
-
-    .cm-tab {
-        display: inline-block;
-    }
-
-    .cm-s-typora-default .cm-header, .cm-s-typora-default .cm-property {
-        color: rgb(217, 79, 138);
     }
 
     .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
@@ -82,310 +23,8 @@
         line-height: 1.4rem;
     }
 
-    .cm-s-typora-default .cm-atom, .cm-s-typora-default .cm-number {
-        color: rgb(149, 132, 134);
-    }
-
-    .cm-s-typora-default .cm-table-row, .cm-s-typora-default .cm-block-start {
-        font-family: monospace;
-    }
-
-    .cm-s-typora-default .cm-comment, .cm-s-typora-default .cm-code {
-        color: rgb(74, 90, 159);
-        font-family: monospace;
-    }
-
-    .cm-s-typora-default .cm-tag {
-        color: rgb(169, 68, 66);
-    }
-
-    .cm-s-typora-default .cm-string {
-        color: rgb(126, 134, 169);
-    }
-
-    .cm-s-typora-default .cm-link {
-        color: rgb(196, 122, 15);
-        text-decoration: underline;
-    }
-
-    .cm-s-typora-default .cm-variable-2, .cm-s-typora-default .cm-variable-1 {
-        color: inherit;
-    }
-
     .cm-s-typora-default .cm-overlay {
         font-family: monospace;
-    }
-
-    .CodeMirror.cm-s-typora-default div.CodeMirror-cursor {
-        border-left: 3px solid rgb(228, 98, 154);
-    }
-
-    .cm-s-typora-default .CodeMirror-activeline-background {
-        left: -60px;
-        right: -30px;
-        background: rgba(204, 204, 204, 0.2);
-    }
-
-    .cm-s-typora-default .CodeMirror-gutters {
-        border-right: none;
-        background-color: inherit;
-    }
-
-    .cm-s-typora-default .cm-trailing-space-new-line::after, .cm-startspace::after, .cm-starttab .cm-tab::after {
-        content: "•";
-        position: absolute;
-        left: 0px;
-        opacity: 0;
-        font-family: LetterGothicStd, monospace;
-    }
-
-    .os-windows .cm-startspace::after, .os-windows .cm-starttab .cm-tab::after {
-        left: -0.1em;
-    }
-
-    .cm-starttab .cm-tab::after {
-        content: " ";
-    }
-
-    .cm-startspace, .cm-tab, .cm-starttab, .cm-trailing-space-a, .cm-trailing-space-b, .cm-trailing-space-new-line {
-        font-family: monospace;
-        position: relative;
-    }
-
-    .cm-s-typora-default .cm-trailing-space-new-line::after {
-        content: "↓";
-        opacity: 0.3;
-    }
-
-    .cm-s-inner .cm-keyword {
-        color: rgb(119, 0, 136);
-    }
-
-    .cm-s-inner .cm-atom, .cm-s-inner.cm-atom {
-        color: rgb(34, 17, 153);
-    }
-
-    .cm-s-inner .cm-number {
-        color: rgb(17, 102, 68);
-    }
-
-    .cm-s-inner .cm-def {
-        color: rgb(0, 0, 255);
-    }
-
-    .cm-s-inner .cm-variable {
-        color: black;
-    }
-
-    .cm-s-inner .cm-variable-2 {
-        color: rgb(0, 85, 170);
-    }
-
-    .cm-s-inner .cm-variable-3 {
-        color: rgb(0, 136, 85);
-    }
-
-    .cm-s-inner .cm-property {
-        color: black;
-    }
-
-    .cm-s-inner .cm-operator {
-        color: rgb(152, 26, 26);
-    }
-
-    .cm-s-inner .cm-comment, .cm-s-inner.cm-comment {
-        color: rgb(170, 85, 0);
-    }
-
-    .cm-s-inner .cm-string {
-        color: rgb(170, 17, 17);
-    }
-
-    .cm-s-inner .cm-string-2 {
-        color: rgb(255, 85, 0);
-    }
-
-    .cm-s-inner .cm-meta {
-        color: rgb(85, 85, 85);
-    }
-
-    .cm-s-inner .cm-qualifier {
-        color: rgb(85, 85, 85);
-    }
-
-    .cm-s-inner .cm-builtin {
-        color: rgb(51, 0, 170);
-    }
-
-    .cm-s-inner .cm-bracket {
-        color: rgb(153, 153, 119);
-    }
-
-    .cm-s-inner .cm-tag {
-        color: rgb(17, 119, 0);
-    }
-
-    .cm-s-inner .cm-attribute {
-        color: rgb(0, 0, 204);
-    }
-
-    .cm-s-inner .cm-header, .cm-s-inner.cm-header {
-        color: blue;
-    }
-
-    .cm-s-inner .cm-quote, .cm-s-inner.cm-quote {
-        color: rgb(0, 153, 0);
-    }
-
-    .cm-s-inner .cm-hr, .cm-s-inner.cm-hr {
-        color: rgb(153, 153, 153);
-    }
-
-    .cm-s-inner .cm-link, .cm-s-inner.cm-link {
-        color: rgb(0, 0, 204);
-    }
-
-    .cm-negative {
-        color: rgb(221, 68, 68);
-    }
-
-    .cm-positive {
-        color: rgb(34, 153, 34);
-    }
-
-    .cm-header, .cm-strong {
-        font-weight: bold;
-    }
-
-    .cm-del {
-        text-decoration: line-through;
-    }
-
-    .cm-em {
-        font-style: italic;
-    }
-
-    .cm-link {
-        text-decoration: underline;
-    }
-
-    .cm-error {
-        color: rgb(255, 0, 0);
-    }
-
-    .cm-invalidchar {
-        color: rgb(255, 0, 0);
-    }
-
-    .cm-constant {
-        color: rgb(38, 139, 210);
-    }
-
-    .cm-defined {
-        color: rgb(181, 137, 0);
-    }
-
-    div.CodeMirror span.CodeMirror-matchingbracket {
-        color: rgb(0, 255, 0);
-    }
-
-    div.CodeMirror span.CodeMirror-nonmatchingbracket {
-        color: rgb(255, 34, 34);
-    }
-
-    .cm-s-inner .CodeMirror-activeline-background {
-        background: inherit;
-    }
-
-    .CodeMirror {
-        position: relative;
-        overflow: hidden;
-    }
-
-    .CodeMirror-scroll {
-        margin-bottom: -30px;
-        margin-right: -30px;
-        padding-bottom: 30px;
-        padding-right: 30px;
-        height: 100%;
-        outline: none;
-        position: relative;
-        box-sizing: content-box;
-    }
-
-    .CodeMirror-sizer {
-        position: relative;
-    }
-
-    .CodeMirror-vscrollbar, .CodeMirror-hscrollbar, .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
-        position: absolute;
-        z-index: 6;
-        display: none;
-    }
-
-    .CodeMirror-vscrollbar {
-        right: 0px;
-        top: 0px;
-        overflow-x: hidden;
-        overflow-y: scroll;
-    }
-
-    .CodeMirror-hscrollbar {
-        bottom: 0px;
-        left: 0px;
-        overflow-y: hidden;
-        overflow-x: scroll;
-    }
-
-    .CodeMirror-scrollbar-filler {
-        right: 0px;
-        bottom: 0px;
-    }
-
-    .CodeMirror-gutter-filler {
-        left: 0px;
-        bottom: 0px;
-    }
-
-    .CodeMirror-gutters {
-        position: absolute;
-        left: 0px;
-        top: 0px;
-        padding-bottom: 30px;
-        z-index: 3;
-    }
-
-    .CodeMirror-gutter {
-        white-space: normal;
-        height: 100%;
-        box-sizing: content-box;
-        padding-bottom: 30px;
-        margin-bottom: -32px;
-        display: inline-block;
-    }
-
-    .CodeMirror-gutter-wrapper {
-        position: absolute;
-        z-index: 4;
-        background: none !important;
-        border: none !important;
-    }
-
-    .CodeMirror-gutter-background {
-        position: absolute;
-        top: 0px;
-        bottom: 0px;
-        z-index: 4;
-    }
-
-    .CodeMirror-gutter-elt {
-        position: absolute;
-        cursor: default;
-        z-index: 4;
-    }
-
-    .CodeMirror-lines {
-        cursor: text;
     }
 
     .CodeMirror pre {
@@ -419,65 +58,8 @@
         width: auto;
     }
 
-    .CodeMirror-linebackground {
-        position: absolute;
-        left: 0px;
-        right: 0px;
-        top: 0px;
-        bottom: 0px;
-        z-index: 0;
-    }
-
-    .CodeMirror-linewidget {
-        position: relative;
-        z-index: 2;
-        overflow: auto;
-    }
-
-    .CodeMirror-widget {
-    }
-
-    .CodeMirror-wrap .CodeMirror-scroll {
-        overflow-x: hidden;
-    }
-
-    .CodeMirror-measure {
-        position: absolute;
-        width: 100%;
-        height: 0px;
-        overflow: hidden;
-        visibility: hidden;
-    }
-
     .CodeMirror-measure pre {
         position: static;
-    }
-
-    .CodeMirror div.CodeMirror-cursor {
-        position: absolute;
-        visibility: hidden;
-        border-right: none;
-        width: 0px;
-    }
-
-    .CodeMirror div.CodeMirror-cursor {
-        visibility: hidden;
-    }
-
-    .CodeMirror-focused div.CodeMirror-cursor {
-        visibility: inherit;
-    }
-
-    .CodeMirror-selected {
-        background: rgb(217, 217, 217);
-    }
-
-    .CodeMirror-focused .CodeMirror-selected {
-        background: rgb(215, 212, 240);
-    }
-
-    .cm-searching {
-        background: rgba(255, 255, 0, 0.4);
     }
 
     .CodeMirror span {
@@ -489,68 +71,6 @@
         }
     }
 
-    .CodeMirror-lint-markers {
-        width: 16px;
-    }
-
-    .CodeMirror-lint-tooltip {
-        background-color: infobackground;
-        border: 1px solid black;
-        border-radius: 4px;
-        color: infotext;
-        font-family: monospace;
-        overflow: hidden;
-        padding: 2px 5px;
-        position: fixed;
-        white-space: pre-wrap;
-        z-index: 10000;
-        max-width: 600px;
-        opacity: 0;
-        transition: opacity 0.4s;
-        font-size: 0.8em;
-    }
-
-    .CodeMirror-lint-mark-error, .CodeMirror-lint-mark-warning {
-        background-position: left bottom;
-        background-repeat: repeat-x;
-    }
-
-    .CodeMirror-lint-mark-error {
-        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAYAAAC09K7GAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sJDw4cOCW1/KIAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAAAHElEQVQI12NggIL/DAz/GdA5/xkY/qPKMDAwAADLZwf5rvm+LQAAAABJRU5ErkJggg==");
-    }
-
-    .CodeMirror-lint-marker-error, .CodeMirror-lint-marker-warning {
-        background-position: center center;
-        background-repeat: no-repeat;
-        cursor: pointer;
-        display: inline-block;
-        height: 16px;
-        width: 16px;
-        vertical-align: middle;
-        position: relative;
-    }
-
-    .CodeMirror-lint-message-error, .CodeMirror-lint-message-warning {
-        padding-left: 18px;
-        background-position: left top;
-        background-repeat: no-repeat;
-    }
-
-    .CodeMirror-lint-marker-error, .CodeMirror-lint-message-error {
-        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAHlBMVEW7AAC7AACxAAC7AAC7AAAAAAC4AAC5AAD///+7AAAUdclpAAAABnRSTlMXnORSiwCK0ZKSAAAATUlEQVR42mWPOQ7AQAgDuQLx/z8csYRmPRIFIwRGnosRrpamvkKi0FTIiMASR3hhKW+hAN6/tIWhu9PDWiTGNEkTtIOucA5Oyr9ckPgAWm0GPBog6v4AAAAASUVORK5CYII=");
-    }
-
-    .CodeMirror-lint-marker-warning, .CodeMirror-lint-message-warning {
-        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAANlBMVEX/uwDvrwD/uwD/uwD/uwD/uwD/uwD/uwD/uwD6twD/uwAAAADurwD2tQD7uAD+ugAAAAD/uwDhmeTRAAAADHRSTlMJ8mN1EYcbmiixgACm7WbuAAAAVklEQVR42n3PUQqAIBBFUU1LLc3u/jdbOJoW1P08DA9Gba8+YWJ6gNJoNYIBzAA2chBth5kLmG9YUoG0NHAUwFXwO9LuBQL1giCQb8gC9Oro2vp5rncCIY8L8uEx5ZkAAAAASUVORK5CYII=");
-    }
-
-    .CodeMirror-lint-marker-multiple {
-        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAMAAADzjKfhAAAACVBMVEUAAAAAAAC/v7914kyHAAAAAXRSTlMAQObYZgAAACNJREFUeNo1ioEJAAAIwmz/H90iFFSGJgFMe3gaLZ0od+9/AQZ0ADosbYraAAAAAElFTkSuQmCC");
-        background-repeat: no-repeat;
-        background-position: right bottom;
-        width: 100%;
-        height: 100%;
-    }
 
     :root {
         --bg-color: #ffffff;
@@ -584,11 +104,6 @@
         outline: 0px;
     }
 
-    .in-text-selection, ::selection {
-        background: rgb(181, 214, 252);
-        text-shadow: none;
-    }
-
     #write {
         margin: 0px auto;
         height: auto;
@@ -608,7 +123,7 @@
 
     body.typora-export {
         padding-left: 30px;
-        padding-right: 30px;
+        padding-right: 50px;
     }
 
     @media screen and (max-width: 500px) {
@@ -617,13 +132,6 @@
             padding-right: 0px;
         }
 
-        .CodeMirror-sizer {
-            margin-left: 0px !important;
-        }
-
-        .CodeMirror-gutters {
-            display: none !important;
-        }
     }
 
     .typora-export #write {
@@ -706,32 +214,8 @@
         white-space: normal;
     }
 
-    .mathjax-block {
-        margin-top: 0px;
-        margin-bottom: 0px;
-        -webkit-margin-before: 0rem;
-        -webkit-margin-after: 0rem;
-    }
-
-    .hidden {
-        display: none;
-    }
-
-    .md-blockmeta {
-        color: rgb(204, 204, 204);
-        font-weight: bold;
-        font-style: italic;
-    }
-
     a {
         cursor: pointer;
-    }
-
-    sup.md-footnote {
-        padding: 2px 4px;
-        background-color: rgba(238, 238, 238, 0.7);
-        color: rgb(85, 85, 85);
-        border-radius: 4px;
     }
 
     #write input[type="checkbox"] {
@@ -763,37 +247,12 @@
         min-width: 80px;
     }
 
-    .CodeMirror-gutters {
-        border-right: 0px;
-        background-color: inherit;
-    }
-
-    .CodeMirror {
-        text-align: left;
-    }
-
-    .CodeMirror-placeholder {
-        opacity: 0.3;
-    }
-
     .CodeMirror pre {
         padding: 0px 4px;
     }
 
-    .CodeMirror-lines {
-        padding: 0px;
-    }
-
-    div.hr:focus {
-        cursor: none;
-    }
-
     pre {
         white-space: pre-wrap;
-    }
-
-    .CodeMirror-gutters {
-        margin-right: 4px;
     }
 
     .md-fences {
@@ -805,20 +264,6 @@
         white-space: pre;
         background: var(--code-block-bg-color);
         position: relative !important;
-    }
-
-    .md-diagram-panel {
-        width: 100%;
-        margin-top: 10px;
-        text-align: center;
-        padding-top: 0px;
-        padding-bottom: 8px;
-        overflow-x: auto;
-    }
-
-    .md-fences .CodeMirror.CodeMirror-wrap {
-        top: -1.6em;
-        margin-bottom: -1.6em;
     }
 
     .md-fences.mock-cm {
@@ -833,38 +278,8 @@
         padding-left: 40px;
     }
 
-    .footnotes {
-        opacity: 0.8;
-        font-size: 0.9rem;
-        padding-top: 1em;
-        padding-bottom: 1em;
-    }
-
     .footnotes + .footnotes {
         margin-top: -1em;
-    }
-
-    .md-reset {
-        margin: 0px;
-        padding: 0px;
-        border: 0px;
-        outline: 0px;
-        vertical-align: top;
-        background: transparent;
-        text-decoration: none;
-        text-shadow: none;
-        float: none;
-        position: static;
-        width: auto;
-        height: auto;
-        white-space: nowrap;
-        cursor: inherit;
-        -webkit-tap-highlight-color: transparent;
-        line-height: normal;
-        font-weight: normal;
-        text-align: left;
-        box-sizing: content-box;
-        direction: ltr;
     }
 
     li div {
@@ -873,10 +288,6 @@
 
     blockquote {
         margin: 1rem 0px;
-    }
-
-    li p, li .mathjax-block {
-        margin: 0.5rem 0px;
     }
 
     li {
@@ -890,12 +301,6 @@
 
     blockquote > :first-child {
         margin-top: 0px;
-    }
-
-    .footnotes-area {
-        color: rgb(136, 136, 136);
-        margin-top: 0.714rem;
-        padding-bottom: 0.143rem;
     }
 
     @media print {
@@ -939,60 +344,13 @@
         }
     }
 
-    .footnote-line {
-        margin-top: 0.714em;
-        font-size: 0.7em;
-    }
-
     a img, img a {
         cursor: pointer;
-    }
-
-    pre.md-meta-block {
-        font-size: 0.8rem;
-        min-height: 2.86rem;
-        white-space: pre-wrap;
-        background: rgb(204, 204, 204);
-        display: block;
-        overflow-x: hidden;
-    }
-
-    p .md-image:only-child {
-        display: inline-block;
-        width: 100%;
-        text-align: center;
-    }
-
-    #write .MathJax_Display {
-        margin: 0.8em 0px 0px;
-    }
-
-    .mathjax-block {
-        white-space: pre;
-        overflow: hidden;
-        width: 100%;
-    }
-
-    p + .mathjax-block {
-        margin-top: -1.143rem;
-    }
-
-    .mathjax-block:not(:empty)::after {
-        display: none;
     }
 
     [contenteditable="true"]:active, [contenteditable="true"]:focus {
         outline: none;
         box-shadow: none;
-    }
-
-    .task-list {
-        list-style-type: none;
-    }
-
-    .task-list-item {
-        position: relative;
-        padding-left: 1em;
     }
 
     .task-list-item input {
@@ -1001,188 +359,16 @@
         left: 0px;
     }
 
-    .math {
-        font-size: 1rem;
-    }
-
-    .md-toc {
-        min-height: 3.58rem;
-        position: relative;
-        font-size: 0.9rem;
-        border-radius: 10px;
-    }
-
-    .md-toc-content {
-        position: relative;
-        margin-left: 0px;
-    }
-
-    .md-toc::after, .md-toc-content::after {
-        display: none;
-    }
-
-    .md-toc-item {
-        display: block;
-        color: rgb(65, 131, 196);
-        text-decoration: none;
-    }
-
-    .md-toc-inner:hover {
-    }
-
-    .md-toc-inner {
-        display: inline-block;
-        cursor: pointer;
-    }
-
-    .md-toc-h1 .md-toc-inner {
-        margin-left: 0px;
-        font-weight: bold;
-    }
-
-    .md-toc-h2 .md-toc-inner {
-        margin-left: 2em;
-    }
-
-    .md-toc-h3 .md-toc-inner {
-        margin-left: 4em;
-    }
-
-    .md-toc-h4 .md-toc-inner {
-        margin-left: 6em;
-    }
-
-    .md-toc-h5 .md-toc-inner {
-        margin-left: 8em;
-    }
-
-    .md-toc-h6 .md-toc-inner {
-        margin-left: 10em;
-    }
-
     @media screen and (max-width: 48em) {
-        .md-toc-h3 .md-toc-inner {
-            margin-left: 3.5em;
-        }
 
-        .md-toc-h4 .md-toc-inner {
-            margin-left: 5em;
-        }
-
-        .md-toc-h5 .md-toc-inner {
-            margin-left: 6.5em;
-        }
-
-        .md-toc-h6 .md-toc-inner {
-            margin-left: 8em;
-        }
-    }
-
-    a.md-toc-inner {
-        font-size: inherit;
-        font-style: inherit;
-        font-weight: inherit;
-        line-height: inherit;
     }
 
     .footnote-line a:not(.reversefootnote) {
         color: inherit;
     }
 
-    .md-attr {
-        display: none;
-    }
-
-    .md-fn-count::after {
-        content: ".";
-    }
-
-    .md-tag {
-        opacity: 0.5;
-    }
-
-    .md-comment {
-        color: rgb(162, 127, 3);
-        opacity: 0.8;
-        font-family: monospace;
-    }
-
     code {
         text-align: left;
-    }
-
-    h1 .md-tag, h2 .md-tag, h3 .md-tag, h4 .md-tag, h5 .md-tag, h6 .md-tag {
-        font-weight: initial;
-        opacity: 0.35;
-    }
-
-    a.md-print-anchor {
-        border-width: initial !important;
-        border-style: none !important;
-        border-color: initial !important;
-        display: inline-block !important;
-        position: absolute !important;
-        width: 1px !important;
-        right: 0px !important;
-        outline: none !important;
-        background: transparent !important;
-        text-decoration: initial !important;
-        text-shadow: initial !important;
-    }
-
-    .md-inline-math .MathJax_SVG .noError {
-        display: none !important;
-    }
-
-    .mathjax-block .MathJax_SVG_Display {
-        text-align: center;
-        margin: 1em 0em;
-        position: relative;
-        text-indent: 0px;
-        max-width: none;
-        max-height: none;
-        min-height: 0px;
-        min-width: 100%;
-        width: auto;
-        display: block !important;
-    }
-
-    .MathJax_SVG_Display, .md-inline-math .MathJax_SVG_Display {
-        width: auto;
-        margin: inherit;
-        display: inline-block !important;
-    }
-
-    .MathJax_SVG .MJX-monospace {
-        font-family: monospace;
-    }
-
-    .MathJax_SVG .MJX-sans-serif {
-        font-family: sans-serif;
-    }
-
-    .MathJax_SVG {
-        display: inline;
-        font-style: normal;
-        font-weight: normal;
-        line-height: normal;
-        zoom: 90%;
-        text-indent: 0px;
-        text-align: left;
-        text-transform: none;
-        letter-spacing: normal;
-        word-spacing: normal;
-        word-wrap: normal;
-        white-space: nowrap;
-        float: none;
-        direction: ltr;
-        max-width: none;
-        max-height: none;
-        min-width: 0px;
-        min-height: 0px;
-        border: 0px;
-        padding: 0px;
-        margin: 0px;
     }
 
     .MathJax_SVG * {
@@ -1196,6 +382,7 @@
     [lang="flow"] svg, [lang="mermaid"] svg {
         max-width: 100%;
     }
+
 
     :root {
         --side-bar-bg-color: #fafafa;
@@ -1269,10 +456,6 @@
         font-weight: bold;
         line-height: 1.4;
         cursor: text;
-    }
-
-    h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
-        text-decoration: none;
     }
 
     h1 tt, h1 code {
@@ -1448,10 +631,6 @@
         margin-bottom: 0px;
     }
 
-    .CodeMirror-gutters {
-        border-right: 1px solid rgb(221, 221, 221);
-    }
-
     .md-fences, code, tt {
         border: 1px solid rgb(221, 221, 221);
         background-color: rgb(248, 248, 248);
@@ -1465,14 +644,6 @@
         margin-bottom: 15px;
         margin-top: 15px;
         padding: 8px 1em 6px;
-    }
-
-    .task-list {
-        padding-left: 0px;
-    }
-
-    .task-list-item {
-        padding-left: 32px;
     }
 
     .task-list-item input {
@@ -1501,98 +672,10 @@
         background-color: rgb(248, 248, 248);
     }
 
-    #write pre.md-meta-block {
-        padding: 1rem;
-        font-size: 85%;
-        line-height: 1.45;
-        background-color: rgb(247, 247, 247);
-        border: 0px;
-        border-radius: 3px;
-        color: rgb(119, 119, 119);
-        margin-top: 0px !important;
-    }
-
-    .mathjax-block > .code-tooltip {
-        bottom: 0.375rem;
-    }
-
-    #write > h3.md-focus::before {
-        left: -1.5625rem;
-        top: 0.375rem;
-    }
-
-    #write > h4.md-focus::before {
-        left: -1.5625rem;
-        top: 0.285714rem;
-    }
-
-    #write > h5.md-focus::before {
-        left: -1.5625rem;
-        top: 0.285714rem;
-    }
-
-    #write > h6.md-focus::before {
-        left: -1.5625rem;
-        top: 0.285714rem;
-    }
-
-    .md-image > .md-meta {
-        border: 1px solid rgb(221, 221, 221);
-        border-radius: 3px;
-        font-family: Consolas, "Liberation Mono", Courier, monospace;
-        padding: 2px 4px 0px;
-        font-size: 0.9em;
-        color: inherit;
-    }
-
-    .md-tag {
-        color: inherit;
-    }
-
-    .md-toc {
-        margin-top: 20px;
-        padding-bottom: 20px;
-    }
-
-    .sidebar-tabs {
-        border-bottom: none;
-    }
-
-    #typora-quick-open {
-        border: 1px solid rgb(221, 221, 221);
-        background-color: rgb(248, 248, 248);
-    }
-
-    #typora-quick-open-item {
-        background-color: rgb(250, 250, 250);
-        border-color: rgb(254, 254, 254) rgb(229, 229, 229) rgb(229, 229, 229) rgb(238, 238, 238);
-        border-style: solid;
-        border-width: 1px;
-    }
-
-    #md-notification::before {
-        top: 10px;
-    }
-
     .on-focus-mode blockquote {
         border-left-color: rgba(85, 85, 85, 0.12);
     }
 
-    header, .context-menu, .megamenu-content, footer {
-        font-family: "Segoe UI", Arial, sans-serif;
-    }
-
-    .file-node-content:hover .file-node-icon, .file-node-content:hover .file-node-open-state {
-        visibility: visible;
-    }
-
-    .mac-seamless-mode #typora-sidebar {
-        background-color: var(--side-bar-bg-color);
-    }
-
-    .md-lang {
-        color: rgb(180, 101, 77);
-    }
 
     </style>
 </head>
@@ -2015,6 +1098,73 @@
         回调的核心概念就是：<font color="#a52a2a">我调你完你调我。</font>
     </pre>
 
+    <b><a name='header-n27' class='md-header-anchor '></a>2.7、 方法间的通过参数传递回调对象</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        我们一般注入回调对象时，比如客户端A调用B，B里面委托了A，当执行了B的指定方法后，线程又回头来执行A的某个逻辑，A对象注入到B中的，即A此时是作为B的一个成员变量存在的。
+        当然，这也符合我们常规的注入、委托、依赖等定义。因为大多数的委托机制，被委托的对象都是作为成员存在的。
+        然而，我们上面的所有案例，ClassB中的ClassA对象实际上都是通过方法参数注入进来的。
+        比如下面案例：
+
+        <b><font color="#a52a2a">客户端程序</font></b>
+        package zeh.test.demo.com.call.back.method;
+
+        /**
+         * 功能描述 客户端 提供回调逻辑
+         * 将客户端和控制程序分离
+         *
+         * @since 2020-06-28
+         */
+        public class Client {
+
+            public void callback() {
+                System.out.println("客户端提供的回调方法");
+            }
+        }
+
+        <b><font color="#a52a2a">服务端程序</font></b>
+        package zeh.test.demo.com.call.back.method;
+
+        /**
+         * 功能描述 服务端程序 暴露触发程序和回调注册接口
+         *
+         * @since 2020-06-28
+         */
+        public class Server {
+
+            public void handler(Client client) {
+                System.out.println("服务端暴露的触发接口");
+                //服务端业务逻辑执行完毕则执行客户端提供的回调逻辑
+                client.callback();
+            }
+        }
+
+        <b><font color="#a52a2a">控制程序</font></b>
+        package zeh.test.demo.com.call.back.method;
+
+        /**
+         * 功能描述
+         *
+         * @author zWX5331241
+         * @since 2021-03-30
+         */
+        public class Controller {
+            public static void main(String[] args) {
+                // 回调对象实际上直接作为方法参数传递进去，而不是作为一个成员注入进去
+                new Server().handler(new Client());
+            }
+        }
+
+        <b><font color="#a52a2a">执行结果</font></b>
+        服务端暴露的触发接口
+        客户端提供的回调方法
+
+        Process finished with exit code 0
+
+        <b><font color="#a52a2a">感想</font></b>
+        平时我们创建一个目标对象，执行目标对象的某个方法，如果在这个方法里面传入了另外一个对象，则这个对象很可能就是一个回调对象。
+        因为你传递进去实际上就是为了使用这个对象的某个功能，除非你传递进去并不进行任何调用。
+    </pre>
+
     <b><a name='header-n3' class='md-header-anchor '></a>3、钩子模式</b><br>
     <b><a name='header-n31' class='md-header-anchor '></a>3.1、 升级上述案例场景，所有客户端的回调逻辑完全相同</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
@@ -2307,4 +1457,3 @@
 </div>
 </body>
 </html>
-
