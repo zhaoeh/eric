@@ -1598,7 +1598,7 @@
 </head>
 <body class='typora-export'>
 <div id='write' class='is-node'>
-    <b><a name='header-n0' class='md-header-anchor '></a>回调机制</b>
+    <b><a name='header-n0' class='md-header-anchor '></a>回调机制和钩子模式</b>
 
     <b><a name='header-n1' class='md-header-anchor '></a>1、回调机制</b><br>
     <b><a name='header-n11' class='md-header-anchor '></a>1.1、 理解回调机制</b>
@@ -2206,6 +2206,8 @@
                     // 客户端向服务端注册钩子对象
                     ClassB classB = new ClassB(new MyGouZiImpl());
                     classB.methodB();
+                    classB.methodB2();
+                    classB.methodB3();
                 }
             }
         </font>
@@ -2233,6 +2235,21 @@
                         gouZi.invoke();
                     }
                 }
+
+                public void methodB2() {
+                    System.out.println("执行classB的methodB2方法");
+                    if (gouZi != null) {
+                        gouZi.invoke();
+                    }
+                }
+
+                public void methodB3() {
+                    System.out.println("执行classB的methodB3方法");
+                    if (gouZi != null) {
+                        gouZi.invoke();
+                    }
+                }
+
             }
         </font>
         <b><font color="#a52a2a">测试程序</font> </b>
@@ -2255,7 +2272,15 @@
         <font color="gray">
             执行classB的methodB方法
             执行钩子对象的invoke方法
+            执行classB的methodB2方法
+            执行钩子对象的invoke方法
+            执行classB的methodB3方法
+            执行钩子对象的invoke方法
         </font>
+        <b><font color="#a52a2a">分析</font> </b>
+        钩子模式可以实现方法的统一转发。
+        比如上述案例，ClassA客户端访问了ClassB服务端的所有方法，只要访问服务端的任意一个方法都会将请求转发到钩子实例的invoke方法上面去。
+        动态代理底层就使用的这种方式。
     </pre>
 
     <b><a name='header-n4' class='md-header-anchor '></a>4、总结回调机制和钩子模式</b><br>
@@ -2271,6 +2296,7 @@
         <b>总结钩子模式：</b>
         钩子模式是回调机制的变种，回调强调将流程转发到客户端自己的回调方法上；钩子是将流程转发到第三方实现好的钩子实例上。
         钩子模式必须存在钩子接口，而且接口必须是服务端预留给客户去定制实现的。
+        <font color="#a52a2a">很多书籍和博客不区分回调模式和钩子模式，认为两者是相同的，这属于认识范畴问题。</font>
         <font color="#a52a2a">
             tips：
             回调和钩子都使用的比较多。
