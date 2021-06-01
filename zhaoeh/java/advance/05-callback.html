@@ -1594,7 +1594,6 @@
         color: rgb(180, 101, 77);
     }
 
-
     </style>
 </head>
 <body class='typora-export'>
@@ -1617,79 +1616,80 @@
     </pre>
     <b><a name='header-n13' class='md-header-anchor '></a>1.3、 回调机制的核心</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        必须将消费方A的实例对象想办法搞到服务方B中去，只有服务方B有了A的引用后，才能完成回调逻辑（因为B在执行完自己的某个方法后需要回调A的callback方法）。
+        必须由消费方A负责触发对B的调用，并将消费方A的实例对象想办法搞到服务方B中去，只有服务方B有了A的引用后，才能完成回调逻辑（因为B在执行完自己的某个方法后需要回调A的callback方法）。
     </pre>
     <b><a name='header-n14' class='md-header-anchor '></a>1.4、 一个简单的回调</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <b><font color="#a52a2a">ClassA</font></b>
-        package zeh.test.demo.com.callback.basecallback;
+        <font color="gray">
+            package zeh.test.demo.com.callback.basecallback;
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-04-06
-         */
-        public class ClassA {
+            /**
+             * 功能描述
+             *
+             * @since 2021-04-06
+             */
+            public class ClassA {
 
-            public void testClassA() {
-                ClassB classB = new ClassB(this);
-                classB.testClassB();
+                public void testClassA() {
+                    ClassB classB = new ClassB(this);
+                    classB.testClassB();
+                }
+
+                public void testClassA_back() {
+                    System.out.println("执行A类中的 testClassA_back 方法");
+                }
             }
-
-            public void testClassA_back() {
-                System.out.println("执行A类中的 testClassA_back 方法");
-            }
-        }
-
+        </font>
 
         <b><font color="#a52a2a">ClassB</font></b>
-        package zeh.test.demo.com.callback.basecallback;
+        <font color="gray">
+            package zeh.test.demo.com.callback.basecallback;
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-04-06
-         */
-        public class ClassB {
+            /**
+             * 功能描述
+             *
+             * @since 2021-04-06
+             */
+            public class ClassB {
 
-            private ClassA classA;
+                private ClassA classA;
 
-            public ClassB(ClassA classA) {
-                this.classA = classA;
+                public ClassB(ClassA classA) {
+                    this.classA = classA;
+                }
+
+
+                public void testClassB() {
+                    System.out.println("执行B类中的 testClassB 方法");
+                    classA.testClassA_back();
+                }
             }
-
-
-            public void testClassB() {
-                System.out.println("执行B类中的 testClassB 方法");
-                classA.testClassA_back();
-            }
-        }
-
+        </font>
 
         <b><font color="#a52a2a">TestMain</font></b>
-        package zeh.test.demo.com.callback.basecallback;
+        <font color="gray">
+            package zeh.test.demo.com.callback.basecallback;
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-04-06
-         */
-        public class TestMain {
+            /**
+             * 功能描述
+             *
+             * @since 2021-04-06
+             */
+            public class TestMain {
 
-            public static void main(String[] args) {
-                ClassA classA = new ClassA();
-                classA.testClassA();
+                public static void main(String[] args) {
+                    ClassA classA = new ClassA();
+                    classA.testClassA();
+                }
             }
-        }
+        </font>
 
         <b><font color="#a52a2a">测试结果</font></b>
-        执行B类中的 testClassB 方法
-        执行A类中的 testClassA_back 方法
-
-        Process finished with exit code 0
+        <font color="gray">
+            执行B类中的 testClassB 方法
+            执行A类中的 testClassA_back 方法
+        </font>
     </pre>
 
     <b><a name='header-n2' class='md-header-anchor '></a>2、回调机制探索</b><br>
@@ -1697,7 +1697,7 @@
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         从上面案例可以看出，回调的核心是，A调用了B，B又反过来调用了A。
         因此，一个最基础的回调架子应该至少包括两部分：
-        1.  A方：即消费方(调用方)，A方中定义业务方法和回调方法。
+        1.  A方：即消费方(调用方)，A方中定义业务方法和回调方法，A方得持有B的引用才能调用B的方法。
         2.  B方：即服务方，B方法定义业务方法，并定义成员或者局部变量以便持有A方的引用。
         最终可以在合适的时机向B方中注入A对象即可。
     </pre>
@@ -1711,123 +1711,124 @@
     <b><a name='header-n23' class='md-header-anchor '></a>2.3、 使用多态和接口对回调逻辑进行解耦</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <b><font color="#a52a2a">ICallBack</font></b>
-        package zeh.test.demo.com.callback.supercallback;
+        <font color="gray">
+            package zeh.test.demo.com.callback.supercallback;
 
-        /**
-         * 功能描述 回调接口
-         *
-         * @author zWX5331241
-         * @since 2021-04-06
-         */
-        public interface ICallBack {
-            void callback();
-        }
+            /**
+             * 功能描述 回调接口
+             *
+             * @author zWX5331241
+             * @since 2021-04-06
+             */
+            public interface ICallBack {
+                void callback();
+            }
+        </font>
 
         <b><font color="#a52a2a">ClassA</font></b>
-        package zeh.test.demo.com.callback.supercallback;
+        <font color="gray">
+            package zeh.test.demo.com.callback.supercallback;
 
+            /**
+             * 功能描述
+             *
+             * @since 2021-04-06
+             */
+            public class ClassA implements ICallBack {
+                @Override
+                public void callback() {
+                    System.out.println("执行A类中的 callback 方法");
+                }
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-04-06
-         */
-        public class ClassA implements ICallBack {
-            @Override
-            public void callback() {
-                System.out.println("执行A类中的 callback 方法");
+                public void testClassA() {
+                    ClassB classB = new ClassB(this);
+                    classB.testClassB();
+                }
             }
-
-            public void testClassA() {
-                ClassB classB = new ClassB(this);
-                classB.testClassB();
-            }
-        }
+        </font>
 
         <b><font color="#a52a2a">ClassFuck</font></b>
-        package zeh.test.demo.com.callback.supercallback;
+        <font color="gray">
+            package zeh.test.demo.com.callback.supercallback;
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-04-06
-         */
-        public class ClassFuck implements ICallBack{
+            /**
+             * 功能描述
+             *
+             * @since 2021-04-06
+             */
+            public class ClassFuck implements ICallBack{
 
-            @Override
-            public void callback() {
-                System.out.println("执行Fuck类中的 callback 方法");
+                @Override
+                public void callback() {
+                    System.out.println("执行Fuck类中的 callback 方法");
+                }
+
+                public void testClassFuck() {
+                    ClassB classB = new ClassB(this);
+                    classB.testClassB();
+                }
             }
-
-            public void testClassFuck() {
-                ClassB classB = new ClassB(this);
-                classB.testClassB();
-            }
-        }
+        </font>
 
         <b><font color="#a52a2a">ClassB</font></b>
-        package zeh.test.demo.com.callback.supercallback;
+        <font color="gray">
+            package zeh.test.demo.com.callback.supercallback;
 
+            /**
+             * 功能描述
+             *
+             * @since 2021-04-06
+             */
+            public class ClassB {
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-04-06
-         */
-        public class ClassB {
+                private ICallBack callback;
 
-            private ICallBack callback;
+                public ClassB(ICallBack callback) {
+                    this.callback = callback;
+                }
 
-            public ClassB(ICallBack callback) {
-                this.callback = callback;
+                public void testClassB() {
+                    System.out.println("执行B类中的 testClassB 方法");
+                    callback.callback();
+                }
             }
-
-
-            public void testClassB() {
-                System.out.println("执行B类中的 testClassB 方法");
-                callback.callback();
-            }
-        }
+        </font>
 
         <b><font color="#a52a2a">TestMain</font></b>
-        package zeh.test.demo.com.callback.supercallback;
+        <font color="gray">
+            package zeh.test.demo.com.callback.supercallback;
 
+            /**
+             * 功能描述
+             *
+             * @since 2021-04-06
+             */
+            public class TestMain {
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-04-06
-         */
-        public class TestMain {
+                public static void main(String[] args) {
+                    ClassA classA = new ClassA();
+                    classA.testClassA();
 
-            public static void main(String[] args) {
-                ClassA classA = new ClassA();
-                classA.testClassA();
-
-                ClassFuck classFuck = new ClassFuck();
-                classFuck.testClassFuck();
+                    ClassFuck classFuck = new ClassFuck();
+                    classFuck.testClassFuck();
+                }
             }
-        }
+        </font>
 
         <b><font color="#a52a2a">测试结果</font></b>
-        执行B类中的 testClassB 方法
-        执行A类中的 callback 方法
-        执行B类中的 testClassB 方法
-        执行Fuck类中的 callback 方法
-
-        Process finished with exit code 0
-
+        <font color="gray">
+            执行B类中的 testClassB 方法
+            执行A类中的 callback 方法
+            执行B类中的 testClassB 方法
+            执行Fuck类中的 callback 方法
+        </font>
 
     </pre>
     <b><a name='header-n24' class='md-header-anchor '></a>2.4、 解耦分析</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         1.  将回调逻辑抽取出来，通过单独的接口进行封装，定义顶层的抽象回调方法。
         2.  所有的客户端分别去实现回调接口，不同的客户端实现不同的回调逻辑，服务方只需要通过多态的方式注入回调接口的对象即可。
-        也就是说，为了适配不同的客户端的不同的回调请求，我们通过接口将回调逻辑进行封装。这样一来，便实现了回调的通用性。
+        也就是说，为了适配不同的客户端不同的回调请求，我们通过接口将回调定义进行抽象。这样一来，便通过多态实现了回调的通用性。
 
         但是，仔细观察，发现每一个客户端代码都需要实现回调接口ICallBack。这样做有好处也有坏处：
         好处是客户端代码明确和回调逻辑进行绑定。
@@ -1839,336 +1840,442 @@
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <b>先使用内部类分别实现回调逻辑</b>
         <b><font color="#a52a2a">ICallBack</font></b>
-        package zeh.test.demo.com.callback.supercallback;
+        <font color="gray">
+            package zeh.test.demo.com.callback.supercallback;
 
-        /**
-         * 功能描述 回调接口
-         *
-         * @author zWX5331241
-         * @since 2021-04-06
-         */
-        public interface ICallBack {
-            void callback();
-        }
-
+            /**
+             * 功能描述 回调接口
+             *
+             * @since 2021-04-06
+             */
+            public interface ICallBack {
+                void callback();
+            }
+        </font>
 
         <b><font color="#a52a2a">ClassA</font></b>
-        package zeh.test.demo.com.callback.supercallback;
+        <font color="gray">
+            package zeh.test.demo.com.callback.supercallback;
 
+            /**
+             * 功能描述
+             *
+             * @since 2021-04-06
+             */
+            public class ClassA {
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-04-06
-         */
-        public class ClassA {
+                public void testClassA() {
+                    ClassB classB = new ClassB(new CallBackImpl());
+                    classB.testClassB();
+                }
 
-            public void testClassA() {
-                ClassB classB = new ClassB(new CallBackImpl());
-                classB.testClassB();
-            }
+                public class CallBackImpl implements ICallBack {
 
-            public class CallBackImpl implements ICallBack {
-
-                @Override
-                public void callback() {
-                    System.out.println("CallBackImpl in ClassA 中的callback方法 ");
+                    @Override
+                    public void callback() {
+                        System.out.println("CallBackImpl in ClassA 中的callback方法 ");
+                    }
                 }
             }
-        }
-
+        </font>
 
         <b><font color="#a52a2a">ClassFuck</font></b>
-        package zeh.test.demo.com.callback.supercallback;
+        <font color="gray">
+            package zeh.test.demo.com.callback.supercallback;
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-04-06
-         */
-        public class ClassFuck{
+            /**
+             * 功能描述
+             *
+             * @since 2021-04-06
+             */
+            public class ClassFuck{
 
-            public void testClassFuck() {
-                ClassB classB = new ClassB(new CallBackImpl());
-                classB.testClassB();
-            }
+                public void testClassFuck() {
+                    ClassB classB = new ClassB(new CallBackImpl());
+                    classB.testClassB();
+                }
 
-            public class CallBackImpl implements ICallBack {
+                public class CallBackImpl implements ICallBack {
 
-                @Override
-                public void callback() {
-                    System.out.println("CallBackImpl in ClassFuck 中的callback方法 ");
+                    @Override
+                    public void callback() {
+                        System.out.println("CallBackImpl in ClassFuck 中的callback方法 ");
+                    }
                 }
             }
-        }
-
+        </font>
 
         <b><font color="#a52a2a">ClassB</font></b>
-        package zeh.test.demo.com.callback.supercallback;
+        <font color="gray">
+            package zeh.test.demo.com.callback.supercallback;
 
+            /**
+             * 功能描述
+             *
+             * @since 2021-04-06
+             */
+            public class ClassB {
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-04-06
-         */
-        public class ClassB {
+                private ICallBack callback;
 
-            private ICallBack callback;
+                public ClassB(ICallBack callback) {
+                    this.callback = callback;
+                }
 
-            public ClassB(ICallBack callback) {
-                this.callback = callback;
+                public void testClassB() {
+                    System.out.println("执行B类中的 testClassB 方法");
+                    callback.callback();
+                }
             }
-
-
-            public void testClassB() {
-                System.out.println("执行B类中的 testClassB 方法");
-                callback.callback();
-            }
-        }
-
+        </font>
 
         <b><font color="#a52a2a">TestMain</font></b>
-        package zeh.test.demo.com.callback.supercallback;
+        <font color="gray">
+            package zeh.test.demo.com.callback.supercallback;
 
+            /**
+             * 功能描述
+             *
+             * @since 2021-04-06
+             */
+            public class TestMain {
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-04-06
-         */
-        public class TestMain {
+                public static void main(String[] args) {
+                    ClassA classA = new ClassA();
+                    classA.testClassA();
 
-            public static void main(String[] args) {
-                ClassA classA = new ClassA();
-                classA.testClassA();
-
-                ClassFuck classFuck = new ClassFuck();
-                classFuck.testClassFuck();
+                    ClassFuck classFuck = new ClassFuck();
+                    classFuck.testClassFuck();
+                }
             }
-        }
-
+        </font>
 
         <b><font color="#a52a2a">测试结果</font></b>
-        执行B类中的 testClassB 方法
-        CallBackImpl in ClassA 中的callback方法
-        执行B类中的 testClassB 方法
-        CallBackImpl in ClassFuck 中的callback方法
-
-        Process finished with exit code 0
-
+        <font color="gray">
+            执行B类中的 testClassB 方法
+            CallBackImpl in ClassA 中的callback方法
+            执行B类中的 testClassB 方法
+            CallBackImpl in ClassFuck 中的callback方法
+        </font>
     </pre>
 
     <b><a name='header-n26' class='md-header-anchor '></a>2.6、 使用匿名内部类对上述代码进行改造</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <b>使用匿名内部类分别实现回调逻辑</b>
         <b><font color="#a52a2a">ClassA</font></b>
-        package zeh.test.demo.com.callback.supercallback;
+        <font color="gray">
+            package zeh.test.demo.com.callback.supercallback;
 
+            /**
+             * 功能描述
+             *
+             * @since 2021-04-06
+             */
+            public class ClassA {
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-04-06
-         */
-        public class ClassA {
-
-            public void testClassA() {
-                ClassB classB = new ClassB(new ICallBack() {
-                    @Override
-                    public void callback() {
-                        System.out.println("CallBackImpl in ClassA 中的callback方法 ");
-                    }
-                });
-                classB.testClassB();
+                public void testClassA() {
+                    ClassB classB = new ClassB(new ICallBack() {
+                        @Override
+                        public void callback() {
+                            System.out.println("CallBackImpl in ClassA 中的callback方法 ");
+                        }
+                    });
+                    classB.testClassB();
+                }
             }
-        }
-
-
+        </font>
 
         <b><font color="#a52a2a">ClassFuck</font></b>
-        package zeh.test.demo.com.callback.supercallback;
+        <font color="gray">
+            package zeh.test.demo.com.callback.supercallback;
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-04-06
-         */
-        public class ClassFuck {
+            /**
+             * 功能描述
+             *
+             * @since 2021-04-06
+             */
+            public class ClassFuck {
 
-            public void testClassFuck() {
-                ClassB classB = new ClassB(new ICallBack() {
-                    @Override
-                    public void callback() {
-                        System.out.println("CallBackImpl in ClassFuck 中的callback方法 ");
-                    }
-                });
-                classB.testClassB();
+                public void testClassFuck() {
+                    ClassB classB = new ClassB(new ICallBack() {
+                        @Override
+                        public void callback() {
+                            System.out.println("CallBackImpl in ClassFuck 中的callback方法 ");
+                        }
+                    });
+                    classB.testClassB();
+                }
             }
-        }
-
-
+        </font>
 
         <b><font color="#a52a2a">分析</font></b>
         到这一步，实际上才是我们最常见的回调机制的实现。
         即通过指定某个回调接口的lambda表达式实现，传入该回调器，相当于客户端实现了回调接口。
         当客户端调用服务端某个方法时，服务方回头又反过来调用客户端实现的回调逻辑。
+        回调的核心概念就是：<font color="#a52a2a">我调你完你调我。</font>
     </pre>
 
-    <b><a name='header-n26' class='md-header-anchor '></a>2.7、 升级场景，所有客户端的回调逻辑完全相同</b>
+    <b><a name='header-n3' class='md-header-anchor '></a>3、钩子模式</b><br>
+    <b><a name='header-n31' class='md-header-anchor '></a>3.1、 升级上述案例场景，所有客户端的回调逻辑完全相同</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         现在客户端ClassA和ClassFuck，需要的回调逻辑完全相同，此时，如果再分别由ClassA和ClassFuck实现回调接口、或者各自内部实现匿名内部类等方式，就显得冗余。
         因此，既然回调逻辑完全相同，则可以将回调逻辑的实现单独提取为一个独立的实现类。
         如下：
 
         <b><font color="#a52a2a">ICallBack</font></b>
-        package zeh.test.demo.com.callback.supercallback;
-
-        /**
-         * 功能描述 回调接口
-         *
-         * @author zWX5331241
-         * @since 2021-04-06
-         */
-        public interface ICallBack {
-            void callback();
-        }
-
-        <b><font color="#a52a2a">CallbackImpl</font></b>
-        package zeh.test.demo.com.callback.supercallback;
-
-        /**
-         * 功能描述 专门搞一个类来实接口 ICallBack
-         *
-         * @author zWX5331241
-         * @since 2021-04-07
-         */
-        public class CallbackImpl implements ICallBack {
-            @Override
-            public void callback() {
-                System.out.println("callback in CallbackImpl");
-            }
-        }
-
-        <b><font color="#a52a2a">ClassA</font></b>
-        package zeh.test.demo.com.callback.supercallback;
-
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-04-06
-         */
-        public class ClassA {
+        <font color="gray">
+            package zeh.test.demo.com.callback.supercallback;
 
             /**
-             * 这样依赖，ClassA实际上和CallbackImpl完全脱离了关系。
+             * 功能描述 回调接口
+             *
+             * @since 2021-04-06
              */
-            public void testClassA() {
-                ClassB classB = new ClassB(new CallbackImpl());
-                classB.testClassB();
+            public interface ICallBack {
+                void callback();
             }
-        }
+        </font>
+
+
+        <b><font color="#a52a2a">CallbackImpl</font></b>
+        <font color="gray">
+            package zeh.test.demo.com.callback.supercallback;
+
+            /**
+             * 功能描述 专门搞一个类来实现接口 ICallBack
+             *
+             * @since 2021-04-07
+             */
+            public class CallbackImpl implements ICallBack {
+                @Override
+                public void callback() {
+                    System.out.println("callback in CallbackImpl");
+                }
+            }
+        </font>
+
+        <b><font color="#a52a2a">ClassA</font></b>
+        <font color="gray">
+            package zeh.test.demo.com.callback.supercallback;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-04-06
+             */
+            public class ClassA {
+
+                /**
+                 * 这样一来，ClassA实际上和CallbackImpl完全脱离了关系。
+                 */
+                public void testClassA() {
+                    ClassB classB = new ClassB(new CallbackImpl());
+                    classB.testClassB();
+                }
+            }
+        </font>
 
         <b><font color="#a52a2a">ClassFuck</font></b>
-        package zeh.test.demo.com.callback.supercallback;
+        <font color="gray">
+            package zeh.test.demo.com.callback.supercallback;
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-04-06
-         */
-        public class ClassFuck {
+            /**
+             * 功能描述
+             *
+             * @since 2021-04-06
+             */
+            public class ClassFuck {
 
-            public void testClassFuck() {
-                ClassB classB = new ClassB(new CallbackImpl());
-                classB.testClassB();
+                public void testClassFuck() {
+                    ClassB classB = new ClassB(new CallbackImpl());
+                    classB.testClassB();
+                }
             }
-        }
-
+        </font>
 
         <b><font color="#a52a2a">ClassB</font></b>
-        package zeh.test.demo.com.callback.supercallback;
+        <font color="gray">
+            package zeh.test.demo.com.callback.supercallback;
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-04-06
-         */
-        public class ClassB {
+            /**
+             * 功能描述
+             *
+             * @since 2021-04-06
+             */
+            public class ClassB {
 
-            private ICallBack callback;
+                private ICallBack callback;
 
-            public ClassB(ICallBack callback) {
-                this.callback = callback;
+                public ClassB(ICallBack callback) {
+                    this.callback = callback;
+                }
+
+
+                public void testClassB() {
+                    System.out.println("执行B类中的 testClassB 方法");
+                    // 当callback对象不为null时执行它的方法
+                    if(callback != null){
+                        callback.callback();
+                    }
+                }
             }
-
-
-            public void testClassB() {
-                System.out.println("执行B类中的 testClassB 方法");
-                callback.callback();
-            }
-        }
-
+        </font>
 
         <b><font color="#a52a2a">TestMain</font></b>
-        package zeh.test.demo.com.callback.supercallback;
+        <font color="gray">
+            package zeh.test.demo.com.callback.supercallback;
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-04-06
-         */
-        public class TestMain {
+            /**
+             * 功能描述
+             *
+             * @since 2021-04-06
+             */
+            public class TestMain {
 
-            public static void main(String[] args) {
-                ClassA classA = new ClassA();
-                classA.testClassA();
+                public static void main(String[] args) {
+                    ClassA classA = new ClassA();
+                    classA.testClassA();
+                }
             }
-        }
+        </font>
 
         <b><font color="#a52a2a">测试结果</font></b>
-        执行B类中的 testClassB 方法
-        callback in CallbackImpl
-
-        Process finished with exit code 0
+        <font color="gray">
+            执行B类中的 testClassB 方法
+            callback in CallbackImpl
+        </font>
 
         <b><font color="#a52a2a">结果分析</font></b>
-        单独拎出来一个实现类 CallbackImpl ，去实现回调接口 ICallBack 。
-        这样不论哪个客户端去调用服务端代码，只需要传入实现好的这个回调器的对象到服务端即可。
-        这种实现实际上和委托机制的几种实现特别相似，乍一看，感觉就是委托：ClassA向ClassB注入了委托对象CallbackImpl，调用ClassB，ClassB委托CallbackImpl去处理。
-        实际上确实使用了委托，但是侧重点不同。
-        <b>一般往往是服务方定义了某个接口，而明确需要客户端去实现这个接口，实现后就会在合适的时机来调用该实现。只要分析后是基于这种思路的，那这个接口就是回调接口，这个实现就是回调器。</b>
-        你可以这样想象，不同的客户端向服务端注入这个第三方的回调器时，实际上相当于每个客户端都实现了这个回调接口，即每个客户端都是一个回调器。
-        这样理解起来，就满足了回调的概念：<font color="#a52a2a">我调你完你调我。</font>
+        1.  单独拎出来一个实现类 CallbackImpl ，去实现回调接口 ICallBack 。
+        2.  多个客户端比如ClassA,ClassFuck都调用ClassB的服务，只需要将回调器CallbackImpl对象注入到ClassB中即可。
+        3.  当ClassB的方法执行时，ClassB会调用CallbackImpl对象的callback()方法。
+        等等...ClassB现在调用CallbackImpl的callback方法？这个callback方法不是客户端ClassA和ClassFuck实现的啊，<font color="#a52a2a">这就不是回调！</font>
+
+        这种实现和回调的区别在于：
+        回调是客户端向服务端注入自己，并调用服务端的某个方法，服务端又回过来调用客户端的某个方法，重点在于<font color="#a52a2a">回</font>。
+        而这种实现，客户端向服务端注入一个第三方实例，调用服务端的某个方法，服务端将请求转发到客户端注入的这个实例上去了。
+
+        在java中，这种实现有个专门的模式，叫做<font color="#a52a2a">钩子模式</font>。
+        <b>一般往往是服务方定义了某个接口，并且在服务方程序的某个流程节点埋好了这个接口对象。当用户实现了这个接口后，服务端就会在合适的时机来调用该实现。</b>
+        就像服务方在它的执行时机中挂了好多钩子，钩子的具体实现由用户自己指定，只要用户往上面挂东西了，时机一到服务端就会主动执行这个钩子实例。
+    </pre>
+    <b><a name='header-n32' class='md-header-anchor '></a>3.2、 钩子模式案例</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b><font color="#a52a2a">定义钩子接口</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.gouzi;
+
+            /**
+             * 功能描述 钩子接口
+             *
+             * @since 2021-06-01
+             */
+            public interface MyGouZi {
+                void invoke();
+            }
+        </font>
+        <b><font color="#a52a2a">实现钩子接口</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.gouzi;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-06-01
+             */
+            public class MyGouZiImpl implements MyGouZi {
+
+                @Override
+                public void invoke() {
+                    System.out.println("执行钩子对象的invoke方法");
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">定义客户端ClassA</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.gouzi;
+
+            /**
+             * 功能描述 客户端程序
+             *
+             * @since 2021-06-01
+             */
+            public class ClassA {
+
+                public void methodA() {
+                    // 客户端向服务端注册钩子对象
+                    ClassB classB = new ClassB(new MyGouZiImpl());
+                    classB.methodB();
+                }
+            }
+        </font>
+        <a><font color="#a52a2a">定义服务端ClassB</font> </a>
+        <font color="gray">
+            package zeh.test.demo.com.gouzi;
+
+            /**
+             * 功能描述 服务端程序
+             *
+             * @since 2021-06-01
+             */
+            public class ClassB {
+
+                private MyGouZi gouZi;
+
+                public ClassB(MyGouZi gouZi) {
+                    this.gouZi = gouZi;
+                }
+
+                public void methodB() {
+                    System.out.println("执行classB的methodB方法");
+                    // 如果服务端预埋的钩子对象不为空的话，则执行钩子对象
+                    if (gouZi != null) {
+                        gouZi.invoke();
+                    }
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">测试程序</font> </b>
+        <font color="gray">
+            package zeh.test.demo.com.gouzi;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-06-01
+             */
+            public class TestMain {
+                public static void main(String[] args) {
+                    ClassA classA = new ClassA();
+                    classA.methodA();
+                }
+            }
+        </font>
+        <b><font color="#a52a2a">测试结果</font> </b>
+        <font color="gray">
+            执行classB的methodB方法
+            执行钩子对象的invoke方法
+        </font>
     </pre>
 
-    <b><a name='header-n3' class='md-header-anchor '></a>3、总结回调机制</b><br>
+    <b><a name='header-n4' class='md-header-anchor '></a>4、总结回调机制和钩子模式</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b>总结回调机制：</b>
         回调机制演变到最后也离不开多态和委托等基础特性。
-        随着回调的演变，往往需要服务方来定义一个回调接口提供给各个客户端，由客户端去实现回调接口并向服务端注入回调对象。
-        回调接口，由客户端实现逐渐转变到一个独立的第三方实现类去实现。
-        因此，在分析一个实现类实现的接口是否是回调接口时，需要结合具体的场景具体分析。
+        最简单的回调不需要抽象出回调接口。
+        然而随着回调的演变，往往需要服务方来定义一个回调接口提供给各个客户端，由客户端去实现回调接口并向服务端注入回调对象。
         回调机制是委托机制的一种特殊场景，两者都能实现方法转发，但有区别：
         1.  委托机制只是将对a方法的访问转发到对应的b方法上。
         2.  回调机制将对a方法的访问最终转发到对调用方自己的某个方法上。
-        尤其是服务方单独定义回调接口由客户端来定制实现时，往往是将对某些方法的访问最终统一转发到回调器上。
-        即：单独的回调器，可以完成方法的统一转发。
 
+        <b>总结钩子模式：</b>
+        钩子模式是回调机制的变种，回调强调将流程转发到客户端自己的回调方法上；钩子是将流程转发到第三方实现好的钩子实例上。
+        钩子模式必须存在钩子接口，而且接口必须是服务端预留给客户去定制实现的。
         <font color="#a52a2a">
             tips：
-            这里提供一个小技巧，如果说某个接口是专门预留给客户端，需要客户端定制去实现的，那么这个接口十有八九是服务器专门预留给客户端的回调接口。
-            相反，如果服务端自己已经实现了的接口，肯定不是回调接口。
-            只需要记住，能回调的逻辑肯定是要由客户端自己指定的逻辑。
+            回调和钩子都使用的比较多。
+            尤其是钩子模式，想Servlet里面的Filter、Listener等接口都是web容器提前埋好的钩子接口，只要用户实现了这些钩子实例，就会在其对应的生命周期节点加载执行。
+            不论是回调还是钩子，都可以实现类似AOP那种事件通知机制，即“当....的时候就....”。
         </font>
     </pre>
 </div>
