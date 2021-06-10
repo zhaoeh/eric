@@ -1,0 +1,1142 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>多线程操作案例.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 50px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    .footnotes + .footnotes {
+        margin-top: -1em;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    @media screen and (max-width: 48em) {
+
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    li p.first {
+        display: inline-block;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+
+
+    </style>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>多线程操作案例</b>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、多线程常见API操作</b><br>
+    <b><a name='header-n11' class='md-header-anchor '></a>1.1、 Demo01ThreadMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu01;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-06-03
+             */
+            class MyThread extends Thread {
+                private String name;
+
+                public MyThread(String name) {
+                    this.name = name;
+                }
+
+                // 默认Thread类中的run方法是空实现，什么都没有，如果你想让你启动的线程做点什么，需要把你的代码写到run方法中，即你需要覆盖run方法加入自己的业务逻辑
+                @Override
+                public void run() {
+                    for (int i = 0; i < 10; i++) {
+                        System.out.println(name + "运行，i = " + i);
+                    }
+                }
+            }
+
+            public class Demo01ThreadMain {
+                public static void main(String[] args) {
+                    // 继承Thread类不适合资源共享，因为它一个线程子类就是一个线程对象，启动多个线程对象相当于创建了多个线程子类对象
+                    // 每个线程对象对应一个线程子类对象，因此多个线程对象并没有共享线程子类对象
+                    MyThread thread1 = new MyThread("thread-1");
+                    MyThread thread2 = new MyThread("thread-2");
+
+                    // 启动thread1线程，该线程操作的对象资源是new MyThread("thread-1")
+                    thread1.start();
+                    // 启动thread2线程，该线程操作的对象资源是new MyThread("thread-2")
+                    // 因此thread1和thread2各操作各的资源，资源此时并没有共享
+                    thread2.start();
+                }
+            }
+        </font>
+    </pre>
+    <b><a name='header-n12' class='md-header-anchor '></a>1.2、 Demo02RunnableMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu01;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-06-03
+             */
+            class MyRunnable implements Runnable {
+
+                private String name;
+
+                public MyRunnable(String name) {
+                    this.name = name;
+                }
+
+                @Override
+                public void run() {
+                    for (int i = 0; i < 10; i++) {
+                        System.out.println(name + "运行，i = " + i);
+                    }
+                }
+            }
+
+            public class Demo02RunnableMain {
+                public static void main(String[] args) {
+                    MyRunnable runnable = new MyRunnable("thread-1");
+
+                    // 实例化thread1和thread2，thread1和thread2此时绑定同一个资源实例，即runnable实例，因此runnable实例是被thread1和thread2两个线程共享的
+                    Thread thread1 = new Thread(runnable);
+                    Thread thread2 = new Thread(runnable);
+                    thread1.start();
+                    thread2.start();
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n13' class='md-header-anchor '></a>1.3、 Demo03RunnableShareMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu01;
+
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-06-03
+             */
+            class MyRunnableShare implements Runnable {
+
+                private int ticket = 5;
+
+                @Override
+                public void run() {
+                    // 每个线程对象循环卖票
+                    for (int i = 0; i < 100; i++) {
+                        // 当前线程持还有票时，执行卖票，卖完后票数减一
+                        if (this.ticket > 0) {
+                            System.out.println(Thread.currentThread().getName() + "卖票，ticket = " + ticket--);
+                        }
+                    }
+                }
+            }
+
+            public class Demo03RunnableShareMain {
+                public static void main(String[] args) {
+                    // 搞一个共享任务
+                    MyRunnableShare myRunnableShare = new MyRunnableShare();
+
+                    // 搞多个线程对象持有上面那个共享任务
+                    Thread thread1 = new Thread(myRunnableShare);
+                    Thread thread2 = new Thread(myRunnableShare);
+                    Thread thread3 = new Thread(myRunnableShare);
+
+                    // 启动线程，执行彼此共享的任务
+                    thread1.start();
+                    thread2.start();
+                    thread3.start();
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n14' class='md-header-anchor '></a>1.4、 Demo04ThreadStateMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu01;
+
+            import java.util.concurrent.TimeUnit;
+
+            /**
+             * 功能描述 能使线程处于阻塞状态的，只能是线程抢占不到锁时的状态
+             *
+             * @author zWX5331241
+             * @since 2021-06-04
+             */
+            class MyThreadState implements Runnable {
+
+                // 线程声明周期状态：创建、运行、阻塞、等待、终止
+                @Override
+                public void run() {
+                    System.out.println(Thread.currentThread().getName() + " run");
+                    // 当前线程礼让
+            //        Thread.yield();
+                    Thread.currentThread().suspend();
+            //        try {
+            //            Thread.sleep(100000);
+            //        } catch (InterruptedException e) {
+            //            e.printStackTrace();
+            //        }
+                    System.out.println(Thread.currentThread().getState());
+                }
+            }
+
+            public class Demo04ThreadStateMain {
+                public static void main(String[] args) throws InterruptedException {
+                    MyThreadState myThreadState = new MyThreadState();
+                    Thread t = new Thread(myThreadState, "thread1");
+                    System.out.println("目标线程实例化后启动前的状态：" + t.getState());
+                    t.start();
+                    System.out.println("目标线程启动后的状态：" + t.getState());
+
+                    TimeUnit.SECONDS.sleep(4);
+                    System.out.println("目标线程处于休眠中的状态：" + t.getState());
+
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n15' class='md-header-anchor '></a>1.5、 Demo05InterruptedMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu01;
+
+            import java.util.concurrent.TimeUnit;
+
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-06-03
+             */
+            public class Demo05InterruptedMain {
+                public static void main(String[] args) throws InterruptedException {
+                    Thread thread1 = new Thread() {
+                        @Override
+                        public void run() {
+                            while (true) {
+                                // 线程循环处理业务
+
+                                if (Thread.currentThread().isInterrupted()) {
+                                    //判断当前线程是否被中断
+                                    System.out.println("我要退出了");
+                                    break;
+                                }
+                            }
+                        }
+                    };
+
+                    thread1.setName("thread1");
+                    thread1.start();
+                    TimeUnit.SECONDS.sleep(3);
+                    // 主线程中断目标线程，目标线程中断标记位设置true了
+                    thread1.interrupt();
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n16' class='md-header-anchor '></a>1.6、 Demo06InterruptedMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu01;
+
+            import java.util.concurrent.TimeUnit;
+
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-06-03
+             */
+            public class Demo06InterruptedMain {
+                public static void main(String[] args) throws InterruptedException {
+                    Thread thread1 = new Thread() {
+                        @Override
+                        public void run() {
+                            while (true) {
+                                // 循环处理业务
+
+                                if (Thread.interrupted()) {
+                                    // 采用静态方法判断当前线程是否被中断，该静态方法执行后会清除中断标记位，重新设置为默认值false
+                                    System.out.println("我要退出了");
+                                    // ！！！为了解决问题，应该在通过静态方法判断中断标记位后，再次对当前线程进行中断，此时当前线程的中断标记位重新变为true
+                                    this.interrupt();
+                                    if (Thread.interrupted()) {
+                                        // 再次通过该方法判断，中断标记位此时是false了，所以永远不会退出
+                                        System.out.println("我真的要退出了");
+                                        break;
+                                    }
+
+                                }
+                            }
+                        }
+                    };
+
+                    thread1.setName("thread1");
+                    thread1.start();
+                    TimeUnit.SECONDS.sleep(3);
+                    // 主线程中断目标线程，目标线程中断标记位设置true了
+                    thread1.interrupt();
+
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n17' class='md-header-anchor '></a>1.7、 Demo07InterruptedMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu01;
+
+            import java.util.concurrent.Semaphore;
+            import java.util.concurrent.TimeUnit;
+            import java.util.concurrent.locks.ReentrantLock;
+
+            /**
+             * 功能描述 中断处于等待状态的线程，线程休眠可以响应中断
+             *
+             * @since 2021-06-03
+             */
+            public class Demo07InterruptedMain {
+
+                public static void main(String[] args) throws InterruptedException {
+                    Thread thread1 = new Thread() {
+                        @Override
+                        public void run() {
+                            // 死循环
+                            while (true) {
+                                try {
+                                    // 当前线程阻塞，休眠100s
+                                    TimeUnit.SECONDS.sleep(100);
+                                } catch (InterruptedException e) {
+                                    // 如果当前线程被中断，则抛出异常
+                                    // 重点：sleep方法由于被中断抛出异常后会清除中断标记位
+                                    e.printStackTrace();
+                                    // 重置中断标记
+                                    this.interrupt();
+                                }
+
+                                // 如果当前线程被中断
+                                if (this.isInterrupted()) {
+                                    System.out.println("我要退出了");
+                                    break;
+                                }
+                            }
+                        }
+                    };
+
+                    thread1.setName("thread1");
+                    thread1.start();
+                    TimeUnit.SECONDS.sleep(1);
+                    // 中断目标线程
+                    thread1.interrupt();
+
+                    Semaphore semaphore = new Semaphore(0);
+                    semaphore.acquire();
+
+                    ReentrantLock lock = new ReentrantLock();
+                    lock.lock();
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n18' class='md-header-anchor '></a>1.8、 Demo08WaitAndNotifyMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu01;
+
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-06-04
+             */
+            public class Demo08WaitAndNotifyMain {
+                static Object lock = new Object();
+
+                public static class T1 extends Thread {
+                    @Override
+                    public void run() {
+                        synchronized (lock) {
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            try {
+                                lock.wait();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println("t1 run");
+                        }
+                    }
+                }
+
+                public static class T2 extends Thread {
+                    @Override
+                    public void run() {
+                        synchronized (lock) {
+                            // notify调用后，会随机唤醒一个等待队列中的目标线程，此时该目标线程会重新抢占锁；但是notify并不会释放锁资源，必须等到t2执行完毕后才会释放锁资源
+                            lock.notify();
+                            try {
+                                Thread.sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println("t2 run");
+                        }
+                    }
+                }
+
+                public static void main(String[] args) throws InterruptedException {
+                    // 得保证t1先执行到wait，t1先抢占到锁，在执行到wait前t1一直持有锁，此时t2无法抢占到锁导致t2阻塞
+                    // t1执行到wait后会释放锁，此时t2才有可能抢占到锁
+                    new T1().start();
+                    Thread.sleep(2);
+                    // 启动t2，当t1 wait释放锁后t2才能抢占到锁执行notify
+                    // t2执行notify后会释放锁
+                    new T2().start();
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n19' class='md-header-anchor '></a>1.9、 Demo09JoinMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu01;
+
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-06-04
+             */
+            public class Demo09JoinMain {
+                public static void main(String[] args) throws InterruptedException {
+                    Thread thread = new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println(Thread.currentThread().getName() + " is running");
+                        }
+                    };
+
+                    thread.start();
+                    // 当前main线程等待目标线程执行完毕，join底层是使用wait将当前线程放入等待队列，当目标线程执行完毕后由jvm主动notifyAll
+                    thread.join();
+                    System.out.println("main 线程执行");
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n110' class='md-header-anchor '></a>1.10、 Demo10YieldMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu01;
+
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-06-04
+             */
+            public class Demo10YieldMain {
+
+                public static class T extends Thread {
+                    @Override
+                    public void run() {
+
+                        for (int i = 0; i < 10; i++) {
+                            if (i == 3) {
+                                // 当前线程礼让其他线程执行，暂时让出cpu，但是让出后会立即重新抢占cpu
+                                Thread.yield();
+                            }
+                            System.out.println(Thread.currentThread().getName() + " is running,i = " + i);
+                        }
+                    }
+                }
+
+                public static void main(String[] args) {
+                    T t1 = new T();
+                    T t2 = new T();
+                    Thread thread1 = new Thread(t1);
+                    Thread thread2 = new Thread(t2);
+                    thread1.start();
+                    thread2.start();
+                }
+            }
+
+        </font>
+    </pre>
