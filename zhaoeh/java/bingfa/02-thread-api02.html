@@ -1,0 +1,1141 @@
+
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、volatile</b><br>
+    <b><a name='header-n21' class='md-header-anchor '></a>2.1、 Demo01VolatileMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu02;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-06-04
+             */
+            public class Demo01VolatileMain {
+                // 加上volatile修饰，则flag变量被更改后立即刷入主存，保证可见性
+                public static volatile boolean flag = true;
+
+                public static class T1 extends Thread {
+
+                    public T1(String name) {
+                        super(name);
+                    }
+
+                    @Override
+                    public void run() {
+                        System.out.println("线程" + Thread.currentThread().getName() + " is running");
+                        // 缓存一致性协议保证：当回写到主存中的数据发生了变化，则其他缓存中的缓存行数据副本立即失效。因此，volatile让数据立即回写到主存中，则其他缓存行数据失效了
+                        // 其他线程会重新从主存中读取最新值
+                        while (flag) {
+                        }
+                        System.out.println("线程" + Thread.currentThread().getName() + " is stop");
+                    }
+                }
+
+                public static void main(String[] args) throws InterruptedException {
+                    new T1("t1").start();
+                    // 当前主线程休眠1s
+                    Thread.sleep(1000);
+
+                    // 将flag设置为false
+                    Demo01VolatileMain.flag = false;
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n22' class='md-header-anchor '></a>2.2、 Demo02VolatileMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu02;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-06-04
+             */
+            class Singleton {
+                // 加入volatile禁止cpu指令重排序，保证有序性
+                private static volatile Singleton instance;
+
+                private Singleton() {
+                }
+
+                public static Singleton getInstance() {
+                    if (instance == null) {
+                        synchronized (Singleton.class) {
+                            if (instance == null) {
+                                instance = new Singleton();
+                            }
+                        }
+                    }
+                    return instance;
+                }
+            }
+
+            public class Demo02VolatileMain {
+                public static void main(String[] args) {
+                    // 遍历启动10个线程对象去获取单例
+                    for (int i = 0; i < 10; i++) {
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                Singleton instance = Singleton.getInstance();
+                                System.out.println("instance is :" + instance);
+                            }
+                        }.start();
+                    }
+                }
+            }
+
+        </font>
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、threadGroup</b><br>
+    <b><a name='header-n31' class='md-header-anchor '></a>3.1、 Demo01ThreadGroupMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu03;
+
+            import java.util.concurrent.TimeUnit;
+
+            /**
+             * 功能描述 线程组
+             *
+             * @since 2021-06-07
+             */
+            public class Demo01ThreadGroupMain {
+
+                public static class Group1 implements Runnable {
+
+                    @Override
+                    public void run() {
+                        System.out.println("ThreadName :" + Thread.currentThread().getName());
+                        try {
+                            TimeUnit.SECONDS.sleep(3);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                public static void main(String[] args) throws InterruptedException {
+                    // 创建线程组对象
+                    ThreadGroup group = new ThreadGroup("thread-group-1");
+
+                    // 创建线程对象，并绑定线程组对象
+                    Thread thread1 = new Thread(group, new Group1(), "Thread1");
+                    Thread thread2 = new Thread(group, new Group1(), "Thread2");
+                    thread1.start();
+                    thread2.start();
+                    TimeUnit.SECONDS.sleep(1);
+                    System.out.println("活动线程数：" + group.activeCount());
+                    System.out.println("活动线程组：" + group.activeGroupCount());
+                    System.out.println("线程组名称：" + group.getName());
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n32' class='md-header-anchor '></a>3.2、 Demo02ParentThreadGroupMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu03;
+
+            import java.util.concurrent.TimeUnit;
+
+            /**
+             * 功能描述 创建线程组时指定父线程组
+             *
+             * @since 2021-06-07
+             */
+            public class Demo02ParentThreadGroupMain {
+                public static class MyThread implements Runnable {
+
+                    @Override
+                    public void run() {
+                        Thread currentThread = Thread.currentThread();
+                        System.out.println("所属线程组：" + currentThread.getThreadGroup().getName() + "；线程名称：" + currentThread.getName());
+                        try {
+                            TimeUnit.SECONDS.sleep(3);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                public static void main(String[] args) throws InterruptedException {
+                    // 创建线程组时不指定父线程组，则使用当前线程的线程组作为父线程组
+                    ThreadGroup threadGroup1 = new ThreadGroup("thread-group-1");
+                    Thread thread1 = new Thread(threadGroup1, new MyThread(), "thread1");
+                    Thread thread2 = new Thread(threadGroup1, new MyThread(), "thread2");
+                    thread1.start();
+                    thread2.start();
+                    TimeUnit.SECONDS.sleep(1);
+                    System.out.println("threadGroup1活动线程数：" + threadGroup1.activeCount());
+                    System.out.println("threadGroup1活动线程组：" + threadGroup1.activeGroupCount());
+                    System.out.println("threadGroup1线程组名称：" + threadGroup1.getName());
+                    System.out.println("threadGroup1父线程组名称：" + threadGroup1.getParent().getName());
+                    System.out.println("--------------------------");
+                    // 明确指定当前线程组的父线程组
+                    ThreadGroup threadGroup2 = new ThreadGroup(threadGroup1, "thread-group-2");
+                    Thread thread3 = new Thread(threadGroup2, new MyThread(), "thread3");
+                    Thread thread4 = new Thread(threadGroup2, new MyThread(), "thread4");
+                    thread3.start();
+                    thread4.start();
+                    TimeUnit.SECONDS.sleep(1);
+                    System.out.println("threadGroup2活动线程数：" + threadGroup2.activeCount());
+                    System.out.println("threadGroup2活动线程组：" + threadGroup2.activeGroupCount());
+                    System.out.println("threadGroup2线程组名称：" + threadGroup2.getName());
+                    System.out.println("threadGroup2父线程组名称：" + threadGroup2.getParent().getName());
+                    System.out.println("--------------------------");
+
+                    // 再次输出group1的活动线程数，其包含了子线程组中的活动线程
+                    // 同样，group1的活动线程组也包含了子线程组
+                    System.out.println("threadGroup1活动线程数：" + threadGroup1.activeCount());
+                    System.out.println("threadGroup1活动线程组：" + threadGroup1.activeGroupCount());
+                    System.out.println("--------------------------");
+
+                    // 将当前线程组的所有子孙节点按照树状结构输出到控制台，方便调试
+                    threadGroup1.list();
+
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n33' class='md-header-anchor '></a>3.3、 Demo03RootThreadGroupMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu03;
+
+            /**
+             * 功能描述
+             * main线程的线程组是 main
+             * main线程的根线程组是 system
+             *
+             * @since 2021-06-07
+             */
+            public class Demo03RootThreadGroupMain {
+                public static void main(String[] args) {
+                    // 输出当前线程
+                    System.out.println(Thread.currentThread());
+                    // 输出当前线程的线程组
+                    System.out.println(Thread.currentThread().getThreadGroup());
+                    // 输出当前线程的线程组的父线程组
+                    System.out.println(Thread.currentThread().getThreadGroup().getParent());
+                    // 继续输出父线程组的父线程组
+                    System.out.println(Thread.currentThread().getThreadGroup().getParent().getParent());
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n34' class='md-header-anchor '></a>3.4、 Demo04ThreadGroupInterruptMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu03;
+
+            import java.util.concurrent.TimeUnit;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-06-07
+             */
+            public class Demo04ThreadGroupInterruptMain {
+
+                public static class MyThread implements Runnable {
+
+                    @Override
+                    public void run() {
+                        Thread currentThread = Thread.currentThread();
+                        System.out.println("所属线程组：" + currentThread.getThreadGroup().getName() + "；线程名称：" + currentThread.getName());
+                        // 如果当前线程没有被中断，则一直执行
+                        while (!currentThread.isInterrupted()) {
+                        }
+                        System.out.println("线程" + currentThread.getName() + "停止运行了");
+                    }
+                }
+
+                public static void main(String[] args) throws InterruptedException {
+                    ThreadGroup threadGroup1 = new ThreadGroup("thread-group-1");
+                    Thread thread1 = new Thread(threadGroup1, new MyThread(), "thread1");
+                    Thread thread2 = new Thread(threadGroup1, new MyThread(), "thread2");
+                    thread1.start();
+                    thread2.start();
+
+                    ThreadGroup threadGroup2 = new ThreadGroup("thread-group-2");
+                    Thread thread3 = new Thread(threadGroup2, new MyThread(), "thread3");
+                    Thread thread4 = new Thread(threadGroup2, new MyThread(), "thread4");
+                    thread3.start();
+                    thread4.start();
+                    TimeUnit.SECONDS.sleep(1);
+
+                    System.out.println("----threadGroup1信息----");
+                    threadGroup1.list();
+
+                    System.out.println("----threadGroup2信息----");
+                    threadGroup2.list();
+
+                    System.out.println("---------------------------------");
+                    System.out.println("停止线程组" + threadGroup1.getName() + "中的所有子孙线程");
+                    // 中断threadGroup1线程组
+                    threadGroup1.interrupt();
+                    TimeUnit.SECONDS.sleep(2);
+                    System.out.println("----threadGroup1停止后，threadGroup1信息----");
+                    threadGroup1.list();
+
+                    System.out.println("----threadGroup1停止后，threadGroup2信息----");
+                    threadGroup2.list();
+
+                }
+            }
+
+        </font>
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、Daemon</b><br>
+    <b><a name='header-n41' class='md-header-anchor '></a>4.1、 Demo01UserThreadMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu04;
+
+            /**
+             * 功能描述
+             * 用户线程，也叫做业务线程。普通的线程不设置daemon属性则默认就是用户线程。
+             * 用户线程没有执行完毕，则JVM进程永远无法退出。
+             *
+             * @since 2021-06-07
+             */
+            public class Demo01UserThreadMain {
+
+                public static class MyThread extends Thread {
+                    public MyThread(String name) {
+                        super(name);
+                    }
+
+                    @Override
+                    public void run() {
+                        System.out.println(this.getName() + "开始执行，我是" + (this.isDaemon() ? "守护线程" : "用户线程"));
+                        while (true) {
+                        }
+                    }
+                }
+
+                public static void main(String[] args) {
+                    MyThread myThread = new MyThread("子线程1");
+                    myThread.start();
+                    System.out.println("主线程结束");
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n42' class='md-header-anchor '></a>4.2、 Demo02DaemonThreadMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu04;
+
+            /**
+             * 功能描述 当所有用户线程执行完毕之后，不管守护线程是否执行完毕，JVM进程都会自动退出
+             *
+             * @since 2021-06-07
+             */
+            public class Demo02DaemonThreadMain {
+
+                public static class MyThread extends Thread {
+                    public MyThread(String name) {
+                        super(name);
+                    }
+
+                    @Override
+                    public void run() {
+                        System.out.println(this.getName() + "开始执行，我是" + (this.isDaemon() ? "守护线程" : "用户线程"));
+                        while (true) {
+                        }
+                    }
+                }
+
+                public static void main(String[] args) {
+                    MyThread myThread = new MyThread("子线程1");
+                    // 将myThread设置为守护线程（后台线程）
+                    // 设置守护线程应该在start之前设置，否则会报运行时异常
+                    myThread.setDaemon(true);
+                    myThread.start();
+                    System.out.println("主线程结束");
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n43' class='md-header-anchor '></a>4.3、 Demo03DaemonThreadDefaultMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu04;
+
+            import java.util.concurrent.TimeUnit;
+
+            /**
+             * 功能描述 守护线程默认值，和启动自己的父线程的默认值相同
+             *
+             * @since 2021-06-07
+             */
+            public class Demo03DaemonThreadDefaultMain {
+                public static class MyThread extends Thread {
+                    public MyThread(String name) {
+                        super(name);
+                    }
+
+                    @Override
+                    public void run() {
+                        System.out.println(this.getName() + ",isDaemon ：" + this.isDaemon());
+                    }
+                }
+
+                public static void main(String[] args) throws InterruptedException {
+                    System.out.println(Thread.currentThread().getName() + ",isDaemon ：" + Thread.currentThread().isDaemon());
+
+                    MyThread thread1 = new MyThread("thread1");
+                    thread1.start();
+
+                    Thread thread2 = new Thread() {
+                        @Override
+                        public void run() {
+                            System.out.println(this.getName() + ",isDaemon ：" + this.isDaemon());
+                            MyThread thread3 = new MyThread("thread3");
+                            // 在子线程中再启动一个子线程
+                            thread3.start();
+                        }
+                    };
+
+                    thread2.setName("thread2");
+                    thread2.setDaemon(true);
+                    thread2.start();
+                    TimeUnit.SECONDS.sleep(3);
+                }
+
+            }
+
+        </font>
+    </pre>
+
+    <b><a name='header-n5' class='md-header-anchor '></a>5、synchronized</b><br>
+    <b><a name='header-n51' class='md-header-anchor '></a>5.1、 Demo01SynchronizedMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu05;
+
+            /**
+             * 功能描述 synchronized保证线程安全性
+             *
+             * @since 2021-06-04
+             */
+            public class Demo01SynchronizedMain {
+                private static int num = 0;
+
+                // 使用 synchronized 保证线程安全
+                private synchronized static void add() {
+                    num++;
+                }
+
+                public class T extends Thread {
+                    @Override
+                    public void run() {
+                        // 每个线程循环10000次自增
+                        for (int i = 0; i < 10000; i++) {
+                            Demo01SynchronizedMain.add();
+                        }
+                    }
+                }
+
+                public static void main(String[] args) throws InterruptedException {
+                    T t1 = new Demo01SynchronizedMain().new T();
+                    T t2 = new Demo01SynchronizedMain().new T();
+                    T t3 = new Demo01SynchronizedMain().new T();
+                    t1.start();
+                    t2.start();
+                    t3.start();
+                    t1.join();
+                    t2.join();
+                    t3.join();
+
+                    System.out.println("num is : " + Demo01SynchronizedMain.num);
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n52' class='md-header-anchor '></a>5.2、 Demo02ErrorSynchronizedMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu05;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-06-03
+             */
+            class ErrorSynchronized implements Runnable {
+                public static Integer source = 0;
+
+                @Override
+                public void run() {
+                    // 使用source作为上锁对象
+                    // 因为多个线程频繁重置source对象，因此该上锁对象频繁被重新实例化
+                    // 导致多个线程对象每次持有的上锁对象都不是原来的同一个对象，因此锁机制失效，多个线程同一时间持有的上锁对象不同，无法做到彼此互斥效果，产生并行
+                    synchronized (source) {
+                        for (int i = 0; i < 100000; i++) {
+                            ErrorSynchronized.source++;
+                        }
+                    }
+                }
+            }
+
+            public class Demo02ErrorSynchronizedMain {
+                public static void main(String[] args) throws InterruptedException {
+                    ErrorSynchronized errorSynchronized = new ErrorSynchronized();
+                    Thread thread1 = new Thread(errorSynchronized);
+                    Thread thread2 = new Thread(errorSynchronized);
+                    thread1.start();
+                    thread2.start();
+
+                    // 当前线程main等待目标线程thread1和thread2执行完毕后再被唤醒
+                    thread1.join();
+                    thread2.join();
+                    System.out.println("source is :" + ErrorSynchronized.source);
+                    Thread.sleep(100);
+                }
+            }
+
+        </font>
+    </pre>
+
+    <b><a name='header-n6' class='md-header-anchor '></a>6、ReentrantLock</b><br>
+    <b><a name='header-n61' class='md-header-anchor '></a>6.1、 Demo01ReentrantLockMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu06;
+
+            import java.util.concurrent.locks.ReentrantLock;
+
+            /**
+             * 功能描述 synchronized保证线程安全性
+             *
+             * @since 2021-06-04
+             */
+            public class Demo01ReentrantLockMain {
+                private static int num = 0;
+                private static ReentrantLock lock = new ReentrantLock();
+
+                private static void add() {
+                    num++;
+                }
+
+                public static class T extends Thread {
+                    @Override
+                    public void run() {
+                        // 每个线程循环10000次自增
+                        for (int i = 0; i < 10000; i++) {
+                            lock.lock();
+                            try {
+                                Demo01ReentrantLockMain.add();
+                            } finally {
+                                lock.unlock();
+                            }
+
+                        }
+                    }
+                }
+
+                public static void main(String[] args) throws InterruptedException {
+                    T t1 = new T();
+                    T t2 = new T();
+                    T t3 = new T();
+                    t1.start();
+                    t2.start();
+                    t3.start();
+                    t1.join();
+                    t2.join();
+                    t3.join();
+
+                    System.out.println("num is : " + Demo01ReentrantLockMain.num);
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n62' class='md-header-anchor '></a>6.2、 Demo02ReentrantLockMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu06;
+
+            import java.util.concurrent.locks.ReentrantLock;
+
+            /**
+             * 功能描述 synchronized保证线程安全性
+             *
+             * @since 2021-06-04
+             */
+            public class Demo02ReentrantLockMain {
+                private static int num = 0;
+                private static ReentrantLock lock = new ReentrantLock();
+
+                private static void add() {
+                    num++;
+                }
+
+                public static class MyThread extends Thread {
+                    @Override
+                    public void run() {
+                        // 每个线程循环10000次自增
+                        for (int i = 0; i < 10000; i++) {
+                            // ReentrantLock是可重入锁
+                            lock.lock();
+                            lock.lock();
+                            try {
+                                Demo02ReentrantLockMain.add();
+                            } finally {
+                                // 必须在finally块中释放锁。锁被持有了几次就必须对应释放几次，否则CAS将一直自旋下去。
+                                lock.unlock();
+                                lock.unlock();
+                            }
+                        }
+                    }
+                }
+
+                public static void main(String[] args) throws InterruptedException {
+                    MyThread t1 = new MyThread();
+                    MyThread t2 = new MyThread();
+                    MyThread t3 = new MyThread();
+                    t1.start();
+                    t2.start();
+                    t3.start();
+                    t1.join();
+                    t2.join();
+                    t3.join();
+
+                    System.out.println("num is : " + Demo02ReentrantLockMain.num);
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n63' class='md-header-anchor '></a>6.3、 Demo03FireLockMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu06;
+
+            import java.util.concurrent.locks.ReentrantLock;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-06-07
+             */
+            public class Demo03FireLockMain {
+
+                // 创建公平锁
+                private static ReentrantLock fireLock = new ReentrantLock(true);
+
+                public static class MyThread extends Thread {
+
+                    public MyThread(String name) {
+                        super(name);
+                    }
+
+                    @Override
+                    public void run() {
+                        if(Thread.currentThread().getName().equals("thread1")){
+                            try {
+                                Thread.sleep(1);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        for (int i = 0; i < 5; i++) {
+                            // 按照谁先到达锁的顺序排序，第一次a,b,c到达锁了，则后面永远都是a,b,c的顺序获取锁
+                            fireLock.lock();
+                            try {
+                                System.out.println(this.getName() + "获得锁！");
+                            } finally {
+                                fireLock.unlock();
+                            }
+                        }
+                    }
+                }
+
+                public static void main(String[] args) throws InterruptedException {
+                    MyThread myThread1 = new MyThread("thread1");
+                    MyThread myThread2 = new MyThread("thread2");
+                    MyThread myThread3 = new MyThread("thread3");
+
+                    myThread1.start();
+                    myThread2.start();
+                    myThread3.start();
+
+                    myThread1.join();
+                    myThread2.join();
+                    myThread3.join();
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n64' class='md-header-anchor '></a>6.4、 Demo04InterruptLockMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu06;
+
+            import java.util.concurrent.TimeUnit;
+            import java.util.concurrent.locks.ReentrantLock;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-06-07
+             */
+            public class Demo04InterruptLockMain {
+
+                private static ReentrantLock lock1 = new ReentrantLock();
+                private static ReentrantLock lock2 = new ReentrantLock();
+
+                public static class MyThread extends Thread {
+
+                    int lock;
+
+                    public void setLock(int lock) {
+                        this.lock = lock;
+                    }
+
+                    public MyThread(String name) {
+                        super(name);
+                    }
+
+                    @Override
+                    public void run() {
+                        // thread1和thread2互相死锁
+                        try {
+                            // lockInterruptibly 表示获取锁的过程是可中断的，这一点synchronized是做不到的
+                            if (this.lock == 1) {
+                                lock1.lockInterruptibly();
+                                TimeUnit.SECONDS.sleep(1);
+                                lock2.lockInterruptibly();
+                            } else {
+                                lock2.lockInterruptibly();
+                                TimeUnit.SECONDS.sleep(1);
+                                lock1.lockInterruptibly();
+                            }
+                        } catch (InterruptedException e) {
+                            // InterruptedException异常会将中断标记位归位为默认值false
+                            System.out.println("中断标志位：" + this.isInterrupted());
+                            e.printStackTrace();
+                        } finally {
+                            if (lock1.isHeldByCurrentThread()) {
+                                lock1.unlock();
+                            }
+                            if (lock2.isHeldByCurrentThread()) {
+                                lock2.unlock();
+                            }
+                        }
+                    }
+                }
+
+                public static void main(String[] args) throws InterruptedException {
+                    MyThread myThread1 = new MyThread("thread1");
+                    MyThread myThread2 = new MyThread("thread2");
+                    myThread1.setLock(1);
+                    myThread2.setLock(2);
+                    myThread1.start();
+                    myThread2.start();
+
+                    TimeUnit.SECONDS.sleep(5);
+                    // 主线程中断thread2
+                    myThread2.interrupt();
+
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n65' class='md-header-anchor '></a>6.5、 Demo05TryLockMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu06;
+
+            import java.util.concurrent.TimeUnit;
+            import java.util.concurrent.locks.ReentrantLock;
+
+            /**
+             * 功能描述
+             * ReentrantLock除了是可中断锁之外，还会及时响应
+             *
+             * @since 2021-06-07
+             */
+            public class Demo05TryLockMain {
+
+                private static ReentrantLock lock = new ReentrantLock();
+
+                public static class MyThread extends Thread {
+
+                    public MyThread(String name) {
+                        super(name);
+                    }
+
+                    @Override
+                    public void run() {
+                        try {
+                            System.out.println(System.currentTimeMillis() + ":" + this.getName() + "开始获取锁！");
+                            // 在当前线程获取锁的过程中立即响应，即当前线程如果不能立即获取锁，该方法将直接响应为false
+                            // tryLock是立即响应的，不会阻塞。意味着当前线程如果获取锁失败，将立即返回结果并从队列中移除。
+                            if (lock.tryLock()) {
+                                System.out.println(System.currentTimeMillis() + ":" + this.getName() + "获取到了锁！");
+                                // 获取到锁之后休眠5s
+                                TimeUnit.SECONDS.sleep(5);
+                            } else {
+                                System.out.println(System.currentTimeMillis() + ":" + this.getName() + "未能获取锁！");
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } finally {
+                            if (lock.isHeldByCurrentThread()) {
+                                lock.unlock();
+                            }
+                        }
+                    }
+                }
+
+                public static void main(String[] args) {
+                    MyThread myThread1 = new MyThread("thread1");
+                    MyThread myThread2 = new MyThread("thread2");
+                    myThread1.start();
+                    myThread2.start();
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n66' class='md-header-anchor '></a>6.6、 Demo06TryLockMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu06;
+
+            import java.util.concurrent.TimeUnit;
+            import java.util.concurrent.locks.ReentrantLock;
+
+            /**
+             * 功能描述
+             * ReentrantLock除了是可中断锁之外，还会及时响应
+             *
+             * @since 2021-06-07
+             */
+            public class Demo06TryLockMain {
+
+                private static ReentrantLock lock = new ReentrantLock();
+
+                public static class MyThread extends Thread {
+
+                    public MyThread(String name) {
+                        super(name);
+                    }
+
+                    @Override
+                    public void run() {
+                        try {
+                            System.out.println(System.currentTimeMillis() + ":" + this.getName() + "开始获取锁！");
+                            // 当前线程阻塞3s尝试获取锁，如果超过3s则立即响应结果
+                            if (lock.tryLock(3, TimeUnit.SECONDS)) {
+                                System.out.println(System.currentTimeMillis() + ":" + this.getName() + "获取到了锁！");
+                                // 获取到锁之后休眠5s
+                                TimeUnit.SECONDS.sleep(5);
+                            } else {
+                                System.out.println(System.currentTimeMillis() + ":" + this.getName() + "未能获取锁！");
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } finally {
+                            if (lock.isHeldByCurrentThread()) {
+                                lock.unlock();
+                            }
+                        }
+                    }
+                }
+
+                public static void main(String[] args) {
+                    MyThread myThread1 = new MyThread("thread1");
+                    MyThread myThread2 = new MyThread("thread2");
+                    myThread1.start();
+                    myThread2.start();
+                }
+            }
+
+        </font>
+    </pre>
+
+    <b><a name='header-n7' class='md-header-anchor '></a>7、wait</b><br>
+    <b><a name='header-n71' class='md-header-anchor '></a>7.1、 Demo01SynchronizedWaitMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu07;
+
+            import java.util.concurrent.TimeUnit;
+
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-06-07
+             */
+            public class Demo01SynchronizedWaitMain {
+
+                private static Object lock = new Object();
+
+                public static class MyThread1 extends Thread {
+
+                    @Override
+                    public void run() {
+                        synchronized (lock) {
+                            System.out.println(System.currentTimeMillis() + ":thread1 start!");
+
+                            try {
+                                lock.wait();
+                                System.out.println(System.currentTimeMillis() + ":thread1 wait for object!");
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println(System.currentTimeMillis() + ":thread1 end!");
+                        }
+                    }
+                }
+
+                public static class MyThread2 extends Thread {
+
+                    @Override
+                    public void run() {
+                        synchronized (lock) {
+                            System.out.println(System.currentTimeMillis() + ":thread2 start! notify one thread!");
+                            lock.notify();
+                            try {
+                                TimeUnit.SECONDS.sleep(5);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println(System.currentTimeMillis() + ":thread2 end!");
+                        }
+                    }
+                }
+
+                public static void main(String[] args) {
+                    new MyThread1().start();
+                    new MyThread2().start();
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n72' class='md-header-anchor '></a>7.2、 Demo02LockWaitMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu07;
+
+            import java.util.concurrent.TimeUnit;
+            import java.util.concurrent.locks.Condition;
+            import java.util.concurrent.locks.ReentrantLock;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-06-07
+             */
+            public class Demo02LockWaitMain {
+
+                private static ReentrantLock lock = new ReentrantLock();
+                private static Condition cond = lock.newCondition();
+
+                public static class Thread1 extends Thread {
+
+                    @Override
+                    public void run() {
+                        System.out.println(System.currentTimeMillis() + "," + this.getName() + "准备获取锁！");
+                        lock.lock();
+                        try {
+                            System.out.println(System.currentTimeMillis() + "," + this.getName() + "获取锁成功！");
+                            // thread1此时在condition等待队列上等待
+                            // 一旦被唤醒后第一件事儿不是直接执行后续逻辑，而是重新抢占锁资源，抢占到了的话才会执行此处代码的后续逻辑
+                            // 如果lock锁一直不被释放，则thread1将永远无法获得，也就永远不会执行后续逻辑
+                            cond.await();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } finally {
+                            lock.unlock();
+                        }
+                        System.out.println(System.currentTimeMillis() + "," + this.getName() + "释放锁成功！");
+                    }
+                }
+
+                public static class Thread2 extends Thread {
+
+                    @Override
+                    public void run() {
+                        System.out.println(System.currentTimeMillis() + "," + this.getName() + "准备获取锁！");
+                        lock.lock();
+                        try {
+                            System.out.println(System.currentTimeMillis() + "," + this.getName() + "获取锁成功！");
+                            cond.signal();
+                            System.out.println(System.currentTimeMillis() + "," + this.getName() + "signal！");
+                            try {
+                                TimeUnit.SECONDS.sleep(5);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println(System.currentTimeMillis() + "," + this.getName() + "准备释放锁！");
+                        } finally {
+                            // thread2此处必须得释放锁，否则thread1被唤醒后依旧无法抢占到锁资源而无法执行后续逻辑
+                            lock.unlock();
+                        }
+                        System.out.println(System.currentTimeMillis() + "," + this.getName() + "释放锁成功！");
+                    }
+                }
+
+                public static void main(String[] args) throws InterruptedException {
+                    Thread1 thread1 = new Thread1();
+                    thread1.setName("thread1");
+                    thread1.start();
+
+                    TimeUnit.SECONDS.sleep(5);
+
+                    Thread2 thread2 = new Thread2();
+                    thread2.setName("thread2");
+                    thread2.start();
+                }
+
+            }
+
+        </font>
+    </pre>
+
+    <b><a name='header-n8' class='md-header-anchor '></a>8、LockSupport</b><br>
+    <b><a name='header-n81' class='md-header-anchor '></a>8.1、 Demo01LockSupportMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu08;
+
+            import java.util.concurrent.TimeUnit;
+            import java.util.concurrent.locks.LockSupport;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-06-07
+             */
+            public class Demo01LockSupportMain {
+
+
+                public static void main(String[] args) throws InterruptedException {
+                    Thread thread1 = new Thread() {
+                        @Override
+                        public void run() {
+                            System.out.println(System.currentTimeMillis() + "," + Thread.currentThread().getName() + " start!");
+                            // 不用获取锁资源，先挂起线程
+                            LockSupport.park();
+                            System.out.println(System.currentTimeMillis() + "," + Thread.currentThread().getName() + " 被唤醒!");
+                        }
+                    };
+
+                    thread1.setName("thread1");
+                    thread1.start();
+
+                    //休眠5s后唤醒目标线程
+                    TimeUnit.SECONDS.sleep(5);
+                    LockSupport.unpark(thread1);
+                    System.out.println(System.currentTimeMillis() + "LockSupport.unpark(thread1) 执行完毕!");
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n82' class='md-header-anchor '></a>8.2、 Demo02LockSupportMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu08;
+
+            import java.util.concurrent.TimeUnit;
+            import java.util.concurrent.locks.LockSupport;
+
+            /**
+             * 功能描述
+             *
+             * @since 2021-06-08
+             */
+            public class Demo02LockSupportMain {
+                public static void main(String[] args) {
+                    Thread thread1 = new Thread() {
+                        @Override
+                        public void run() {
+                            System.out.println(System.currentTimeMillis() + "," + Thread.currentThread().getName() + " start!");
+                            try {
+                                // 不用获取锁，休眠10s后再挂起线程
+                                TimeUnit.SECONDS.sleep(10);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            LockSupport.park();
+                            System.out.println(System.currentTimeMillis() + "," + Thread.currentThread().getName() + " 被唤醒!");
+                        }
+                    };
+
+                    thread1.setName("thread1");
+                    thread1.start();
+
+                    // 立即唤醒目标线程
+                    LockSupport.unpark(thread1);
+                    System.out.println(System.currentTimeMillis() + "LockSupport.unpark(thread1) 执行完毕!");
+                }
+            }
+
+        </font>
+    </pre>
+    <b><a name='header-n83' class='md-header-anchor '></a>8.3、 Demo03LockSupportInterruptMain</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="gray">
+            package com.zeh.main.thread.stu08;
+
+            import java.util.concurrent.TimeUnit;
+            import java.util.concurrent.locks.LockSupport;
+
+            /**
+             * 功能描述
+             * LockSupport的park可以响应中断。
+             * LockSupport的park让线程等待之后，唤醒的方式有2种：
+             * 1.调用LockSupport.unpark 方法进行唤醒。
+             * 2.调用线程的interrupt()方法，向等待的线程发送中断信号，可以唤醒线程。
+             *
+             * @since 2021-06-08
+             */
+            public class Demo03LockSupportInterruptMain {
+
+                public static void main(String[] args) throws InterruptedException {
+                    Thread thread = new Thread() {
+                        @Override
+                        public void run() {
+                            System.out.println(System.currentTimeMillis() + "," + Thread.currentThread().getName() + " start!");
+                            System.out.println(Thread.currentThread().getName() + "park中断之前标志：" + Thread.currentThread().isInterrupted());
+                            LockSupport.park();
+                            System.out.println(Thread.currentThread().getName() + "park中断之后标志：" + Thread.currentThread().isInterrupted());
+                        }
+                    };
+
+                    thread.setName("thread1");
+                    thread.start();
+
+                    // 休眠5s后中断目标线程
+                    TimeUnit.SECONDS.sleep(5);
+                    thread.interrupt();
+                }
+            }
+
+        </font>
+    </pre>
+</div>
+</body>
+</html>
