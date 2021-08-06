@@ -675,9 +675,10 @@
     .on-focus-mode blockquote {
         border-left-color: rgba(85, 85, 85, 0.12);
     }
-
-
     </style>
+    <link rel="stylesheet" href="../../highlight/styles/default.css">
+    <script src="../../highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body class='typora-export'>
 <div id='write' class='is-node'>
@@ -694,7 +695,7 @@
     <b><a name='header-n21' class='md-header-anchor '></a>2.1、 如何水平组装两个对象？</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         假设现在有两个Class，A和B，如下：
-        <font color="gray">
+        <code class="language-java">
             ClassA{
                 public void testA(){}
             }
@@ -702,11 +703,11 @@
             ClassB{
                 public void testB(){}
             }
-        </font>
+        </code>
         现在我们想实现一种场景：调用A对象的testA方法去实现某些功能，但是testA方法需要借助B对象的testB方法去实现该功能。
         嗯....对，这就是我们之前了解的委托机制。
         所以，应该改造如下：
-        <font color="gray">
+        <code class="language-java">
             ClassA{
                 private ClassB classB;
 
@@ -718,7 +719,7 @@
                     this.classB.testB();
                 }
             }
-        </font>
+        </code>
         上面改造后的代码就是我们掌握的委托机制的一种，即 A类中定义一个B类型的成员，以成员变量的方式接收B对象，A类自己实例化B对象，即以成员变量的方式内建B对象。
         1.  ClassA类中声明一个ClassB类型的成员变量，用于接收ClassB对象。
         2.  ClassA类中自己new一个ClassB对象，然后注入给成员变量classB，即通过内建的方式创建ClassB对象。
@@ -732,8 +733,8 @@
 
         <b><font color="#a52a2a">优化上面两个对象依赖的方式，采用外部注入的方式进行委托</font> </b>
         我们需要通过另外一种委托方式：A类中定义一个B类型的成员，以成员变量的方式接收B对象，外部向A类注入B对象，即以成员变量的方式注入B对象。
-        这种方式更灵活一点。
-        <font color="gray">
+        这种方式更灵活一点:
+        <code class="language-java">
             ClassA{
                 private ClassB classB;
 
@@ -745,17 +746,17 @@
                     this.classB.testB();
                 }
             }
-        </font>
+        </code>
         上面的方式，将被委托者classB的创建由ClassA负责内建交给了外部使用者进行传入，即ClassB对象的控制权交给了使用者，如下：
-        <font color="gray">
+        <code class="language-java">
             // classB对象的创建交给了外部使用者负责，使用起来更加灵活，不用修改ClassA的构造方法了。
             ClassB classB = new ClassB();
             ClassA classA = new ClassA(classB);
             classA.testA();
-        </font>
+        </code>
 
         上面的方式看似没问题了，但是，如果现在ClassA需要注入ClassC,ClassD,ClassE等等，都按上面那种方式来的话，那么使用ClassA时候就成了下面那样了：
-        <font color="gray">
+        <code class="language-java">
             ClassB classB = new ClassB();
             ClassC classC = new ClassC();
             ClassD classD = new ClassD();
@@ -763,7 +764,7 @@
             ...
             ClassA classA = new ClassA(classB,ClassC,ClassD,ClassE,....);
             classA.testA();
-        </font>
+        </code>
         也就是说，使用者在使用ClassA的testA()方法之前，就需要先将classA对象依赖的所有对象都给创建好，然后再将这些对象注入到classA对象中。
         这样一来，代码量比较大，不好维护；如果classA又依赖了其他对象，还得重载构造方法，使用方还得创建好然后注入等等。
         有没有什么好的方式改造这种呢？

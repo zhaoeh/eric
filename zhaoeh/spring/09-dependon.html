@@ -1,1 +1,1083 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>depend-on.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor {
+        width: auto;
+        border: 0px;
+        background: rgb(119, 238, 119);
+        z-index: 1;
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    div.hr:focus {
+        cursor: none;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    @media screen and (max-width: 48em) {
+
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    .md-inline-math .MathJax_SVG .noError {
+        display: none !important;
+    }
+
+    .mathjax-block .MathJax_SVG_Display {
+        text-align: center;
+        margin: 1em 0em;
+        position: relative;
+        text-indent: 0px;
+        max-width: none;
+        max-height: none;
+        min-height: 0px;
+        min-width: 100%;
+        width: auto;
+        display: block !important;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+        text-decoration: none;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    #write pre.md-meta-block {
+        padding: 1rem;
+        font-size: 85%;
+        line-height: 1.45;
+        background-color: rgb(247, 247, 247);
+        border: 0px;
+        border-radius: 3px;
+        color: rgb(119, 119, 119);
+        margin-top: 0px !important;
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+    </style>
+
+    <link rel="stylesheet" href="../../highlight/styles/default.css">
+    <script src="../../highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>depend-on这玩意到底是干嘛的？</b>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、什么是depend-on？</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        depend-on用来设置bean之前的依赖关系，从而干预bean的创建和销毁顺序。
+    </pre>
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、无依赖bean的创建和销毁顺序</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        先观察没有任何依赖关系的bean的创建和销毁顺序。
+        下面的xml中定义了3个bean，bean之前没有任何依赖关系：
+        <code class="language-xml">
+                &lt;bean id="bean3" class="test.NormalBean.Bean3"/&gt;
+                &lt;bean id="bean2" class="test.NormalBean.Bean2"/&gt;
+                &lt;bean id="bean1" class="test.NormalBean.Bean1"/&gt;
+        </code>
+        注意上面xml中bean的定义顺序是bean3,bean2,bean1。
+
+        对应的java代码如下：
+        <code class="language-java">
+            package test;
+
+            import org.springframework.beans.factory.DisposableBean;
+
+            /**
+             * 没有任何依赖关系的bean之间的创建和销毁顺序
+             */
+            public class NormalBean {
+
+                public static class Bean1 implements DisposableBean {
+
+                    public Bean1() {
+                        System.out.println(this.getClass() + " constructor!");
+                    }
+
+                    @Override
+                    public void destroy() throws Exception {
+                        System.out.println(this.getClass() + " destroy!");
+                    }
+                }
+
+                public static class Bean2 implements DisposableBean {
+
+                    public Bean2() {
+                        System.out.println(this.getClass() + " constructor!");
+                    }
+
+                    @Override
+                    public void destroy() throws Exception {
+                        System.out.println(this.getClass() + " destroy!");
+                    }
+                }
+
+                public static class Bean3 implements DisposableBean {
+
+                    public Bean3() {
+                        System.out.println(this.getClass() + " constructor!");
+                    }
+
+                    @Override
+                    public void destroy() throws Exception {
+                        System.out.println(this.getClass() + " destroy!");
+                    }
+                }
+            }
+        </code>
+        上面代码中使用到了DisposableBean接口。
+        这是spring容器提供的一个钩子接口，这个接口有一个destroy方法，我们自定义的bean可以实现这个接口，当我们调用spring容器的close方法关闭容器时，spring会调用勇气中所有bean的destroy方法，用来做一些清理的工作。
+        后面会详细介绍该接口。
+        上面几个内部Bean的构造方法和destroy方法随着目标bean被spring实例化和spring容器销毁，都会执行对应的输出语句。
+
+        最后我们搞一个测试程序，来验证当spring容器启动和销毁时，上述3个无依赖bean的创建和销毁的顺序。
+        <code class="language-java">
+            package test;
+
+            import org.junit.Test;
+            import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+            public class Main {
+
+                /**
+                 * 无依赖的bean创建和销毁顺序
+                 */
+                @Test
+                public void testDependOn() {
+                    System.out.println("容器启动中...");
+                    String beanXml = "classpath:/test/applicationContext.xml";
+                    ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(beanXml);
+                    System.out.println("容器启动完毕，准备关闭spring容器！");
+                    // 关闭spring容器
+                    context.close();
+                    System.out.println("spring容器已关闭！");
+                }
+            }
+        </code>
+        运行上面的testDependOn方法，得到如下输出：
+        <code class="language-diff">
+            容器启动中...
+            class test.NormalBean$Bean3 constructor!
+            class test.NormalBean$Bean2 constructor!
+            class test.NormalBean$Bean1 constructor!
+            容器启动完毕，准备关闭spring容器！
+            class test.NormalBean$Bean1 destroy!
+            class test.NormalBean$Bean2 destroy!
+            class test.NormalBean$Bean3 destroy!
+            spring容器已关闭！
+        </code>
+
+        通过上面无依赖的3个bean的定义结合输出结果，可以对比一下：
+        bean定义顺序：bean3,bean2,bean1
+        bean创建顺序：bean3,bean2,bean1
+        bean销毁顺序：bean1,bean2,bean3
+
+        对比后可以得出如下结论：
+        <font color="#dc143c">
+            1.  bean对象的创建顺序和bean xml中定义的顺序一致
+            2.  bean销毁的顺序和bean xml中定义的顺序相反
+        </font>
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、 通过构造器进行强依赖的bean的创建和销毁顺序</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        改造下上面的NormalBean这个class，通过构造方法注入的方式使得bean之间产生强依赖关系。
+        让bean2依赖bean1，bean3依赖bean2。
+        <code class="language-java">
+            package test;
+
+            import org.springframework.beans.factory.DisposableBean;
+
+            /**
+             * 没通过构造方法强依赖的bean之间的创建和销毁顺序
+             */
+            public class NormalBean {
+
+                public static class Bean1 implements DisposableBean {
+
+                    public Bean1() {
+                        System.out.println(this.getClass() + " constructor!");
+                    }
+
+                    @Override
+                    public void destroy() throws Exception {
+                        System.out.println(this.getClass() + " destroy!");
+                    }
+                }
+
+                public static class Bean2 implements DisposableBean {
+
+                    private Bean1 bean1;
+
+                    // 创建bean2时通过构造器传入一个bean1对象啊，此时bean2对bean1产生了强依赖。
+                    public Bean2(Bean1 bean1) {
+                        this.bean1 = bean1;
+                        System.out.println(this.getClass() + " constructor!");
+                    }
+
+                    @Override
+                    public void destroy() throws Exception {
+                        System.out.println(this.getClass() + " destroy!");
+                    }
+                }
+
+                public static class Bean3 implements DisposableBean {
+
+                    private Bean2 bean2;
+
+                    // 同样，通过构造器在创建bean3对象时注入一个bean2对象，此时bean3强依赖bean2.
+                    public Bean3(Bean2 bean2) {
+                        this.bean2 = bean2;
+                        System.out.println(this.getClass() + " constructor!");
+                    }
+
+                    @Override
+                    public void destroy() throws Exception {
+                        System.out.println(this.getClass() + " destroy!");
+                    }
+                }
+            }
+        </code>
+
+        对应的xml配置修改如下：
+        <code class="language-xml">
+            &lt;bean id="bean3" class="test.NormalBean.Bean3"&gt;
+                &lt;constructor-arg index="0" ref="bean2"/&gt;
+            &lt;/bean&gt;
+            &lt;bean id="bean2" class="test.NormalBean.Bean2"&gt;
+                &lt;constructor-arg index="0" ref="bean1"/&gt;
+            &lt;/bean>
+            &lt;bean id="bean1" class="test.NormalBean.Bean1"/&gt;
+        </code>
+        上述xml中bean的配置顺序是：bean3,bean2,bean1.
+        其中bean3依赖bean2,bean2依赖bean1.
+        强依赖关系是：bean3->bean2>bean1.
+
+        执行测试用例，结果如下：
+        <code class="language-diff">
+            容器启动中...
+            class test.NormalBean$Bean1 constructor!
+            class test.NormalBean$Bean2 constructor!
+            class test.NormalBean$Bean3 constructor!
+            容器启动完毕，准备关闭spring容器！
+            class test.NormalBean$Bean3 destroy!
+            class test.NormalBean$Bean2 destroy!
+            class test.NormalBean$Bean1 destroy!
+            spring容器已关闭！
+        </code>
+        得出如下结果：
+        bean定义顺序：bean3,bean2,bean1
+        bean创建顺序：bean1,bean2,bean3
+        bean销毁顺序：bean3,bean2,bean1
+
+        从输出结果得出如下结论：
+        <font color="#dc143c">
+            1.  bean对象的创建顺序和bean依赖的对象一致，比如bean3依赖bean2，bean2依赖bean1，则先创建bean1，再创建bean2，最后创建bean3.
+            2.  bean销毁的顺序和bean创建的顺序相反。
+        </font>
+    </pre>
+    <b><a name='header-n4' class='md-header-anchor '></a>4、 通过setter注入依赖的bean的创建和销毁</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        修改NormalBean，通过setter注入依赖：
+        <code class="language-java">
+            package test;
+
+            import org.springframework.beans.factory.DisposableBean;
+
+            /**
+             * 通过setter方法强依赖的bean之间的创建和销毁顺序
+             */
+            public class NormalBean {
+
+                public static class Bean1 implements DisposableBean {
+
+                    public Bean1() {
+                        System.out.println(this.getClass() + " constructor!");
+                    }
+
+                    @Override
+                    public void destroy() throws Exception {
+                        System.out.println(this.getClass() + " destroy!");
+                    }
+                }
+
+                public static class Bean2 implements DisposableBean {
+
+                    private Bean1 bean1;
+
+                    public void setBean1(Bean1 bean1) {
+                        this.bean1 = bean1;
+                    }
+
+                    public Bean2() {
+                        System.out.println(this.getClass() + " constructor!");
+                    }
+
+                    @Override
+                    public void destroy() throws Exception {
+                        System.out.println(this.getClass() + " destroy!");
+                    }
+                }
+
+                public static class Bean3 implements DisposableBean {
+
+                    private Bean2 bean2;
+
+                    public void setBean2(Bean2 bean2) {
+                        this.bean2 = bean2;
+                    }
+
+                    public Bean3() {
+                        System.out.println(this.getClass() + " constructor!");
+                    }
+
+                    @Override
+                    public void destroy() throws Exception {
+                        System.out.println(this.getClass() + " destroy!");
+                    }
+                }
+            }
+        </code>
+
+        对应的xml修改如下：
+        <code class="language-xml">
+            &lt;bean id="bean3" class="test.NormalBean.Bean3"&gt;
+                &lt;property name="bean2" ref="bean2"/&gt;
+            &lt;/bean&gt;
+            &lt;bean id="bean2" class="test.NormalBean.Bean2"&gt;
+                &lt;property name="bean1" ref="bean1"/&gt;
+            &lt;/bean&gt;
+            &lt;bean id="bean1" class="test.NormalBean.Bean1"/&gt;
+        </code>
+
+        执行测试用例，结果如下：
+        <code class="language-diff">
+            容器启动中...
+            class test.NormalBean$Bean3 constructor!
+            class test.NormalBean$Bean2 constructor!
+            class test.NormalBean$Bean1 constructor!
+            容器启动完毕，准备关闭spring容器！
+            class test.NormalBean$Bean3 destroy!
+            class test.NormalBean$Bean2 destroy!
+            class test.NormalBean$Bean1 destroy!
+            spring容器已关闭！
+        </code>
+
+        得出如下结果：
+        bean定义顺序：bean3,bean2,bean1
+        bean创建顺序：bean3,bean2,bean1
+        bean销毁顺序：bean3,bean2,bean1
+
+        这是为什么呢？
+    </pre>
+    <b><a name='header-n4' class='md-header-anchor '></a>4、 通过depend-on干预bean创建和销毁顺序</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        对于没有任何依赖关系的bean之间，通过定义的顺序确实可以干预bean的创建顺序，通过强依赖也可以干预bean的创建顺序。
+        如果xml中定义的bean特别多，而有些bean之间也没有强依赖关系，此时如果想要调整bean的创建顺序，就必须调整xml的顺序结构，或者修改java代码去加强依赖关系，这样非常不友好。
+        spring中通过depend-on来解决这些问题，在不调整bean文件顺序和加强依赖的情况下，可以通过depend-on属性来配置当前的bean依赖于哪些bean，那么可以保证depend-on指定的bean在当前bean创建之前先创建好，销毁的时候在当前bean销毁之后再销毁。
+        <font color="#dc143c">depend-on使用方式：</font>
+        <code class="language-xml">
+            &lt;bean id="bean1" class="xxxx" depends-on="bean2,bean3;bean4 bean5"&gt;
+        </code>
+        depend-on：设置当前bean依赖的bean名称，可以指定多个，多个bean之间用",;空格"进行分隔
+        上面不管bean2,bean3,bean4,bean5在任何地方定义，都可以确保在bean1创建之前会先将bean2,bean3,bean4,bean5创建好，表示bean1依赖于这4个bean。
+        可能bean1需要用到bean2,bean3,bean4,bean5中生成的一些资源或者用到其他的功能等，但是又没有强制在bean1中通过属性定义强依赖的方式去依赖bean2,bean3,bean4,bean5。
+        销毁时也会先销毁当前bean，再去销毁被依赖的bean，即先销毁bean1，再去销毁depend-on依赖的bean。
+
+        修改最开始无依赖的bean的xml：
+        <code class="language-xml">
+            &lt;bean id="bean3" class="test.NormalBean.Bean3" depends-on="bean2"&gt;
+            &lt;/bean&gt;
+            &lt;bean id="bean2" class="test.NormalBean.Bean2" depends-on="bean1"&gt;
+            &lt;/bean&gt;
+            &lt;bean id="bean1" class="test.NormalBean.Bean1"/&gt;
+        </code>
+
+        执行测试用例，测试结果如下：
+        <code class="language-diff">
+            容器启动中...
+            class test.NormalBean$Bean1 constructor!
+            class test.NormalBean$Bean2 constructor!
+            class test.NormalBean$Bean3 constructor!
+            容器启动完毕，准备关闭spring容器！
+            class test.NormalBean$Bean3 destroy!
+            class test.NormalBean$Bean2 destroy!
+            class test.NormalBean$Bean1 destroy!
+            spring容器已关闭！
+        </code>
+
+        得出如下结果：
+        bean定义顺序：bean3,bean2,bean1
+        bean创建顺序：bean1,bean2,bean3
+        bean销毁顺序：bean3,bean2,bean1
+    </pre>
+
+    <b><a name='header-n5' class='md-header-anchor '></a>5、 总结</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  无依赖的bean的创建顺序和定义的顺序一致，销毁顺序刚好相反。
+        2.  通过构造器强依赖的bean，会先创建构造器参数中对应的bean，然后才会创建当前bean，销毁顺序刚好相反。
+        3.  depend-on可以指定当前bean依赖的bean，通过这个可以确保depend-on指定的bean在当前bean创建之前先创建好，销毁顺序刚好相反。
+        4.  bean的销毁顺序和bean创建顺序相反。
+        5.  depend-on最好使用在本身无依赖关系的bean之间，如果bean本身通过构造方法或者setter方法之间产生了强依赖，则不应该再使用depend-on去手动指定bean之间的依赖关系。
+    </pre>
+</div>
+</body>
+</html>
 
