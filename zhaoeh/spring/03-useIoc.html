@@ -675,9 +675,10 @@
     .on-focus-mode blockquote {
         border-left-color: rgba(85, 85, 85, 0.12);
     }
-
-
     </style>
+    <link rel="stylesheet" href="../../highlight/styles/default.css">
+    <script src="../../highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body class='typora-export'>
 <div id='write' class='is-node'>
@@ -712,12 +713,12 @@
     </pre>
     <b><a name='header-n32' class='md-header-anchor '></a>3.2、 BeanFactory接口</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        <font color="gray">
+        <code class="language-java">
             org.springframework.beans.factory.BeanFactory;
-        </font>
+        </code>
         spring容器中具有代表性的容器就是BeanFactory接口，这是spring容器的顶层接口，提供了容器最基本的功能。
         <b><font color="#a52a2a">常用的几个方法：</font> </b>
-        <font color="gray">
+        <code class="language-java">
             // 根据bean的id配置或者别名配置查找容器中的bean对象
             Object getBean(String var1) throws BeansException;
 
@@ -732,36 +733,36 @@
 
             // 根据bean的id配置或者别名，返回bean的Class实例
             Class&lt;?&gt; getType(String var1) throws NoSuchBeanDefinitionException;
-        </font>
+        </code>
     </pre>
     <b><a name='header-n33' class='md-header-anchor '></a>3.3、 ApplicationContext接口</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        <font color="gray">
+        <code class="language-java">
             org.springframework.context.ApplicationContext;
-        </font>
+        </code>
         这个接口继承了BeanFactory接口，所以其内部包含了BeanFactory接口的所有功能，并且在其基础上进行了很多扩展，增加很多企业级的功能，比如AOP、国际化、事件支持等。
     </pre>
     <b><a name='header-n34' class='md-header-anchor '></a>3.4、 ClassPathXmlApplicationContext类</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        <font color="gray">
+        <code class="language-java">
             org.springframework.context.support.ClassPathXmlApplicationContext;
-        </font>
+        </code>
         这个类实现了ApplicationContext接口，注意这个类名包含了ClassPath Xml，说明这个容器类可以从classpath中加载bean xml配置文件，然后创建xml中配置的bean对象。
     </pre>
     <b><a name='header-n35' class='md-header-anchor '></a>3.5、 AnnotationConfigApplicationContext类</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        <font color="gray">
+        <code class="language-java">
             org.springframework.context.annotation.AnnotationConfigApplicationContext;
-        </font>
+        </code>
         这个类也实现了ApplicationContext接口，注意这个类名包含Annotation和Config这俩单词，说明当我们需要使用注解的方式来定义bean时，就需要使用这个容器类来装载bean了。
         这个容器内部会解析注解标注的类，用来构建和管理我们需要的bean对象。
         注解的方式相较于xml的方式更加灵活方便，也是我们非常推荐的方式。
     </pre>
     <b><a name='header-n36' class='md-header-anchor '></a>3.6、 DefaultListableBeanFactory类</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        <font color="gray">
+        <code class="language-java">
             org.springframework.beans.factory.support.DefaultListableBeanFactory;
-        </font>
+        </code>
         这个类简直太重要了。
         很有必要梳理一下spring暴露给我们的容器对象。
         首先BeanFactory是容器根接口；ApplicationContext是继承了BeanFactory接口的一个子接口，扩展了很多顶层方法。
@@ -771,12 +772,12 @@
         总的来说，DefaultListableBeanFactory类也是顶层容器接口BeanFactory的一个实现类。并且可以明确的说，DefaultListableBeanFactory类才是spring容器对象中唯一的一个功能完备、可以直接暴露给客户端使用的容器类。
         DefaultListableBeanFactory类只有XmlBeanFactory一个子类，它还被标记过时了的。
         我们可以直接编码使用 DefaultListableBeanFactory：
-        <font color="gray">
+        <code class="language-java">
             DefaultListableBeanFactory defaultListableBeanFactory = new DefaultListableBeanFactory();
             XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(defaultListableBeanFactory);
             reader.loadBeanDefinitions(new FileSystemResource("/spring/applicationContext.xml"));
             defaultListableBeanFactory.getBean("person");
-        </font>
+        </code>
 
         实际上spring暴露的容器只有 DefaultListableBeanFactory。
         我们观察ClassPathXmlApplicationContext或者AnnotationConfigApplicationContext类的源码，可以看到这两个类虽然也是BeanFactory接口的实现类，但是他们是通过持有一个DefaultListableBeanFactory引用来运行spring容器的。
@@ -788,41 +789,43 @@
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         在classpath下指定目录创建bean的定义文件，一般叫做applicationContext.xml。
         其中注意配置bean的元信息。
-        &lt;bean id="person" class="com.zeh.main.pojo.Person" /&gt;
+        <code class="language-xml">
+            &lt;bean id="person" class="com.zeh.main.pojo.Person" /&gt;
+        </code>
     </pre>
     <b><a name='header-n42' class='md-header-anchor '></a>4.2、 测试程序</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         创建程序，测试代码执行：
-        <font color="gray">
-        package com.zeh.main.controller;
+        <code class="language-java">
+            package com.zeh.main.controller;
 
-        import com.zeh.main.pojo.Person;
+            import com.zeh.main.pojo.Person;
 
-        import org.springframework.context.support.ClassPathXmlApplicationContext;
+            import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-04-25
-         */
-        public class PersonController {
-            public static void main(String[] args) {
-                // 1. bean配置文件位置
-                String beanXml = "classpath:/spring/applicationContext.xml";
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-04-25
+             */
+            public class PersonController {
+                public static void main(String[] args) {
+                    // 1. bean配置文件位置
+                    String beanXml = "classpath:/spring/applicationContext.xml";
 
-                // 2. 创建classPathXmlApplicationContext容器对象，给容器指定需要加载的bean xml文件
-                ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(beanXml);
+                    // 2. 创建classPathXmlApplicationContext容器对象，给容器指定需要加载的bean xml文件
+                    ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(beanXml);
 
-                // 3. 从容器中获取需要的bean
-                Person person = applicationContext.getBean("person", Person.class);
+                    // 3. 从容器中获取需要的bean
+                    Person person = applicationContext.getBean("person", Person.class);
 
-                // 4. 使用bean
-                person.testPerson();
+                    // 4. 使用bean
+                    person.testPerson();
 
+                }
             }
-        }
-        </font>
+        </code>
     </pre>
 </div>
 </body>

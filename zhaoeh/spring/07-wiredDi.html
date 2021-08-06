@@ -675,9 +675,10 @@
     .on-focus-mode blockquote {
         border-left-color: rgba(85, 85, 85, 0.12);
     }
-
-
     </style>
+    <link rel="stylesheet" href="../../highlight/styles/default.css">
+    <script src="../../highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body class='typora-export'>
 <div id='write' class='is-node'>
@@ -703,7 +704,7 @@
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         当一个对象A对外提供的功能需要其他对象来完成的时候，我们就称对象A和其他对象之间存在依赖关系。
         如下：
-        <font color="gray">
+        <code class="language-java">
             class DiService{
                 public void test(){
 
@@ -719,7 +720,8 @@
                 }
 
             }
-        </font>
+        </code>
+
         DiController中的test方法需要调用DiService中的test方法，说明DiController依赖DiService，此时如果diService对象不存在，则DiController无法对外提供test功能。
         那么我们在创建DiController对象时是如何向其中设置diService对象呢？
         上面我们已经给出了答案，常见的就两种方式：
@@ -729,7 +731,7 @@
     <b><a name='header-n12' class='md-header-anchor '></a>1.2、 通过构造器设置依赖对象</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         DiController中添加一个有参构造，如下：
-        <font color="gray">
+        <code class="language-java">
             public class DiController {
 
                 private DiService diService;
@@ -742,16 +744,17 @@
                     this.diService.test();
                 }
             }
-        </font>
+        </code>
+
         这样，外部在创建DiController对象时，就可以直接通过其提供的有参构造将diService对象给注入进去，然后DiController内部就可以使用diService对象了。
-        <font color="gray">
+        <code class="language-java">
             DiController diController = new DiController(new DiService());
-        </font>
+        </code>
     </pre>
     <b><a name='header-n13' class='md-header-anchor '></a>1.3、 通过set方法设置依赖对象</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         DiController中为diService添加一个setter方法，如下：
-        <font color="gray">
+        <code class="language-java">
             public class DiController {
 
                 private DiService diService;
@@ -768,12 +771,13 @@
                     this.diService.test();
                 }
             }
-        </font>
+        </code>
+
         这样，外部在创建DiController对象时，就可以直接通过其提供的setter方法将diService对象给注入进去。
-        <font color="gray">
+        <code class="language-java">
             DiController diController = new DiController();
             diController.setDiService(new DiService());
-        </font>
+        </code>
     </pre>
 
     <b><a name='header-n2' class='md-header-anchor '></a>2、依赖注入</b><br>
@@ -783,8 +787,10 @@
 
         spring中依赖注入主要分为手动注入和自动注入，本文介绍手动注入，手动注入需要我们明确配置需要注入的对象。
         刚才我们回顾了，将被依赖的对象注入到依赖方中，通常有2种方式：
-        通过构造方法的方式完成注入。
-        通过set属性的方式完成注入。
+        <code class="language-diff">
+            通过构造方法的方式完成注入。
+            通过set属性的方式完成注入。
+        </code>
         spring也是通过这两种方式完成依赖注入的。
     </pre>
 
@@ -792,24 +798,27 @@
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         通过构造器完成注入时，构造器中的参数就是被依赖的对象，这从侧面证实了使用构造器注入依赖的话，构造器必须是有参构造。
         构造器注入又分为3种注入方式，这3种方式我们在之前学习spring通过构造器反射实例化bean的时候学习过，分别是：
-        1.  根据构造器参数索引注入
-        2.  根据构造器参数类型注入
-        3.  根据构造器参数名称注入
+        <code class="language-diff">
+            1.  根据构造器参数索引注入
+            2.  根据构造器参数类型注入
+            3.  根据构造器参数名称注入
+        </code>
     </pre>
     <b><a name='header-n31' class='md-header-anchor '></a>3.1、 根据构造器参数索引注入依赖</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <b><font color="#a52a2a">用法</font> </b>
-        <font color="gray">
+        <code class="language-xml">
             &lt;bean id="diModel" class="com.zeh.main.pojo.DiModel">
                 &lt;constructor-arg index="0" value="eric" />
                 &lt;constructor-arg index="1" value="我是通过构造器的参数索引位置注入的" />
             &lt;/bean>
-        </font>
+        </code>
         constructor-arg标签用于让用户指定构造器参数。
         index：构造器参数的索引位置，从0开始，指定0则表示构造器第1个参数，指定1则表示构造器第2个参数，以此类推。
         value：指定的构造器参数的值，value只能用来给简单类型的参数设置值，value设置值时对应的属性类型只能为 string、byte、int、long、float、double、boolean、Byte、Long、Float、Double、枚举等，spring容器内部注入时会将value的值转换为对应的类型。
+
         <b><font color="#a52a2a">DiModel</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package com.zeh.main.pojo;
 
             /**
@@ -842,22 +851,25 @@
                 }
 
             }
-        </font>
+        </code>
         注意上面bean里面的3个构造方法。
+
         <b><font color="#a52a2a">bean xml</font> </b>
-        <font color="gray">
+        <code class="language-xml">
             &lt;!-- 通过构造器参数的索引注入 -->
             &lt;bean id="diModel" class="com.zeh.main.pojo.DiModel">
                 &lt;constructor-arg index="0" value="eric" />
                 &lt;constructor-arg index="1" value="我是通过构造器的参数索引位置注入的" />
             &lt;/bean>
-        </font>
+        </code>
+
         上面bean xml配置创建的DiModel相当于如下java代码：
-        <font color="gray">
+        <code class="language-java">
             DiModel diModel = new DiModel("eric", "我是通过构造器的参数索引位置注入的");
-        </font>
+        </code>
+
         <b><font color="#a52a2a">工具类IocUtil</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package com.zeh.main.util;
 
             import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -872,9 +884,10 @@
                     return new ClassPathXmlApplicationContext(beanXml);
                 }
             }
-        </font>
+        </code>
+
         <b><font color="#a52a2a">测试</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package com.zeh.main.controller;
 
             import com.zeh.main.util.IocUtil;
@@ -893,11 +906,13 @@
                     System.out.println(String.format("bean is %s", context.getBean("diModel")));
                 }
             }
-        </font>
+        </code>
+
         <b><font color="#a52a2a">测试结果</font> </b>
-        <font color="gray">
+        <code class="language-diff">
             bean is DiModel{name = 'eric',age = '0',desc = '我是通过构造器的参数索引位置注入的'}
-        </font>
+        </code>
+
         <b><font color="#a52a2a">优缺点</font> </b>
         参数位置的注入对参数顺序有很强的依赖性，若构造方法的参数位置被人调整过，会导致注入出错。
         不过一般情况下，不建议在代码中去修改构造方法，如果需要新增参数，可以新增一个构造方法来实现，这算是一种扩展，不会影响目前已有的功能。
@@ -905,33 +920,36 @@
     <b><a name='header-n32' class='md-header-anchor '></a>3.2、 根据构造器参数类型注入依赖</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <b><font color="#a52a2a">用法</font> </b>
-        <font color="gray">
+        <code class="language-xml">
             &lt;!-- 通过构造器参数的类型注入 -->
             &lt;bean id="diModel" class="com.zeh.main.pojo.DiModel">
                 &lt;constructor-arg type="参数类型" value="参数值" />
                 &lt;constructor-arg type="参数类型" value="参数值" />
             &lt;/bean>
-        </font>
+        </code>
         constructor-arg标签用于让用户指定构造器参数。
         type：构造方法参数的完整类型，比如 java.lang.String，int，double
         value：构造方法参数的值，value只能用来给简单类型设置值
+
         <b><font color="#a52a2a">bean xml</font> </b>
-        <font color="gray">
+        <code class="language-xml">
             &lt;!-- 通过构造器参数的类型注入 -->
             &lt;bean id="diModel" class="com.zeh.main.pojo.DiModel">
                 &lt;constructor-arg type="int" value="22"/>
                 &lt;constructor-arg type="java.lang.String" value="eric" />
                 &lt;constructor-arg type="java.lang.String" value="我是通过构造器的参数类型注入的" />
             &lt;/bean>
-        </font>
+        </code>
         上面bean xml配置创建的DiModel相当于如下java代码：
-        <font color="gray">
+        <code class="language-java">
             DiModel diModel = new DiModel("eric", 22, "我是通过构造器的参数类型注入的");
-        </font>
+        </code>
+
         <b><font color="#a52a2a">测试结果</font> </b>
-        <font color="gray">
+        <code class="language-diff">
             bean is DiModel{name = 'eric',age = '22',desc = '我是通过构造器的参数类型注入的'}
-        </font>
+        </code>
+
         <b><font color="#a52a2a">优缺点</font> </b>
         实际上按照参数类型或者参数位置去注入都存在一个明显的问题，很难通过bean的配置文件，知道这个参数对应DiModel中的哪个属性。
         代码的可读性不好，比如我想知道每个参数对应DiModel中的哪个属性，必须去看DiModel的源码。
@@ -940,13 +958,13 @@
     <b><a name='header-n33' class='md-header-anchor '></a>3.3、 根据构造器参数名称注入依赖</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <b><font color="#a52a2a">用法</font> </b>
-        <font color="gray">
+        <code class="language-xml">
             &lt;!-- 通过构造器参数的名称注入 -->
             &lt;bean id="diModel" class="com.zeh.main.pojo.DiModel">
                 &lt;constructor-arg name="参数名称" value="参数值" />
                 &lt;constructor-arg name="参数名称" value="参数值" />
             &lt;/bean>
-        </font>
+        </code>
         constructor-arg标签用于让用户指定构造器参数。
         name：构造方法参数名称
         value：构造方法参数的值，value只能用来给简单类型设置值
@@ -955,30 +973,32 @@
         java通过反射的方式可以获取到方法的参数名称，不过源码中的参数经过编译之后变成class文件，通常情况下源码编译成class文件之后，编译器会对参数名称做优化。
         即源码中的参数真实名称会丢失，参数名称会编译成arg0,arg1,arg2之类的，和实际参数不一样了。
         如果需要将源码中的参数名称保留到编译后的class文件中，编译的时候需要使用下面的命令：
-        <font color="gray">
+        <code class="language-diff">
             javac -parameters java源码
-        </font>
+        </code>
+
         然而我们很难保证在编译代码的时候，开发人员一定会带上-parameters参数，所以方法的参数可能会在class文件中丢失，导致反射获取到的参数名称和实际参数名称不符，这个需要了解下。
         参数名称可能不稳定的问题，spring本身也提供了解决方案，通过ConstructorProperties注解来定义构造方法参数的名称，将这个直接加到构造方法上面，如下：
-        <font color="gray">
+        <code class="language-java">
             @ConstructorProperties({"第1个参数名称", "第2个参数名称",...})
             public 类名(String p1,String p2,String p3,....,参数n){}
-        </font>
+        </code>
+
         <b><font color="#a52a2a">bean xml</font> </b>
-        <font color="gray">
+        <code class="language-xml">
             &lt;!-- 通过构造器参数的名称注入 -->
             &lt;bean id="diModel" class="com.zeh.main.pojo.DiModel">
                 &lt;constructor-arg name="age" value="19"/>
                 &lt;constructor-arg name="name" value="eric" />
                 &lt;constructor-arg name="desc" value="我是通过构造器的参数名称注入的" />
             &lt;/bean>
-        </font>
+        </code>
+
         上面bean xml配置创建的DiModel相当于如下java代码：
-        <font color="gray">
-            DiModel diModel = new DiModel("eric", 22, "我是通过构造器的参数名称注入的");
-        </font>
+        <code class="language-java">DiModel diModel = new DiModel("eric", 22, "我是通过构造器的参数名称注入的");</code>
+
         <b><font color="#a52a2a">修改DiModel的构造方法</font> </b>
-        <font color="gray">
+        <code class="language-java">
             @ConstructorProperties({"name", "desc"})
             public DiModel(String name, String desc) {
                 this.name = name;
@@ -991,11 +1011,12 @@
                 this.age = age;
                 this.desc = desc;
             }
-        </font>
+        </code>
+
         <b><font color="#a52a2a">测试结果</font> </b>
-        <font color="gray">
+        <code class="language-diff">
             bean is DiModel{name = 'eric',age = '19',desc = '我是通过构造器的参数名称注入的'}
-        </font>
+        </code>
     </pre>
 
     <b><a name='header-n4' class='md-header-anchor '></a>4、spring完成依赖注入的方式-通过set属性注入</b><br>
@@ -1011,35 +1032,38 @@
     <b><a name='header-n42' class='md-header-anchor '></a>4.2、 setter属性方式注入</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <b><font color="#a52a2a">用法</font> </b>
-        <font color="gray">
+        <code class="language-xml">
             &lt;!-- 通过setter属性方式注入 -->
             &lt;bean id="diModel" class="com.zeh.main.pojo.DiModel">
                 &lt;property name="属性名称" value="属性值"/>
                 ...
                 &lt;property name="属性名称" value="属性值"/>
             &lt;/bean>
-        </font>
+        </code>
         property标签用于对当前bean中的属性的值进行配置，可以有多个。
         name：属性的名称。
         value：属性的值。
+
         <b><font color="#a52a2a">bean xml</font> </b>
-        <font color="gray">
+        <code class="language-xml">
             &lt;!-- 通过setter属性方式注入 -->
             &lt;bean id="diModel" class="com.zeh.main.pojo.DiModel">
                 &lt;property name="name" value="eric"/>
                 &lt;property name="age" value="18"/>
                 &lt;property name="desc" value="我是通过setter属性注入的"/>
             &lt;/bean>
-        </font>
+        </code>
+
          上面bean xml配置创建的DiModel相当于如下java代码：
-        <font color="gray">
+        <code class="language-java">
             DiModel diModel = new DiModel();
             diModel.setName("eric");
             diModel.setAge(18);
             diModel.setDesc("我是通过setter属性注入的");
-        </font>
+        </code>
+
         <b><font color="#a52a2a">修改DiModel，删除有参构造，加上对应的setter方法</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package com.zeh.main.pojo;
 
             import java.beans.ConstructorProperties;
@@ -1086,11 +1110,13 @@
                     return "DiModel{" + "name = '" + this.name + "',age = '" + this.age + "',desc = '" + this.desc + "'}";
                 }
             }
-        </font>
+        </code>
+
         <b><font color="#a52a2a">测试结果</font> </b>
-        <font color="gray">
+        <code class="language-diff">
             bean is DiModel{name = 'eric',age = '18',desc = '我是通过setter属性注入的'}
-        </font>
+        </code>
+
         <b><font color="#a52a2a">优缺点</font> </b>
         setter注入相比较于构造方法注入要灵活一些，构造方法注入属性的话，需要指定对应构造方法中所有参数的值，而setter注入的方式没有这种限制。
         只要对应属性有setter方法，就可以按照需要，选择注入哪些属性的值。
@@ -1105,43 +1131,45 @@
     <b><a name='header-n52' class='md-header-anchor '></a>5.2、 注入容器中的bean</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         注入容器中的bean有2种写法：
-        1.  ref属性方式注入
-        2.  内置bean的方式注入
+        <code class="language-diff">
+            1.  ref属性方式注入
+            2.  内置bean的方式注入
+        </code>
     </pre>
     <b><a name='header-n53' class='md-header-anchor '></a>5.3、 ref属性方式注入</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         将上面介绍的constructor-arg标签或者property标签中的value属性替换为ref属性，ref属性的值为容器中其他bean的名称。
         比如：
         构造器方式，将value替换为ref：
-        <font color="gray">
+        <code class="language-xml">
             &lt;constructor-arg ref="需要注入的bean名称" />
-        </font>
+        </code>
         setter方式，将value替换为ref：
-        <font color="gray">
+        <code class="language-xml">
             &lt;property name="属性名称" ref="需要注入的bean名称"/>
-        </font>
+        </code>
     </pre>
     <b><a name='header-n54' class='md-header-anchor '></a>5.4、 内置bean方式注入</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         构造器方式：
-        <font color="gray">
+        <code class="language-xml">
             &lt;constructor-arg index="">
                 &lt;bean class=""/>
             &lt;/constructor-arg>
-        </font>
+        </code>
+
         setter方式：
-        <font color="gray">
+        <code class="language-xml">
             &lt;property name="">
                 &lt;bean class=""/>
             &lt;/property>
-        </font>
+        </code>
     </pre>
     <b><a name='header-n55' class='md-header-anchor '></a>5.5、 案例</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <b><font color="#a52a2a">DiModel</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package com.zeh.main.pojo;
-
             /**
              * 功能描述
              *
@@ -1185,10 +1213,10 @@
                 }
 
             }
-        </font>
+        </code>
 
         <b><font color="#a52a2a">UserModel</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package com.zeh.main.pojo;
 
             /**
@@ -1223,10 +1251,10 @@
                     return "UserModel{" + "userName = '" + this.userName + "',userAge = '" + this.userAge + "'}";
                 }
             }
-        </font>
+        </code>
 
         <b><font color="#a52a2a">PersonModel</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package com.zeh.main.pojo;
 
             /**
@@ -1261,10 +1289,10 @@
                     return "PersonModel{" + "diModel = '" + this.diModel + ",userModel = '" + this.userModel + "'}";
                 }
             }
-        </font>
+        </code>
 
         <b><font color="#a52a2a">bean xml配置</font> </b>
-        <font color="gray">
+        <code class="language-xml">
             &lt;!-- 通过setter属性方式注入 -->
             &lt;bean id="diModel" class="com.zeh.main.pojo.DiModel">
                 &lt;property name="name" value="eric"/>
@@ -1284,9 +1312,10 @@
                     &lt;/bean>
                 &lt;/property>
             &lt;/bean>
-        </font>
+        </code>
+
         <b><font color="#a52a2a">测试程序</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package com.zeh.main.controller;
 
             import com.zeh.main.util.IocUtil;
@@ -1305,18 +1334,19 @@
                     System.out.println(String.format("bean is %s", context.getBean("personModel")));
                 }
             }
-        </font>
+        </code>
+
         <b><font color="#a52a2a">测试结果</font> </b>
-        <font color="gray">
-            bean is PersonModel{diModel = 'DiModel{name = 'eric',age = '18',desc = '我是通过setter属性注入的'},userModel = 'UserModel{userName = 'daisy',userAge = '15'}'}
-        </font>
+        <code class="language-diff">
+            bean is PersonModel{diModel = 'DiModel{name = 'eric',age = '18',desc = '我是通过setter属性注入的'},userModel = 'UserModel{userName = 'daisy',userAge = '15'}'}l
+        </code>
     </pre>
 
     <b><a name='header-n6' class='md-header-anchor '></a>6、其他复合类型注入</b><br>
     <b><a name='header-n61' class='md-header-anchor '></a>6.1、 语法</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <b><font color="#a52a2a">注入java.util.List(list元素)</font> </b>
-        <font color="gray">
+        <code class="language-xml">
             &lt;bean id="" class="">
                 &lt;property name="">
                     &lt;list>
@@ -1334,10 +1364,10 @@
                     &lt;/list>
                 &lt;/property>
             &lt;/bean>
-        </font>
+        </code>
 
         <b><font color="#a52a2a">注入java.util.Set(set元素)</font> </b>
-        <font color="gray">
+        <code class="language-xml">
             &lt;bean id="" class="">
                 &lt;property name="">
                     &lt;set>
@@ -1355,10 +1385,10 @@
                     &lt;/set>
                 &lt;/property>
             &lt;/bean>
-        </font>
+        </code>
 
         <b><font color="#a52a2a">注入java.util.Map(map元素)</font> </b>
-        <font color="gray">
+        <code class="language-xml">
             &lt;bean id="" class="">
                 &lt;property name="">
                     &lt;map>
@@ -1375,10 +1405,10 @@
                     &lt;/map>
                 &lt;/property>
             &lt;/bean>
-        </font>
+        </code>
 
         <b><font color="#a52a2a">注入数组(array元素)</font> </b>
-        <font color="gray">
+        <code class="language-xml">
             &lt;bean id="" class="">
                 &lt;property name="">
                     &lt;array>
@@ -1396,11 +1426,11 @@
                     &lt;/array>
                 &lt;/property>
             &lt;/bean>
-        </font>
+        </code>
 
         <b><font color="#a52a2a">注入java.util.Properties(props元素)</font> </b>
         Properties类相当于键值都是String类型的Map对象，使用props进行注入，如下：
-        <font color="gray">
+        <code class="language-xml">
             &lt;bean id="" class="">
                 &lt;property name="">
                     &lt;props>
@@ -1410,12 +1440,13 @@
                     &lt;/props>
                 &lt;/property>
             &lt;/bean>
-        </font>
+        </code>
+
     </pre>
     <b><a name='header-n62' class='md-header-anchor '></a>6.2、 复合类型注入综合案例</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <b><font color="#a52a2a">OtherModel</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package com.zeh.main.pojo;
 
             import java.util.Arrays;
@@ -1487,10 +1518,10 @@
                             this.myProperties + "'}";
                 }
             }
-        </font>
+        </code>
 
         <b><font color="#a52a2a">bean xml</font> </b>
-        <font color="gray">
+        <code class="language-xml">
             &lt;bean id="user1" class="com.zeh.main.pojo.UserModel">
                 &lt;property name="userName" value="eric" />
                 &lt;property name="userAge" value="18" />
@@ -1549,10 +1580,10 @@
                     &lt;/props>
                 &lt;/property>
             &lt;/bean>
-        </font>
+        </code>
 
         <b><font color="#a52a2a">测试</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package com.zeh.main.controller;
 
             import com.zeh.main.util.IocUtil;
@@ -1571,12 +1602,12 @@
                     System.out.println(String.format("bean is %s", context.getBean("other")));
                 }
             }
-        </font>
+        </code>
 
         <b><font color="#a52a2a">测试结果</font> </b>
-        <font color="gray">
+        <code class="language-diff">
             bean is OtherModel{myList = '[spring, springboot]',mySet = '[UserModel{userName = 'eric',userAge = '18'}, UserModel{userName = 'daisy',userAge = '17'}, UserModel{userName = '内置bean',userAge = '100'}]',myMap = {yu=18, zhao=22}',myArray = '[123, 158, 789]',myProperties = '{key3=java框架详解, key2=java高并发系列, key1=java开发实战}'}
-        </font>
+        </code>
     </pre>
 
     <b><a name='header-n7' class='md-header-anchor '></a>7、总结</b><br>
