@@ -4,7 +4,7 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width initial-scale=1'>
-    <title>@Configuration和@Bean.md</title>
+    <title>hello mule.md</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
           rel='stylesheet' type='text/css'/>
     <style type='text/css'>html {
@@ -717,114 +717,91 @@
 </head>
 <body class='typora-export'>
 <div id='write' class='is-node'>
-    <b><a name='header-n0' class='md-header-anchor '></a>@Configuration和@Bean注解(bean定义批量注册)</b>
+    <b><a name='header-n0' class='md-header-anchor '></a>Hello Mule</b>
 
-    <b><a name='header-n1' class='md-header-anchor '></a>1、为什么需要@Configuration和@Bean注解</b><br>
+    <b><a name='header-n1' class='md-header-anchor '></a>1、hello mule整体布局</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        之前我们通过xml的方式定义bean，里面会描写很多bean元素，然后spring在容器启动时，就会读取bean xml配置文件，然后解析这些配置，将这些bean定义注册到spring容器中，供使用者使用。
-        jdk1.5提供了注解的功能，spring觉得注解挺好，就将注解也加进来了。让我们可以通过注解的方式来定义java bean，用起来能达到和xml中定义bean完全一样的效果，并且更简洁。这里面需要用到的注解就包含Configuration注解和@Bean注解（当然注册bean定义的注解还有很多）。
+        <img src="03-hellomule01.png">
+        安装 Anypoint Studio 后，可以设置并运行示例。
     </pre>
 
-    <b><a name='header-n2' class='md-header-anchor '></a>2、@Configuration注解</b><br>
+    <b><a name='header-n2' class='md-header-anchor '></a>2、案例讲解</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        @Configuration注解可以标注在类上，让这个类的功能等同于一个bean xml配置文件，如下：
-        <code class="language-java">
-            package test;
-
-            import org.springframework.context.annotation.Configuration;
-
-            @Configuration
-            public class ConfigBean {
-
-            }
-        </code>
-        上面的代码类似于下面的 bean xml：
-        <code class="language-xml">
-            &lt;?xml version="1.0" encoding="UTF-8"?>
-            &lt;beans xmlns="http://www.springframework.org/schema/beans"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.springframework.org/schema/beans
-		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
-
-            &lt;/beans>
-        </code>
-        spring中专门通过<font color="#dc143c">AnnotationConfigApplicationContext</font>来加载<font color="#dc143c">@Configuration</font>注解修饰的类，如下：
-        <code class="language-java">
-            AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ConfigBean.class);
-        </code>
-        此时的ConfigBean类中没有任何内容，相当于一个空的xml配置文件，此时我们要在ConfigBean类中注册bean，那么就需要用到@Bean注解了。
-
-        <b>总结一下：</b>
-        @Configuration注解使用步骤：
-        1.  在类上使用<font color="#dc143c">@Configuration</font>注解标注。
-        2.  通过<font color="#dc143c">AnnotationConfigApplicationContext</font>来加载<font color="#dc143c">@Configuration</font>注解修饰的类
-        注意事项：
-        1.  <font color="#dc143c">@Configuration</font>注解本身并没有注册bean定义，它的存在说明其所标注的java类是一个配置类。
-        2.  要想向容器中注册bean定义，需要使用<font color="#dc143c">@Bean</font>注解。
+        Hello Mule 示例包含一个简单的 Mule 流程。此Flow接受 HTTP 请求，在消息上设置静态payload，然后向您返回响应。
+        入站 HTTP 端点接收提交给 Web 服务的请求。HTTP 端点负责接收和返回消息，因为消息交换模式是请求-响应。
+        顾名思义，Set Payload 组件在payload中设置一个值。在此示例中，该值使用 DataWeave 表达式在payload上设置静态字符串。
     </pre>
 
-    <b><a name='header-n3' class='md-header-anchor '></a>3、 @Bean注解</b><br>
-    <b><a name='header-n31' class='md-header-anchor '></a>3.1、 @Bean注解使用</b>
+    <b><a name='header-n3' class='md-header-anchor '></a>3、 案例步骤</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        这个注解类似于bean xml配置文件中的bean元素，用来在srping容器中注册一个bean定义。
-        @Bean注解用在方法上，表示通过方法来定义一个bean，默认将方法名称作为bean名称，将方法返回值作为bean对象，注册到spring容器中。
-        <font color="#dc143c">注意：@Bean注入bean定义后，是通过方法返回值作为bean对象的，即@Bean不是通过反射进行bean对象的实例化，而是将bean对象的实例化交给开发者手动进行。</font>
+        按照以下步骤在您自己的 Anypoint Studio 实例中创建示例。请注意，您可以在 Anypoint Studio 中创建模板应用程序并调整基于用例的模板的配置以在 Mule 中创建您自己的自定义应用程序。
+        1.  在 Anypoint Studio 中创建一个名为 的项目hellomule：
+        （1）. 选择File > New > Mule Project，并 在打开的对话框中提供项目名称“hellomule”：
+        <img src="03-1.1.png">
+        请注意，项目名称不包含任何空格。
+        （2）. 单击完成。
 
-        如下：
-        <code class="language-java">
-            @Bean
-            public User user1(){
-                return new User();
-            }
-        </code>
-        @Bean注解还有很多属性，其源码如下：
-        <code class="language-java">
-            package org.springframework.context.annotation;
+        2.  将 HTTP Listener 组件拖到 hellomule画布上：
+        （1）. 在项目的Mule Palette选项卡中，单击HTTP：
+        <img src="03-2.1.png">
+        （2）. 将Listener组件拖入hellomuleFlow画布：
+        <img src="03-2.2.png ">
+        如果Listener选项卡中的配置 UI未打开，请单击 画布中的Listener组件将其打开。
+        请注意，选项卡中的红色框之所以存在，是因为 连接器配置和路径字段需要值。
 
-            import java.lang.annotation.Documented;
-            import java.lang.annotation.ElementType;
-            import java.lang.annotation.Retention;
-            import java.lang.annotation.RetentionPolicy;
-            import java.lang.annotation.Target;
-            import org.springframework.beans.factory.annotation.Autowire;
-            import org.springframework.core.annotation.AliasFor;
+        3.  从Listener选项卡配置Listener组件：
+        <img src="03-3.png">
+        （1）. 在侦听器的Path字段中，输入 path /hellomule。
+        （2）. 找到并单击侦听器的连接器配置字段旁边的绿色加号图标 ( + ) 以打开HTTP 侦听器配置对话框。
+        （3）. 在对话框中，通过单击Test Connection来检查默认侦听器配置 ：
+        <img src="03-3.3.png">
+        如果连接成功，您会看到消息“测试连接成功！” 在弹出的测试连接对话框中。
+        如果连接失败，请尝试使用未使用的端口号，例如 8082或8083，重新测试连接，然后添加配置。
+        （4）. 单击“确定”向项目添加工作配置。
 
-            // 说明该注解可以标注在方法和注解类型上
-            @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
-            // 说明该注解在源码、编译和运行阶段生效
-            @Retention(RetentionPolicy.RUNTIME)
-            @Documented
-            public @interface Bean {
-                // name和value属性是一样的，设置时只能选择设置其中一个，原因是@AliasFor注解导致的
-                // value和name是String类型的数组，第一个值作为bean的名称，其余值作为bean的别名。
-                @AliasFor("name")
-                String[] value() default {};
+        4.  从Mule Palette选项卡中，单击Core，然后找到一个Set Payload 组件并将其拖到画布的Process区域：
+        <img src="03-4.png">
+        如果找不到Set Payload组件，请尝试使用Mule Palette选项卡顶部的搜索字段 。
+        如果Set Payload选项卡中的配置 UI未打开，请单击 Set Payload组件以打开其配置 UI。
 
-                @AliasFor("value")
-                String[] name() default {};
+        5.  在set payload组件的value区域，取消勾选 fx域，并输入字符串 “Hello Mule”。
+        取消选择fx域时，则输入的value值只包含"Hello Mule"，不包含#和[]。
 
-                // autowire属性已经不建议使用
-                Autowire autowire() default Autowire.NO;
+        6.  从Mule Palette选项卡中，单击Core，然后找到一个Logger 组件并将其拖到Transform Message 组件的右侧。
+        <img src="03-6.png ">
+        如果找不到Logger组件，请尝试使用Mule Palette选项卡顶部的搜索字段 。
+        如果Listener选项卡中的配置 UI未打开，请单击 画布中的Logger组件将其打开。
 
-                // bean初始化执行的方法，和生命周期相关
-                String initMethod() default "";
+        7.  在Logger的Message字段中，单击fx按钮，并添加以下 DataWeave 表达式以将请求路径打印到 Anypoint Studio 控制台：
+        attributes.requestPath
 
-                // bean销毁执行的方法，和声明周期相关
-                String destroyMethod() default "(inferred)";
-            }
-        </code>
-
-    </pre>
-    <b><a name='header-n32' class='md-header-anchor '></a>3.2、 @Bean案例</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-    <b><a name='header-n33' class='md-header-anchor '></a>3.3、 为啥要自定义scope？</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        8.  通过从 Anypoint Studio选择文件>保存来保存项目。
     </pre>
 
-    <b><a name='header-n4' class='md-header-anchor '></a>4、 总结</b><br>
+    <b><a name='header-n4' class='md-header-anchor '></a>4、 运行Hello Mule案例</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        在 Anypoint Studio 中设置好 Hello Mule 后，您可以运行并测试它。
+        1.  通过在 Anypoint Studio 画布中右键单击并选择Run project hellomule来运行您的hellomule应用程序。
+        <img src="03-41.png ">
+        或者，您可以单击运行按钮位于 Anypoint Studio 顶部的运行按钮 ( )，然后从打开的下拉菜单中选择hellomule。
+        任一操作都会启动构建过程并打开 Anypoint Studio 控制台，日志会在其中打印有关两阶段构建和部署过程的重要信息。
+        如果您在 Anypoint Studio 控制台中看到一条类似以下内容的消息，则说明项目正在运行：
+        <img src="03-42.png">
+        如果您在控制台中收到失败通知 FAILED 而不是DEPLOYED通知，请检查错误消息。
+        如果您看到如下消息，请尝试在 HTTP 侦听器配置中设置新的 HTTP 端口：
+        <img src="03-43.png ">
+        然后保存并重新运行您的项目。请注意，如果故障仍然存在，您也可以尝试将主机更改为localhost。
+
+        2.  应用程序运行后，打开浏览器窗口，输入监听器的 URL 以触发应用程序：
+        <img src="03-44.png">
+        您必须使用与 HTTP 侦听器中配置的相同的主机和端口，例如http://0.0.0.0:8081/hellomule.
+
+        3.  检查Hello Mule!浏览器中的消息
+
+        4.  在 Anypoint Studio 中，请注意控制台选项卡中的消息在第一行 ( )/hellomule的末尾包含请求路径INFO( org.mule.runtime.core.internal.processor.LoggerMessageProcessor: /hellomule)。
+        <img src="03-45.png">
     </pre>
+
 </div>
 </body>
 </html>

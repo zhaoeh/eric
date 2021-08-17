@@ -1,0 +1,1116 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>springmvc响应静态资源.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor {
+        width: auto;
+        border: 0px;
+        background: rgb(119, 238, 119);
+        z-index: 1;
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    div.hr:focus {
+        cursor: none;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    @media screen and (max-width: 48em) {
+
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    .md-inline-math .MathJax_SVG .noError {
+        display: none !important;
+    }
+
+    .mathjax-block .MathJax_SVG_Display {
+        text-align: center;
+        margin: 1em 0em;
+        position: relative;
+        text-indent: 0px;
+        max-width: none;
+        max-height: none;
+        min-height: 0px;
+        min-width: 100%;
+        width: auto;
+        display: block !important;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+        text-decoration: none;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    #write pre.md-meta-block {
+        padding: 1rem;
+        font-size: 85%;
+        line-height: 1.45;
+        background-color: rgb(247, 247, 247);
+        border: 0px;
+        border-radius: 3px;
+        color: rgb(119, 119, 119);
+        margin-top: 0px !important;
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+    </style>
+
+    <link rel="stylesheet" href="../../highlight/styles/default.css">
+    <script src="../../highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>springmvc响应静态资源</b>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、springmvc直接响应静态资源</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  此controller直接响应静态目标资源。
+        2.  @RequestMapping 注解可以标注在类上和方法上，标注在方法上时可以不带任何value值或者其他参数。
+        原则如下：
+        一个Controller中只能有一个方法不带value。
+        如果多个方法的访问的method属性不同 ，则可以存在多个。
+        相同的method属性的requestMapping()也最多只能有一个方法不写value属性，当不带value的接口被请求时直接使用父层url即可，即Controller类上标注的requestMapping指定的路径。
+        3.  @Controller标注在类上， 来源于@Component， 表示当前类作为控制层，结合@ComponentScan注解或者component-scan配置，用于向spring容器中注入bean定义。
+        4.  默认spring的controller返回值不使用任何注解修饰的话，则直接交给视图解析器进行解析，找到指定位置下的静态资源进行显示，找不到则报错。
+        <code class="language-java">
+            package myspringmvc.model.demo.controller;
+
+            import org.springframework.stereotype.Controller;
+            import org.springframework.web.bind.annotation.RequestMapping;
+
+            @Controller
+            public class Demo01HelloWorldController {
+                /**
+                 * http://localhost:8080/controller/demo01/helloworld
+                 * 各种GET/POST/PUT/DELETE，各种content-type随便设置随便访问。
+                 *
+                 * @return String：返回字符串类型，则默认响应静态资源
+                 * @RequestMapping("/controller/demo01/helloworld")：该方法对应的uri;
+                 */
+                @RequestMapping(name = "/controller/demo01/helloworld")
+                public String helloWorld() {
+                    System.out.println("直接返回字符串helloWorld，即直接向http响应静态资源...");
+                    /**
+                     * 控制器类的方法返回字符串类型非常常见。
+                     *
+                     * 返回字符串，代表根据返回的字符串找到对应的视图。
+                     * 根据springmvc配置文件springmvc-base.xml中视图解析器(InternalResourceViewResolver) 配置的视图文件的前缀和后缀!
+                     * helloworld()方法返回 "helloWorld" 会找到 WEB-INF/jsp/helloworld.jsp文件!
+                     *
+                     * 注意这种方式只是直接找到http需要访问的静态资源返回而已，没有携带后台动态数据。
+                     */
+                    System.out.println("测试 helloWorld ...");
+                    return "helloWorld";
+                }
+            }
+
+        </code>
+    </pre>
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、springmvc的类上和方法上同时使用requestMappping</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  本案例在类上和方法上共同使用请求requestMapping进行url映射，两者共同决定一个目标handler的方法路径。
+        2.  本案例controller中sayHello接口响应静态目标资源，cao接口使用@ResponseBody标注，响应动态资源即原生字符串。
+        3.  想要让接口返回值默认走视图解析器去响应静态资源，则接口不能使用@ResponseBody进行标注。
+        4.  当返回字符串或者java对象时，方法上标注了@ResponseBody注解后，则返回值不会交给视图解析器解析为静态资源，而是直接响应原生字符串数据封装到http响应体中返回给浏览器显式。
+        5.  @ResponseBody表示响应内容不经过视图解析器，而是通过json解析器进行解析，序列化为json字符串，因此sayCao接口响应的结果是字符串 cao。
+        6.  其实所有的web服务器都遵守JAVAEE规范，意味着所有的服务器都是多线程的。不过不同的框架使用采用单例还是多例就不得而知了。
+        7.  spring默认是单例，浏览器每访问一次，服务端就启动一个线程，各个线程之间互不干扰。
+        8.  因为spring管理的所有bean默认都是单例，因此在并发场景下可能存在线程安全问题。故，不建议在controller、service层创建可以修改的成员变量等。即保证spring管理的bean都是无状态的bean。
+
+        <code class="language-java">
+            package myspringmvc.model.demo.controller;
+
+            import org.springframework.stereotype.Controller;
+            import org.springframework.web.bind.annotation.RequestMapping;
+            import org.springframework.web.bind.annotation.ResponseBody;
+
+            @Controller
+            @RequestMapping(value = "/controller/demo02")
+            public class Demo02SayHelloController {
+
+                /**
+                 * http://localhost:8080/controller/demo02/hello
+                 *
+                 * 各种GET/POST/PUT/DELETE，各种content-type随便设置随便访问。
+                 *
+                 * @return ：返回类型为String，则返回静态资源。前提是不能使用@ResponseBody注解进行标注。
+                 */
+                @RequestMapping(value = "/hello")
+                public String sayHello() {
+                    System.out.println(Thread.currentThread().getName() + " run.");
+                    System.out.println("返回字符串 sayHello，直接向http请求响应静态资源(springmvc返回字符串实际上找的一定是该名称的静态资源如jsp文件)...");
+                    return "sayHello";
+                }
+
+                /**
+                 * http://localhost:8080/controller/demo02/cao
+                 *
+                 * 各种GET/POST/PUT/DELETE，各种content-type随便设置随便访问。
+                 */
+                @RequestMapping(value = "/cao")
+                @ResponseBody
+                public String sayCao() {
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println(Thread.currentThread().getName() + " run.");
+                    System.out.println("cao !");
+                    return "cao";
+                }
+            }
+
+        </code>
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、指定RequestMethod访问类型</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  @RequestMapping注解中，可以设置method属性值，明确设置当前接口要求的请求类型。
+        2.  method属性取值为RequestMethod类型，RequestMethod是一个枚举类，其中封装了几种常见的枚举常量，比如 POST,GET等，表示不同的请求类型。
+        3.  如果请求方式和method属性指定的的方式不同，则报405。
+        4.  本案例依旧直接响应静态资源。
+        5.  如果是手动导入，RequestMethod所属于的jar包别导入错了。
+        6.  带有method属性的requestMapping()注解只能标注在方法上。
+        7.  测试 get， post , delete ， put 等请求必须使用postman显式指定请求类型才可，直接从浏览器输入url只能测试 get 请求。
+
+        <code class="language-java">
+            package myspringmvc.model.demo.controller;
+
+            import org.springframework.stereotype.Controller;
+            import org.springframework.web.bind.annotation.RequestMapping;
+            import org.springframework.web.bind.annotation.RequestMethod;
+
+            @Controller
+            public class Demo03SetHttpMethodController {
+
+                /**
+                 * http://localhost:8080/controller/demo03/post
+                 *
+                 * @return 返回类型为String则返回静态资源。
+                 */
+                @RequestMapping(value = "/controller/demo03/post", method = RequestMethod.POST)
+                public String requestMethodPost() {
+                    System.out.println("直接返回字符串helloWorld，即直接向http响应静态资源...");
+                    System.out.println("测试 requestMethodPost ....");
+                    return "helloWorld";
+                }
+
+                /**
+                 * http://localhost:8080/controller/demo03/get
+                 * 指定GET请求。
+                 *
+                 * @return
+                 */
+                @RequestMapping(value = "/controller/demo03/get", method = RequestMethod.GET)
+                public String requestMethodGet() {
+                    System.out.println("直接返回字符串helloWorld，即直接向http响应静态资源...");
+                    System.out.println("测试 requestMethodGet ....");
+                    return "helloWorld";
+                }
+
+                /**
+                 * http://localhost:8080/controller/demo03/delete
+                 * 指定DELETE请求。
+                 *
+                 * @return
+                 */
+                @RequestMapping(value = "/controller/demo03/delete", method = RequestMethod.DELETE)
+                public String requestMethodDelete() {
+                    System.out.println("直接返回字符串helloWorld，即直接向http响应静态资源...");
+                    System.out.println("测试 requestMethodDelete ....");
+                    return "helloWorld";
+                }
+
+                /**
+                 * http://localhost:8080/controller/demo03/put
+                 * 指定PUT请求。
+                 *
+                 * @return
+                 */
+                @RequestMapping(value = "/controller/demo03/put", method = RequestMethod.PUT)
+                public String requestMethodPut() {
+                    System.out.println("直接返回字符串helloWorld，即直接向http响应静态资源...");
+                    System.out.println("测试 requestMethodPut ....");
+                    return "helloWorld";
+                }
+            }
+
+        </code>
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、获取http请求头、请求参数、请求体信息</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  本案例主要用于获取http请求头header、请求参数param、请求体body的信息。
+        2.  本案例所有接口未使用@ReponseBody注解，因此所有接口直接响应静态目标资源。
+        3.  如果接口不需要获取任何http数据，则方法不用定义任何参数，比如helloWorld接口。
+        4.  获取简单类型参数，GET只能通过Params拼接到url后面进行上送，其他Body中的方式不能进行上送。
+        5.  获取简单类型参数，POST既可以通过Params拼接到url后面进行上送，也可以通过Body中的x-www-form-urlencodes类型进行上送。
+        6.  @RequestParam注解用于映射上送的参数名称和接口参数名称的映射关系，一旦接口中某参数被标注了@RequestParam指定了参数映射名称，则必须上送该名称的参数，否则报错。
+        7.  @RequestParam只能获取Params和Body中x-www-form-urlencodes类型上送的参数，不能获取其他body体中的数据。
+        8.  @RequestBody只能获取Body中application/json类型上送的请求体数据，GET和POST等都可以使用application/json类型进行请求体数据的上送，其他类型上送的数据@RequestBody无法获取。
+        9.  对于简单类型，如果不使用任何注解标注，则默认只能获取GET的Params上送的参数，或者POST的Params和body中的x-www-form-urlencodes类型上送的参数，不能获取body其他方式上送的参数。
+        10. @PathVariable用于从请求url中获取指定占位符名称的数据，只能获取GET,POST等直接拼接在url中的请求参数。
+        11. @RequestHeader用于获取请求头里指定名称的头信息数据。
+        12. @CookieValueup用于获取请求头里面的cookie信息。
+        <code class="language-java">
+            package myspringmvc.model.demo.controller;
+
+            import org.springframework.stereotype.Controller;
+            import org.springframework.web.bind.annotation.CookieValue;
+            import org.springframework.web.bind.annotation.PathVariable;
+            import org.springframework.web.bind.annotation.RequestBody;
+            import org.springframework.web.bind.annotation.RequestHeader;
+            import org.springframework.web.bind.annotation.RequestMapping;
+            import org.springframework.web.bind.annotation.RequestMethod;
+            import org.springframework.web.bind.annotation.RequestParam;
+
+            @Controller
+            @RequestMapping("/controller/demo04")
+            public class Demo04GetHttpParamController {
+                /**
+                 * http://localhost:8080/controller/demo04/paramtest/helloworld
+                 *
+                 * @return
+                 */
+                @RequestMapping(value = "/paramtest/helloworld", method = RequestMethod.GET)
+                public String helloWorld() {
+                    System.out.println("直接返回字符串helloWorld，即直接向http响应静态资源...");
+                    System.out.println("测试 helloWorld ...");
+                    return "helloWorld";
+                }
+
+                /**
+                 * 接收请求参数-简单类型参数
+                 * GET请求，通过Params上送，其他body不能上送：http://localhost:8080/controller/demo04/paramtest/receiveParam?test=222
+                 * POST请求，也可以通过Params上送：http://localhost:8080/controller/demo04/paramtest/receiveParam?test=234
+                 * POST请求，也可以通过Body上送，其他Body类型不能上送Integer，类型为x-www-form-urlencodes：http://localhost:8080/controller/demo04/paramtest/receiveParam
+                 * 对于Integer来说，POST不能同时使用Param和Body中的x-www-form-urlencodes进行上送，如果同时使用，则优先获取Params的上送值，当Params没有匹配值时，再匹配x-www-form-urlencodes的上送值。
+                 * @return
+                 */
+                @RequestMapping(value = "/paramtest/receiveParam")
+                public String receiveParam(Integer test) {
+                    System.out.println("直接返回字符串helloWorld，即直接向http响应静态资源...");
+                    System.out.println("test:" + test);
+                    return "helloWorld";
+                }
+
+                /**
+                 * 接收请求参数-简单类型参数，使用String类型进行接收
+                 * GET请求，只可通过Params上送，其他body不能上送：http://localhost:8080/controller/demo04/paramtest/receiveParamByString?test=123456
+                 * POST请求，也可以通过Params上送：http://localhost:8080/controller/demo04/paramtest/receiveParamByString?test=zhao
+                 * POST请求，也可以通过Body上送，其他Body类型不能上送String，类型为x-www-form-urlencodes：http://localhost:8080/controller/demo04/paramtest/receiveParamByString
+                 * 对于上送String，POST可同时使用Param和Body中的x-www-form-urlencodes上送，如果两者同时使用，则按照“,”分隔，Param上送的参数为第一个元素，x-www-form-urlencodes上送的为第二个元素。
+                 * @param test
+                 * @return
+                 */
+                @RequestMapping(value = "/paramtest/receiveParamByString")
+                public String receiveParamByString(String test) {
+                    System.out.println("receiveParamByString ...");
+                    System.out.println("test:" + test);
+                    return "helloWorld";
+                }
+
+                /**
+                 * 接收请求参数-简单类型参数，使用String类型进行接收，并通过@RequestParam注解将上送的参数名称和当前方法参数名称进行映射。
+                 * 一旦使用了@RequestParam指定了请求参数别名，则请求参数中必须包含该别名，如果spring无法匹配将直接报错。
+                 * GET请求，使用Params上送，必须包含ts参数，其他Body不能上送：http://localhost:8080/controller/demo04/paramtest/receiveParamByStringParam?ts=yu
+                 * POST请求，也可以通过Params上送去：http://localhost:8080/controller/demo04/paramtest/receiveParamByStringParam?ts=wag
+                 * POST请求，也可以通过Body中类型为x-www-form-urlencodes上送，其他Body类型不能上送String：http://localhost:8080/controller/demo04/paramtest/receiveParamByStringParam
+                 *
+                 * 对于上送String，POST可同时使用Param和Body中的x-www-form-urlencodes上送，如果两者同时使用，则按照“,”分隔，Param上送的参数为第一个元素，x-www-form-urlencodes上送的为第二个元素。
+                 * @param test
+                 * @return
+                 */
+                @RequestMapping(value = "/paramtest/receiveParamByStringParam")
+                public String receiveParamByStringRequestParam(
+                        @RequestParam("ts") String test) {
+                    System.out.println("receiveParamByString ...");
+                    System.out.println("test:" + test);
+                    return "helloWorld";
+                }
+
+                /**
+                 * GET请求访问，结合后台的@RequestBody，请求连接为：http://localhost:8080/controller/demo04/paramtest/receiveParamByRequestBody?test1=zhao&name=daisy
+                 * Integer test被@RequestBody修饰，因此GET请求必须通过Body中的application/json进行请求体的上送
+                 * String test1未使用任何注解，则GET请求只能通过Params进行上送，Params可以上送多个，test1能匹配上就有值，匹配不上就为null。
+                 *
+                 * POST请求访问：http://localhost:8080/controller/demo04/paramtest/receiveParamByRequestBody?test1=wang&name=lisi
+                 * 几乎等同GET，test1通过Params上送；test通过Body中的application/json类型进行上送。
+                 *
+                 * 接收请求参数-简单类型参数，使用requestBody映射传入的json字符串，当json字符串是简单类型时，直接传入即可，不用组装成对象形式。
+                 * 使用@RequestBody的字段，则要求前端请求上送该字段时的content-type必须是application/json。
+                 *
+                 * 总结：当spring使用@RequestBody修饰参数，则GET，POST等都可以通过Body中的application/json进行请求体的上送。
+                 *
+                 * @param test
+                 * @return
+                 */
+                @RequestMapping(value = "/paramtest/receiveParamByRequestBody")
+                public String receiveParamByRequestBody(@RequestBody Integer test, String test1) {
+                    System.out.println("直接返回字符串helloWorld，即直接向http响应静态资源...");
+                    System.out.println("test:" + test);
+                    System.out.println("test1:" + test1);
+                    return "helloWorld";
+                }
+
+                /**
+                 * 接收http请求参数。
+                 * 该接口指定POST请求。
+                 * http://localhost:8080/controller/demo04/login?name=zhangsan
+                 * 获取参数,只需要在对应的方法中添加参数即可。
+                 * 如果参数名与请求传参的name值相同即可直接赋值，否则使用@RequestParam注解映射参数和后台参数名称的关系，一旦使用@RequestParam标注参数，则必须上送对应名称的参数，否则报错。
+                 * 如果参数名和请求传参的名称不同，则后台获取的参数是null值（底层使用request.getParameter("参数名")的方式获取http请求参数的）
+                 * 注意:对应类型很重要,如果是普通的输入框, 使用字符串即可,如果是多选框,可以使用List类型的参数接值!
+                 * 如果参数名和name值相同,无需使用@RequestParam注解!
+                 * 注意: 接收时一定要将基本类型转化成包装类型后才能接收前台的参数!!如果不使用包装类型，则该参数必须上传。
+                 * 注意需要配置，让dispatcher不过滤静态资源才能访问html。
+                 *
+                 * 注解@RequestParam用于获取Params或者Body中类型为x-www-form-urlencodes上送的参数内容，而不能获取其他Body上送的内容。
+                 *
+                 * @param username http请求参数名称和此处接收的不同
+                 * @param password http请求参数名称和此处接收的相同
+                 * @param age      http请求参数没有送这个参数，指定默认值
+                 * @return
+                 */
+                @RequestMapping(value = "/login", method = RequestMethod.POST)
+                public String echoParam(@RequestParam(value = "name") String username, String password, @RequestParam(defaultValue = "10") Integer age) {
+                    // defaultValue表示http没有传递该参数，则设置为指定的默认值
+                    System.out.println("http请求参数：" + username);
+                    System.out.println("http请求参数2：" + password);
+                    System.out.println("http请求参数3（默认值）:" + age);
+
+                    System.out.println("直接返回字符串helloWorld，即直接向http响应静态资源...");
+                    return "helloWorld";
+                }
+
+                /**
+                 * 从url的指定位置获取指定http请求参数注入到方法变量中。
+                 * 注解@PathVariable：从url中获取@PathVariable指定名称的占位符表示的参数值。
+                 * http://localhost:8080/controller/demo04/test/getdata/123
+                 * 上送的url要匹配对应的参数，如果无法匹配将报错。
+                 *
+                 * @param id 用于接收url中的指定参数
+                 * @return
+                 */
+                @RequestMapping(value = "/test/getdata/{value}")
+                public String getUrlData(@PathVariable(value = "value") Integer id) {
+                    System.out.println("从请求路径中获取到的指定参数值：" + id);
+
+                    System.out.println("直接返回字符串helloWorld，即直接向http响应静态资源...");
+                    return "helloWorld";
+                }
+
+                /**
+                 * 从url的指定位置获取指定http请求参数注入到方法变量中-从指定位置获取多个参数。
+                 * http://localhost:8080/controller/demo04/test/getdata/test/2222,2345y
+                 *  上送的url要匹配对应的参数，如果无法匹配将报错。
+                 * @param id
+                 * @param abc
+                 * @return
+                 */
+                @RequestMapping(value = "/test/getdata/test/{value},{abc}")
+                public String getUrlData(@PathVariable(value = "value") Integer id, @PathVariable(value = "abc") String abc) {
+                    System.out.println("从请求路径中获取到的指定参数值：" + id);
+                    System.out.println("从请求路径中获取到的指定参数值：" + abc);
+                    System.out.println("直接返回字符串helloWorld，即直接向http响应静态资源...");
+                    return "helloWorld";
+                }
+
+                /**
+                 * 获取http上送的cookie
+                 * http://localhost:8080/controller/demo04/cookie
+                 * 第一次访问将报错，因为没有cookie上送。
+                 *
+                 * @param cookie http上送的cookie取出来注入到方法变量中，第一次访问将报错
+                 * @return
+                 */
+                @RequestMapping("/cookie")
+                public String getCookie(@CookieValue("JSESSIONID") String cookie) {
+                    System.out.println("http上送的cookie：" + cookie);
+                    System.out.println("直接返回字符串helloWorld，即直接向http响应静态资源...");
+                    return "helloWorld";
+                }
+
+                /**
+                 * 获取http头信息。
+                 * http://localhost:8080/controller/demo04/header
+                 *
+                 * @param cookie http上送的cookie取出来注入到方法变量中，第一次访问将报错
+                 * @param header 获取请求头中的信息注入到header中
+                 * @return
+                 */
+                @RequestMapping("/header")
+                public String getHeader(@CookieValue("JSESSIONID") String cookie, @RequestHeader("User-Agent") String header) {
+                    System.out.println("http上送的cookie：" + cookie);
+                    System.out.println("http的消息头信息：" + header);
+
+                    System.out.println("直接返回字符串helloWorld，即直接向http响应静态资源...");
+                    return "helloWorld";
+                }
+            }
+
+        </code>
+    </pre>
+</div>
+</body>
+</html>
+

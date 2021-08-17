@@ -4,7 +4,7 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width initial-scale=1'>
-    <title>@Configuration和@Bean.md</title>
+    <title>springmvc入门案例.md</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
           rel='stylesheet' type='text/css'/>
     <style type='text/css'>html {
@@ -717,113 +717,189 @@
 </head>
 <body class='typora-export'>
 <div id='write' class='is-node'>
-    <b><a name='header-n0' class='md-header-anchor '></a>@Configuration和@Bean注解(bean定义批量注册)</b>
+    <b><a name='header-n0' class='md-header-anchor '></a>springmvc配置</b>
 
-    <b><a name='header-n1' class='md-header-anchor '></a>1、为什么需要@Configuration和@Bean注解</b><br>
+    <b><a name='header-n1' class='md-header-anchor '></a>1、web.xml</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        之前我们通过xml的方式定义bean，里面会描写很多bean元素，然后spring在容器启动时，就会读取bean xml配置文件，然后解析这些配置，将这些bean定义注册到spring容器中，供使用者使用。
-        jdk1.5提供了注解的功能，spring觉得注解挺好，就将注解也加进来了。让我们可以通过注解的方式来定义java bean，用起来能达到和xml中定义bean完全一样的效果，并且更简洁。这里面需要用到的注解就包含Configuration注解和@Bean注解（当然注册bean定义的注解还有很多）。
+        搭建springmvc工程，首先配置web.xml：
+        <code class="language-xml">
+            &lt;?xml version="1.0" encoding="UTF-8"?>
+            &lt;web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xmlns="http://java.sun.com/xml/ns/javaee"
+                     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+                     id="WebApp_ID" version="2.5">
+                &lt;display-name>myspringmvc&lt;/display-name>
+
+                &lt;!-- 一切web框架从web.xml开始分析 -->
+                &lt;!-- 下面的配置可以说是spring的默认配置。 ContextLoaderListener 这个监听器如果想在Servlet中获取spring的bean实例的话必须配置 -->
+                &lt;!-- 加载spring容器，将spring相关的配置文件通过通配符的方式一次性加载进web容器中 -->
+                &lt;!-- 全局初始化参数contextConfigLocation，绑定spring文件，可配置多个文件，用逗号分隔，可使用通配符* -->
+                &lt;context-param>
+                    &lt;!-- 如果不配置该参数，则ContextLoaderListener默认加载/WEB-INF/applicationContext.xml -->
+                    &lt;param-name>contextConfigLocation&lt;/param-name>
+                    &lt;param-value>classpath:/spring/applicationContext.xml&lt;/param-value>
+                &lt;/context-param>
+                &lt;!-- 配置spring的监听器，用于启动spring容器，加载全局参数contextConfigLocation -->
+                &lt;listener>
+                    &lt;listener-class>org.springframework.web.context.ContextLoaderListener&lt;/listener-class>
+                &lt;/listener>
+
+                &lt;!-- springmvc的GET请求乱码需要手动对http请求参数转码（和Servlet一样），对于POST请求使用springmvc自带的过滤器实现 -->
+                &lt;filter>
+                    &lt;filter-name>characterEncodingFilter&lt;/filter-name>
+                    &lt;filter-class>org.springframework.web.filter.CharacterEncodingFilter&lt;/filter-class>
+                    &lt;init-param>
+                        &lt;param-name>encoding&lt;/param-name>
+                        &lt;param-value>UTF-8&lt;/param-value>
+                    &lt;/init-param>
+                    &lt;init-param>
+                        &lt;param-name>forceEncoding&lt;/param-name>
+                        &lt;param-value>true&lt;/param-value>
+                    &lt;/init-param>
+                &lt;/filter>
+                &lt;filter-mapping>
+                    &lt;!-- 配置filter过滤路径 -->
+                    &lt;filter-name>characterEncodingFilter&lt;/filter-name>
+                    &lt;url-pattern>/*&lt;/url-pattern>
+                &lt;/filter-mapping>
+
+                &lt;!-- springmvc的restful风格实现：浏览器form只支持GET和POST，不支持 DELETE和PUT请求，Spring添加了一个过滤器filter，可以将这些请求转换成标准的http方法 -->
+                &lt;!-- 该过滤器支持转换成GET,POST,DELETE,PUT请求 -->
+                &lt;filter>
+                    &lt;filter-name>HidenHttpMethodFilter&lt;/filter-name>
+                    &lt;filter-class>org.springframework.web.filter.HiddenHttpMethodFilter&lt;/filter-class>
+                &lt;/filter>
+                &lt;filter-mapping>
+                    &lt;filter-name>HidenHttpMethodFilter&lt;/filter-name>
+                    &lt;!-- 对所有的请求都进行过滤 -->
+                    &lt;url-pattern>/*&lt;/url-pattern>
+                &lt;/filter-mapping>
+
+                &lt;!-- 配置前端控制器DispatcherServlet -->
+                &lt;servlet>
+                    &lt;servlet-name>springmvc&lt;/servlet-name>
+                    &lt;servlet-class>org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class>
+                    &lt;init-param>
+                        &lt;!-- servlet初始化参数contextConfigLocation，绑定spring文件，可配置多个文件，用逗号分隔，可使用通配符* -->
+                        &lt;!-- 如果不配置该参数，则DispatcherServlet默认加载/WEB-INF/${servlet-name}-servlet.xml -->
+                        &lt;!-- 如果上面同时有全局的配置文件的话， 此处指定的springmvc配置文件不要和上面全局的一致，否则将加载两次bean -->
+                        &lt;!-- 建议：其他容器比如struts，servlet，filter等bean的配置单独配置到上面的文件中 -->
+                        &lt;param-name>contextConfigLocation&lt;/param-name>
+                        &lt;param-value>classpath:/springmvc/springmvc-base.xml&lt;/param-value>
+                    &lt;/init-param>
+                    &lt;load-on-startup>1&lt;/load-on-startup>
+                &lt;/servlet>
+                &lt;!-- 访问DispatcherServlet对应的路径 -->
+                &lt;servlet-mapping>
+                    &lt;servlet-name>springmvc&lt;/servlet-name>
+                    &lt;!-- /*强迫所有请求都经过目标Servlet；/*的话会拦截所有请求，包括jsp，当请求一个jsp时，依然使用dispatcherServlet解析jsp地址，最终不能找到handler报错 -->
+                    &lt;!-- springmvc默认会拦截符合指定url规则的请求，然后统一使用springmvc这一套东西进行跳转 -->
+                    &lt;!-- 使用springmvc配置了/后，则所有的请求都有springmvc进行转发，包括对静态资源的请求 -->
+                    &lt;!-- 但是，当配置为/*时，尽管你真正请求的是个jsp页面，它也会报错 -->
+                    &lt;!-- / 将使你配置的servlet成为默认的servlet。/不拦截jsp资源! -->
+                    &lt;url-pattern>/&lt;/url-pattern>&lt;!--/不过滤jsp防止死循环 -->
+                &lt;/servlet-mapping>
+
+                &lt;!-- 自定义Servlet -->
+                &lt;servlet>
+                    &lt;servlet-name>myServlet&lt;/servlet-name>
+                    &lt;servlet-class>myspringmvc.model.demo.servlet.MyServlet&lt;/servlet-class>
+                &lt;/servlet>
+                &lt;servlet-mapping>
+                    &lt;servlet-name>myServlet&lt;/servlet-name>
+                    &lt;url-pattern>/servlet/MyServlet&lt;/url-pattern>
+                &lt;/servlet-mapping>
+                &lt;welcome-file-list>
+                    &lt;welcome-file>index.html&lt;/welcome-file>
+                    &lt;welcome-file>index.htm&lt;/welcome-file>
+                    &lt;welcome-file>index.jsp&lt;/welcome-file>
+                    &lt;welcome-file>default.html&lt;/welcome-file>
+                    &lt;welcome-file>default.htm&lt;/welcome-file>
+                    &lt;welcome-file>default.jsp&lt;/welcome-file>
+                &lt;/welcome-file-list>
+            &lt;/web-app>
+        </code>
     </pre>
 
-    <b><a name='header-n2' class='md-header-anchor '></a>2、@Configuration注解</b><br>
+    <b><a name='header-n2' class='md-header-anchor '></a>2、applicationContext.xml</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        @Configuration注解可以标注在类上，让这个类的功能等同于一个bean xml配置文件，如下：
-        <code class="language-java">
-            package test;
-
-            import org.springframework.context.annotation.Configuration;
-
-            @Configuration
-            public class ConfigBean {
-
-            }
-        </code>
-        上面的代码类似于下面的 bean xml：
+        applicationContext.xml是对service，dao层的spring容器的描述，被web.xml中的ContextLoaderListener负责调用。
         <code class="language-xml">
             &lt;?xml version="1.0" encoding="UTF-8"?>
             &lt;beans xmlns="http://www.springframework.org/schema/beans"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns:context="http://www.springframework.org/schema/context"
                    xsi:schemaLocation="http://www.springframework.org/schema/beans
-		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+                http://www.springframework.org/schema/beans/spring-beans.xsd
+                http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+                &lt;!-- 扫描spring包 -->
+                &lt;context:component-scan base-package="myspringmvc.model">
+                    &lt;!-- 排除扫描springMvc的controller层注解 -->
+                    &lt;context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+                &lt;/context:component-scan>
 
             &lt;/beans>
         </code>
-        spring中专门通过<font color="#dc143c">AnnotationConfigApplicationContext</font>来加载<font color="#dc143c">@Configuration</font>注解修饰的类，如下：
-        <code class="language-java">
-            AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ConfigBean.class);
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、 springmvc-base.xml</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        springmvc-base.xml是对controller层的springmvc容器，被web.xml中的DispatcherServlet负责调用。
+        <code class="language-xml">
+            &lt;?xml version="1.0" encoding="UTF-8"?>
+            &lt;beans xmlns="http://www.springframework.org/schema/beans"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns:context="http://www.springframework.org/schema/context"
+                   xmlns:mvc="http://www.springframework.org/schema/mvc"
+                   xsi:schemaLocation="http://www.springframework.org/schema/beans
+                http://www.springframework.org/schema/beans/spring-beans.xsd
+                http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                http://www.springframework.org/schema/mvc
+                http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+                &lt;mvc:annotation-driven/>
+                &lt;!--注解驱动 -->
+
+                &lt;mvc:resources mapping="/static/**" location="/static/">&lt;/mvc:resources>
+
+                &lt;!-- 扫描controller；springmvc建议只扫描controller -->
+                &lt;context:component-scan base-package="myspringmvc.model.demo.controller"/>
+
+                &lt;!-- 视图解析器 -->
+                &lt;bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+                    &lt;property name="prefix" value="/WEB-INF/jsp/"/>&lt;!-- jsp所在的位置 -->
+                    &lt;property name="suffix" value=".jsp">&lt;/property>&lt;!-- jsp文件的后缀名 -->
+                &lt;/bean>
+
+            &lt;/beans>
         </code>
-        此时的ConfigBean类中没有任何内容，相当于一个空的xml配置文件，此时我们要在ConfigBean类中注册bean，那么就需要用到@Bean注解了。
-
-        <b>总结一下：</b>
-        @Configuration注解使用步骤：
-        1.  在类上使用<font color="#dc143c">@Configuration</font>注解标注。
-        2.  通过<font color="#dc143c">AnnotationConfigApplicationContext</font>来加载<font color="#dc143c">@Configuration</font>注解修饰的类
-        注意事项：
-        1.  <font color="#dc143c">@Configuration</font>注解本身并没有注册bean定义，它的存在说明其所标注的java类是一个配置类。
-        2.  要想向容器中注册bean定义，需要使用<font color="#dc143c">@Bean</font>注解。
     </pre>
 
-    <b><a name='header-n3' class='md-header-anchor '></a>3、 @Bean注解</b><br>
-    <b><a name='header-n31' class='md-header-anchor '></a>3.1、 @Bean注解使用</b>
+    <b><a name='header-n4' class='md-header-anchor '></a>4、 helloWorld.jsp</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        这个注解类似于bean xml配置文件中的bean元素，用来在srping容器中注册一个bean定义。
-        @Bean注解用在方法上，表示通过方法来定义一个bean，默认将方法名称作为bean名称，将方法返回值作为bean对象，注册到spring容器中。
-        <font color="#dc143c">注意：@Bean注入bean定义后，是通过方法返回值作为bean对象的，即@Bean不是通过反射进行bean对象的实例化，而是将bean对象的实例化交给开发者手动进行。</font>
-
-        如下：
+        在WEB-INF/jsp目录下创建一个静态页面jsp，用于充当Servlet容器中的静态资源。
         <code class="language-java">
-            @Bean
-            public User user1(){
-                return new User();
-            }
+            &lt;%-- 输出简单的helloWorld --%>
+            &lt;%@page language="java" contentType="text/html;charset=utf-8"
+                pageEncoding="utf-8"%>
+            &lt;html>
+            &lt;head>
+            &lt;title>www.zhaoerhu.com&lt;/title>
+            &lt;/head>
+            &lt;body>
+                &lt;%
+                    request.setCharacterEncoding("utf-8");
+                %>
+                &lt;%
+                    //同样，在jsp中也可以使用内置的out对象向前端浏览器输出html标签和语句等，但是不建议在jsp中使用out.println()的方式；
+                    //更好的应该是直接使用jsp的表达式输出语句
+                    out.println("&lt;center>&lt;h1>HelloWorld!!!&lt;/h1>&lt;/center>");
+                %>
+                &lt;%="&lt;center>&lt;h1>欢迎来到Springmvc的世界！&lt;/h1>&lt;/center>"%>
+            &lt;/body>
+            &lt;/html>
         </code>
-        @Bean注解还有很多属性，其源码如下：
-        <code class="language-java">
-            package org.springframework.context.annotation;
-
-            import java.lang.annotation.Documented;
-            import java.lang.annotation.ElementType;
-            import java.lang.annotation.Retention;
-            import java.lang.annotation.RetentionPolicy;
-            import java.lang.annotation.Target;
-            import org.springframework.beans.factory.annotation.Autowire;
-            import org.springframework.core.annotation.AliasFor;
-
-            // 说明该注解可以标注在方法和注解类型上
-            @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
-            // 说明该注解在源码、编译和运行阶段生效
-            @Retention(RetentionPolicy.RUNTIME)
-            @Documented
-            public @interface Bean {
-                // name和value属性是一样的，设置时只能选择设置其中一个，原因是@AliasFor注解导致的
-                // value和name是String类型的数组，第一个值作为bean的名称，其余值作为bean的别名。
-                @AliasFor("name")
-                String[] value() default {};
-
-                @AliasFor("value")
-                String[] name() default {};
-
-                // autowire属性已经不建议使用
-                Autowire autowire() default Autowire.NO;
-
-                // bean初始化执行的方法，和生命周期相关
-                String initMethod() default "";
-
-                // bean销毁执行的方法，和声明周期相关
-                String destroyMethod() default "(inferred)";
-            }
-        </code>
-
-    </pre>
-    <b><a name='header-n32' class='md-header-anchor '></a>3.2、 @Bean案例</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-    <b><a name='header-n33' class='md-header-anchor '></a>3.3、 为啥要自定义scope？</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-
-    <b><a name='header-n4' class='md-header-anchor '></a>4、 总结</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
     </pre>
 </div>
 </body>

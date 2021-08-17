@@ -4,7 +4,7 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width initial-scale=1'>
-    <title>@Configuration和@Bean.md</title>
+    <title>springmvc入门案例.md</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
           rel='stylesheet' type='text/css'/>
     <style type='text/css'>html {
@@ -717,113 +717,87 @@
 </head>
 <body class='typora-export'>
 <div id='write' class='is-node'>
-    <b><a name='header-n0' class='md-header-anchor '></a>@Configuration和@Bean注解(bean定义批量注册)</b>
+    <b><a name='header-n0' class='md-header-anchor '></a>springmvc</b>
 
-    <b><a name='header-n1' class='md-header-anchor '></a>1、为什么需要@Configuration和@Bean注解</b><br>
+    <b><a name='header-n1' class='md-header-anchor '></a>1、springmvc和spring啥关系？</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        之前我们通过xml的方式定义bean，里面会描写很多bean元素，然后spring在容器启动时，就会读取bean xml配置文件，然后解析这些配置，将这些bean定义注册到spring容器中，供使用者使用。
-        jdk1.5提供了注解的功能，spring觉得注解挺好，就将注解也加进来了。让我们可以通过注解的方式来定义java bean，用起来能达到和xml中定义bean完全一样的效果，并且更简洁。这里面需要用到的注解就包含Configuration注解和@Bean注解（当然注册bean定义的注解还有很多）。
+        Spring是个框架家族，springmvc只是spring在web方面的应用。
+        Spring和springmvc核心思想都是ioc控制反转和aop面向切面编程，任何框架都能加入spring的框架设计模式，主要是使用spring的ioc实现任何类（接口）等bean的实例化，所以，从某种层面来讲，spring就是一个充满反射机制的容器，主要服务用来实例化各种对象，所以很多对象的加载和实例化都可以添加到spring的配置文件中去加载。
+        不论是spring还是springmvc，基本都需要通过配置文件来控制bean的实例化和一些其他的配置；比如spring的配置文件一般是applicationContext.xml，而springmvc的配置文件一般是spring-mvc.xml。一般将纯spring的配置和springmvc的配置区分开来，但是两者都是基于DI依赖注入（IOC控制反转）和AOP面向切面的思想的。
     </pre>
 
-    <b><a name='header-n2' class='md-header-anchor '></a>2、@Configuration注解</b><br>
+    <b><a name='header-n2' class='md-header-anchor '></a>2、Springmvc的入口类（前端控制器）</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        @Configuration注解可以标注在类上，让这个类的功能等同于一个bean xml配置文件，如下：
-        <code class="language-java">
-            package test;
+        DispatcherServlet类是springmvc框架的入口类，需要在web.xml中配置映射。这个入口类是springmvc的控制层。
+    </pre>
 
-            import org.springframework.context.annotation.Configuration;
-
-            @Configuration
-            public class ConfigBean {
-
-            }
-        </code>
-        上面的代码类似于下面的 bean xml：
+    <b><a name='header-n3' class='md-header-anchor '></a>3、 springmvc入口类方式加载配置文件</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        如果是单独配置springmvc框架作为web框架，那么可以直接在配置Dispatcher类的入口时指定配置文件的配置，在web.xml中配置如下：
         <code class="language-xml">
-            &lt;?xml version="1.0" encoding="UTF-8"?>
-            &lt;beans xmlns="http://www.springframework.org/schema/beans"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.springframework.org/schema/beans
-		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
-
-            &lt;/beans>
+            &lt;!-- 配置springmvc入口类DispatcherServlet，同时指定contextConfigLocation绑定加载文件 -->
+            &lt;servlet>
+                &lt;servlet-name>provider&lt;/servlet-name>
+                &lt;servlet-class>org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class>
+                &lt;init-param>
+                    &lt;!-- servlet初始化参数contextConfigLocation，绑定spring文件，可配置多个文件，用逗号分隔，可使用通配符* -->
+                    &lt;!-- 如果不配置该参数，则DispatcherServlet默认加载/WEB-INF/${servlet-name}-servlet.xml -->
+                    &lt;param-name>contextConfigLocation&lt;/param-name>
+                    &lt;param-value>classpath:/dubbo/applicationContext.xml&lt;/param-value>
+                &lt;/init-param>
+                &lt;load-on-startup>1&lt;/load-on-startup>
+            &lt;/servlet> 
         </code>
-        spring中专门通过<font color="#dc143c">AnnotationConfigApplicationContext</font>来加载<font color="#dc143c">@Configuration</font>注解修饰的类，如下：
-        <code class="language-java">
-            AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ConfigBean.class);
-        </code>
-        此时的ConfigBean类中没有任何内容，相当于一个空的xml配置文件，此时我们要在ConfigBean类中注册bean，那么就需要用到@Bean注解了。
-
-        <b>总结一下：</b>
-        @Configuration注解使用步骤：
-        1.  在类上使用<font color="#dc143c">@Configuration</font>注解标注。
-        2.  通过<font color="#dc143c">AnnotationConfigApplicationContext</font>来加载<font color="#dc143c">@Configuration</font>注解修饰的类
-        注意事项：
-        1.  <font color="#dc143c">@Configuration</font>注解本身并没有注册bean定义，它的存在说明其所标注的java类是一个配置类。
-        2.  要想向容器中注册bean定义，需要使用<font color="#dc143c">@Bean</font>注解。
-    </pre>
-
-    <b><a name='header-n3' class='md-header-anchor '></a>3、 @Bean注解</b><br>
-    <b><a name='header-n31' class='md-header-anchor '></a>3.1、 @Bean注解使用</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        这个注解类似于bean xml配置文件中的bean元素，用来在srping容器中注册一个bean定义。
-        @Bean注解用在方法上，表示通过方法来定义一个bean，默认将方法名称作为bean名称，将方法返回值作为bean对象，注册到spring容器中。
-        <font color="#dc143c">注意：@Bean注入bean定义后，是通过方法返回值作为bean对象的，即@Bean不是通过反射进行bean对象的实例化，而是将bean对象的实例化交给开发者手动进行。</font>
-
-        如下：
-        <code class="language-java">
-            @Bean
-            public User user1(){
-                return new User();
-            }
-        </code>
-        @Bean注解还有很多属性，其源码如下：
-        <code class="language-java">
-            package org.springframework.context.annotation;
-
-            import java.lang.annotation.Documented;
-            import java.lang.annotation.ElementType;
-            import java.lang.annotation.Retention;
-            import java.lang.annotation.RetentionPolicy;
-            import java.lang.annotation.Target;
-            import org.springframework.beans.factory.annotation.Autowire;
-            import org.springframework.core.annotation.AliasFor;
-
-            // 说明该注解可以标注在方法和注解类型上
-            @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
-            // 说明该注解在源码、编译和运行阶段生效
-            @Retention(RetentionPolicy.RUNTIME)
-            @Documented
-            public @interface Bean {
-                // name和value属性是一样的，设置时只能选择设置其中一个，原因是@AliasFor注解导致的
-                // value和name是String类型的数组，第一个值作为bean的名称，其余值作为bean的别名。
-                @AliasFor("name")
-                String[] value() default {};
-
-                @AliasFor("value")
-                String[] name() default {};
-
-                // autowire属性已经不建议使用
-                Autowire autowire() default Autowire.NO;
-
-                // bean初始化执行的方法，和生命周期相关
-                String initMethod() default "";
-
-                // bean销毁执行的方法，和声明周期相关
-                String destroyMethod() default "(inferred)";
-            }
+        注意：这种方式不健壮，如此配置后只能通过springmvc去获取bean对象，凡是不通过DispatcherServlet进来的请求，都无法获取到springmvc容器创建的bean对象。
+        比如要想让bean实例用于struts和servlet、Filter等其他框架或者容器，需要通过配置监听器的方式，加载全局的配置文件：
+        <code class="language-xml">
+            &lt;!-- 加载spring容器，将spring相关的配置文件通过通配符的方式一次性加载进web容器中 -->
+            &lt;!-- 全局初始化参数contextConfigLocation，绑定spring文件，可配置多个文件，用逗号分隔，可使用通配符* -->
+            &lt;context-param>
+                &lt;param-name>contextConfigLocation&lt;/param-name>
+                &lt;param-value>classpath:/spring/applicationContext.xml&lt;/param-value>
+            &lt;/context-param>
+            &lt;!-- 配置spring的监听器，用于启动spring容器，加载全局参数contextConfigLocation -->
+            &lt;listener>
+                &lt;listener-class>org.springframework.web.context.ContextLoaderListener&lt;/listener-class>
+            &lt;/listener>
         </code>
 
-    </pre>
-    <b><a name='header-n32' class='md-header-anchor '></a>3.2、 @Bean案例</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-    <b><a name='header-n33' class='md-header-anchor '></a>3.3、 为啥要自定义scope？</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
+        <b>详细解释ServletContext、ApplicationContext、WebApplicationContext的关系：</b>
+        <code class="language-diff">
+            1.  明白容器的概念
+            Servlet本身是由tomcat进行实例化的，tomcat容器会实例化所有的Servlet对象，Filter对象，Listener对象等，然后将所有实例化好的这些对象绑定到ServletContext。
+            我们常说的tomcat容器也叫做Servlet容器，Servlet容器中的所有对象都可以绑定到ServletContext这个对象上，因此ServletContext对象叫做Servlet上下文，我们一般所谓的Servlet容器，其底层就是这个大对象-ServletContext。
+            ServletContext随着服务器启动被创建，随着服务器关闭而销毁，一个运行的应用程序只有唯一的一个ServletContext容器。
+            Servlet上下文中绑定了很多属性用来缓存各种运行时数据。
+            2.  ContextLoaderListener
+            ContextLoaderListener本身是Servlet只是体系中的一个Listener，随着web容器启动则执行。
+            它主要负责实例化spring容器（ApplicationContext），并且spring容器缓存到ServletContext中，其中key为 WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE。
+            即ContextLoaderListener负责初始化spring容器并将它缓存到ServletContext上下文中。
+            当然，它可以初始化spring容器，比如ApplicationContext，也可以初始化springmvc容器比如WebApplicationContext。
+            只不过一般使用它初始化ApplicationContext，因为不想让WebApplicationContext暴露给其他服务去获取bean。
+            3.  DispatcherServlet
+            sringmvc的运行依赖Servlet，因此我们看到DispatcherServlet实际上就是springmvc的入口类，它本身是个Servlet。
+            DispatcherServlet启动后会被绑定到ServletContext上下文中，并且DispatcherServlet负责实例化springmvc容器对象webApplicationContex对象，将实例化好的webApplicationContext绑定到ServletContext上去。
+            即DispatcherServlet一般用于实例化WebApplicationContext容器。
 
-    <b><a name='header-n4' class='md-header-anchor '></a>4、 总结</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+            具体流程如下：
+            DispatcherServlet实例化WebApplicationContext后，先去ServletContext中查找WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE，获取ContextLoaderListener绑定到ServletContext上的spring容器，作为父容器，绑定到WebApplicationContext上。
+            然后再初始化WebApplicationContext。
+            最终将WebApplicationContext绑定到ServletContext上下文中，key和当前的Servlet相关，即将当前Servlet名称进行某种规则的转换作为key。
+
+            因此，我们可以看到，通过DispatcherServlet绑定到ServletContext上的springmvc容器，已经持有了父容器applicationContext。
+            并且，只有访问当前Servlet（DispatcherServlet）才能通过@Autowire等注解自动查询到webapplicationContex容器中的bean。
+            当其他Servlet访问时，无法获取到WebApplicationContext容器，因为缓存时是根据Servlet名称作为规则进行缓存的，其他Servlet中无法找到springmvc容器。
+        </code>
+        因此，我们经常会说，DispatcherServlet只负责实例化springmvc容器，它作为子容器，绑定了ContextLoaderListener实例化好的父容器spring。
+        DispatcherServlet负责装配Controller层，ContextLoaderListener负责装配其他层比如service，dao等。
+        controller层可以访问service等或者dao层的bean，反之不行。
+        即子容器可以访问父容器的内容，反之不行。
+
+        鉴于如上的配置，ContextLoaderListener创建除controller之外的spring容器，Dispatcher创建controller的容器。
+        因此，一般在ContextLoaderListener创建spring容器时，需要排除controller说在的包，避免controller层的bean被两个容器分别实例化，导致实例化两次。
+        这个后面案例有讲解。
     </pre>
 </div>
 </body>

@@ -4,7 +4,7 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width initial-scale=1'>
-    <title>@Configuration和@Bean.md</title>
+    <title>requestMapping同时标注类和方法.md</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
           rel='stylesheet' type='text/css'/>
     <style type='text/css'>html {
@@ -717,114 +717,9 @@
 </head>
 <body class='typora-export'>
 <div id='write' class='is-node'>
-    <b><a name='header-n0' class='md-header-anchor '></a>@Configuration和@Bean注解(bean定义批量注册)</b>
+    <b><a name='header-n0' class='md-header-anchor '></a>requestMapping标注类和方法</b>
 
-    <b><a name='header-n1' class='md-header-anchor '></a>1、为什么需要@Configuration和@Bean注解</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        之前我们通过xml的方式定义bean，里面会描写很多bean元素，然后spring在容器启动时，就会读取bean xml配置文件，然后解析这些配置，将这些bean定义注册到spring容器中，供使用者使用。
-        jdk1.5提供了注解的功能，spring觉得注解挺好，就将注解也加进来了。让我们可以通过注解的方式来定义java bean，用起来能达到和xml中定义bean完全一样的效果，并且更简洁。这里面需要用到的注解就包含Configuration注解和@Bean注解（当然注册bean定义的注解还有很多）。
-    </pre>
 
-    <b><a name='header-n2' class='md-header-anchor '></a>2、@Configuration注解</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        @Configuration注解可以标注在类上，让这个类的功能等同于一个bean xml配置文件，如下：
-        <code class="language-java">
-            package test;
-
-            import org.springframework.context.annotation.Configuration;
-
-            @Configuration
-            public class ConfigBean {
-
-            }
-        </code>
-        上面的代码类似于下面的 bean xml：
-        <code class="language-xml">
-            &lt;?xml version="1.0" encoding="UTF-8"?>
-            &lt;beans xmlns="http://www.springframework.org/schema/beans"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.springframework.org/schema/beans
-		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
-
-            &lt;/beans>
-        </code>
-        spring中专门通过<font color="#dc143c">AnnotationConfigApplicationContext</font>来加载<font color="#dc143c">@Configuration</font>注解修饰的类，如下：
-        <code class="language-java">
-            AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ConfigBean.class);
-        </code>
-        此时的ConfigBean类中没有任何内容，相当于一个空的xml配置文件，此时我们要在ConfigBean类中注册bean，那么就需要用到@Bean注解了。
-
-        <b>总结一下：</b>
-        @Configuration注解使用步骤：
-        1.  在类上使用<font color="#dc143c">@Configuration</font>注解标注。
-        2.  通过<font color="#dc143c">AnnotationConfigApplicationContext</font>来加载<font color="#dc143c">@Configuration</font>注解修饰的类
-        注意事项：
-        1.  <font color="#dc143c">@Configuration</font>注解本身并没有注册bean定义，它的存在说明其所标注的java类是一个配置类。
-        2.  要想向容器中注册bean定义，需要使用<font color="#dc143c">@Bean</font>注解。
-    </pre>
-
-    <b><a name='header-n3' class='md-header-anchor '></a>3、 @Bean注解</b><br>
-    <b><a name='header-n31' class='md-header-anchor '></a>3.1、 @Bean注解使用</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        这个注解类似于bean xml配置文件中的bean元素，用来在srping容器中注册一个bean定义。
-        @Bean注解用在方法上，表示通过方法来定义一个bean，默认将方法名称作为bean名称，将方法返回值作为bean对象，注册到spring容器中。
-        <font color="#dc143c">注意：@Bean注入bean定义后，是通过方法返回值作为bean对象的，即@Bean不是通过反射进行bean对象的实例化，而是将bean对象的实例化交给开发者手动进行。</font>
-
-        如下：
-        <code class="language-java">
-            @Bean
-            public User user1(){
-                return new User();
-            }
-        </code>
-        @Bean注解还有很多属性，其源码如下：
-        <code class="language-java">
-            package org.springframework.context.annotation;
-
-            import java.lang.annotation.Documented;
-            import java.lang.annotation.ElementType;
-            import java.lang.annotation.Retention;
-            import java.lang.annotation.RetentionPolicy;
-            import java.lang.annotation.Target;
-            import org.springframework.beans.factory.annotation.Autowire;
-            import org.springframework.core.annotation.AliasFor;
-
-            // 说明该注解可以标注在方法和注解类型上
-            @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
-            // 说明该注解在源码、编译和运行阶段生效
-            @Retention(RetentionPolicy.RUNTIME)
-            @Documented
-            public @interface Bean {
-                // name和value属性是一样的，设置时只能选择设置其中一个，原因是@AliasFor注解导致的
-                // value和name是String类型的数组，第一个值作为bean的名称，其余值作为bean的别名。
-                @AliasFor("name")
-                String[] value() default {};
-
-                @AliasFor("value")
-                String[] name() default {};
-
-                // autowire属性已经不建议使用
-                Autowire autowire() default Autowire.NO;
-
-                // bean初始化执行的方法，和生命周期相关
-                String initMethod() default "";
-
-                // bean销毁执行的方法，和声明周期相关
-                String destroyMethod() default "(inferred)";
-            }
-        </code>
-
-    </pre>
-    <b><a name='header-n32' class='md-header-anchor '></a>3.2、 @Bean案例</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-    <b><a name='header-n33' class='md-header-anchor '></a>3.3、 为啥要自定义scope？</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-
-    <b><a name='header-n4' class='md-header-anchor '></a>4、 总结</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
 </div>
 </body>
 </html>

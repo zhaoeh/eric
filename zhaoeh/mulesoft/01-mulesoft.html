@@ -4,7 +4,7 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width initial-scale=1'>
-    <title>@Configuration和@Bean.md</title>
+    <title>mulesoft语法.md</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
           rel='stylesheet' type='text/css'/>
     <style type='text/css'>html {
@@ -717,113 +717,204 @@
 </head>
 <body class='typora-export'>
 <div id='write' class='is-node'>
-    <b><a name='header-n0' class='md-header-anchor '></a>@Configuration和@Bean注解(bean定义批量注册)</b>
+    <b><a name='header-n0' class='md-header-anchor '></a>mulesoft</b>
 
-    <b><a name='header-n1' class='md-header-anchor '></a>1、为什么需要@Configuration和@Bean注解</b><br>
+    <b><a name='header-n1' class='md-header-anchor '></a>1、mule组件</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        之前我们通过xml的方式定义bean，里面会描写很多bean元素，然后spring在容器启动时，就会读取bean xml配置文件，然后解析这些配置，将这些bean定义注册到spring容器中，供使用者使用。
-        jdk1.5提供了注解的功能，spring觉得注解挺好，就将注解也加进来了。让我们可以通过注解的方式来定义java bean，用起来能达到和xml中定义bean完全一样的效果，并且更简洁。这里面需要用到的注解就包含Configuration注解和@Bean注解（当然注册bean定义的注解还有很多）。
+        mule组件对流经mule应用程序的消息进行业务处理。
+        mule组件主要分为两种类型：core component 和 连接器component.
     </pre>
 
-    <b><a name='header-n2' class='md-header-anchor '></a>2、@Configuration注解</b><br>
+    <b><a name='header-n2' class='md-header-anchor '></a>2、flow和subFlow</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        @Configuration注解可以标注在类上，让这个类的功能等同于一个bean xml配置文件，如下：
-        <code class="language-java">
-            package test;
+        Flow和SubFlow是mule应用程序中的大组件，一般在Flow组件和SubFlow组件的范围内再去设置其他组件、连接器、和模块等。
+        应用程序可以是一个Flow，也可以由一个Flow和很多SubFlow组成。
+        可以使用 Flow Reference 组件去引用其他的SubFlow等。可以将 Flow Reference 组件视为一个函数调用，它接受一个事件作为输入，然后返回修改后的事件。
+    </pre>
 
-            import org.springframework.context.annotation.Configuration;
+    <b><a name='header-n3' class='md-header-anchor '></a>3、 mule 事件</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        mule事件被外部事件源触发，按照mule配置在mule应用程序内的组件中进行传播，mule事件包含运行时处理的核心信息。
+        mule事件由以下对象组成：
+        1.  mule消息。包含payload和attributes。
+        2.  mule变量。
+        <img src="01-mule%20event.png">
 
-            @Configuration
-            public class ConfigBean {
+        消息源触发mule事件的生成，并将该事件分派到flow。
+        <img src="01-mule-flow-event.png">
+        1.  触发器到达事件源。
+        2.  事件源产生一个 Mule 事件。
+        3.  Mule 事件按顺序通过流的组件。
+        4.  每个组件都以预定义的方式与 Mule 事件交互。
+        在某些情况下，当 Message 源中出现问题时，组件不会产生 Mule 事件。例如，HTTP 侦听器配置中的无效或不正确的路径会阻止创建 Mule 事件。连接器在 ERROR、WARN 或 INFO 消息中记录此类问题。
+    </pre>
 
+    <b><a name='header-n4' class='md-header-anchor '></a>4、 mule事件-variables</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        mule变量用于存储mule事件中的某些值，以方便在mule应用程序的流程中使用。
+        mule变量可以存储任何受支持的数据，比如对象、字符串、数字等。
+        使用message关键字存储当前消息；
+        使用payload关键字存储当前payload；
+        使用attributes关键字存储当前消息的属性信息。
+        还可以使用dataweave表达式作为变量值进行存储。
+
+        可以使用下面的方式去创建和更新mule变量：
+        1.  使用set variable组件。
+        2.  在操作中使用目标变量，例如对文件连接器的读取操作或对数据库连接器的存储操作。
+        3.  使用 DataWeave 转换组件（仅限 EE）
+        4.  使用脚本组件（在脚本模块中）
+
+        使用删除组件去移除删除变量：Remove Variable 组件。
+
+        创建变量后，可以在创建它的mule flow和通过flow ref连接的任何subFlow中访问和使用它。
+
+        vars：用于访问变量的关键字。
+        例如，通过 Mule 组件（如 Logger）中的 DataWeave 表达式，或从操作的 Input 或 Output 参数访问。如果您的变量名称是myVar，您可以像这样访问它：vars.myVar
+    </pre>
+
+    <b><a name='header-n5' class='md-header-anchor '></a>5、 mule事件-mule消息结构</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        mule message是mule事件的一部分，是用来存储消息内容和元数据的容器，通常来自于外部源。
+        mule message是不可变的，因此对于mule message的每次更改都会创建一个新实例。接收消息的flow中的每个处理器都会返回一个新的mule消息，该mule消息由以下组成：
+        1.  一条payload，其中包含消息的正文。比如文件的内容，数据库中的记录或者WEB服务器的请求或者响应。
+        2.  Message attributes，这是与payload关联的元数据。
+        <img src="01-mulemessage.png">
+    </pre>
+
+    <b><a name='header-n6' class='md-header-anchor '></a>6、 payload</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        payload包含消息的内容或者正文。
+        比如，payload可以包含http请求的结果、从数据库查询出来的数据、或者从FTP服务器读取出来的文件内容。
+        我们直接使用变量 payload 来读取payload中的内容。
+
+        比如：
+        payload如下：
+        { "hello" : "world" }
+
+        则payload.'hello'表示取出json对象中的值 “world”。
+    </pre>
+
+    <b><a name='header-n7' class='md-header-anchor '></a>7、 attributes</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        attributes包含与正文或者payload相关联的元数据。
+        通过attributes关键字去获取对应的属性。
+
+        案例：http响应属性
+        {
+           Status Code=200
+           Reason Phrase=OK
+           Headers=[
+              date=Sun, 20 Jan 2019 19:13:51 GMT
+              content-type=text/html;
+              charset=UTF-8
+              transfer-encoding=chunked
+              connection=keep-alive
+              set-cookie=__cfduid=d03462713a0b2c57c8d2ad3bf311287041548011631;
+              expires=Mon, 20-Jan-20 19:13:51 GMT;
+              path=/;
+              domain=.typicode.com;
+              HttpOnly
+              x-powered-by=Express
+              vary=Origin, Accept-Encoding
+              access-control-allow-credentials=true
+              cache-control=public, max-age=14400
+              last-modified=Tue, 15 Jan 2019 18:17:15 GMT
+              via=1.1 vegur
+              cf-cache-status=HIT
+              expires=Sun, 20 Jan 2019 23:13:51 GMT
+              expect-ct=max-age=604800,
+              report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+              server=cloudflare
+              cf-ray=49c3dc570c2f281c-SJC
+           ]
+        }
+
+        每个属性都是由等号 ( =)分隔的键值对。
+        在Flow中使用连接器或者组件时，可以使用 attributes 关键字获取其中特定的属性值。
+        attributes.statusCode : 选择一个 HTTP 状态代码，如200.
+        attributes.headers.date : 从 HTTP 响应的标头中进行选择Sun, 20 Jan 2019 18:54:54 GMT。
+        attributes.headers.'content-type' : 选择 HTTP 内容类型application/json
+
+        <font color="#dc143c">属性名称的有效标识符</font>
+        通过attributes访问属性时，只要属性命名完全遵守属性名称的有效标识符规则，则可以不加任何引号就直接访问属性。
+        如果属性名不符合属性有效标识符，则需要引号来访问属性，比如：
+        单引号 ( ')
+        双引号 ( ")
+        反引号 ( `)
+
+        加入有下面的dataweave变量：
+            var myVar = {
+              id : "1234",
+              "123 abc !@#" : "some_value"
             }
-        </code>
-        上面的代码类似于下面的 bean xml：
-        <code class="language-xml">
-            &lt;?xml version="1.0" encoding="UTF-8"?>
-            &lt;beans xmlns="http://www.springframework.org/schema/beans"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.springframework.org/schema/beans
-		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
 
-            &lt;/beans>
-        </code>
-        spring中专门通过<font color="#dc143c">AnnotationConfigApplicationContext</font>来加载<font color="#dc143c">@Configuration</font>注解修饰的类，如下：
-        <code class="language-java">
-            AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ConfigBean.class);
-        </code>
-        此时的ConfigBean类中没有任何内容，相当于一个空的xml配置文件，此时我们要在ConfigBean类中注册bean，那么就需要用到@Bean注解了。
+        因为属性 123 abc !@# 不符合有效标识，因此要访问它，应该使用引号或者反引号：
+        myVar.'123 abc !@#'
 
-        <b>总结一下：</b>
-        @Configuration注解使用步骤：
-        1.  在类上使用<font color="#dc143c">@Configuration</font>注解标注。
-        2.  通过<font color="#dc143c">AnnotationConfigApplicationContext</font>来加载<font color="#dc143c">@Configuration</font>注解修饰的类
-        注意事项：
-        1.  <font color="#dc143c">@Configuration</font>注解本身并没有注册bean定义，它的存在说明其所标注的java类是一个配置类。
-        2.  要想向容器中注册bean定义，需要使用<font color="#dc143c">@Bean</font>注解。
+        同样，因为id是符合有效标识命名规范的，因此访问id的话，下面几种都可以：
+        myVar.id
+        myVar.'id'
+        myVar."id"
+        myVar.`id`
+
+        对于访问 'Status Code' 的话，应该直接使用 statusCode 进行访问。
     </pre>
 
-    <b><a name='header-n3' class='md-header-anchor '></a>3、 @Bean注解</b><br>
-    <b><a name='header-n31' class='md-header-anchor '></a>3.1、 @Bean注解使用</b>
+    <b><a name='header-n8' class='md-header-anchor '></a>8、 mule Errors</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        这个注解类似于bean xml配置文件中的bean元素，用来在srping容器中注册一个bean定义。
-        @Bean注解用在方法上，表示通过方法来定义一个bean，默认将方法名称作为bean名称，将方法返回值作为bean对象，注册到spring容器中。
-        <font color="#dc143c">注意：@Bean注入bean定义后，是通过方法返回值作为bean对象的，即@Bean不是通过反射进行bean对象的实例化，而是将bean对象的实例化交给开发者手动进行。</font>
+        mule执行失败的话会导致mule错误。
+        当mule应用程序运行时，Mule 运行时引擎以及应用程序中配置的模块和连接器操作都可能抛出由与 Mule 事件关联的 Mule 错误对象表示的错误。您可以使用 On-Error 组件处理错误对象并在日志中找到有关它们的信息。
+        Mule 错误包括表达式 ( EXPRESSION) 和与流相关的错误 ( STREAM_MAXIMIMUM_SIZE_EXCEEDED)，而操作可能会抛出许多不同类型的错误。示例包括HTTP:NOT_FOUND（404 错误）和 HTTP:CONNECTIVITY来自 HTTP 连接器中 HTTP 侦听器的错误。
+        DB:BAD_SYNTAX并且DB:QUERY_EXPRESSION是数据库连接器中的 Select 操作可能引发的错误。
 
-        如下：
-        <code class="language-java">
-            @Bean
-            public User user1(){
-                return new User();
+        Mule 错误是具有多个字段的复杂数据类型，例如描述和类型。在记录和处理 Mule 错误时，可以从任意数量的错误字段中选择值。
+        选择器表达式：
+        #[error.description]：error描述
+        #[error.detailedDescription]：error详细描述
+        #[error.errorType]：error类型
+        #[error.cause]：error原因
+        #[error.errorMessage]：错误信息
+        #[error.childErrors]：内部错误的可选集合，由 Scatter-Gather 等元素用于提供聚合路由错误。
+        在大多数情况下，error.cause选择器返回一个Throwable实例，它是 Mule API 的一部分。不要访问错误的内部结构来定义错误处理逻辑。其他选择器公开了处理错误所需的所有信息。此外，序列化error.cause可能会导致冗余信息。
+
+        <font color="#dc143c">HTTP 请求错误示例</font>
+        例如，当 HTTP 请求失败并出现HTTP:NOT_FOUND错误（对于 404 状态代码）时，错误消息每个部分的值是：
+        #[error.description] 返回：HTTP GET on resource 'http://jsonplaceholder.typicode.com:80/mybadrequest' failed: not found (404).
+        #[error.detailedDescription] 返回： HTTP GET on resource 'http://jsonplaceholder.typicode.com:80/mybadrequest' failed: not found (404).
+        #[error.errorType] 返回： HTTP:NOT_FOUND
+        #[error.cause] 返回： org.mule.extension.http.api.request.validator.ResponseValidatorTypedException
+        #[error.errorMessage] 返回：
+        org.mule.runtime.core.internal.message.DefaultMessageBuilder$MessageImplementation
+        {
+          payload=org.mule.runtime.core.internal.streaming.bytes.ManagedCursorStreamProvider@223d8f75
+          mediaType=application/json; charset=UTF-8
+          attributes=org.mule.extension.http.api.HttpResponseAttributes
+            {
+               Status Code=404
+               Reason Phrase=Not Found
+               Headers=[
+                  date=Sat, 03 Aug 2019 04:28:29 GMT
+                  content-type=application/json; charset=utf-8
+                  content-length=2
+                  connection=keep-alive
+                  set-cookie=__cfduid=de19ed0b495b5b58e74fa0ee31a700d651564806509; expires=Sun, 02-Aug-20 04:28:29 GMT; path=/; domain=.typicode.com; HttpOnly
+                  x-powered-by=Express
+                  vary=Origin, Accept-Encoding
+                  access-control-allow-credentials=true
+                  cache-control=public, max-age=14400
+                  pragma=no-cache
+                  expires=Sat, 03 Aug 2019 08:28:29 GMT
+                  x-content-type-options=nosniff
+                  etag=W/"2-vyGp6PvFo4RvsFtPoIWeCReyIC8"
+                  via=1.1 vegur
+                  cf-cache-status=HIT
+                  age=96
+                  server=cloudflare
+                  cf-ray=50058b8add0a92fe-SJC
+               ]
             }
-        </code>
-        @Bean注解还有很多属性，其源码如下：
-        <code class="language-java">
-            package org.springframework.context.annotation;
-
-            import java.lang.annotation.Documented;
-            import java.lang.annotation.ElementType;
-            import java.lang.annotation.Retention;
-            import java.lang.annotation.RetentionPolicy;
-            import java.lang.annotation.Target;
-            import org.springframework.beans.factory.annotation.Autowire;
-            import org.springframework.core.annotation.AliasFor;
-
-            // 说明该注解可以标注在方法和注解类型上
-            @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
-            // 说明该注解在源码、编译和运行阶段生效
-            @Retention(RetentionPolicy.RUNTIME)
-            @Documented
-            public @interface Bean {
-                // name和value属性是一样的，设置时只能选择设置其中一个，原因是@AliasFor注解导致的
-                // value和name是String类型的数组，第一个值作为bean的名称，其余值作为bean的别名。
-                @AliasFor("name")
-                String[] value() default {};
-
-                @AliasFor("value")
-                String[] name() default {};
-
-                // autowire属性已经不建议使用
-                Autowire autowire() default Autowire.NO;
-
-                // bean初始化执行的方法，和生命周期相关
-                String initMethod() default "";
-
-                // bean销毁执行的方法，和声明周期相关
-                String destroyMethod() default "(inferred)";
+              attributesMediaType=*/*
             }
-        </code>
-
-    </pre>
-    <b><a name='header-n32' class='md-header-anchor '></a>3.2、 @Bean案例</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-    <b><a name='header-n33' class='md-header-anchor '></a>3.3、 为啥要自定义scope？</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-    </pre>
-
-    <b><a name='header-n4' class='md-header-anchor '></a>4、 总结</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
     </pre>
 </div>
 </body>
