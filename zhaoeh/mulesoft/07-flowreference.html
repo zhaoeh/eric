@@ -1,0 +1,936 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>Flow Reference 组件.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor {
+        width: auto;
+        border: 0px;
+        background: rgb(119, 238, 119);
+        z-index: 1;
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    div.hr:focus {
+        cursor: none;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    @media screen and (max-width: 48em) {
+
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    .md-inline-math .MathJax_SVG .noError {
+        display: none !important;
+    }
+
+    .mathjax-block .MathJax_SVG_Display {
+        text-align: center;
+        margin: 1em 0em;
+        position: relative;
+        text-indent: 0px;
+        max-width: none;
+        max-height: none;
+        min-height: 0px;
+        min-width: 100%;
+        width: auto;
+        display: block !important;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+        text-decoration: none;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    #write pre.md-meta-block {
+        padding: 1rem;
+        font-size: 85%;
+        line-height: 1.45;
+        background-color: rgb(247, 247, 247);
+        border: 0px;
+        border-radius: 3px;
+        color: rgb(119, 119, 119);
+        margin-top: 0px !important;
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+    </style>
+
+    <link rel="stylesheet" href="../../highlight/styles/default.css">
+    <script src="../../highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>Flow Reference 组件</b>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、Flow Reference </b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        Flow Reference 将 Mule 事件路由到另一个流或子流，执行引用流中的所有处理器，然后将事件路由回同一个 Mule 应用程序中。下图显示了一个流引用另一个流时的处理顺序：
+        <img src="07-1.png">
+        当主流被触发时，Mule 事件会遍历并执行流，直到事件到达Flow Reference。然后事件从头到尾遍历并执行引用的流，然后返回到主流。
+        在整个过程中，可以将 Flow Reference 组件当做当前Flow中的单个组件。
+        Flow Reference 将 Mule 应用程序分解为离散的和可重用的单元。
+        例如，一个定期列出文件的流可能会引用另一个处理 List 操作输出的流。
+        我们可以附加指向处理流的流引用，而不是将所有处理步骤附加到列出文件的流。
+    </pre>
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、配置 Flow Reference</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        要配置 Flow Reference 组件，请在 Anypoint Studio 中执行以下步骤：
+        1.  将 Flow Reference 组件从Mule Palette 拖到Flow中要创建对引用流的调用的位置：
+        <img src="07-2.png">
+
+        2.  打开 Flow Reference 属性并在Flow name 中指定要引用的流：
+        <img src="07-3.png">
+
+        注意：使用实际流名称来定义流名称( name) 属性。使用动态值（DataWeave 表达式、变量）来指定引用的流会对性能产生负面影响。此外，MUnit 测试和应用程序分析工具无法处理动态引用。
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、 使用Flow Reference target variable丰富内容</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        有时需要执行一个使用当前payload和变量的Flow，但希望 Mule 消息在此过程后保持不变。在这种情况下，可以使用目标变量来存储引用流处理的结果，而无需更改原始消息。
+        可以通过在 Flow Reference 属性中配置以下字段，将 Flow Reference 调用的结果存储在目标变量中：
+        Target:Flow Reference 创建的用于存储处理消息结果的变量的名称。
+        Target Value:针对操作的输出进行评估的表达式。此评估的结果存储在定义的目标变量中。
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、 使用target目标变量时的注意事项</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        在 Flow Reference 组件中设置target变量会导致原始消息保持不变。
+        这意味着在引用流完成执行其处理器后，对payload或引用流中发生的变量的任何修改都会恢复，将payload和变量返回到它们的原始值。
+        如果未定义target变量，则在引用流完成其执行后，payload或引用流中的变量发生的任何修改都会保留，从而更改payload或变量的原始值。
+    </pre>
+
+    <b><a name='header-n5' class='md-header-anchor '></a>5、 Flow Reference的XML</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        下面的 XML 代码代表在Configure a Flow Reference 中创建的项目，添加目标变量flowReferenceVar,该变量存储 Flow Reference 组件调用的辅助流的结果。
+        然后通过日志记录在主流程中使用此变量vars.flowReferenceVar：
+        <code class="language-xml">
+            &lt;!-- Main flow -->
+            &lt;flow name="mainFlow" >
+              &lt;http:listener doc:name="Listener" config-ref="HTTP_Listener_config" path="test"/>
+              &lt;set-payload value="Original payload" doc:name="Set Payload"  />
+              &lt;set-variable value="1" doc:name="Set myVar=1" variableName="myVar"/>
+              &lt;!-- Flow Reference component with target variable flowReferenceVar -->
+              &lt;flow-ref doc:name="secondaryFlow" name="secondaryFlow" target="flowReferenceVar"/>
+              &lt;logger level="INFO" doc:name="Log payload" message='#["Payload = " ++ payload]'/>
+              &lt;logger level="INFO" doc:name="Log myVar" message='#["myVar = " ++ vars.myVar]'/>
+              &lt;logger level="INFO" doc:name="Log flowReferenceVar" message='#["flowReferenceVar = " ++ vars.flowReferenceVar]'/>
+            &lt;/flow>
+            &lt;!-- Secondary flow that is referenced from Main flow-->
+            &lt;flow name="secondaryFlow" doc:id="044ece19-aa71-4fc9-ad34-8df655dd59a8" >
+              &lt;set-payload value="Modified payload" doc:name="Update Payload" />
+              &lt;set-variable value="2" doc:name="Update myVar=2" variableName="myVar"/>
+            &lt;/flow>
+        </code>
+
+        以下日志表示示例应用程序执行后的输出：
+        <code class="language-diff">
+            INFO  LoggerMessageProcessor: Payload = Original payload
+            INFO  LoggerMessageProcessor: myVar =  1
+            INFO  LoggerMessageProcessor: flowReferenceVar =  Modified payload
+        </code>
+
+        如果target="flowReferenceVar"从 Flow Reference 组件中删除，应用程序将返回以下输出：
+        <code class="language-diff">
+            INFO  LoggerMessageProcessor: Payload = Modified payload
+            INFO  LoggerMessageProcessor: myVar = 2
+            INFO  LoggerMessageProcessor: flowReferenceVar = null
+        </code>
+    </pre>
+
+    <b><a name='header-n6' class='md-header-anchor '></a>6、 payload</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        payload包含消息的内容或者正文。
+        比如，payload可以包含http请求的结果、从数据库查询出来的数据、或者从FTP服务器读取出来的文件内容。
+        我们直接使用变量 payload 来读取payload中的内容。
+
+        比如：
+        payload如下：
+        { "hello" : "world" }
+
+        则payload.'hello'表示取出json对象中的值 “world”。
+    </pre>
+
+    <b><a name='header-n7' class='md-header-anchor '></a>7、 attributes</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        attributes包含与正文或者payload相关联的元数据。
+        通过attributes关键字去获取对应的属性。
+
+        案例：http响应属性
+        {
+           Status Code=200
+           Reason Phrase=OK
+           Headers=[
+              date=Sun, 20 Jan 2019 19:13:51 GMT
+              content-type=text/html;
+              charset=UTF-8
+              transfer-encoding=chunked
+              connection=keep-alive
+              set-cookie=__cfduid=d03462713a0b2c57c8d2ad3bf311287041548011631;
+              expires=Mon, 20-Jan-20 19:13:51 GMT;
+              path=/;
+              domain=.typicode.com;
+              HttpOnly
+              x-powered-by=Express
+              vary=Origin, Accept-Encoding
+              access-control-allow-credentials=true
+              cache-control=public, max-age=14400
+              last-modified=Tue, 15 Jan 2019 18:17:15 GMT
+              via=1.1 vegur
+              cf-cache-status=HIT
+              expires=Sun, 20 Jan 2019 23:13:51 GMT
+              expect-ct=max-age=604800,
+              report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+              server=cloudflare
+              cf-ray=49c3dc570c2f281c-SJC
+           ]
+        }
+
+        每个属性都是由等号 ( =)分隔的键值对。
+        在Flow中使用连接器或者组件时，可以使用 attributes 关键字获取其中特定的属性值。
+        attributes.statusCode : 选择一个 HTTP 状态代码，如200.
+        attributes.headers.date : 从 HTTP 响应的标头中进行选择Sun, 20 Jan 2019 18:54:54 GMT。
+        attributes.headers.'content-type' : 选择 HTTP 内容类型application/json
+
+        <font color="#dc143c">属性名称的有效标识符</font>
+        通过attributes访问属性时，只要属性命名完全遵守属性名称的有效标识符规则，则可以不加任何引号就直接访问属性。
+        如果属性名不符合属性有效标识符，则需要引号来访问属性，比如：
+        单引号 ( ')
+        双引号 ( ")
+        反引号 ( `)
+
+        加入有下面的dataweave变量：
+            var myVar = {
+              id : "1234",
+              "123 abc !@#" : "some_value"
+            }
+
+        因为属性 123 abc !@# 不符合有效标识，因此要访问它，应该使用引号或者反引号：
+        myVar.'123 abc !@#'
+
+        同样，因为id是符合有效标识命名规范的，因此访问id的话，下面几种都可以：
+        myVar.id
+        myVar.'id'
+        myVar."id"
+        myVar.`id`
+
+        对于访问 'Status Code' 的话，应该直接使用 statusCode 进行访问。
+    </pre>
+
+    <b><a name='header-n8' class='md-header-anchor '></a>8、 mule Errors</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        mule执行失败的话会导致mule错误。
+        当mule应用程序运行时，Mule 运行时引擎以及应用程序中配置的模块和连接器操作都可能抛出由与 Mule 事件关联的 Mule 错误对象表示的错误。您可以使用 On-Error 组件处理错误对象并在日志中找到有关它们的信息。
+        Mule 错误包括表达式 ( EXPRESSION) 和与流相关的错误 ( STREAM_MAXIMIMUM_SIZE_EXCEEDED)，而操作可能会抛出许多不同类型的错误。示例包括HTTP:NOT_FOUND（404 错误）和 HTTP:CONNECTIVITY来自 HTTP 连接器中 HTTP 侦听器的错误。
+        DB:BAD_SYNTAX并且DB:QUERY_EXPRESSION是数据库连接器中的 Select 操作可能引发的错误。
+
+        Mule 错误是具有多个字段的复杂数据类型，例如描述和类型。在记录和处理 Mule 错误时，可以从任意数量的错误字段中选择值。
+        选择器表达式：
+        #[error.description]：error描述
+        #[error.detailedDescription]：error详细描述
+        #[error.errorType]：error类型
+        #[error.cause]：error原因
+        #[error.errorMessage]：错误信息
+        #[error.childErrors]：内部错误的可选集合，由 Scatter-Gather 等元素用于提供聚合路由错误。
+        在大多数情况下，error.cause选择器返回一个Throwable实例，它是 Mule API 的一部分。不要访问错误的内部结构来定义错误处理逻辑。其他选择器公开了处理错误所需的所有信息。此外，序列化error.cause可能会导致冗余信息。
+
+        <font color="#dc143c">HTTP 请求错误示例</font>
+        例如，当 HTTP 请求失败并出现HTTP:NOT_FOUND错误（对于 404 状态代码）时，错误消息每个部分的值是：
+        #[error.description] 返回：HTTP GET on resource 'http://jsonplaceholder.typicode.com:80/mybadrequest' failed: not found (404).
+        #[error.detailedDescription] 返回： HTTP GET on resource 'http://jsonplaceholder.typicode.com:80/mybadrequest' failed: not found (404).
+        #[error.errorType] 返回： HTTP:NOT_FOUND
+        #[error.cause] 返回： org.mule.extension.http.api.request.validator.ResponseValidatorTypedException
+        #[error.errorMessage] 返回：
+        org.mule.runtime.core.internal.message.DefaultMessageBuilder$MessageImplementation
+        {
+          payload=org.mule.runtime.core.internal.streaming.bytes.ManagedCursorStreamProvider@223d8f75
+          mediaType=application/json; charset=UTF-8
+          attributes=org.mule.extension.http.api.HttpResponseAttributes
+            {
+               Status Code=404
+               Reason Phrase=Not Found
+               Headers=[
+                  date=Sat, 03 Aug 2019 04:28:29 GMT
+                  content-type=application/json; charset=utf-8
+                  content-length=2
+                  connection=keep-alive
+                  set-cookie=__cfduid=de19ed0b495b5b58e74fa0ee31a700d651564806509; expires=Sun, 02-Aug-20 04:28:29 GMT; path=/; domain=.typicode.com; HttpOnly
+                  x-powered-by=Express
+                  vary=Origin, Accept-Encoding
+                  access-control-allow-credentials=true
+                  cache-control=public, max-age=14400
+                  pragma=no-cache
+                  expires=Sat, 03 Aug 2019 08:28:29 GMT
+                  x-content-type-options=nosniff
+                  etag=W/"2-vyGp6PvFo4RvsFtPoIWeCReyIC8"
+                  via=1.1 vegur
+                  cf-cache-status=HIT
+                  age=96
+                  server=cloudflare
+                  cf-ray=50058b8add0a92fe-SJC
+               ]
+            }
+              attributesMediaType=*/*
+            }
+    </pre>
+</div>
+</body>
+</html>
+

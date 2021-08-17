@@ -1,0 +1,1116 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>flow和subFlow作用域.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor {
+        width: auto;
+        border: 0px;
+        background: rgb(119, 238, 119);
+        z-index: 1;
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    div.hr:focus {
+        cursor: none;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    @media screen and (max-width: 48em) {
+
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    .md-inline-math .MathJax_SVG .noError {
+        display: none !important;
+    }
+
+    .mathjax-block .MathJax_SVG_Display {
+        text-align: center;
+        margin: 1em 0em;
+        position: relative;
+        text-indent: 0px;
+        max-width: none;
+        max-height: none;
+        min-height: 0px;
+        min-width: 100%;
+        width: auto;
+        display: block !important;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+        text-decoration: none;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    #write pre.md-meta-block {
+        padding: 1rem;
+        font-size: 85%;
+        line-height: 1.45;
+        background-color: rgb(247, 247, 247);
+        border: 0px;
+        border-radius: 3px;
+        color: rgb(119, 119, 119);
+        margin-top: 0px !important;
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+    </style>
+
+    <link rel="stylesheet" href="../../highlight/styles/default.css">
+    <script src="../../highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>Flow和SubFlow组件</b>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、Flow组件和SubFlow组件</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        Flow组件和SubFlow组件是将其他一系列核心组件和操作组合在一起的组件。
+        Flow组件是mule应用程序的基础。
+        因为所有mule应用程序都必须包含至少一个flow，因此Anypoint studio会自动提供mule应用程序的第一个flow组件。
+        mule应用程序可以包含额外的flow和subFlow。如下：
+        <img src="06-1.png">
+        带有subFlow的Flow
+    </pre>
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、Flow和SubFlow的XML</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        此示例显示了一个简单流 ( &lt;flow/>)的 XML，该流使用调度程序作为源，每 10 秒触发一次流的执行.
+        通过 Flow Ref ( &lt;flow-ref/>) 组件连接到子流 ( &lt;sub-flow/>)。
+        然后该子流连接到另一个子流，同样使用 Flow Ref 组件。请注意，当您通过 Studio UI 配置组件时，Studio 会自动将 XML 添加到您的 Mule 应用程序的配置 XML。
+        Flow和SubFlow的XML配置：
+        <code class="language-xml">
+            &lt;flow name="flow_component_ex">
+              &lt;scheduler doc:name="Scheduler" >
+                &lt;scheduling-strategy >
+                  &lt;fixed-frequency frequency="10" timeUnit="SECONDS"/>
+                &lt;/scheduling-strategy>
+              &lt;/scheduler>
+              &lt;ee:transform doc:name="Transform Message">
+                &lt;ee:message >
+                  &lt;ee:set-payload >&lt;![CDATA[
+             %dw 2.0
+             var myXml =  read('&lt;prices>
+                &lt;basic>9.99&lt;/basic>
+                &lt;premium>53&lt;/premium>
+                &lt;vip>398.99&lt;/vip>
+              &lt;/prices>', 'application/xml')
+             output application/xml
+             ---
+             myXml
+            ]]>&lt;/ee:set-payload>
+                &lt;/ee:message>
+              &lt;/ee:transform>
+              &lt;flow-ref name="subflow_ex1"/>
+            &lt;/flow>
+            &lt;sub-flow name="subflow_ex1">
+              &lt;ee:transform doc:name="Transform Message">
+                &lt;ee:message>
+                  &lt;ee:set-payload>&lt;![CDATA[%dw 2.0
+            import * from dw::util::Timer
+            output application/json
+            var conversionRate=13
+            ---
+            priceList: payload.prices mapObject(value, key, index) -> {
+              (key) : {
+                   dollars: value,
+                   localCurrency: value * conversionRate,
+                   index_plus_1: index + 1,
+                   timer : currentMilliseconds()
+               }
+            }]]>
+                  &lt;/ee:set-payload>
+               &lt;/ee:message>
+             &lt;/ee:transform>
+             &lt;flow-ref name="subflow_ex2"/>
+            &lt;/sub-flow>
+            &lt;sub-flow name="subflow_ex2">
+              &lt;logger level="INFO" doc:name="Logger" message="#[payload]" />
+            &lt;/sub-flow>
+        </code>
+        上述示例产生如下输出：
+        <code class="language-java">
+            {
+              "priceList": {
+                "basic": {
+                  "dollars": "9.99",
+                  "localCurrency": 129.87,
+                  "index_plus_1": 1,
+                  "timer": 1533024312658
+                },
+                "premium": {
+                  "dollars": "53",
+                  "localCurrency": 689,
+                  "index_plus_1": 2,
+                  "timer": 1533024312659
+                },
+                "vip": {
+                  "dollars": "398.99",
+                  "localCurrency": 5186.87,
+                  "index_plus_1": 3,
+                  "timer": 1533024312659
+                }
+              }
+            }
+        </code>
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、 ErrorHandler</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        可以将错误处理程序添加到 Flow 组件（但不能添加到SubFlow）。
+        在 Studio 中，您可以简单地展开 Flow 组件底部的 Error Handling 区域并将Error组件拖到Flow中。
+        注意这个过程会自动把组件放到Error Handler组件中，所以不需要先添加Error Handler组件。
+        在此 XML 示例接近尾声时，流程显示了 On Error Continue 配置 ( &lt;on-error-continue/>)：
+
+        案例，带有Error continue配置的流的 XML:
+        <code class="language-xml">
+            &lt;flow name="flow_subflowFlow" >
+              &lt;scheduler doc:name="Scheduler" >
+                &lt;scheduling-strategy >
+                  &lt;fixed-frequency frequency="10" timeUnit="SECONDS"/>
+                &lt;/scheduling-strategy>
+              &lt;/scheduler>
+              &lt;ee:transform doc:name="Transform Message" >
+                &lt;ee:message >
+                  &lt;ee:set-payload >&lt;![CDATA[
+             %dw 2.0
+             var myXml =  read('&lt;prices>&lt;/prices>', 'application/xml')
+             output application/xml
+             ---
+             myXml
+            ]]>&lt;/ee:set-payload>
+                &lt;/ee:message>
+              &lt;/ee:transform>
+              &lt;logger level="INFO" doc:name="Logger" message='#[payload.prices]'/>
+              &lt;error-handler >
+                &lt;on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" type="EXPRESSION" when="#[isEmpty(payload.prices)]">
+                  &lt;logger level="ERROR" doc:name="Logger" message='"An Error Occurred"'/>
+                &lt;/on-error-continue>
+              &lt;/error-handler>
+            &lt;/flow>
+        </code>
+        前面的示例产生错误。请注意以下几点：
+        1.  变量var myXml in&lt;set-payload/>将一个空&lt;prices></prices>标签配置为payload。
+        2.  &lt;set-payload/>组件旁边的 Logger返回null因为它被设置为记录空标签的值。
+        3.  该&lt;on-error-continue/>组件返回错误，因为 DataWeave 条件isEmpty(payload.prices)返回true。
+        4.  内部的 Logger ( &lt;logger/>)&lt;on-error-continue/>配置错误消息以在发生错误时打印到控制台。生成的错误消息如下所示：
+        <code class="language-diff">
+            ERROR 2018-07-30 23:58:45,293 [[MuleRuntime].cpuLight.06:
+             [flow_subflow].flow_subflowFlow.CPU_LITE @1b1529b2]
+             [event: 0-2aba3280-948f-11e8-82d0-f45c898f2549]
+             org.mule.runtime.core.internal.processor.LoggerMessageProcessor:
+             "An Error Occurred"
+        </code>
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、 添加多个路由选项</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        默认情况下，Choice 路由器有一个路由选项，当配置的 DataWeave 表达式计算为true时执行。
+        还有一个Default路由，当现有路由中的表达式都不为 true 时执行。
+        当需要多个路由选项，根据表达式的不同结果执行不同的路由选项，应该参考如下。
+
+        <b>1.   通过在 Studio 中拖动组件来添加路线</b>
+        从Anypoint Studio中，单击任何组件，并将其拖到choice路由器，在那里你看到一个垂直的黑线:
+        <img src="05-3.png">
+
+        <b>2.   通过编辑 XML 添加路由</b>
+        还可以通过修改 XML 配置文件向 Choice 路由器添加其他路由选项：
+        （1）在Studio中，右键单击选择路由器和选择转到XML ...。
+        （2）在&lt;choice>元素内部，添加一个&lt;when>元素：
+        <code class="language-xml">
+            &lt;!--Content based routing example flow -->
+            &lt;flow name="content-based-routingFlow">
+              &lt;http:listener config-ref="HTTP_Listener_config" path="/" doc:name="Listener"/>
+              &lt;set-variable variableName="language" value="#[attributes.queryParams.language]" doc:name="Set Variable" />
+              &lt;!-- Choice router block-->
+              &lt;choice doc:name="Choice" >
+                &lt;when expression="#[vars.language == 'Spanish']" >
+                  &lt;set-payload value="Hola!" doc:name="Reply in Spanish" />
+                &lt;/when>
+                &lt;when expression="#[vars.language == 'French']" >
+                  &lt;set-payload value="Bonjour!" doc:name="Reply in French" />
+                &lt;/when>
+                &lt;!-- This is the new route option added in this step -->
+                &lt;when>
+                &lt;/when>
+                &lt;otherwise>
+                  &lt;flow-ref name="reply-in-default-languageSub_Flow" doc:name="reply-in-default-languageSub_Flow" />
+                &lt;/otherwise>
+              &lt;/choice>
+              &lt;logger level="INFO" doc:name="Log the reply" message='#["The reply $(payload) means hello in $(vars.language)" ]'/>
+            &lt;/flow>
+        </code>
+        添加新&lt;when>元素后，新路由选项显示在消息流视图中：
+        <img src="05-4.png">
+    </pre>
+
+    <b><a name='header-n5' class='md-header-anchor '></a>5、 案例</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <img src="05-5.png">
+        带有三个选项的 Choice 路由器的流程，其中一个是默认选项
+
+        实例项目执行解释：
+        1.  侦听消息。
+        2.  将消息传递给 Set Variable 组件，该组件将变量设置为参数language在消息中传递的语言language。
+        3.  使用 Choice 路由器找出每条消息是否包含一个language属性。此属性的存在和值决定了 Choice 路由器如何路由消息：
+            （1）如果该值为French，则路由器将消息路由到在法语中名为Reply的 Set Payload 组件。后一个组件将消息返回Bonjour!给请求者。
+            （2）如果该值为Spanish，则路由器将消息路由到一个名为Reply的 Set Payload 组件（西班牙语）。后一个组件将消息返回Hola!给请求者。
+            （3）如果消息不包含任何language属性，路由器将消息路由到默认路径，这是一个子流：
+        4.  记录消息“未指定语言。默认使用English。"
+        5.  将 language的值设置为English。
+        6.  返回消息Hello!。
+
+        示例项目表明，当您计划使用 Choice 路由器在流中路由消息时，需要考虑以下四个方面的规划：
+        1.  Choice 路由器评估以确定它如何路由消息的内容
+        2.  路线数
+        3.  默认路由选项
+        4.  Flow对每个路由选项执行的处理
+
+        示例xml：
+        <code class="language-xml">
+            &lt;mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+                xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+                xmlns:spring="http://www.springframework.org/schema/beans"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+            http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+            http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+                &lt;http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" >
+                    &lt;http:listener-connection host="0.0.0.0" port="8081" />
+                &lt;/http:listener-config>
+                &lt;flow name="content-based-routingFlow" >
+                    &lt;http:listener config-ref="HTTP_Listener_config" path="/" doc:name="Listener" />
+                    &lt;set-variable variableName="language" value="#[attributes.queryParams.language]" doc:name="Set Variable" />
+                &lt;!-- START OF CHOICE BLOCK-->
+                    &lt;choice doc:name="Choice" >
+                        &lt;when expression="#[vars.language == 'Spanish']" >
+                            &lt;set-payload value="Hola!" doc:name="Reply in Spanish" />
+                        &lt;/when>
+                        &lt;when expression="#[vars.language == 'French']" >
+                            &lt;set-payload value="Bonjour!" doc:name="Reply in French" />
+                        &lt;/when>
+                        &lt;otherwise>
+                            &lt;flow-ref name="reply-in-default-languageSub_Flow" doc:name="reply-in-default-languageSub_Flow" />
+                        &lt;/otherwise>
+                    &lt;/choice>
+                &lt;!-- END OF CHOICE BLOCK-->
+                    &lt;logger level="INFO" doc:name="Log the reply" message='#["The reply $(payload) means hello in $(vars.language)" ]'/>
+                &lt;/flow>
+              &lt;sub-flow name="reply-in-default-languageSub_Flow" >
+                    &lt;logger level="INFO" doc:name="Logger" message="No language specified. Using English as a default. "/>
+                    &lt;set-variable variableName="language" value="English" doc:name="Set Language to English" />
+                    &lt;set-payload value="Hello!" doc:name="Reply in English" />
+                &lt;/sub-flow>
+            &lt;/mule>
+        </code>
+
+        xml代码参考：
+        Choice 组件包含以下元素：
+        1.  单个根元素 &lt;choice>
+        2.  &lt;when>对于每个路由选项的子元件，每个都具有表达式来匹配
+        3.  可选地，&lt;otherwise>选择的子元素来处理，当表示式的所有case都不为true时。
+        4.  在每个选项下有条件地执行的组件被定义为when和otherwise元素的子元素
+
+        &lt;choice>的属性：
+        &lt;choice doc:name="Choice" tracking:enable-default-events="true" >
+
+        &lt;when>的属性：
+        用 DataWeave 语言表达式来计算路由。
+        如果表达式的计算结果为true，则使用此路由选项：
+        &lt;when expression="#[vars.language == 'Spanish']" >
+    </pre>
+
+    <b><a name='header-n6' class='md-header-anchor '></a>6、 payload</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        payload包含消息的内容或者正文。
+        比如，payload可以包含http请求的结果、从数据库查询出来的数据、或者从FTP服务器读取出来的文件内容。
+        我们直接使用变量 payload 来读取payload中的内容。
+
+        比如：
+        payload如下：
+        { "hello" : "world" }
+
+        则payload.'hello'表示取出json对象中的值 “world”。
+    </pre>
+
+    <b><a name='header-n7' class='md-header-anchor '></a>7、 attributes</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        attributes包含与正文或者payload相关联的元数据。
+        通过attributes关键字去获取对应的属性。
+
+        案例：http响应属性
+        {
+           Status Code=200
+           Reason Phrase=OK
+           Headers=[
+              date=Sun, 20 Jan 2019 19:13:51 GMT
+              content-type=text/html;
+              charset=UTF-8
+              transfer-encoding=chunked
+              connection=keep-alive
+              set-cookie=__cfduid=d03462713a0b2c57c8d2ad3bf311287041548011631;
+              expires=Mon, 20-Jan-20 19:13:51 GMT;
+              path=/;
+              domain=.typicode.com;
+              HttpOnly
+              x-powered-by=Express
+              vary=Origin, Accept-Encoding
+              access-control-allow-credentials=true
+              cache-control=public, max-age=14400
+              last-modified=Tue, 15 Jan 2019 18:17:15 GMT
+              via=1.1 vegur
+              cf-cache-status=HIT
+              expires=Sun, 20 Jan 2019 23:13:51 GMT
+              expect-ct=max-age=604800,
+              report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+              server=cloudflare
+              cf-ray=49c3dc570c2f281c-SJC
+           ]
+        }
+
+        每个属性都是由等号 ( =)分隔的键值对。
+        在Flow中使用连接器或者组件时，可以使用 attributes 关键字获取其中特定的属性值。
+        attributes.statusCode : 选择一个 HTTP 状态代码，如200.
+        attributes.headers.date : 从 HTTP 响应的标头中进行选择Sun, 20 Jan 2019 18:54:54 GMT。
+        attributes.headers.'content-type' : 选择 HTTP 内容类型application/json
+
+        <font color="#dc143c">属性名称的有效标识符</font>
+        通过attributes访问属性时，只要属性命名完全遵守属性名称的有效标识符规则，则可以不加任何引号就直接访问属性。
+        如果属性名不符合属性有效标识符，则需要引号来访问属性，比如：
+        单引号 ( ')
+        双引号 ( ")
+        反引号 ( `)
+
+        加入有下面的dataweave变量：
+            var myVar = {
+              id : "1234",
+              "123 abc !@#" : "some_value"
+            }
+
+        因为属性 123 abc !@# 不符合有效标识，因此要访问它，应该使用引号或者反引号：
+        myVar.'123 abc !@#'
+
+        同样，因为id是符合有效标识命名规范的，因此访问id的话，下面几种都可以：
+        myVar.id
+        myVar.'id'
+        myVar."id"
+        myVar.`id`
+
+        对于访问 'Status Code' 的话，应该直接使用 statusCode 进行访问。
+    </pre>
+
+    <b><a name='header-n8' class='md-header-anchor '></a>8、 mule Errors</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        mule执行失败的话会导致mule错误。
+        当mule应用程序运行时，Mule 运行时引擎以及应用程序中配置的模块和连接器操作都可能抛出由与 Mule 事件关联的 Mule 错误对象表示的错误。您可以使用 On-Error 组件处理错误对象并在日志中找到有关它们的信息。
+        Mule 错误包括表达式 ( EXPRESSION) 和与流相关的错误 ( STREAM_MAXIMIMUM_SIZE_EXCEEDED)，而操作可能会抛出许多不同类型的错误。示例包括HTTP:NOT_FOUND（404 错误）和 HTTP:CONNECTIVITY来自 HTTP 连接器中 HTTP 侦听器的错误。
+        DB:BAD_SYNTAX并且DB:QUERY_EXPRESSION是数据库连接器中的 Select 操作可能引发的错误。
+
+        Mule 错误是具有多个字段的复杂数据类型，例如描述和类型。在记录和处理 Mule 错误时，可以从任意数量的错误字段中选择值。
+        选择器表达式：
+        #[error.description]：error描述
+        #[error.detailedDescription]：error详细描述
+        #[error.errorType]：error类型
+        #[error.cause]：error原因
+        #[error.errorMessage]：错误信息
+        #[error.childErrors]：内部错误的可选集合，由 Scatter-Gather 等元素用于提供聚合路由错误。
+        在大多数情况下，error.cause选择器返回一个Throwable实例，它是 Mule API 的一部分。不要访问错误的内部结构来定义错误处理逻辑。其他选择器公开了处理错误所需的所有信息。此外，序列化error.cause可能会导致冗余信息。
+
+        <font color="#dc143c">HTTP 请求错误示例</font>
+        例如，当 HTTP 请求失败并出现HTTP:NOT_FOUND错误（对于 404 状态代码）时，错误消息每个部分的值是：
+        #[error.description] 返回：HTTP GET on resource 'http://jsonplaceholder.typicode.com:80/mybadrequest' failed: not found (404).
+        #[error.detailedDescription] 返回： HTTP GET on resource 'http://jsonplaceholder.typicode.com:80/mybadrequest' failed: not found (404).
+        #[error.errorType] 返回： HTTP:NOT_FOUND
+        #[error.cause] 返回： org.mule.extension.http.api.request.validator.ResponseValidatorTypedException
+        #[error.errorMessage] 返回：
+        org.mule.runtime.core.internal.message.DefaultMessageBuilder$MessageImplementation
+        {
+          payload=org.mule.runtime.core.internal.streaming.bytes.ManagedCursorStreamProvider@223d8f75
+          mediaType=application/json; charset=UTF-8
+          attributes=org.mule.extension.http.api.HttpResponseAttributes
+            {
+               Status Code=404
+               Reason Phrase=Not Found
+               Headers=[
+                  date=Sat, 03 Aug 2019 04:28:29 GMT
+                  content-type=application/json; charset=utf-8
+                  content-length=2
+                  connection=keep-alive
+                  set-cookie=__cfduid=de19ed0b495b5b58e74fa0ee31a700d651564806509; expires=Sun, 02-Aug-20 04:28:29 GMT; path=/; domain=.typicode.com; HttpOnly
+                  x-powered-by=Express
+                  vary=Origin, Accept-Encoding
+                  access-control-allow-credentials=true
+                  cache-control=public, max-age=14400
+                  pragma=no-cache
+                  expires=Sat, 03 Aug 2019 08:28:29 GMT
+                  x-content-type-options=nosniff
+                  etag=W/"2-vyGp6PvFo4RvsFtPoIWeCReyIC8"
+                  via=1.1 vegur
+                  cf-cache-status=HIT
+                  age=96
+                  server=cloudflare
+                  cf-ray=50058b8add0a92fe-SJC
+               ]
+            }
+              attributesMediaType=*/*
+            }
+    </pre>
+</div>
+</body>
+</html>
+
