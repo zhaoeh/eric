@@ -4,7 +4,7 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width initial-scale=1'>
-    <title>Flow Reference 组件.md</title>
+    <title>set-payload组件.md</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
           rel='stylesheet' type='text/css'/>
     <style type='text/css'>html {
@@ -717,82 +717,24 @@
 </head>
 <body class='typora-export'>
 <div id='write' class='is-node'>
-    <b><a name='header-n0' class='md-header-anchor '></a>Flow Reference 组件</b>
+    <b><a name='header-n0' class='md-header-anchor '></a>set payload 组件</b>
 
     <b><a name='header-n1' class='md-header-anchor '></a>1、Flow Reference </b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        Flow Reference 将 Mule 事件路由到另一个流或子流，执行引用流中的所有处理器，然后将事件路由回同一个 Mule 应用程序中。下图显示了一个流引用另一个流时的处理顺序：
-        <img src="07-1.png">
-        当主流被触发时，Mule 事件会遍历并执行流，直到事件到达Flow Reference。然后事件从头到尾遍历并执行引用的流，然后返回到主流。
-        在整个过程中，可以将 Flow Reference 组件当做当前Flow中的单个组件。
-        Flow Reference 将 Mule 应用程序分解为离散的和可重用的单元。
-        例如，一个定期列出文件的流可能会引用另一个处理 List 操作输出的流。
-        我们可以附加指向处理流的流引用，而不是将所有处理步骤附加到列出文件的流。
-    </pre>
+        Set Payload ( set-payload) 组件可让您更新消息的payload。
+        payload可以是文字字符串或 DataWeave 表达式。
+        但是，不建议将set-payload 组件用于复杂的表达式或转换，而建议用于简单的表达式或转换，例如选择。
+        对于复杂的场景，应该使用Transform Message组件。
 
-    <b><a name='header-n2' class='md-header-anchor '></a>2、配置 Flow Reference</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        要配置 Flow Reference 组件，请在 Anypoint Studio 中执行以下步骤：
-        1.  将 Flow Reference 组件从Mule Palette 拖到Flow中要创建对引用流的调用的位置：
-        <img src="07-2.png">
+        value:必需的,接受定义如何设置payload的文字字符串或 DataWeave 表达式，例如，"some string"或#[now()]。
+        mimeType:可选的,分配给payload的值的 MIME 类型，例如，text/plain或application/json。
+        encoding:可选的，分配给payload的值的编码，例如，UTF-8。
 
-        2.  打开 Flow Reference 属性并在Flow name 中指定要引用的流：
-        <img src="07-3.png">
+        此 XML 示例使用静态值设置负载：
+        &lt;set-payload value="{ 'name' : 'Ana', 'office' : 'BA' }" mimeType="application/json" encoding="UTF-8"/>
 
-        注意：使用实际流名称来定义流名称( name) 属性。使用动态值（DataWeave 表达式、变量）来指定引用的流会对性能产生负面影响。此外，MUnit 测试和应用程序分析工具无法处理动态引用。
-    </pre>
-
-    <b><a name='header-n3' class='md-header-anchor '></a>3、 使用Flow Reference target variable丰富内容</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        有时需要执行一个使用当前payload和变量的Flow，但希望 Mule 消息在此过程后保持不变。在这种情况下，可以使用目标变量来存储引用流处理的结果，而无需更改原始消息。
-        可以通过在 Flow Reference 属性中配置以下字段，将 Flow Reference 调用的结果存储在目标变量中：
-        Target:Flow Reference 创建的用于存储处理消息结果的变量的名称。
-        Target Value:针对操作的输出进行评估的表达式。此评估的结果存储在定义的目标变量中。
-    </pre>
-
-    <b><a name='header-n4' class='md-header-anchor '></a>4、 使用target目标变量时的注意事项</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        在 Flow Reference 组件中设置target变量会导致原始消息保持不变。
-        这意味着在引用流完成执行其处理器后，对payload或引用流中发生的变量的任何修改都会恢复，将payload和变量返回到它们的原始值。
-        如果未定义target变量，则在引用流完成其执行后，payload或引用流中的变量发生的任何修改都会保留，从而更改payload或变量的原始值。
-    </pre>
-
-    <b><a name='header-n5' class='md-header-anchor '></a>5、 Flow Reference的XML</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        下面的 XML 代码代表在Configure a Flow Reference 中创建的项目，添加目标变量flowReferenceVar,该变量存储 Flow Reference 组件调用的辅助流的结果。
-        然后通过日志记录在主流程中使用此变量vars.flowReferenceVar：
-        <code class="language-xml">
-            &lt;!-- Main flow -->
-            &lt;flow name="mainFlow" >
-              &lt;http:listener doc:name="Listener" config-ref="HTTP_Listener_config" path="test"/>
-              &lt;set-payload value="Original payload" doc:name="Set Payload"  />
-              &lt;set-variable value="1" doc:name="Set myVar=1" variableName="myVar"/>
-              &lt;!-- Flow Reference component with target variable flowReferenceVar -->
-              &lt;flow-ref doc:name="secondaryFlow" name="secondaryFlow" target="flowReferenceVar"/>
-              &lt;logger level="INFO" doc:name="Log payload" message='#["Payload = " ++ payload]'/>
-              &lt;logger level="INFO" doc:name="Log myVar" message='#["myVar = " ++ vars.myVar]'/>
-              &lt;logger level="INFO" doc:name="Log flowReferenceVar" message='#["flowReferenceVar = " ++ vars.flowReferenceVar]'/>
-            &lt;/flow>
-            &lt;!-- Secondary flow that is referenced from Main flow-->
-            &lt;flow name="secondaryFlow" doc:id="044ece19-aa71-4fc9-ad34-8df655dd59a8" >
-              &lt;set-payload value="Modified payload" doc:name="Update Payload" />
-              &lt;set-variable value="2" doc:name="Update myVar=2" variableName="myVar"/>
-            &lt;/flow>
-        </code>
-
-        以下日志表示示例应用程序执行后的输出：
-        <code class="language-diff">
-            INFO  LoggerMessageProcessor: Payload = Original payload
-            INFO  LoggerMessageProcessor: myVar =  1
-            INFO  LoggerMessageProcessor: flowReferenceVar =  Modified payload
-        </code>
-
-        如果target="flowReferenceVar"从 Flow Reference 组件中删除，应用程序将返回以下输出：
-        <code class="language-diff">
-            INFO  LoggerMessageProcessor: Payload = Modified payload
-            INFO  LoggerMessageProcessor: myVar = 2
-            INFO  LoggerMessageProcessor: flowReferenceVar = null
-        </code>
+        下一个示例使用 DataWeave 表达式将payload设置为“Hello, World”，并附加今天的日期： #['Hello World!' ++ ' Today is ' ++ now()]:
+        &lt;set-payload value="#['Hello World!' ++ ' Today is ' ++ now()]"/>
     </pre>
 </div>
 </body>
