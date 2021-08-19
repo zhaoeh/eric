@@ -1,0 +1,967 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>SQL执行顺序.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor {
+        width: auto;
+        border: 0px;
+        background: rgb(119, 238, 119);
+        z-index: 1;
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    div.hr:focus {
+        cursor: none;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    @media screen and (max-width: 48em) {
+
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    .md-inline-math .MathJax_SVG .noError {
+        display: none !important;
+    }
+
+    .mathjax-block .MathJax_SVG_Display {
+        text-align: center;
+        margin: 1em 0em;
+        position: relative;
+        text-indent: 0px;
+        max-width: none;
+        max-height: none;
+        min-height: 0px;
+        min-width: 100%;
+        width: auto;
+        display: block !important;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+        text-decoration: none;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    #write pre.md-meta-block {
+        padding: 1rem;
+        font-size: 85%;
+        line-height: 1.45;
+        background-color: rgb(247, 247, 247);
+        border: 0px;
+        border-radius: 3px;
+        color: rgb(119, 119, 119);
+        margin-top: 0px !important;
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+    </style>
+
+    <link rel="stylesheet" href="../../highlight/styles/default.css">
+    <script src="../../highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>SQL执行顺序</b>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、笛卡尔积</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="#dc143c">sql和mysql执行顺序，发现内部机制是一样的。最大区别是在别名的引用上。</font>
+        顾名思义, 这个概念得名于笛卡儿. 在数学中，两个集合 X 和 Y 的笛卡儿积（Cartesian product），又称直积，表示为 X × Y，是其第一个对象是 X 的成员而第二个对象是 Y 的一个成员的所有可能的有序对。
+        假设集合A={a,b}，集合B={0,1,2}，则两个集合的笛卡尔积为{(a,0),(a,1),(a,2),(b,0),(b,1), (b,2)}。
+        可以扩展到多个集合的情况。类似的例子有，如果A表示某学校学生的集合，B表示该学校所有课程的集合，则A与B的笛卡尔积表示所有可能的选课情况。
+
+        比如有A表数据如下：
+        <code class="language-diff">
+            name          age
+            张三          22
+            李四          18
+        </code>
+
+        有B表数据如下：
+        <code class="language-diff">
+            city            price
+            西安            10000
+            咸阳             8000
+        </code>
+
+        则A表和B表的笛卡尔积如下：
+        <code class="language-diff">
+            张三          22          西安            10000
+            张三          22          咸阳             8000
+            李四          18          西安            10000
+            李四          18          咸阳             8000
+        </code>
+        也就是说，对于每一张表数据来说，其呈现出来的形态就是一个表结构，其中每一行数据称作一个行对象。
+        笛卡尔积就是两张表的所有行对象进行组合，得到的一个虚拟的全量数据。
+        一般要避免笛卡尔积的出现，因为笛卡尔积很容易膨胀。比如表A的数据假如有N行，表B的数据加入有M行，则表A和表B的笛卡尔积将有N*M行。
+        将一张有N个行对象的表和一张有M个行对象的表，其笛卡尔积将是N*M个行对象。
+    </pre>
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、join类型</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        cross join 是笛卡儿乘积就是一张表的行数乘以另一张表的行数。
+        inner join 只返回两张表连接列的匹配项。
+        left join 第一张表的连接列在第二张表中没有匹配时,第二张表中的值返回null。
+        right join 第二张表的连接列在第一张表中没有匹配是,第一张表中的值返回null。
+        full join 返回两张表中的行 left join+right join。
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、 join和笛卡尔积</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        在对两表进行各种类型的join (cross, left, right, full, inner)时, 都需要构造笛卡尔积。
+        有时想想不可思议, 若两个特大表进行join, 难道sql就直接上笛卡尔积吗? 难道不事前进行on的条件过滤吗? 那数据量得多大?内存会被搞崩吧？性能能好吗？
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、 查一下MSDN就清楚了整个SQL的执行顺序</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        查一下MSDN就清楚了整个SQL的执行顺序:
+        <a href="http://msdn.microsoft.com/en-us/library/ms189499(v=SQL.100).aspx" target="_blank">SQL执行顺序</a>
+
+        以下步骤显式了SELECT语句的处理顺序：
+        <code class="language-diff">
+            1.FROM
+            2.ON
+            3.JOIN
+            4.WHERE
+            5.GROUP BY
+            6.WITH CUBE or WITH ROLLUP
+            7.HAVING
+            8.SELECT
+            9.DISTINCT
+            10.ORDER BY
+            11.TOP
+        </code>
+        也就是说, 先进行on的过滤, 而后才进行join, 这样就避免了两个大表产生全部数据的笛卡尔积的庞大数据.
+        这些步骤执行时, 每个步骤都会产生一个虚拟表，该虚拟表被用作下一个步骤的输入。这些虚拟表对调用者（客户端应用程序或者外部查询）不可用。只是最后一步生成的表才会返回 给调用者。
+        如果没有在查询中指定某一子句，将跳过相应的步骤。
+    </pre>
+
+    <b><a name='header-n5' class='md-header-anchor '></a>5、 ON 和 WHERE</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        On的其余过滤条件放Where里效率更高还是更低?
+        <code class="language-diff">
+            select * from table1 as a inner join table2 as b on a.id=b.id and a.status=1;
+            select * from table1 as a inner join table2 as b on a.id=b.id where a.status=1;
+        </code>
+        查查MSDN就清楚了 :
+        <a target="_blank" href="http://msdn.microsoft.com/en-us/library/ms189499(v=SQL.100).aspx">ON和Where的效率</a>
+        如果是inner join, 放on和放where产生的结果一样, 但没说哪个效率速度更高?
+        如果有outer join (left or right), 就有区别了, 因为on生效在先, 已经提前过滤了一部分数据, 而where生效在后。
+        综合一下, 感觉还是放在on里更有效率, 因为它先于where执行。
+        听说可以通过sql的查询计划来判别实际的结果, 明天再研究, 欢迎高手给与批评指正。
+    </pre>
+
+    <b><a name='header-n6' class='md-header-anchor '></a>6、 2011/11/21 最新体会</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        刚看到《Microsoft SQL Server 2008技术内幕: T-SQL查询》一书中对于连接的描述和我先前理解的不太一样：
+        <code class="language-diff">
+            Itzib在书上说先笛卡尔积, 然后再on过滤, 如果join是inner的, 就继续往下走, 如果join 是left join, 就把on过滤掉的左主表中的数据再添加回来; 然后再执行where里的过滤;
+            on中不是最终过滤, 因为后面left join还可能添加回来, 而where才是最终过滤。
+            只有当使用外连接(left, right)时, on 和 where 才有这个区别, 如果用inner join, 在哪里指定都一样, 因为on 之后就是where, 中间没有其它步骤。
+        </code>
+
+        参考资料：
+        <a href="http://msdn.microsoft.com/en-us/library/ms189499(v=SQL.100).aspx" target="_blank">SELECT (Transact-SQL)</a>
+        <a href="http://msdn.microsoft.com/en-us/library/ms177634(v=SQL.100).aspx" target="_blank">FROM (Transact-SQL)</a>
+        <a href="http://www.cnblogs.com/chinabc/articles/1597198.html" target="_blank">SQL Server 查询处理中的各个阶段(SQL执行顺序)</a>
+        <a href="http://social.msdn.microsoft.com/Forums/zh-CN/sqlserverzhchs/thread/e1198287-96d5-4e9e-b1d0-d2d4f5ba4e20" target="_blank">INNER JOIN时条件放在ON里还是WHERE里效率更高</a>
+        <a href="http://social.msdn.microsoft.com/Forums/zh-CN/sqlserverzhchs/thread/6f61bd10-6fb9-4035-bd51-d9cc13f7132a/" target="_blank">连接语句的运算顺序或原理</a>
+    </pre>
+
+    <b><a name='header-n7' class='md-header-anchor '></a>7、 sql执行顺序-重点</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  from
+        求笛卡尔积。不论是什么类型的联接运算，首先都是执行交叉连接（cross join），对from的前两张表求笛卡儿积，生成虚拟表VT1-J1。
+
+        2.  on
+        对生成的全量笛卡尔积虚拟表进行on条件过滤，on的条件具体分如下场景：
+        <code class="language-diff">
+            A left join B： on的条件是对A和B表进行过滤，当join时再将A表过滤的数据进行补全，然后根据过滤后的条件生成临时表返回。
+            A right join B： on的条件是对A和B表进行过滤，当join时再将B表过滤的数据进行补全，然后根据过滤后的条件生成临时表返回。
+            A inner join B： on的条件是对A表和B表同时进行过滤，返回on条件双方共同符合条件的临时表返回。
+        </code>
+        注意，如果on (a = b and c = d)对于这种情况，inner join 的结果和将on后面的条件写在最后的where条件后是一样的。
+        但是对于 left join 和 right join 而言，on 后面的条件和where后面的条件过滤的目标是不同的。
+        一句话，on后面的条件是对副表（A表或者B表）进行单个过滤的，而where是对返回的整个临时笛卡尔积临时表进行整体过滤的。
+        其实以上结果的关键原因就是left join,right join,full join的特殊性，不管on上的条件是否为真都会返回left或right表中的记录，full则具有left和right的特性的并集。
+        而inner jion没这个特殊性，则条件放在on中和where中，返回的结果集是相同的。
+
+        3.  join
+        实际上第（2）步，on的条件总是对全量的笛卡尔积统一进行过滤，即转换成Inner join，对主从表同时进行过滤。
+        而对于left join或者right join、full join等，是在 join 这一步进行数据回写的。
+        原理：on 条件对全量笛卡尔积进行统一过滤。
+        join 时，数据库引擎发现是 left join ，则将左表中已经过滤的数据又回写添加回来；如果是 left join，则将右表中过滤的数据回写添加回来；
+        full join是两张表的过滤的数据都回写添加回来。
+
+        4.  where
+
+        5.  group by(开始使用select中的别名，后面的语句中都可以使用)
+
+        6.   avg,sum....
+
+        7.  having
+
+        8.  select
+
+        9.  distinct
+
+        10. order by
+
+        11. limit/top
+
+        从这个顺序中我们不难发现，所有的查询语句都是从from开始执行的，在执行过程中，每个步骤都会为下一个步骤生成一个虚拟表，这个虚拟表将作为下一个执行步骤的输入。
+        <code class="language-diff">
+            第一步：首先对from子句中的前两个表执行一个笛卡尔乘积，此时生成虚拟表 vt1（选择相对小的表做基础表）。
+            第二步：接下来便是应用on筛选器，on 中的逻辑表达式将应用到 vt1 中的各个行，筛选出满足on逻辑表达式的行，生成虚拟表 vt2。
+            第三步：如果是outer join 那么这一步就将添加外部行，left outer jion 就把左表在第二步中过滤的添加进来，如果是right outer join 那么就将右表在第二步中过滤掉的行添加进来，这样生成虚拟表 vt3 。
+            第四步：如果 from 子句中的表数目多余两个表，那么就将vt3和第三个表连接从而计算笛卡尔乘积，生成虚拟表，该过程就是一个重复1-3的步骤，最终得到一个新的虚拟表 vt3。
+            第五步：应用where筛选器，对上一步生产的虚拟表引用where筛选器，生成虚拟表vt4，在这有个比较重要的细节不得不说一下，对于包含outer join子句的查询，就有一个让人感到困惑的问题，到底是在on筛选器还是用where筛选器指定逻辑表达式呢？
+            on和where的最大区别在于，如果是在on处指定逻辑表达式，那么在第三步outer join中还可以把移除的行再次添加回来，而where的移除是最终的。
+            举个简单的例子，有一个学生表（班级,姓名）和一个成绩表(姓名,成绩)，我现在需要返回一个x班级的全体同学的成绩，但是这个班级有几个学生缺考，也就是说在成绩表中存在没有记录的行对象。
+            为了得到我们预期的结果我们就需要在on子句指定学生和成绩表的关系（学生.姓名=成绩.姓名）。
+            那么我们是否发现在执行第二步的时候，对于没有参加考试的学生记录就不会出现在vt2中，因为他们被on的逻辑表达式过滤掉了,但是我们用left outer join就可以把左表（学生）中没有参加考试的学生找回来。
+            因为我们想返回的是x班级的所有学生，如果是在on中应用学生.班级='x'的话，对于left outer join来说这个条件是无效的，因为它始终会把主表中的所有学生记录找回。
+            所以要想对主表的数据进行过滤，就只能在where筛选器中应用学生.班级='x' 因为它的过滤是最终的。
+            第六步：group by 子句将中的唯一的值组合成为一组，得到虚拟表vt5。如果应用了group by，那么后面的所有步骤都只能得到的vt5的列或者是聚合函数（count、sum、avg等）。原因在于最终的结果集中只为每个组包含一行。这一点请牢记。
+            第七步：应用cube或者rollup选项，为vt5生成超组，生成vt6.
+            第八步：应用having筛选器，生成vt7。having筛选器是第一个也是为唯一一个应用到已分组数据的筛选器。
+            第九步：处理select子句。将vt7中的在select中出现的列筛选出来。生成vt8.
+            第十步：应用distinct子句，vt8中移除相同的行，生成vt9。事实上如果应用了group by子句那么distinct是多余的，原因同样在于，分组的时候是将列中唯一的值分成一组，同时只为每一组返回一行记录，那么所以的记录都将是不相同的。
+            第十一步：应用order by子句。按照order_by_condition排序vt9，此时返回的一个游标，而不是虚拟表。sql是基于集合的理论的，集合不会预先对他的行排序，它只是成员的逻辑集合，成员的顺序是无关紧要的。对表进行排序的查询可以返回一个对象，这个对象包含特定的物理顺序的逻辑组织。这个对象就叫游标。正因为返回值是游标，那么使用order by 子句查询不能应用于表表达式。排序是很需要成本的，除非你必须要排序，否则最好不要指定order by，最后，在这一步中是第一个也是唯一一个可以使用select列表中别名的步骤（注意 order by 子句是根据对select子句查询出来的别名统一对结果集进行排序的，意味着排序字段不一定非得是表中的字段，而可以是select 子句中任何一个查询出来的结果字段！！！）。
+            第十二步：应用top选项。此时才返回结果给请求者即用户。
+        </code>
+        注意，两个表连接时用on，在使用left join（right join或full join）时，on与where的区别是：
+        <font color="#dc143c">
+            on条件是在生成临时表时使用的条件，它不管on中的条件是否为真，都会返回左边表中的记录。
+            where条件是在临时表生成好后再对临时表进行过滤的条件，这时已经没有left join的含义（必须返回左边表的记录）了，条件不为真的就全部过滤掉。
+        </font>
+        为了更形象的理解在left join中的on条件和where条件的区别，我们做个案例：
+        有两张表zeh_person和zeh_person_1。
+        zeh_person为a表，做主表；zeh_person_1为b表，做副表。
+
+        a表数据如下：
+        <img src="07-persona.png">
+        可以看到a表为主表，总共有6条数据。
+
+        b表数据如下：
+        <img src="07-personb.png">
+        可以看到b表为副表，总共有3条数据。
+
+        使用left join关联查询a表和b表，id作为关联条件。因为a表中id为6的有5条数据，b表中id为6的有3条数据，所以按照id进行过滤后，会形成5*3=15条数据。
+        又因为a表是主表，所以left join需要将a表中不满足过滤条件的数据再添加回来，即加上a表中被过滤的那条id=100的张三，总共有16条数据。
+        <img src="07-personab.png">
+
+        我们想要获取a表中name为“张三”的记录，先将a.name = '张三' 放在on后面：
+        <img src="07-personab1.png">
+        我们神奇的发现结果竟然是这样。
+        解释下，现在<font color="#dc143c">a.id = b.id and a.name = '张三'</font>整体是过滤条件，当满足<font color="#dc143c">a.id = b.id</font>时，我们可以看到结果有16条。
+        那么同时要满足<font color="#dc143c">a.name = '张三'</font>，那就应该只剩下张三这一条数据，但是结果明确表明了：a表作为主表，在联合条件过滤完成后，又把a表中的数据添加回来了。
+        即：left join如果只有on条件的话，总会全量返回主表的数据。
+
+        我们将a.name = '张三'放在where语句后：
+        <img src="07-perssonwhere.png">
+        这个结果才是我们想要的结果，它从联合查询根据条件构建完笛卡尔积后，再对整个结果集进行过滤。
+
+    </pre>
+    <b><a name='header-n7' class='md-header-anchor '></a>7、 mysql的执行顺序</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        SELECT语句定义
+        一个完成的SELECT语句包含可选的几个子句。SELECT语句的定义如下：
+        SQL代码
+        &lt;SELECT clause> [&lt;FROM clause>] [&lt;WHERE clause>] [&lt;GROUP BY clause>] [&lt;HAVING clause>] [&lt;ORDER BY clause>] [&lt;LIMIT clause>]
+        SELECT子句是必选的，其它子句如WHERE子句、GROUP BY子句等是可选的。
+        一个SELECT语句中，子句的顺序是固定的。例如GROUP BY子句不会位于WHERE子句的前面。
+        SELECT语句执行顺序
+        SELECT语句中子句的执行顺序与SELECT语句中子句的输入顺序是不一样的，所以并不是从SELECT子句开始执行的，而是按照下面的顺序执行：
+        开始->FROM子句->WHERE子句->GROUP BY子句->HAVING子句->ORDER BY子句->SELECT子句->LIMIT子句->最终结果
+        每个子句执行后都会产生一个中间结果，供接下来的子句使用，如果不存在某个子句，就跳过.
+        对比了一下，mysql和sql执行顺序基本是一样的, 标准顺序的 SQL 语句为:
+        <code class="language-diff">
+            select 考生姓名, max(总成绩) as max总成绩
+
+            from tb_Grade
+
+            where 考生姓名 is not null
+
+            group by 考生姓名
+
+            having max(总成绩) > 600
+
+            order by max总成绩
+        </code>
+        在上面的示例中 SQL 语句的执行顺序如下：
+        <code class="language-diff">
+            1.  首先执行 FROM 子句, 从 tb_Grade 表组装数据源的数据。
+            2.  执行 WHERE 子句, 筛选 tb_Grade 表中所有数据不为 NULL 的数据 。
+            3.  执行 GROUP BY 子句, 把 tb_Grade 表按 "学生姓名" 列进行分组(注：这一步开始才可以使用select中的别名，他返回的是一个游标，而不是一个表，所以在where中不可以使用select中的别名，而having却可以使用，感谢网友  zyt1369  提出这个问题)。
+            4.  计算 max() 聚集函数, 按 "总成绩" 求出总成绩中最大的一些数值 。
+            5.  执行 HAVING 子句, 筛选课程的总成绩大于 600 分的。
+            6.  执行 ORDER BY 子句, 把最后的结果按 "Max 成绩" 进行排序。
+        </code>
+    </pre>
+
+    <b><a name='header-n7' class='md-header-anchor '></a>10、 总结</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        对于数据量特别大的多表 join 关联查询，可以使用 from 子查询的方式先过滤。
+        一般情况下直接将条件写在on后面（on后是对从表进行过滤的，可以带多个条件），将主表的条件写在最后即可，不需要使用子查询。
+    </pre>
+</div>
+</body>
+</html>
+
