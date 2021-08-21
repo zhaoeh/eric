@@ -1,0 +1,1197 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>外部表.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor {
+        width: auto;
+        border: 0px;
+        background: rgb(119, 238, 119);
+        z-index: 1;
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    div.hr:focus {
+        cursor: none;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    @media screen and (max-width: 48em) {
+
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    .md-inline-math .MathJax_SVG .noError {
+        display: none !important;
+    }
+
+    .mathjax-block .MathJax_SVG_Display {
+        text-align: center;
+        margin: 1em 0em;
+        position: relative;
+        text-indent: 0px;
+        max-width: none;
+        max-height: none;
+        min-height: 0px;
+        min-width: 100%;
+        width: auto;
+        display: block !important;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+        text-decoration: none;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    #write pre.md-meta-block {
+        padding: 1rem;
+        font-size: 85%;
+        line-height: 1.45;
+        background-color: rgb(247, 247, 247);
+        border: 0px;
+        border-radius: 3px;
+        color: rgb(119, 119, 119);
+        margin-top: 0px !important;
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+    </style>
+
+    <link rel="stylesheet" href="../../../highlight/styles/default.css">
+    <script src="../../../highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>外部表</b>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、外部表</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        外部表，相对于数据库内部表来说的，意思是将操作系统文件作为一个数据库，数据从文件而来。
+        我把它理解成类似指针的东西，告诉用户，这个表的数据是从哪些文件来的。
+        外部表的创建，这里写的比网上其他介绍复杂许多，简单的用法，自行百度，这里只考虑 多文件大数据、每行数据没有分隔符，字段靠截取、外部白导入类型是oracle loader的条件。网上的一些文章只做了一些简单的介绍和用法，只能满足简单的需求，而真是需要使用到外部表的一半都是上百万级别的大数据。先看看基本语法，里面的参数将会一一详解。
+
+        语法如下：
+        <code class="language-diff">
+            create table "table1"
+            (
+             id varchar2(4),
+             name varchar2(20)
+            )ORGANIZATION external --外部表的关键字
+            (
+             type oracle_loader --外部表有两种类型，这里使用oracle_loader
+             DEFAULT DIRECTORY DATA_FILE_PATH --文件目录
+             ACCESS PARAMETERS( --参数
+             RECORDS DELIMITED BY NEWLINE CHARACTERSET ZHS16GBK
+             SKIP 10
+             BADFILE 'DATA_LOG_PATH':'table1.bad'
+             NODISCARDFILE
+             LOGFILE 'DATA_LOG_PATH':'table1.log'
+             READSIZE 1048576
+             FIELDS LDRTRIM
+             REJECT ROWS WITH ALL NULL FIELDS
+             (
+             "id" (1,4) char(4) nullif ("id" = blanks),
+             "name" (5,24) char(20) nullif ("name" = blanks)
+             ) )
+            location
+            (
+             test1.txt,
+             test2.txt
+            )REJECT LIMIT UNLIMITED;
+        </code>
+        使用外部表需要注意一下几点：
+        1.  数据文件（test1.txt，test2.txt）的存放路径必须是数据库服务器能够访问到的地方！
+        这点非常关键，许多产品一半是数据库服务器跟应用后台分离的方式，所以，这就要求文件能够放在数据库服务器上，而不是后台服务器，或者两者之间加一块共享存储，这里两台都能访问。
+        2.  创建外部表之前，需要先创建目录对象DATA_FILE_PATH，也就是，数据文件需要放在这个目录对象中，也就是，这个目录对象的路径，是数据库服务器上的路径。创建语法如下：
+        <code class="language-diff">
+            CREATE OR REPLACE DIRECTORY IMPORT_DATA_FILE_PATH AS '/home/file'
+        </code>
+        由于上面的例子我把生成的log、bad文件单独存放，所以建立两个目录。
+        3.  执行创建外表语句 ，可以在oracle客户端执行，且创建表不加载数据，也就是数据如果有错，或者文件不存在，不会报错，创建是成功的，只有当insert到正式表时，才是加载数据的过程。
+        4.  外部表只能查询，不能做DML操作，外部表只能查询，不能做DML操作，外部表只能查询，不能做DML操作，重要的事情说3遍。
+        外部表只能当作中间工具，建立好外部表时，使用insert into 正式表 select * from 外部表；
+        加载数据到正式表中。这个过程可以使用查询并行和DML并行，提升加载性能（这里有坑，后面解释）。
+
+        现在来讲讲外部表的一些参数:
+        1.  TYPE 外部表的类型，有两种，一种是oralce_loader，一种是ORACLE_DATAPUMP，后者没用过，也讲不来，自行百度。oralce_loader类型，就可以把外部表当作多个sqlldr，如果没有了解过sqlldr，可以先了解一下，比较外部表的本质还是这个。具体有多少个sqlldr呢，差不多location里面有多少个文件，就有多少个sqlldr，所以，使用外部表导入大数据，性能会比个sqlldr好得多。
+        2.  DEFAULT DIRECTORY 就是指定目录对象，文件一定要在这里面！！！
+        3.  RECORDS DELIMITED BY NEWLINE CHARACTERSET ZHS16GBK 指定数据库的字符集,数据库字符集可以查询出来。
+        <code class="language-diff">
+            select userenv(‘language’) from dual；
+        </code>
+        4.  BADFILE 指定bad文件存在路径，什么是bad文件，就是数据里面，违反了字段规则的数据,就会被当中bad数据放到里面。如果不需要生成，则写NOBADFILE。
+        5.  DISCARDFILE 丢弃的文件，跟bad文件不一样，这个是违反了筛选条件的数据，上面的例子没写，这里写下：
+        <code class="language-diff">
+            SKIP 10
+            BADFILE 'DATA_LOG_PATH':'table1.bad'
+            NODISCARDFILE
+            LOGFILE 'DATA_LOG_PATH':'table1.log'
+            LOAD WHEN ("id" != blanks)
+        </code>
+        6.  LOAD WHEN 加载条件，结合上面说，就是筛选条件，这里面的写法只能指定字段的值，不能限制类型，而且语法限制条件也很多，sql的函数不能用，只能使用and or = != 这些。上面DISCARDFILE ，就是如果不满足这个load when，则这行数据将会被丢弃，放到你指定的文件中去，如果不需要生成，则NODISCARDFILE。
+        回过来说这个load when ，写法也很多，可以指定字段，也可以指定长度，比如：
+        oad when (1:20) != blanks，就是说，从1到20个字符不能是空白。这个load when官方文档也说的很少，具体的用法，需要自己慢慢摸索。
+        7.  SKIP N 跳过，顾名思义，加载数据时候告诉Oracle跳过多少行，这里挺坑，一个数据文件，跳过没问题，如果有多个数据文件，它只能跳过第一个文件的n行，这不坑爹吗？还有，上面说insert到正式表的可以使用并行，注意！！！！！SKIP，只能在非并行模式下使用！！！！！！！
+        如果需要使用并行DML或者查询，麻烦把这个参数去掉！
+        8.  READSIZE 1048576 这个是指定一次性读取最大值。
+        9.  FIELDS LDRTRIM 加载的时候，每个字段都要trim一下。
+        10. REJECT ROWS WITH ALL NULL FIELDS 就是说如果字段没有数据，则为null。
+        11. 字段规则，很简单，如果是有分隔符的写法，网上很多，这里模拟的数据是没有分隔符的，类似于这样：
+        132334342354656546646454564564564564535242
+        “id” (1,4) char(4) nullif (“id” = blanks) 分别是字段名，截取起始位置，类型和长度.
+        条件是
+        如果为空格则字段为Null。这里是字符串类型的，如果是number类型的字段，条件这么写:
+        “age” (21,23) INTEGER EXTERNAL(3)
+        12. location 里面就是需要加载的文件名字。
+        13. REJECT LIMIT UNLIMITED 默认是有限制的加载，这里设置的是无限制加载。
+        外部表的参数太多了，有一些没用过，也不知道怎么用，有兴趣的，可以去oracle官方文档里面慢慢看，全英文的。
+        http://docs.oracle.com/cd/E11882_01/server.112/e22490/et_params.htm#SUTIL012
+        外部表的效率，还是非常可观的，500W数据，使用sqlldr导入的话，需要大概8-10分钟加载完，如果使用外部，开了并行，1分钟搞定。
+
+    </pre>
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、参考二，外部表详解</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  外部表概述
+        外部表只能在Oracle 9i之后来使用。简单地说，外部表，是指不存在于数据库中的表。通过向Oracle提供描述外部表的元数据，我们可以把一个操作系统文件当成一个只读的数据库表，就像这些数据存储在一个普通数据库表中一样来进行访问。外部表是对数据库表的延伸。
+
+        2.  外部表的特性
+        位于文件系统之中，按一定格式分割，如文本文件或者其他类型的表可以作为外部表。
+        对外部表的访问可以通过SQL语句来完成，而不需要先将外部表中的数据装载进数据库中。
+        外部数据表都是只读的，因此在外部表不能够执行DML操作，也不能创建索引。
+        ANALYZE语句不支持采集外部表的统计数据，应该使用DMBS_STATS包来采集外部表的统计数据。
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、 创建外部表的注意事项</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  需要先建立目录对象。
+        在建立对象的时候，需要小心，Oracle数据库系统不会去确认这个目录是否真的存在。
+        如果在输入这个目录对象的时候，不小心把路径写错了，那可能这个外部表仍然可以正常建立，但是却无法查询到数据。由于建立目录对象时，缺乏这种自我检查的机制，为此在将路径赋予给这个目录对象时，需要特别的注意。
+        另外需要注意的是路径的大小写。在Windows操作系统中，其路径是不区分大小写的。而在Linux操作系统，这个路径需要区分大小写。故在不同的操作系统中，建立目录对象时需要注意这个大小写的差异。
+
+        2.  对于操作系统文件的要求
+        建立外部表时，必须指定操作系统文件所使用的分隔符号。并且该分隔符有且只有一个。创建外部表时，不能含有标题列。如果这个标题信息与外部表的字段类型不一致（如字段内容是number数据类型，而标题信息则是字符型数据，则在查询时就会出错）。如果数据类型恰巧一致的话，这个标题信息Oracle数据库也会当作普通记录来对待。
+        当Oracle数据库系统访问这个操作系统文件的时候，会在这个文件所在的目录自动创建一个日志文件。无论最后是否访问成功，这个日志文件都会如期建立。查看这个日志文件，可以了解数据库访问外部表的频率、是否成功访问等等。默认情况下，该日志在与外部表的相同directory下产生。
+
+        3.  在建立临时表时的相关限制
+        对表中字段的名称存在特殊字符的情况下，必须使用英文状态的下的双引号将该表列名称连接起来。如采用”SalseID#”。
+        对于列名字中特殊符号未采用双引号括起来时，会导致无法正常查询数据。
+        建议不用使用特殊的列标题字符在创建外部表的时候，并没有在数据库中创建表，也不会为外部表分配任何的存储空间。
+        创建外部表只是在数据字典中创建了外部表的元数据，以便对应访问外部表中的数据，而不在数据库中存储外部表的数据。
+        简单地说，数据库存储的只是与外部文件的一种对应关系，如字段与字段的对应关系。而没有存储实际的数据。
+        由于存储实际数据，故无法为外部表创建索引，同时在数据使用DML时也不支持对外部表的插入、更新、删除等操作。
+
+        4.  删除外部表或者目录对象
+        一般情况下，先删除外部表，然后再删除目录对象，如果目录对象中有多个表，应删除所有表之后再删除目录对象。
+        如果在未删除外部表的情况下，强制删除了目录，在查询到被删除的外部表时，将收到"对象不存在"的错误信息。
+        查询dba_external_locations来获得当前所有的目录对象以及相关的外部表，同时会给出这些外部表所对应的操作系统文件的名字。
+        如果只是在数据库层面上删除外部表，并不会自动删除操作系统上的外部表文件。
+
+        5.  对于操作系统平台的限制
+        不同的操作系统对于外部表有不同的解释和显示方式
+        如在Linux操作系统中创建的文件是分号分隔且每行一条记录，但该文件在Windows操作系统上打开则并非如此。
+        建议避免不同操作系统以及不同字符集所带来的影响
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、 外部表语法</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  外部表的创建语法
+        <code class="language-diff">
+            createtabletable_name
+            (col1 datatype1,col2 datatype2,col3 datatype3)
+            organization exteneral
+            (.....)
+        </code>
+        详细语法可参见笔者的另两篇文章：
+        <a target="_blank" href="http://czmmiao.iteye.com/blog/1268453">Oracle外部表ORACLE_DATAPUMP类型的创建语法详解</a>
+        <a href="http://czmmiao.iteye.com/blog/1268157" target="_blank">Oracle外部表ORACLE_LOADER类型的创建语法详解</a>
+
+        2.  由查询结果集，使用Oracle_datapump来填充数据来生成外部表
+        (1)创建系统目录以及Oracle数据目录名来建立对应关系，同时授予权限
+        <code class="language-diff">
+            [oracle@oradb ~]$ mkdir-p/home/oracle/external_tb/data
+            SQL> create or replace directory dat_dir as '/home/oracle/external_tb/data/';
+            SQL> alter user scott account unlock identified by scott;
+        </code>
+
+        (2)创建外部表
+        <code class="language-diff">
+            SQL>create table ex_tb1 --创建外部表
+            2 (ename,job,sal,dname) --表列描述，注意未指定数据类型
+            3 organization external
+            4 (
+            5 type oracle_datapump --使用datapump将查询结果填充到外部表,注,此处由select生成，
+            故不支持
+            oracle_loader
+            6 default directory dat_dir --指定外部表的存放目录
+            7 location('tb1.exp，tb2.exp'))
+            8 parallel 2 --按并行方式来填充，这里的并行度必须与生成的文件数量一致才能起作用，详
+            细算法可
+            9 as 以参看http://czmmiao.iteye.com/blog/1268453
+            10 select ename,job,sal,dname --填充使用的原始数据
+            11 from emp join dept
+            12 on emp.deptno=dept.deptno
+        </code>
+
+        (3)验证外部表
+        <code class="language-diff">
+            SQL> select * from ex_tb1;
+            ENAME JOB SAL DNAME
+            ---------- --------- ---------- --------------
+            SMITH CLERK 800 RESEARCH
+            ALLEN SALESMAN 1600 SALES
+            ..................................
+            MILLER CLERK 1300 ACCOUNTING
+        </code>
+        对于使用上述方式创建的外部表可以将其复制到其他路径作为外部表的原始数据来生成新的外部表，用于转移数据。
+
+        3.  使用SQLLDR提供外部表的定义并创建外部表
+        关于SQL*Loader的使用请参照：SQL*Loader使用方法
+        我们使用SQL*Loader和下面的这个控制文件来生成外部表的定义
+        <code class="language-diff">
+            $ cat demo1.ctl
+            LOADDATA
+            INFILE*
+            INTOTABLEDEPT_NEW
+            FIELDS TERMINATEDBY','
+            (DEPTNO,DNAME,LOC)
+            BEGINDATA
+            10,Sales,Virginia
+            20,Accounting,Virginia
+            30,Consulting,Virginia
+            40,Finance,Virginia
+        </code>
+        赋予相应的权限和创建表:
+        <code class="language-diff">
+            SQL>grant create any directory to scott;
+            SQL>grant drop any directory to scott;
+            SQL>create table dept_new
+            2 (deptno number,dname varchar2(20),loc varchar2(25));
+        </code>
+        执行sqlldr命令
+        <code class="language-diff">
+            $ sqlldr scott/tiger control=demo1.ctl external_table=generate_only
+        </code>
+        EXTERNAL_TABLE参数有以下三个值：
+        NOT_USED：默认值。
+        EXECUTE：这个值说明SQLLDR不会生成并执行一个SQLINSERT语句；而是会创建一个外部表，且使用一个批量SQL语句来加载。
+        GENERATE_ONLY：使SQLLDR并不具体加载任何数据，而只是会生成所执行的SQL DDL和DML语句，并放到它创建的日志文件中。
+        注：DIRECT=TRUE覆盖EXTENAL_TABLE=GENERATE_ONLY。如果指定了DIRECT=TRUE，则会加载数据，而不会生成外部表
+        <code class="language-diff">
+            $ cat demo1.log --查看sqlldr产生的日志文件
+            SQL*Loader: Release 10.2.0.1.0 - Production on Sun Nov 20 17:45:36 2011
+            Copyright (c) 1982, 2005, Oracle. All rights reserved.
+            Control File: demo1.ctl
+            Data File: demo1.ctl
+            Bad File: demo1.bad
+            Discard File: none specified
+            (Allow all discards)
+            Number to load: ALL
+            Number to skip: 0
+            Errors allowed: 50
+            Continuation: none specified
+            Path used: External Table
+            Table DEPT_NEW, loaded from every logical record.
+            Insert option in effect for this table: INSERT
+            Column Name Position Len Term Encl Datatype
+            ------------------------------ ---------- ----- ---- ---- ---------------------
+            DEPTNO FIRST * , CHARACTER
+            DNAME NEXT * , CHARACTER
+            LOC NEXT * , CHARACTER
+            CREATE DIRECTORY statements needed for files
+            ------------------------------------------------------------------------
+        </code>
+        <code class="language-diff">
+            CREATE DIRECTORY SYS_SQLLDR_XT_TMPDIR_00000 AS '/home/oracle' --创建目录对象的语句
+        </code>
+        CREATE TABLE statement for external table:
+        <code class="language-diff">
+            CREATE TABLE "SYS_SQLLDR_X_EXT_DEPT_NEW"
+            (
+            "DEPTNO" NUMBER(2),
+            "DNAME" VARCHAR2(14),
+            "LOC" VARCHAR2(13)
+            )
+            ORGANIZATION external
+            (
+            TYPE oracle_loader --指定外部表的访问方式，9i不支持oracle_datapump
+            DEFAULT DIRECTORY SYS_SQLLDR_XT_TMPDIR_00000
+            ACCESS PARAMETERS --配置外部表参数
+            (
+            RECORDS DELIMITED BY NEWLINE CHARACTERSET US7ASCII --记录以换行为结束
+            BADFILE 'SYS_SQLLDR_XT_TMPDIR_00000':'demo1.bad' --存放处理失败的记录文件描述
+            LOGFILE 'demo1.log_xt' --日志文件
+            READSIZE 1048576 --Oracle读取输入数据文件所用的默认缓冲区,此处为MB,如专用模式则
+            从PGA分配,如共享模式
+            则从SGA分配
+            SKIP 6 --跳过的记录数，因为我们使用了控制文件，所以前面的控制信息需要跳过
+            FIELDS TERMINATED BY "," LDRTRIM --描述字段的终止符
+            REJECT ROWS WITH ALL NULL FIELDS --所有为空值的行被跳过并且记录到bad file.
+            ( --下面是描述外部文件各个列的定义
+            "DEPTNO" CHAR(255)
+            TERMINATED BY ",",
+            "DNAME" CHAR(255)
+            TERMINATED BY ",",
+            "LOC" CHAR(255)
+            TERMINATED BY ","
+            ))
+            location
+            (
+            'demo1.ctl' --描述外部文件的文件名
+            )
+            )REJECT LIMIT UNLIMITED --描述允许的错误数，此处为无限制
+        </code>
+        INSERT statements used to load internal tables:
+        <code class="language-diff">
+            INSERT /*+ append */ INTO DEPT_NEW
+            (
+            DEPTNO,
+            DNAME,
+            LOC
+            )
+            SELECT
+            "DEPTNO",
+            "DNAME",
+            "LOC"
+            FROM "SYS_SQLLDR_X_EXT_DEPT_NEW"
+        </code>
+        statements to cleanup objects created by previous statements:
+        <code class="language-diff">
+            DROP TABLE "SYS_SQLLDR_X_EXT_DEPT_NEW" --用于删除目录和外部表的定义信息
+            DROP DIRECTORY SYS_SQLLDR_XT_TMPDIR_00000
+            Run began on Sun Nov 20 17:45:36 2011
+            Run ended on Sun Nov 20 17:45:37 2011
+            Elapsed time was: 00:00:00.25
+            CPU time was: 00:00:00.05
+        </code>
+
+        4.  使用平面文件定义并生成外部表
+        (4.1)平面文件数据
+        1.dat：
+        7369,SMITH,CLERK,7902,17-DEC-80,100,0,20
+        7499,ALLEN,SALESMAN,7698,20-FEB-81,250,0,30
+        7521,WARD,SALESMAN,7698,22-FEB-81,450,0,30
+        7566,JONES,MANAGER,7839,02-APR-81,1150,0,20
+
+        2.dat：
+        7654,MARTIN,SALESMAN,7698,28-SEP-81,1250,0,30
+        7698,BLAKE,MANAGER,7839,01-MAY-81,1550,0,30
+        7934,MILLER,CLERK,7782,23-JAN-82,3500,0,10
+
+        <code class="language-diff">
+            $ pwd
+            /home/oracle/external_tb/data
+            $ ls
+            1.dat 2.dat dat_dir:tb_test.exp EMP_NEW_3198.log EMP_NEW_3413.log EX_TB1_3021.log
+        </code>
+
+        验证外部表
+        <code class="language-diff">
+            SQL> select * from emp_new;
+            EMP_ID ENAME JOB MGR_ID HIREDATE SALARY COMM DEPT_ID
+            ---------- --------------- ------------ ---------- --------- ---------- ---------- ----------
+            7654 MARTIN SALESMAN 7698 28-SEP-81 1250 0 30
+        </code>
+        外部表不能执行DML
+        <code class="language-diff">
+            SQL> delete from emp_new;
+            delete from emp_new
+            *
+            ERROR at line 1:
+            ORA-30657: operation not supported on external organized table
+        </code>
+    </pre>
+
+    <b><a name='header-n5' class='md-header-anchor '></a>5、参考</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        外部表的含义：
+        外部表是指不在数据库中的表，如操作系统上的一个按一定格式分割的文本文件或者其他类型的表。这个外部表对于Oracle数据库来说，就好像是一张视图， 在数据库中可以像视图一样进行查询等操作。这个视图允许用户在外部数据上运行任何的SQL语句，而不需要先将外部表中的数据装载进数据库中。不过需要注意是，外部数据表都是只读的，不能够更改。
+
+        外部表使用限制：（来源于http://www.examda.com/oracle/zonghe/20101031/141746967.html）
+        需要先建立目录对象：在创建外部表之前先要创建一个这个外部表要指向的文件所在目录路径的目录；
+        对于操作系统文件的限制：其实外部表简单的说，就是跟操作系统上固定格式的文件或者表格的一个连接。为了Oracle数据库系统能够正确链接外部表，对于外部表的格式就提出 了比较严格的要求。如果不符合这些要求的话，数据库系统就无法正确读取外部表中的数据。如对于分隔符有比较严格的要求。虽然在外部文件或者表格中，可以使 用多种分隔符，如英文状态下的逗号或者分号等等。但是有一个限制，即在同一个操作系统文件中只能够使用一个分割符号，要么逗号或者分号等等。因为在建立外 部表时，必须指定操作系统文件所使用的分隔符号。如果有多种分隔符号的话，数据库系统将无法识别。
+
+        另外在外部表格中，不能够带有标题信息。如现在有一张表格，以逗号分隔。而在其第一列数据中有各个列的标题信息。而数据库系统在连接这个表的时 候，会将这些标题信息当作普通的纪录来对待。即会将这些信息也显示在外部表中。为此如果这个标题信息与外部表的字段类型不一致（如字段内容是number 数据类型，而标题信息则是字符型数据，则在查询时就会出错）。如果数据类型恰巧一致的话，这个标题信息Oracle数据库也会当作普通记录来对待。如在建 立外部表的时候，最好确认一下操作系统文件中是否包含标题信息。如果有的话，需要删除。否则的话，可能会出错。
+        最后需要说明的是，当Oracle数据库系统访问这个操作系统文件的时候，会在这个文件所在的目录自动创建一个日志文件。无论最后是否访问成功，这个日志文件都会如期建立。查看这个日志文件，可以了解数据库访问外部表的频率、是否成功访问等等。
+
+        在建立临时表时的限制：
+        在建立临时表时，也会有不少的限制。如表中字段的名称有一些特殊字符的话，那么这个表列的名称必须使用英文状态的下的双引号连接起来。如采用 “studentno#”。
+        遇到列名字中有特殊符号时，如果不采用双引号括起来，虽然临时表可以正常创建，但是在采用的时候会出现错误，无法正常查询数 据。如数据库系统可能会提醒：“数据库插件错误”等信息。为此最好在创建临时表时不要在列名中使用一些特殊的字符。其实不光光是建立临时表有这种限制，建 立其他标或者试图都有类似的限制。
+        其次，这个外部表毕竟与内部表不同。在创建外部表的时候，其实在数据库中跟本没有创建表。也就是说，不会为外部表分配任何的存储空间。创建外部 表只是在数据字典中创建了外部表的元数据，以便对应访问外部表中的数据，而不在数据库中存储外部表的数据。简单地说，数据库存储的只是与外部文件的一种对 应关系，如字段与字段的对应关系。而没有存储实际的数据。为此在表的操作与管理上，就会受到很大的限制。如在外部表上，是不能够为表创建索引。因为创建索 引就意味着要存在对应的索引记录。而外部表其实在数据库不会有存储。故在外部中是无法建立索引的。如果硬要建立的话，则系统会提示“操作在外部组织表上不 受支持”的错误提示。同样的道理，在数据库中也不能够更新外部表中的数据，如插入记录、删除记录或者更新信息等等。简而言之，这个外部表对于数据库来说， 是只读的，不可更新。
+
+        删除外部表或者目录对象：
+        当外部表不用时，需要及时删除外部表或者与之对应的目录对象。不过在删除这些内容时会有一些限制。这些限制主要是管理上的限制，而不是技术上的限 制。也就是说，Oracle数据库系统没有对其进行强制的限制。但是如果数据库管理员不遵守这些限制的话，可能会出现一些问题。
+        如要先删除外部表，然后再 删除目录对象。有时候一个目录对象中可能会包含多个外部表。此时必须要确认所有的外部表都不用了，都已经删除干净了，然后才能够删除目录对象。
+        在创建外部 表时，操作系统会判断一下，与之对应的目录对象是否已经创建。但是在删除对象时，系统不会去判断跟这个目录对象关联的外部表是否已经全部删除。如果目录对 象删除了，但是还有外部表存在。此时查询这个外部表的时候，系统就会提示“对象不存在”的错误信息。所以这个删除目录对象时，数据库系统缺乏一种检查，此 时只有数据库管理员在删除目录对象时，先手工确认一下这个目录对象是否存在其他的外部表。要了解这个信息，则可以通过查询dba_external_locations。通过查询这张表，系统会反映当前所有的目录对象以及相关的外部 表，还会查询出这些外部表所对应的操作系统文件的名字。先查询这张表格，确定要删除的对象没有其他关联的外部表时，再进行删除。否则的话，需要先确认其他 外部表的可用性。免得因为误删除而导致外部表无法正常使用。
+
+        对于操作系统平台的限制：
+        虽然Oracle数据库是支持跨平台的数据库系统，即同时支持Windows或者Linux等多种操作系统。
+        但是在使用外部表的时候需要注意一个问题，即 在两个操作系统上文本文件的存储方式是不同的。
+        如在Windows操作系统上利用txt文件建立了一个以逗号作为分隔符的文件，其一行一条记录。但是在 Linux操作系统上打开的话，在其就可能使在同一行中显示了。
+        故为了数据库系统能够正确识别操作系统文件，最好这个操作系统文件能够和Oracle数据 库系统部署在同一台服务器上或者同一种操作系统上。
+        否则的话，很可能因为格式的冲突，而导致数据库系统无法正确读取外部文件中的数据。
+    </pre>
+
+    <b><a name='header-n6' class='md-header-anchor '></a>6、外部表案例</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        --创建目录
+        create or replace directory dir_bdump as 'D:\oracle\product\10.2.0\admin\fgisdb\bdump';
+        --查询目录
+        select * from dba_directories;
+        --查询外部表的目录
+        select * from dba_external_locations;
+        --查询外部表
+        select * from dba_external_tables;
+        --创建外部表
+        create table alert_fgisdb ( text varchar2(400) )
+        organization external (
+        type oracle_loader
+        default directory bdump
+        access parameters (
+        records delimited by newline
+        nobadfile
+        nodiscardfile
+        nologfile
+        )
+        location('alert_fgisdb.log')
+        )
+        reject limit unlimited
+        --通过外部表查找数据库的运行信息
+        select to_char(last_time,'dd-mon-yyyy hh24:mi') shutdown
+        round((start_time-last_time)*24*60,2) mins_down,
+        round((last_time-lag(start_time)over(order by r)),2)days_up,
+        case when (lead(r) over (order by r) is null) --lead函数用于取出后N行数据
+        then round((sysdate-start_time),2)
+        end days_still_up
+        from (
+        select r,
+        to_date(last_time,'Dy Mon DD HH24:MI:SS YYYY') last_time,
+        to_date(start_time,'Dy Mon DD HH24:MI:SS YYYY') start_time
+        from (
+        select r,
+        text,
+        lag(text,1)over(order by r) start_time,--lag函数用于取出前n行数据
+        lag(text,2)over(order by r) last_time
+        from (
+        select rownum r,text
+        from alert_fgisdb
+        where text like'____:_:_20_'
+        or text like'starting oracle instance%'
+        ))
+        where text like 'starting oracle instance%'
+        )
+
+        lag函数语法：lag（字段，n）
+        lead函数语法与lag一样。
+
+        --更改拒绝限制
+        ALTER TABLE alert_fgisdb LIMIT 100;
+        --更改默认目录说明
+        ALTER TABLE alert_fgisdb DIRECTORY DEFAULT DIRECTORY bdump;
+        --修改访问参数,如分隔符由","变为"|"
+        ALTER TABLE alert_fgisdb PARAMETERS ACCESS PARAMETERS (FIELDS TERMINATED
+        BY '|');
+        --修改文件位置:
+        ALTER TABLE alert_fgisdb LOCATION('TC_REG_MNGREGIONCODE.txt');
+        drop table alert_fgisdb;
+        --删除目录
+        drop DIRECTORY bdump;
+        --查询外部表（找出alert中含有ora的所有记录）
+        select * from alert_fgisdb where text like 'ORA-%';
+
+        使用外部表卸载数据
+        --准备一个简单的select语句向这个目录中卸载数据
+        create table all_objects_unload
+        organization external
+        (type oracle_datapump
+        default directory dir_dp
+        location('allobjects.dat')) --allobjects.dat文件在dir_dp目录下
+        as select * from all_objects
+
+        --将allobjects.dat文件拷到要加载该表的机器，使用如下语句抽取DDL重建这个表
+        select dbms_metadata.get_ddl('TABLE','ALL_OBJECTS_UNLOAD') from dual;
+        --抽取后的DDL语句如下：
+        CREATE TABLE "GWM"."ALL_OBJECTS_UNLOAD"
+        ( "OWNER" VARCHAR2(30),
+        "OBJECT_NAME" VARCHAR2(30),
+        "SUBOBJECT_NAME" VARCHAR2(30),
+        "OBJECT_ID" NUMBER,
+        "DATA_OBJECT_ID" NUMBER,
+        "OBJECT_TYPE" VARCHAR2(19),
+        "CREATED" DATE,
+        "LAST_DDL_TIME" DATE,
+        "TIMESTAMP" VARCHAR2(19),
+        "STATUS" VARCHAR2(7),
+        "TEMPORARY" VARCHAR2(1),
+        "GENERATED" VARCHAR2(1),
+        "SECONDARY" VARCHAR2(1)
+        )
+        ORGANIZATION EXTERNAL
+        ( TYPE ORACLE_DATAPUMP
+        DEFAULT DIRECTORY "DIR_DP"
+        LOCATION
+        ( 'allobjects.dat'
+        ))
+
+        --重建该表后，执行如下语句就可以加载这个表的信息
+        insert /*+ append */ into some_table select * from all_objects_unload;
+    </pre>
+</div>
+</body>
+</html>
+

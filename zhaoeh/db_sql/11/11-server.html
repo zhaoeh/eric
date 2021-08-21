@@ -1,0 +1,937 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>Oracle服务器、Oracle客户端、PLSQL Developer.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor {
+        width: auto;
+        border: 0px;
+        background: rgb(119, 238, 119);
+        z-index: 1;
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    div.hr:focus {
+        cursor: none;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    @media screen and (max-width: 48em) {
+
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    .md-inline-math .MathJax_SVG .noError {
+        display: none !important;
+    }
+
+    .mathjax-block .MathJax_SVG_Display {
+        text-align: center;
+        margin: 1em 0em;
+        position: relative;
+        text-indent: 0px;
+        max-width: none;
+        max-height: none;
+        min-height: 0px;
+        min-width: 100%;
+        width: auto;
+        display: block !important;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+        text-decoration: none;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    #write pre.md-meta-block {
+        padding: 1rem;
+        font-size: 85%;
+        line-height: 1.45;
+        background-color: rgb(247, 247, 247);
+        border: 0px;
+        border-radius: 3px;
+        color: rgb(119, 119, 119);
+        margin-top: 0px !important;
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+    </style>
+
+    <link rel="stylesheet" href="../../../highlight/styles/default.css">
+    <script src="../../../highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>Oracle服务器、Oracle客户端、PLSQL Developer</b>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、区分三个软件系统</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="#dc143c">关键字：138.138.2.240:1521/esbdb</font>
+        区分Oracle数据库中的三个软件系统:
+        Oracle服务器：Oracle 11g，真正需要安装的Oracle Server。
+        Oracle客户端：Oracle的客户端。
+        PL/SQL Developer第三方工具：用于连接Oracle Server，并进行各种SQL操作的第三方工具。
+    </pre>
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、安装Oracle服务器</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        参考Window系统下安装Oracle服务器和Linux系统下安装Oracle服务器的文档说明；
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、 安装Oracle客户端</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  说明
+        不论是本机Windows系统下安装的Oracle服务器还是远程或者虚拟机的Linux系统下安装的Oracle服务器，只要本机想要访问Oracle服务器，就必须安装Oracle客户端。
+        2.  找到本地Oracle客户端的安装程序，双击进行安装
+        <img src="11-oracle-client.png">
+        3.  一路“下一步”进行安装，选择本地安装目录
+        <img src="11-oracle-client1.png">
+        4.  安装好后如下图所示
+        <img src="11-oracle-client-done.png">
+        5.  修改客户端网络服务配置文件
+        目录为：D:\soft\application\OracleClient\instantclient_11_2\NETWORK\ADMIN
+        进入NETWORK/ADMIN目录下，找到文件tnsnames.ora打开并修改：
+        <code class="language-diff">
+            该文件是本地网络服务配置文件，一般用来配置客户端的，配置后此客户端就可以访问oracle服务器端。
+            总结：oracle服务器端需要配置listen这个监听文件，客户端需要配置tnsnames这个本地网络文件。
+            当然，不论是客户端还是服务器端都会存在这两个文件，就看客户端或者服务器端是要充当什么角色了，有时候客户端也能充当服务器端就需要配置listen，有时候服务器端也想充当客户端去访问其他的oracle服务器，那么也需要配置tnsnames这个文件
+        </code>
+        <img src="11-oracle-client-tnsnames.png">
+
+        修改后的内容如下：
+        <code class="language-diff">
+            zhao = //zhao是为下列数据库实例esbkf1起的一个别名，用PL/SQL
+             (DESCRIPTION = //登录时访问
+             (ADDRESS = (PROTOCOL = TCP)(HOST = 10.17.1.92)(PORT = 1521)) //数据库服务器的Ip
+             (CONNECT_DATA =
+             (SERVER = DEDICATED)
+             (SERVICE_NAME = esbkf1) //esbkf1是Oracle Server端创建的数据库实例名
+             )
+             )
+        </code>
+        上述文件节点可以加多个数据库实例映射名，所以可以配置多个节点映射。
+
+        6.  修改完成后，保存该文件并关闭
+        7.  可能出现ORA-121541：TNS：无法解析指定的连接标识符 这个错误
+        当本文档的所有工作都做完后，使用PLSQL工具进行Oracle数据库的连接，出现上述错误.
+        <font color="#dc143c">解决办法，将本地客户端的网络配置文件，即上一步的tnsnames.ora文件中，所有数据库监听实例之间的首行都不要存在空格，多个监听节点之间不能存在空格，不能有空行存在，结构必须规范整齐即可解决上述问题。</font>
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、 安装PL/SQL Developer</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  说明
+        Oracle服务器软件和Oracle客户端软件是必须要安装的，但是要想友好的操作Oracle服务器端的各种操作，那么就需要安装PL/SQL第三方软件了，否则Oracle将没有一个友好的视图供用户操作，用户只能通过DOS或者XShell等命令行控制台去登陆Oracle服务器的sqlplus命令窗口去执行各种操作，这种方式很不友好。所以需要单独安装第三方的PLSQL工具。
+
+        2.  找到本地PL/SQL Developer的安装程序，双击进行安装
+        第一个是PL/SQL安装程序，第二个是中文包，分别双击安装，安装在同一个目录下：
+        <img src="11-plsqldeve.png">
+
+        3.  一路“下一步”进行安装，选择本地安装目录
+        <img src="11-plsqldeve1.png">
+
+        4.  安装好后如下图所示
+        <img src="11-plsqldeve-result.png">
+
+        5.  配置环境变量TNS_ADMIN
+        变量名：TNS_ADMIN
+        变量值：D:\soft\OracleClient\instantclient_11_2\NETWORK\ADMIN
+        <font color="#dc143c">注意：变量值是指向tnsnames.ora文件的根目录</font>
+        <img src="11-plsql-env.png">
+
+        6.  配置环境变量path
+        <font color="#dc143c">修改path，追加OracleClient的安装根目录(oci.dll文件所在位置的根目录)</font>
+        <img src="11-plsql-path.png">
+
+        7.  配置中文环境变量
+        变量名：NLS_LANG
+        变量值：AMERICAN_AMERICA.AL32UTF8
+        或者：SIMPLIFIED CHINESE_CHINA.ZHS16GBK
+        上面的环境变量应该和oracle服务器的环境变量保持一致：
+        <img src="11-plsql-chinese.png">
+        <img src="11-nlslang.png">
+        <img src="11-nlslang-value.png">
+
+        8.  双击plsqldev.exe应用程序打开pl/sql
+    </pre>
+
+    <b><a name='header-n5' class='md-header-anchor '></a>5、 PLSQL基本操作</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  PLSQL介绍
+        PLSQL Developer是一个专门为Oracle数据库开发存储过程单元的一个集成环境，即针对于Oracle数据库的一个IDE。
+
+        2.  打开pl/sql应用程序连接Oracle服务器
+        Username：esbdata //安装Oracle11g Server时设置的用户名
+        Password：esbdata //安装Oracle11g Server时设置的密码【用于登陆Oracle服务器】
+        Database：zhao //安装Oracle客户端是自己配置的数据库实例别名
+        <font color="#dc143c">下拉后会出现OracleClient中tnsnames.ora文件中配置的各个数据库实例别名</font>
+        <img src="11-plsql-logon.png">
+
+        另一种不用配置网络服务文件tnsnames.ora的登录方式:
+        安装PLSQL后，可以不用配置本地客户端网络服务文件，即tnsnames.ora文件，如果不配置的话，则数据库选项下拉中没有配置的数据库实例的别名，这是想要连接按照下述方式连接：
+        138.138.2.240:1521/esbdb
+        ip:1521/数据库实例名
+        <img src="11-logon2.png">
+        <img src="11-logon3.png">
+
+        3.  用户名/密码保存功能设置
+        进入PL/SQL后
+
+        4.  查看当前连接oracle服务器的机器
+        选择工具-会话，可以看到当前连接该数据库服务器的所有客户端，包括连接的数据库用户名和连接的机器名。
+        <img src="11-showserver.png">
+
+        5.  切换数据库连接
+        点击下图的钥匙，则会重开一个登陆窗口。
+        <img src="11-qiehuan-url.png">
+        也可以选择登录历史记录中的某个连接，先断开当前连接，再选择其他连接右键选择连接即可：
+        <img src="11-qiehuan-url2.png">
+    </pre>
+
+    <b><a name='header-n6' class='md-header-anchor '></a>6、 PLSQL界面布局分析</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  左侧的页面布局主要有三个对象：1链接、对象、窗口列表。
+        可以点击最大化、最小化、关闭按钮进行指定对象的操作
+        <img src="11-plsql-page1.png">
+
+        2.  链接：当前用户和历史用户链接
+        <img src="11-current-url.png">
+
+        3.  对象：当前连接的数据库实例下的所有结构（视图、文件、索引、表等）
+        <img src="11-instance.png">
+
+        4.  窗口列表
+    </pre>
+
+    <b><a name='header-n7' class='md-header-anchor '></a>7、 新建SQL可视化控制台窗口，编写SQL语句并执行</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  新建SQL可视化控制台窗口
+        <img src="11-do-1.png">
+
+        2.  编写SQL语句
+        <img src="11-do-2.png">
+
+        3.  执行SQL语句【选中要执行的语句，再执行，否则将执行所有SQL语句】
+        要想执行多条语句，则每一个sql语句需要使用;隔开
+        <font color="#dc143c">执行按钮的快捷键是F8</font>
+        <img src="11-run.png">
+        <font color="#dc143c">显示执行结果，点击下方绿色按钮，显示所有的执行结果：</font>
+        <img src="11-do-3.png">
+
+        4.  PLSQL执行完sql语句后进行事务提交
+        <img src="11-do-submit.png">
+
+        5.  PLSQL中查看数据库表结构
+        找到对象Object下面的Tables，选择某一张表，右键选择查看，如下图，可以看到该表的结构信息：
+        <img src="11-show-table.png">
+        或者在写SQL语句的窗口里，按下ctrl键，然后点击某张存在的表，也会进入到上述查看表结构的视图中。
+    </pre>
+
+    <b><a name='header-n8' class='md-header-anchor '></a>8、 新建SQL可视化控制台窗口，编写SQL语句并执行</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  说明
+        <font color="#dc143c">*.dmp文件对于Oracle来说就是备份文件，Oracle中所有的表、视图、索引、过程、函数、触发器、包等块程序都能被导出为*.dmp文件，*.dmp文件主要就是用来备份数据库中的数据的，必要时倒入*.dmp文件可以用来恢复数据库；Oracle在sqlplus命令行控制台支持exp命令去导出为*.dmp，支持imp命令去导入*.dmp文件。</font>
+        <img src="11-import.png">
+
+        2.  可执行文件
+        选择imp.exe命令文件：D:\soft\oracle11g\app\zhaoeh\product\11.2.0\dbhome_1\bin\imp.exe
+        导入文件选择需要导入的dmp文件：C:\Users\zhaoeh\Desktop\esb2_trans_log_his.dmp
+        <img src="11-import-dump.png">
+        输入后点击右下方的导入按钮即可，等待dos窗口响应，响应自动退出
+        <img src="11-import-result.png">
+
+        3.  查看
+        导入dmp文件的本质就是向库里面导入了一张表,在哪个用户下导入的，该dmp文件就会导入了哪个用户下的表中。
+        注意：在创建好数据库后，想要执行导入文件，必须首先创建表空间、用户和密码等。
+
+        比如上面导入的dmp文件是esb2_trans_log_his.dmp，则esbdata这个用户下的tables中就会存在一张名叫esb2_trans_log_his的表，如下图：
+        <img src="11-show-import.png">
+        <font color="#dc143c">那么此时查看导入的dmp文件中的内容就是在查看这张表而已</font>
+    </pre>
+
+    <b><a name='header-n9' class='md-header-anchor '></a>9、 PLSQL执行pdc文件</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  oracle中，一般是通过*.pdc文件去调用*.sql文件去执行的。
+        文件->打开->Command File
+        <img src="11-pdc.png">
+
+        2.  选择自己需要执行的*.pdc文件
+        <img src="11-select-pdc.png">
+    </pre>
+
+    <b><a name='header-n10' class='md-header-anchor '></a>10、 PLSQL导出查询结果为文件</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  PLSQL支持任何形式的查询语句结果导出。
+        <font color="#dc143c">*执行查询语句(任何查询语句都可以，包括带where条件的查询)</font>
+        <img src="11-export.png">
+
+        2.  查询结果可以保存成某种文件，如*.csv文件，*.tsv文件，*.sql文件等
+        <img src="11-show-export.png">
+
+        3.  保存后的*.sql文件中的内容如下：
+        <img src="11-show-export-result.png">
+        <font color="#dc143c">select 语句的查询结果导出来的sql语句全部是insert into语句，就是为了方便形成完整的sql语句以执行再次插入！</font>
+    </pre>
+
+    <b><a name='header-n11' class='md-header-anchor '></a>11、 PLSQL执行计划</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        输入指定sql。按下F5键，则显示当前sql的执行计划，即耗时，大小等。
+    </pre>
+</div>
+</body>
+</html>
+

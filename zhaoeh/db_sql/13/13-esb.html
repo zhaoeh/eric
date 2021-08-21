@@ -1,0 +1,955 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>ESB相关表及表操作.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor {
+        width: auto;
+        border: 0px;
+        background: rgb(119, 238, 119);
+        z-index: 1;
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    div.hr:focus {
+        cursor: none;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    @media screen and (max-width: 48em) {
+
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    .md-inline-math .MathJax_SVG .noError {
+        display: none !important;
+    }
+
+    .mathjax-block .MathJax_SVG_Display {
+        text-align: center;
+        margin: 1em 0em;
+        position: relative;
+        text-indent: 0px;
+        max-width: none;
+        max-height: none;
+        min-height: 0px;
+        min-width: 100%;
+        width: auto;
+        display: block !important;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+        text-decoration: none;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    #write pre.md-meta-block {
+        padding: 1rem;
+        font-size: 85%;
+        line-height: 1.45;
+        background-color: rgb(247, 247, 247);
+        border: 0px;
+        border-radius: 3px;
+        color: rgb(119, 119, 119);
+        margin-top: 0px !important;
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+    </style>
+
+    <link rel="stylesheet" href="../../../highlight/styles/default.css">
+    <script src="../../../highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>ESB相关表及表操作</b>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、表空间相关操作</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  流水表空间10个轮番用来记录流水
+        <img src="13-esb1.png">
+
+        2.  查看表空间使用情况
+        <code class="language-diff">
+            --查看流水表空间使用
+            select
+            b.file_name 物理文件名,
+            b.tablespace_name 表空间,
+            b.bytes/1024/1024 大小M,  --注意M和汉字之间不要存在空格
+            (b.bytes-sum(nvl(a.bytes,0)))/1024/1024 已使用M,
+            substr((b.bytes-sum(nvl(a.bytes,0)))/(b.bytes)*100,1,5) 利用率
+            from dba_free_space a,dba_data_files b
+            where a.file_id=b.file_id
+            group by b.tablespace_name,b.file_name,b.bytes
+            order by b.tablespace_name
+        </code>
+
+        3.  结果如下：
+        <img src="13-esb2.png">
+
+        4.  流水表空间切换原理
+        oracle在建库后即为ESB中的journal创建了10个表空间，主要用这10个表空间记录交易时产生的大量流水信息。
+        切换原理：Oracle不会智能地定时对表空间进行切换。Oracle还是通过执行存储过程或者SQL语句，人为的设定切换频率。
+        首先人为设定记录流水先从ESBTRAN01这个表空间开始记录，然后执行切换的SQL，比如说SQL设定每天的0点自动将表空间指向下一个，即ESBTRAN02表空间。
+        具体切换原理如下：
+        <img src="13-esb3.png">
+
+        5.  查询表空间路径，修改表空间文件大小【使用sys系统用户】
+        一般记录流水的errorlog总会报数据库错误，这个原因是因为数据库中存储流水表的表空间大小设置的比较小了，流水已经记满了insert不进去了就会报错！
+        解决办法：
+        修改记录流水的十个表空间大小，统一改成6GB：
+        修改表空间文件1~10即'ESBTRANS01'到'ESBTRANS10'
+        先在表空间系统表dba_data_files中查询指定tablespace_name对应的表空间文件*.dbf
+        <code class="language-diff">
+            select * from dba_data_files where tablespace_name = 'ESBTRANS01';
+        </code>
+        通过下述语句修改数据文件的大小：
+        <code class="language-diff">
+            alter database datafile '/home/oracle/app/oradata/esbkf1/esbtrans01.dbf' resize 6144M;
+        </code>
+
+        6.  ESB中所使用的所有表空间及每个表空间的含义
+        表空间总共有17个，其中有10个流水表空间
+        <img src="13-esb4.png">
+    </pre>
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、ESB相关表总结</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <code class="language-diff">
+            select * from esbdata.baseservices;--基础服务参数表
+            select * from esbdata.bindmap;--服务协议绑定关系表
+            select * from esbdata.bindtypedefine;--协议类型定义表
+            select * from esbdata.bussservices;--业务服务参数表
+            select * from esbdata.clientlocation;--节点信息表设计
+            select * from esbdata.configurations;--基础节点参数表
+            select * from esbdata.dataadapter;--服务，渠道与适配器流程关联表
+            select * from esbdata.dataadapter_param;--数据适配流程参数表，用来insert一个新的适配流程
+            select * from esbdata.deployments;--服务组件部署信息表
+            select * from esbdata.deployunits;--UDDI部署单元表(无数据)
+            select * from esbdata.esb2_fault_prov;--故障维护配置表
+            select * from esbdata.esb2_client_secr;--客户端安全认证配置表(无数据)
+            select * from esbdata.esb2_flow_ctrl;--流控令牌配置表，就是
+            select * from esbdata.esb_sys_map;--流控服务系统与服务id配置表（就是Console页面配置令牌时需要映射的服务系统和服务id的那张表）
+            select * from esbdata.esb2_in_flow_ctrl;--本地流控配置表，一般不使用
+            select * from esb_flow_ctrl;--服务器流控配置表（就是console页面令牌配置时操作的
+            select * from esb_flow_ctrl;--服务器流控配置表（就是console页面令牌配置时操作的表）
+            select * from esbdata.esb2_trans_ctrl;--流水策略配置表
+            select * from esbdata.esb2_log_log4jconfig;--节点log4j日志配置表
+            select * from esbdata.esb2_trans_log;--流水信息表
+            select * from esbdata.esb2_trans_log_flowno;--流水号配置表(无数据)
+            select * from esbdata.esb2_trans_log_msg;--流水日志信息表(无数据)
+            select * from esbdata.esb2_trans_log_stamp;--交易流水时间戳表
+            select * from esbdata.esb2_trans_log_stamp_his;--交易流水时间戳历史表
+            select * from esbdata.esb2_trans_log_temp_stamp;--流水日志时间戳记录表
+            select * from esbdata.esb_adapter_template;--适配流程表（就是Console页面注册适配流程时操作的表）
+            select * from esbdata.esb_cluster_notify_result;--多路通知的执行结果信息表
+            select * from esbdata.esb_errorcode;--错误码信息表(无数据,在服务器中的配置文件配置)
+            select * from esbdata.esb_logic_address_mapping;--逻辑地址匹配表
+            select * from esbdata.esb_metadata_file;--元数据配置表(无数据,在服务器metadata.xml中配置)
+            select * from esbdata.esb_msg_processor;--消息处理配置表(无数据)
+            select * from esbdata.esb_nodes_link;--ESB节点关联表
+            select * from esbdata.esb_ptservices;--穿透服务配置表设计(无数据)
+            select * from esbdata.esb_sequence;--ESB序号表
+            select * from esbdata.esb_service_control;--服务控制配置表(不能通过该渠道访问该服务)
+            select * from esbdata.esb_sharedresources;--共享资源表
+            select * from esbdata.esb_users;--用户表
+            select * from qx_user;--登录用户表
+            select * from esbdata.exceptionconfig;--异常处理维护配置表
+            select * from esbdata.exceptiondata;--异常数据记录表
+            select * from esbdata.groups;--服务分组信息表
+            select * from esbdata.hlp_gnmk;--帮助-功能模块操作手册设计表
+            select * from esbdata.import_metadata_history;--元数据导入历史表
+            select * from esbdata.mailbox;--路由入口信息表
+            select * from esbdata.mapping;--格式映射信息表
+            select * from esbdata.mappingconfig;--格式映射服务配置表
+            select * from esbdata.metadata_manager;--元数据管理表
+            select * from esbdata.metadata_node;--元数据节点信息表
+            select * from esbdata.metadata_type;--元数据类型信息表
+            select * from esbdata.node_attribute;--元数据节点属性信息表
+            select * from esbdata.esb_sys_parm;--ESB系统参数表
+            select * from esbdata.esb_f5_control;--F5控制表
+            select * from esbdata.esb_f5_control;--F5控制表
+            select * from esb_channel_auth_info;--渠道认证信息表
+            select * from esbdata.esb2_trans_log_his;--ESB交易流水历史表
+            select * from esbdata.serviceversion;--服务版本信息表
+            select * from esbdata.servicesystemattr;--服务系统参数表
+            select * from esbdata.servicesystemmap;--服务系统子服务表
+            select * from esbdata.servicesystem;--服务系统表
+            select * from esbdata.services;--服务路由信息配置表
+            select * from esbdata.servicepriority;--服务优先级配置
+            select * from esbdata.serviceperiod;--服务有效期配置表
+            select * from esbdata.routers;--核心路由节点表
+            select * from esbdata.proxyservices;--代理服务配置信息
+            select * from esbdata.proxyaddress;--代理地址表
+            select * from esbdata.proxy;--代理表
+            select * from esbdata.protocolbind;--协议配置信息表
+            select * from esbdata.paddressext;--节点关联关系表
+            select * from esbdata.paddress;--队列信息表
+            select * from security_key_info;--转加密秘钥相关表
+            select * from security_node_info;-- 转加密秘钥相关表
+            select * from security_sys_info;-- 转加密秘钥相关表
+            select * from QX_GNMK_TREE; --Consoel首页左侧的下拉菜单数据
+        </code>
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、 ESB常见导出SQL汇总（导出语句）</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <code class="language-diff">
+            --导出语句
+            --协议
+            select * from PROTOCOLBIND where PROTOCOLID in('HRConnector');
+            select * from BINDMAP where PROTOCOLID in('HRConnector');
+            --适配流程
+            select * from ESB_ADAPTER_TEMPLATE where NAME in('defaule_scc');
+            --服务系统（例如CORE）
+            select * from SERVICESYSTEM where NAME in('TEST');
+            --渠道
+            select * from SERVICEINFO where SERVICEID in('SCC');
+            select * from SERVICES where NAME in('SCC');
+            select * from BINDMAP where SERVICEID in('SCC');
+            select * from DATAADAPTER where DATAADAPTERID in('SCC');
+            --服务
+            select * from SERVICES where NAME in('12002000401');
+            select * from BUSSSERVICES where SERVICEID in('12002000401');
+            select * from SERVICEINFO where SERVICEID in('12002000401');
+            select * from SERVICEINFO where SERVICEID in('12002000401');
+            select * from BINDMAP where SERVICEID in('12002000401');
+            select * from DATAADAPTER where DATAADAPTERID in('12002000401');
+            select * from SERVICESYSTEMMAP where SERVICEID in('12002000401');
+            select * from DEPLOYMENTS where NAME in('12002000401');
+            --监控映射
+            select * from ESB_MON_NMAP where ID in('123456789');
+        </code>
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、 晋商银行ESB导表操作（制作Insert语句的sql脚本）</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  导出接入协议相关表(2张表)
+        <code class="language-diff">
+            --查询接入协议（28个）
+            select * from PROTOCOLBIND WHERE BINDTYPE='TCPChannelConnector'
+            order by PROTOCOLID;
+            select count(*) from PROTOCOLBIND WHERE
+            BINDTYPE='TCPChannelConnector';
+            select * from BINDMAP where SERVICEID='local_in' order by PROTOCOLID;
+            select count(*) from BINDMAP where SERVICEID='local_in';
+        </code>
+
+        2.  导出接出协议相关表(2张表)
+        <code class="language-diff">
+            --查询接出协议（24个）
+            select * from PROTOCOLBIND WHERE BINDTYPE='TCPServiceConnector'
+            order by PROTOCOLID;
+            select count(*) from PROTOCOLBIND WHERE
+            BINDTYPE='TCPServiceConnector';
+            select * from BINDMAP where SERVICEID='local_out' order by
+            PROTOCOLID;
+            select count(*) from BINDMAP where SERVICEID='local_out';
+        </code>
+
+        3.  导出渠道相关表(4张表)
+        <code class="language-diff">
+            --查询渠道id（28个）
+            select * from SERVICEINFO where SERVICETYPE='CHANNEL' order by
+            SERVICEID;
+            select count(*) from SERVICEINFO where SERVICETYPE='CHANNEL';
+            select * from SERVICES where TYPE='CHANNEL' ORDER by NAME ;
+            select count(*) from SERVICES where TYPE='CHANNEL';
+            select * from BINDMAP where STYPE='CHANNEL' order by SERVICEID;
+            select count(*) from BINDMAP where STYPE='CHANNEL';
+            select * from DATAADAPTER where ADAPTERTYPE = 'IN' order by
+            DATAADAPTERID;
+            select count(*) from DATAADAPTER where ADAPTERTYPE = 'IN' ;
+        </code>
+
+        4.  导出服务相关表(7张表)
+        <code class="language-diff">
+            --查询服务id(65个)—渠道Id和服务id都会存储在SERVICES表中。
+            select * from SERVICES where TYPE = 'SERVICE' order by NAME;
+            select count(*) from SERVICES where TYPE = 'SERVICE';
+            select * from BUSSSERVICES order by SERVICEID;
+            select count(*) from BUSSSERVICES ;
+            select * from SERVICEINFO where SERVICETYPE = 'BUSS' order by
+            SERVICEID ;
+            select count(*) from SERVICEINFO where SERVICETYPE = 'BUSS' ;
+            select * from BINDMAP where STYPE='SERVICE' and MAPTYPE='request'
+            order by SERVICEID ;
+            select count(*) from BINDMAP where STYPE='SERVICE' and
+            MAPTYPE='request' ;
+            select * from DATAADAPTER where ADAPTERTYPE = 'OUT' order by
+            DATAADAPTERID;
+            select count(*) from DATAADAPTER where ADAPTERTYPE = 'OUT' ;
+            select * from SERVICESYSTEMMAP where ADAPTER like '%Adapter' order by
+            SERVICEID ;
+            select count(*) from SERVICESYSTEMMAP where ADAPTER like '%Adapter' ;
+            select * from DEPLOYMENTS order by NAME ;
+            select count(*) from DEPLOYMENTS ;
+        </code>
+
+        5.  导出系统(服务系统+渠道系统)相关表(1张表)
+        <code class="language-diff">
+            --查询系统（服务系统+渠道系统）--渠道系统和服务系统都会存储在
+            SERVICESYSTEM表中;
+            select * from SERVICESYSTEM where NAME like '%in' ;
+            select * from SERVICESYSTEM order by DESCRIPTION ;
+        </code>
+    </pre>
+</div>
+</body>
+</html>
+
