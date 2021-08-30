@@ -1,0 +1,1138 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>内部类.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor {
+        width: auto;
+        border: 0px;
+        background: rgb(119, 238, 119);
+        z-index: 1;
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    div.hr:focus {
+        cursor: none;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    @media screen and (max-width: 48em) {
+
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    .md-inline-math .MathJax_SVG .noError {
+        display: none !important;
+    }
+
+    .mathjax-block .MathJax_SVG_Display {
+        text-align: center;
+        margin: 1em 0em;
+        position: relative;
+        text-indent: 0px;
+        max-width: none;
+        max-height: none;
+        min-height: 0px;
+        min-width: 100%;
+        width: auto;
+        display: block !important;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+        text-decoration: none;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    #write pre.md-meta-block {
+        padding: 1rem;
+        font-size: 85%;
+        line-height: 1.45;
+        background-color: rgb(247, 247, 247);
+        border: 0px;
+        border-radius: 3px;
+        color: rgb(119, 119, 119);
+        margin-top: 0px !important;
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+    </style>
+
+    <link rel="stylesheet" href="../../../highlight/styles/default.css">
+    <script src="../../../highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>内部类</b>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、 什么是内部类？</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        Java中，可以将一个类定义在另外一个类（接口），或者定义在方法里面，这样的类成为内部类。
+        比如类Inner定义在类Outer中，此时Inner称为内部类，Outer称为外部类。
+        内部类一般包括如下四种：
+        1.  成员内部类
+        2.  方法内部类
+        3.  匿名内部类
+        4.  静态内部类
+    </pre>
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、对内部类的访问</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        对任何内部类的访问都和其本身对应的角色的访问是一样的：
+        1.  外部对成员内部类的访问，就好像访问一个类的成员。
+        2.  外部对方法内部类的访问，就好像访问一个类的方法变量（显然外部是不能访问方法变量的，只能外部类自己访问）。
+        3.  外部对匿名内部类的访问，就好像访问一个类的匿名变量。
+        4.  外部对静态内部类的访问，就好像访问一个类的静态成员。
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、 成员内部类</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        成员内部类是最普通的内部类，它的定义位于一个类的内部，如下：
+        <code class="language-java">
+            package javase.demo13.innerclass;
+
+            class Outer {
+                // @1
+                private static final String OUTER_STATIC_FINAL_FIELD = "外部类的静态常量";
+                private final String OUTER_NOT_STATIC_FINAL_FIELD = "外部类的非静态常量";
+                private static String OUTER_staticField = "外部类的静态成员";
+                private String OUTER_notStaticFiled = "外部类的非静态成员";
+
+                // @2
+                private String same_field = "相同的成员";
+
+                /**
+                 * @3
+                 */
+                class Inner {
+                    // @4
+                    private static final String STATIC_FINAL_FIELD = "内部类的静态常量";
+                    private final String NOT_STATIC_FINAL_FIELD = "内部类的非静态常量";
+                    // @5
+                    // private static String staticField = "内部类的静态成员";
+                    private String notStaticFiled = "内部类的非静态成员";
+
+                    // @6
+                    private String same_field = "相同的成员";
+
+                    public void print() {
+                        // @7
+                        System.out.println(STATIC_FINAL_FIELD);
+                        System.out.println(NOT_STATIC_FINAL_FIELD);
+                        System.out.println(notStaticFiled);
+
+
+                        // @8
+                        System.out.println(OUTER_STATIC_FINAL_FIELD);
+                        System.out.println(OUTER_NOT_STATIC_FINAL_FIELD);
+                        System.out.println(OUTER_staticField);
+                        System.out.println(OUTER_notStaticFiled);
+
+                        // @9
+                        notSameMethod();
+
+                        // @10
+                        System.out.println(same_field);
+                        sameMethod();
+
+                        // @11
+                        System.out.println(Outer.this.same_field);
+                        Outer.this.sameMethod();
+                    }
+
+                    // @12
+                    public void sameMethod(){
+                        System.out.println("相同的方法");
+                    }
+                }
+
+                public void fun() {
+                    // @13
+                    new Inner().print();
+                }
+
+                // @14
+                public void sameMethod(){
+                    System.out.println("相同的方法");
+                }
+
+                // @15
+                public void notSameMethod(){
+                    System.out.println("外部类的方法");
+                }
+
+            }
+
+            public class Demo00InnerClass {
+                public static void main(String args[]) {
+                    // @16
+                    new Outer().fun();// 在外部通过调用外部类的方法间接调用内部类
+                    // @17
+                    new Outer().new Inner().print();// 在外部直接实例化内部类调用内部类的方法
+                }
+            }
+
+        </code>
+        分析如上程序：
+        1.  @3处定义了一个成员内部类，内部类此时就是外部类的一个成员变量。
+        2.  @4处在成员内部类Inner中定义了几种成员变量，此时这几种成员变量是属于成员内部类Inner的。@5处是因为成员内部类相当于一个非静态的成员变量，所以它内部肯定不能定义静态的成员，但是它可以定义常量。@7处是在内部类的print()方法中调用了内部类定义的几种成员。即内部类可以随便调用自己内部定义的成员和方法。
+        3.  @1处在外部类中定义了4种类型的成员属性，@8处在内部类Inner的print()方法中访问了外部类Outer中定义的各种类型的成员变量和private属性，所以，成员内部类的优点就是：方便的访问外部类的任何类型的成员变量和方法。
+        4.  成员内部类和普通类的成员一样，具有private,default,protected,public等权限和static修饰。这一点和外部类不同，外部类只能通过public和default两种访问权限。
+        5.  @2和@6处，分别在外部类和内部类中定义了完全相同的成员；同样，@12和@14分别在内部类和外部类中定义了完全相同的方法。@15处在外部类中定义了外部类自己的方法，@9处在内部类中调用了外部类自己的方法。@10处在内部类调用了外部类和内部类定义的同名属性和方法。我们发现，成员内部类可以随便访问外部类的属性和方法，但是如果成员内部类中定义了和外部类中同名的属性和方法时，此时内部类会采取就近原则，导致访问的是成员内部类自己的属性和方法。如果此时要访问外部类的属性和方法，则要像@11处那样，通过"外部类.this."去访问外部类中的同名属性和方法。
+        6.  @13处是外部类的fun()方法，外部类要想访问内部类的属性和方法，则必须new一个内部类的实例对象去访问。
+        7.  内部类的属性和方法除了在当前外部类中被访问外，还可以在其他类中访问。在其他类中要访问成员内部类的话，则必须创建成员内部类的对象。成员内部类依附外部类而存在，即如果要创建成员内部类的独享，前提是比如存在一个外部类的对象。创建成员内部类对象的一般方式如下：
+        Outer outer = new Outer();
+        Outer.Inner inner = outer.new Inner();
+        即先创建一个外部类对象，再通过外部类对象去创建内部类对象。
+        创建好内部类对象后就可以在外部访问内部类的成员和方法了。比如@17。
+        当然，如果要在外部访问内部类的成员和方法，除了创建内部类对象外，也可以通过外部类的方法间接去调用，比如@16。
+        8.  Inner类作为Outer类的成员内部类，在外部类的fun()方法之中直接实例化成员内部类的对象并调用了成员内部类的方法print()，但是可以明显发现，内部类实际上已经破坏了一个类的结构；因为类本身是由成员变量和成员方法组成的。
+
+        我们来看看成员内部类的优点：
+        <code class="language-java">
+            package javase.demo13.innerclass;
+
+            /**
+             * 成员内部类的优点
+             * 内部类破坏了类的结构，那么内部类具备什么优点呢？
+             * 将内部类拿到外边去就能看到内部类的优点了！
+             * 总结：本案例实现与上一个成员内部类相同的功能
+             * 但是明显比直接使用内部类复杂了很多，所以内部类的唯一好处就是：能够方便的访问外部类的私有属性。
+             * 内部类能够访问外部类的私有属性，这点很重要，因为在多线程里可以方便地通过这个特性让多个线程子类去共享同一个外部类中的共享资源，从而达到多任务的目的！
+             * 如果不使用内部类，就得像这个案例一样，通过引用传递去共享外部类。
+             *
+             * @author zhaoeh
+             */
+
+            class Outer01 {
+                private String info = "hello world!!!";
+
+                /**
+                 * 取得私有属性
+                 */
+                public String getInfo() {
+                    return this.info;
+                }
+
+                /**
+                 * 将当前外部类对象传递到内部类中
+                 */
+                public void fun() {
+                    new Inner01(this).print();
+                }
+            }
+
+            /**
+             * 将之前的Inner类提取到外边定义
+             *
+             * @author zhaoeh
+             */
+            class Inner01 {
+                private Outer01 out = null;// 引用外部类对象
+
+                /**
+                 * 接收外部类实例
+                 *
+                 * @param out
+                 */
+                public Inner01(Outer01 out) {
+                    this.out = out;
+                }
+
+                /**
+                 * 打印外部类的私有属性
+                 */
+                public void print() {
+                    System.out.println(out.getInfo());
+                }
+            }
+
+            /**
+             * 调用-业务层入口
+             *
+             * @author zhaoeh
+             */
+            public class Demo01InnerClass {
+                public static void main(String args[]) {
+                    new Outer01().fun();
+                }
+            }
+        </code>
+
+        <b>我们来总结一下：</b>
+        <font color="#dc143c">
+            1.  成员内部类可以访问自己的任何成员和方法。
+            2.  成员内部类可以访问外部类的任何成员和方法。
+            3.  当成员内部类和外部类中定义了相同的成员和方法时，此时成员内部类采取就近原则访问的是自己的成员和方法，如果要想访问外部类的成员和方法，则需要采用“外部类.this.”去访问。
+            4.  外部类可以访问成员内部类的属性和方法，需要在外部类中new一个成员内部类的对象。
+            5.  其他类中也可以访问成员内部类的方法，需要先创建一个外部类对象，再通过外部类对象去创建内部类对象。即：new Outer().new Inner();
+        </font>
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、 静态内部类</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        静态内部类也是定义在一个类里面的类，只不过在类的前面多了一个关键字static。
+        <code class="language-java">
+            package javase.demo13.innerclass;
+
+            class Outer02 {
+                private static String info = "hello ZhaoErHu!!!";// 定义外部类的static属性
+                private String notStaticInfo = "hello Eric!!!";// 定义外部类的非static属性
+
+                /**
+                 * 定义static静态内部类
+                 */
+                static class Inner02 {
+                    public void print() {
+                        // 静态内部类直接访问外部类中静态的成员变量，通过"类名称.属性名称"进行访问调用
+                        System.out.println(Outer02.info);
+
+                        // 静态内部类直接访问外部类中非静态的成员变量，通过"外部类对象.属性名称"进行访问调用
+                        System.out.println(new Outer02().notStaticInfo);
+                    }
+                }
+            }
+
+            public class Demo02InnerClass {
+                public static void main(String args[]) {
+                    /**
+                     * 此时内部类是static的，所以先实例化外部类对象，再直接调用内部类实例化对象Inner02()【注意不用new Inner02()】
+                     *
+                     * Outer02.Inner02()表示直接通过外部类名访问static内部类名，前面加上new就是实例化static的内部类。
+                     */
+                    new Outer02.Inner02().print();
+                }
+            }
+        </code>
+        1.  使用static定义成员内部类，此时成员内部类就是静态内部类。
+        2.  使用static可以声明方法或者属性，也可以声明成员内部类，用static声明的成员内部类和普通类的静态成员类似。
+        3.  与成员内部类不同的是，静态内部类是不需要依附于外部类的，它的定义随着外部类的装载将自动被保存在方法区内存的静态区，即外部是可以直接访问静态内部类的。
+        4.  静态内部类不能访问非static的外部类属性。静态内部类要想访问外部类中的非静态的成员变量，必须实例化外部类对象，通过"对象名.属性"的访问时才能访问，其实和Java中类之间的访问关系是一样的)。
+    </pre>
+
+    <b><a name='header-n5' class='md-header-anchor '></a>5、外部调用成员内部类和静态内部类 </b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <code class="language-java">
+            package javase.demo13.innerclass;
+
+            class Outer03 {
+                private String info = "在外部通过外部类对象访问非静态的内部类";
+
+                /**
+                 * 一般内部类
+                 */
+                class Inner03 {
+                    public void print() {
+                        //非静态的内部类访问非静态的外部类成员变量，同一个类中直接访问
+                        System.out.println(info);
+                    }
+                }
+            }
+
+            public class Demo03InnerClass {
+                public static void main(String args[]) {
+                    Outer03 outer = new Outer03();// 实例化外部类对象
+                    /**
+                     * 在main方法中通过外部类实例化对象访问非静态的内部类对象；必须new 内部类。
+                     */
+                    Outer03.Inner03 in = outer.new Inner03();
+                    Outer03.Inner03 in2 = new Outer03().new Inner03();
+                    /**
+                     * 调用内部类方法
+                     */
+                    in.print();
+                    in2.print();
+                }
+            }
+        </code>
+        一个成员内部类除了可以直接通过外部类本身访问，也可以直接在其他类中进行调用。
+        调用的方式为：外部类.内部类 内部类对象 = 外部类实例.new 内部类();[内部类此时不能是private的]
+        如果此时成员内部类为static的，则调用方式为：外部类.内部类 内部类对象 = 外部类实例.内部类();
+        注意：静态内部类和非静态内部类的访问关系和Java中类与类之间的访问关系完全一致。
+    </pre>
+
+    <b><a name='header-n6' class='md-header-anchor '></a>6、方法内部类 </b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        方法内部类学习：
+        <code class="language-java">
+            package javase.demo13.innerclass;
+
+            class Outer04 {
+                private String info = "外部类的方法中定义内部类，则内部类访问方法中的形式参数时，形式参数必须定义为final类型的";
+
+                /**
+                 * 之所以访问方法参数必须是final的，是因为先执行方法，再实例化方法内部类，如果多线程环境下，该参数不是final的，
+                 * 则内部类访问到的参数可能被更改，这样就无法保证数据一致性。
+                 * 通俗点就是：一个方法中如果定义一个内部类的话，则该方法和该内部类实际上在编译器执行后是相互独立的，但是从语法上方法内部类又可以访问方法的形参，这样一来实际上就破坏了
+                 * 方法中参数是线程私有的性质了，可能一个线程在执行方法，另外一个线程在实例化方法内部类。
+                 *
+                 * @param temp
+                 */
+                public void fun(final int temp) {
+                    /**
+                     * 在外部类的方法中定义内部类
+                     */
+                    final int localVar = 100;
+                    class Inner04 {
+                        public void print() {
+                            System.out.println("外部类方法中定义的内部类访问外部类的非静态属性：" + info);
+                            System.out.println("外部类方法中定义的内部类访问该方法的形式参数：" + temp);
+                            System.out.println("外部类方法中定义的内部类访问该方法的方法变量：" + localVar);
+                        }
+                    }
+                    new Inner04().print();// 外部类本身通过new内部类访问内部类的方法
+                }
+            }
+
+            public class Demo04MethodInnerClass {
+                public static void main(String args[]) {
+                    new Outer04().fun(300);
+                }
+            }
+        </code>
+        内部类除了能直接在外部类里面定义外，也可以直接在外部类的方法里面定义。
+        但是在方法中定义的内部类是不能直接访问方法中的形式参数和方法变量的，如果要访问方法中的形式参数和方法变量的话，则方法中的形式参数和方法变量必须声明为final类型的 。并且方法内部类不能在外部通过外部类实例进行创建（因为它在外部类的方法中）。
+    </pre>
+
+    <b><a name='header-n7' class='md-header-anchor '></a>7、匿名内部类 </b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        匿名内部类学习，不使用匿名内部类如下：
+        <code class="language-java">
+            package javase.demo13.innerclass;
+
+            interface C {
+                public abstract void printInfo();
+            }
+
+            class D implements C {
+                //不使用匿名内部类需要专门定义子类实现接口的抽象方法(non-Javadoc)
+                public void printInfo() {
+                    System.out.println("---专门定义子类实现接口的抽象方法----");
+                }
+            }
+
+            class Y {
+                public void fun1() {
+                    this.fun2(new D());// 向上转型，发现，此处实现子类只实例化一次，所以考虑用匿名内部类替代
+                }
+
+                public void fun2(C c) {
+                    c.printInfo();// 调用接口的方法，实际上向上转型，调用的是子类实现的方法
+                }
+            }
+
+            public class Demo05InnerClass {
+                public static void main(String args[]) {
+                    new Y().fun1();// 匿名对象直接调用
+                }
+            }
+        </code>
+        在实现接口时使用内部类方便的实现接口中的抽象方法。
+        假如不使用匿名内部类的话，则必须单独设计子类去实现接口的抽象方法。
+
+        使用匿名内部类如下：
+        <code class="language-java">
+            package javase.demo13.innerclass;
+
+            interface A {
+                public abstract void printInfo();
+            }
+
+            class X {
+                public void fun1() {
+                    /**
+                     * 匿名内部类的实现往往是一个匿名对象，也可以指定该匿名对象的名称，使之成为具名对象。
+                     */
+                    // A a = new A(){
+                    //
+                    // @Override
+                    // public void printInfo() {
+                    //
+                    // }};
+
+                    /*
+                     * new A()是匿名内部类对象，同时也是一个匿名对象；当然可以将其不设为匿名对象，即new A()可以有引用名称；
+                     */
+                    this.fun2(new A() {
+                        public void printInfo() {
+                            System.out.println("----匿名内部类实现接口A的抽象方法，不单独定义子类实现类----");
+                        }
+                    });// 最后的)是方法的，必须有;
+                }
+
+                public void fun2(A a) {
+                    a.printInfo();// 调用接口的方法，该方法必须被子类实现
+                }
+            }
+
+            public class Demo06InnerClass {
+                public static void main(String args[]) {
+                    new X().fun1();
+                }
+            }
+        </code>
+        在实现接口或者继承父类时使用匿名内部类方便的实现接口或者父类中的抽象方法。
+        匿名内部类简化了专门定义子类实现接口抽象方法的步骤。直接new 接口()或者new 父类()同时覆盖抽象方法即可创建一个匿名内部类对象。
+        匿名内部类方便的创建一个匿名对象或者非匿名对象，它本身是使用new操作直接创建了一个对象，所以要注意new操作后面的分号;，因为new是一个语句。
+        如果这个语句在方法的参数中，;是可以没有的。
+        一般实现子类只需要实例化一次的情况下考虑使用匿名内部类替代实现子类。
+        java8的lambda表达式就是基于匿名内部类的方式的，匿名内部类实际上是特殊的方法内部类，同样如果要访问方法形参和方法变量，该形参和变量必须是final的。
+    </pre>
+
+</div>
+</body>
+</html>
+

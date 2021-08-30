@@ -675,9 +675,10 @@
     .on-focus-mode blockquote {
         border-left-color: rgba(85, 85, 85, 0.12);
     }
-
-
     </style>
+    <link rel="stylesheet" href="../../../highlight/styles/default.css">
+    <script src="../../../highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body class='typora-export'>
 <div id='write' class='is-node'>
@@ -720,7 +721,7 @@
         <font color="#a52a2a">也就是说，泛型实际上只是编译器提供的一个语法糖，编译后的字节码文件中完全没有泛型的任何相关内容。</font>
         下面看个例子：
         <b><font color="#a52a2a">定义一个泛型方法</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package com.zeh.main.generic;
 
             public class MyGeneric {
@@ -729,9 +730,10 @@
                     return kk;
                 }
             }
-        </font>
+        </code>
+
         <b><font color="#a52a2a">调用上面的泛型方法</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package com.zeh.main.generic.test;
 
             import com.zeh.main.generic.MyGeneric;
@@ -743,10 +745,11 @@
                     System.out.println(result);
                 }
             }
-        </font>
+        </code>
+
         下面使用jad对编译后的MyGeneric.class和TestMyGeneric.class进行反编译，观察编译器将这两个玩意儿最终处理成了啥样
         <b><font color="#a52a2a">反编译MyGeneric.class</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package com.zeh.main.generic;
 
             public class MyGeneric
@@ -761,9 +764,11 @@
                     return kk;
                 }
             }
-        </font>
+        </code>
+
         <b><font color="#a52a2a">反编译TestMyGeneric.class</font> </b>
-        <font color="gray">
+        <code class="language-java">
+            package com.zeh.main.generic.test;
             package com.zeh.main.generic.test;
 
             import com.zeh.main.generic.MyGeneric;
@@ -783,7 +788,25 @@
                     System.out.println(result);
                 }
             }
-        </font>
+            import com.zeh.main.generic.MyGeneric;
+            import java.io.PrintStream;
+
+            public class TestMyGeneric
+            {
+
+                public TestMyGeneric()
+                {
+                }
+
+                public static void main(String args[])
+                {
+                    MyGeneric myGeneric = new MyGeneric();
+                    String result = (String)myGeneric.getName("123");
+                    System.out.println(result);
+                }
+            }
+        </code>
+
         通过jad反编译class文件，可以看出，java编译器在将泛型编译成class文件后，删除了所有和泛型相关定义，泛型变量直接使用了Object进行替换。
         在获取泛型返回值时，也直接将Object类型和动态设置进去的真实类型进行了强转。
         <b><font color="#a52a2a">因此，java中的泛型实际上是伪泛型，其底层利用编译器对类型之间进行各种强转来实现。</font> </b>
@@ -798,20 +821,22 @@
         5.  类类型：java中使用类Class表示。
         <b><font color="#a52a2a">泛型相关的几个概念：</font> </b>
         1.  类类型
-        <font color="gray">
+        <code class="language-java">
             public class MyGenericDemo01
-        </font>
+        </code>
         其中class定义的MyGenericDemo01就是类类型，在java中class，interface，enum，数组等都是类类型。
 
         2.  泛型变量类型：
-        <font color="gray">
+        <code class="language-java">
             public class MyGenericDemo02&lt;T1, T2 extends Integer, T3 extends GenericDemo02I1 & GenericDemo02I2>
-        </font>
+        </code>
         其中的T1,T2,T3就是泛型变量类型。泛型变量类型使用前需要在类上或者方法上进行声明。
 
         3.  泛型类型：
         就拿上面声明的泛型类MyGenericDemo02来说明。
-        <font color="gray">MyGenericDemo02&lt;T1,T2,T3> demo;</font>
+        <code class="language-java">
+            MyGenericDemo02&lt;T1,T2,T3> demo;
+        </code>
         1>.  泛型类型： <font color="gray">MyGenericDemo02&lt;T1,T2,T3></font>就是泛型类型。
         2>.  原始类型：针对泛型类型而言，只有泛型类型才有原始类型， <font color="gray">MyGenericDemo02</font>就是原始类型。
         3>.  实际类型： <font color="gray"><></font>中的内容叫做实际类型。
@@ -823,8 +848,10 @@
         （5）、实际类型也可以为<font color="#a52a2a">泛型数组类型</font>。
 
         如上描述，泛型类型<>中的实际类型可以取值为其他5种类型的任意一种，这样一来泛型类型组合起来是比较复杂的。如下：
-        <font color="gray">List&lt;Map&lt;List&lt;?>, Map&lt;String,?>>> list;</font>
-        <font color="gray">List&lt;Map&lt;?,Integer>[]> list1;</font>
+        <code class="language-java">
+            List&lt;Map&lt;List&lt;?>, Map&lt;String,?>>> list;
+            List&lt;Map&lt;?,Integer>[]> list1;
+        </code>
 
         4.  通配符类型：
         java中使用?表示通配符类型。通配符必须作为泛型类型的实际类型存在，结合泛型类型一起使用，不能单独用于修饰变量。
@@ -832,8 +859,10 @@
 
         5.  泛型数组类型：
         数组中的元素是泛型类型的数组，就是泛型数组类型。
-        <font color="gray">List&lt;String> list[];</font>
-        <font color="gray">List&lt;?> list[];</font>
+        <code class="language-java">
+            List&lt;String> list[];
+            List&lt;?> list[];
+        </code>
     </pre>
 
     <b><a name='header-n2' class='md-header-anchor '></a>2、泛型变量类型的声明</b><br>
@@ -851,58 +880,62 @@
     </pre>
     <b><a name='header-n22' class='md-header-anchor '></a>2.2、 泛型接口</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        <font color="gray">
+        <code class="language-java">
             [接口修饰符] interface 接口名称&lt;泛型类型名称>{
             }
-        </font>
+        </code>
         示例如下：
-        <font color="gray">
+        <code class="language-java">
             public interface IGeneric&lt;T> {
             }
-        </font>
+        </code>
     </pre>
     <b><a name='header-n23' class='md-header-anchor '></a>2.3、 泛型类</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        <font color="gray">
+        <code class="language-java">
             [类修饰符] class 类名称&lt;泛型类型名称>{
             }
-        </font>
+        </code>
+
         示例如下：
-        <font color="gray">
+        <code class="language-java">
             public class MyGeneric&lt;T> {
             }
-        </font>
+        </code>
     </pre>
     <b><a name='header-n24' class='md-header-anchor '></a>2.4、 泛型方法（包括泛型构造方法）</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         1.  泛型构造方法
-        <font color="gray">
+        <code class="language-java">
             [方法修饰符] &lt;泛型类型名称> 构造方法名称(){
             }
-        </font>
+        </code>
+
         示例如下：
-        <font color="gray">
+        <code class="language-java">
             public &lt;S> MyGeneric(S ss){
             }
-        </font>
+        </code>
+
         2.  泛型方法
-        <font color="gray">
+        <code class="language-java">
             [方法修饰符] &lt;泛型类型名称> 返回值类型 方法名称(){
             }
-        </font>
+        </code>
+
         示例如下：
-        <font color="gray">
+        <code class="language-java">
             public &lt;K> K getName(K s){
                 return s;
             }
-        </font>
+        </code>
     </pre>
 
     <b><a name='header-n3' class='md-header-anchor '></a>3、泛型成员</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         泛型成员是在泛型类的基础之上指定的，成员本身不能声明泛型，只能使用已经声明的泛型类型。
         如下案例：
-        <font color="gray">
+        <code class="language-java">
             public class MyGeneric&lt;T> {
 
                 // 使用类中声明的泛型变量去定义成员
@@ -933,7 +966,7 @@
                     return t;
                 }
             }
-        </font>
+        </code>
     </pre>
 
     <b><a name='header-n4' class='md-header-anchor '></a>4、泛型的具体类型指定</b><br>
@@ -963,29 +996,36 @@
         由于泛型对象在引用传递中的限制，所以引出了通配符的概念。
         通配符类型只能依赖泛型类型生存，而不能单独使用。
         比如：
-        <font color="gray">private ? name;</font>
+        <code class="language-java">private ? name;</code>
         单独使用?修饰成员，编译器报错。
-        <font color="gray">private List&lt;?> list;</font>
+
+        <code class="language-java">private List&lt;?> list;</code>
         通配符类型作为泛型类型的实际类型，结合泛型类型使用，这种才是通配符打开的唯一正确方式，就如上面的List&lt;?> 。
 
         <font color="#a52a2a">下面我们说的通配符类型，指的就是结合泛型类型的这种方式，类似List&lt;?></font>
 
         当一个对象被通配符类型修饰时，表示该泛型对象可以接受一个实际类型为任意类型的泛型对象，如下：
-        <font color="gray">public List&lt;?> list;</font>
+        <code class="language-java">
+            public List&lt;?> list;
+        </code>
+
         上面的list对象就是通配符类型的，意味着这个对象可以被传入任意实际类型的list对象，比如：
-        <font color="gray">list = new ArrayList&lt;String>();list = new ArrayList&lt;Integer>();</font>
+        <code class="language-java">
+            list = new ArrayList&lt;String>();list = new ArrayList&lt;Integer>();
+        </code>
 
         当一个变量被通配符修饰时，该变量不能设置具体的值，只能设置null值。因为该变量的实际类型是通配符类型，表示不清楚的类型，所以向其中设置具体值时，是会编译报错的，如下：
-        <font color="gray">
+        <code class="language-java">
             List&lt;?> list = new ArrayList&lt;String>();   // list使用通配符修饰
             list.add(0);    // 向list中设置具体值0，编译报错。因为list容器中的实际类型此时是通配符类型，表示不清楚的类型，因此不能设置具体值。
             list.add(null); // 向list中设置null值，编译正常。因为null值就表示不清楚的值，和通配符的含义相同。
-        </font>
+        </code>
+
         要向其中设置具体值，则应该将通配符类型强转成泛型类型（实际类型为具体类型）。
-        <font color="gray">
+        <code class="language-java">
             List&lt;?> list = new ArrayList<>(); // 通配符类型修饰，不能设置具体值
             List&lt;String> myList = (List&lt;String>)list; // 将其强转成泛型类型（实际类型为具体类型）
-        </font>
+        </code>
 
         通配符使用场景：修饰一个成员、一个方法变量、方法参数、方法返回值时，我们不清楚修饰的这些目标的具体成员到底是什么，这个时候就可以使用泛型的通配符类型进行修饰。
         <font color="#a52a2a">通配符的出现实际上就是应付泛型对象在引用传递中的限制，通配符类型修饰的泛型对象可以接受实际类型为任意类型的泛型对象。</font>
@@ -995,14 +1035,14 @@
         通配符类型修饰泛型对象时，表示该对象可以接受实际类型为任意类型的泛型对象。
         但是也可以设置通配符类型的上限和下限。
         指定通配符类型的上限，即通配符类型可以接受的实际类型必须是Number类型或者其子类型：
-        <font color="gray">List&lt;? extends Number></font>
+        <code class="language-java">List&lt;? extends Number></code>
         指定通配符类型的下限，即通配符类型可以接受的实际类型必须是Integer类型或者其父类型：
-        <font color="gray">List&lt;? super Integer></font>
+        <code class="language-java">List&lt;? super Integer></code>
     </pre>
     <b><a name='header-n63' class='md-header-anchor '></a>6.3、 通配符案例</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <b><font color="#a52a2a">通配符案例</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package com.zeh.main.generic.basemygeneric;
 
             /**
@@ -1069,7 +1109,7 @@
                     generic1.test("123");
                 }
             }
-        </font>
+        </code>
     </pre>
 
 
@@ -1077,7 +1117,7 @@
     <b><a name='header-n71' class='md-header-anchor '></a>7.1、 类类型</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <b><font color="#a52a2a">代码：</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package com.zeh.main.generic.mygeneric;
 
             import java.lang.reflect.Field;
@@ -1201,10 +1241,11 @@
                     printFieldType("com.zeh.main.generic.mygeneric.MyGenericDemo01", "myGenericDemo01");
                 }
             }
-        </font>
+        </code>
+
         <b><font color="#a52a2a">测试结果：</font> </b>
-        <font color="gray">
-            ===================获取声明的类类型信息===================
+        <code class="language-diff">
+             ===================获取声明的类类型信息===================
             参数类型名称：java.lang.String
             参数类名：java.lang.String
             ---------------------------------------------
@@ -1246,12 +1287,12 @@
             参数类型名称：com.zeh.main.generic.mygeneric.MyGenericDemo01
             参数类名：com.zeh.main.generic.mygeneric.MyGenericDemo01
             ---------------------------------------------
-        </font>
+        </code>
     </pre>
     <b><a name='header-n72' class='md-header-anchor '></a>7.2、 泛型变量类型</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <b><font color="#a52a2a">代码：</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package com.zeh.main.generic.mygeneric;
 
             import java.lang.reflect.Field;
@@ -1474,10 +1515,10 @@
                     printFieldType(myGenericDemo02);
                 }
             }
+        </code>
 
-        </font>
         <b><font color="#a52a2a">测试结果：</font> </b>
-        <font color="gray">
+        <code class="language-diff">
             ===================获取目标类上声明的泛型变量类型列表===================
             com.zeh.main.generic.mygeneric.MyGenericDemo02类上声明的泛型变量类型列表：
             该泛型变量类型的名称：T1
@@ -1580,13 +1621,13 @@
             参数类型名称：com.zeh.main.generic.mygeneric.MyGenericDemo02
             参数类名：com.zeh.main.generic.mygeneric.MyGenericDemo02
             ---------------------------------------------
-        </font>
+        </code>
     </pre>
 
     <b><a name='header-n73' class='md-header-anchor '></a>7.3、 泛型类型</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <b><font color="#a52a2a">代码：</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package com.zeh.main.generic.mygeneric;
 
             import java.lang.reflect.Field;
@@ -1862,9 +1903,11 @@
                     printFieldType("myGenericDemo03");
                 }
             }
-        </font>
+        </code>
+
+
         <b><font color="#a52a2a">测试结果：</font> </b>
-        <font color="gray">
+        <code class="language-diff">
             ===================获取声明的类类型信息===================
             --------声明的泛型类型---------
             genericType is :class sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl
@@ -1954,13 +1997,13 @@
             该泛型变量类型的上边界清单：
             com.zeh.main.generic.mygeneric.GenericDemo03I1
             com.zeh.main.generic.mygeneric.GenericDemo03I2
-        </font>
+        </code>
     </pre>
 
     <b><a name='header-n74' class='md-header-anchor '></a>7.4、 通配符类型</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <b><font color="#a52a2a">代码：</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package com.zeh.main.generic.mygeneric;
 
             import java.lang.reflect.Method;
@@ -2115,9 +2158,10 @@
                     printMethodReturnType("method1");
                 }
             }
-        </font>
+        </code>
+
         <b><font color="#a52a2a">测试结果：</font> </b>
-        <font color="gray">
+        <code class="language-diff">
             ===================获取目标方法上所有参数类型信息===================
             --------------------method1方法参数类型信息--------------------
             method1方法com.zeh.main.generic.mygeneric.MyGenericDemo04&lt;?>类型是泛型类型！！！
@@ -2174,12 +2218,13 @@
             com.zeh.main.generic.mygeneric.GenericDemo04I1
             该通配符类型的下边界数量：0
             该通配符类型的下边界清单：
-        </font>
+        </code>
+
     </pre>
     <b><a name='header-n75' class='md-header-anchor '></a>7.5、 泛型数组类型</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <b><font color="#a52a2a">代码：</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package com.zeh.main.generic.mygeneric;
 
             import java.lang.reflect.Field;
@@ -2306,9 +2351,10 @@
                 }
 
             }
-        </font>
+        </code>
+
         <b><font color="#a52a2a">测试结果：</font> </b>
-        <font color="gray">
+        <code class="language-diff">
             --------------------m1成员类型信息--------------------
             m1成员的类型：class sun.reflect.generics.reflectiveObjects.GenericArrayTypeImpl
             当前泛型数组的实际类型是：class sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl
@@ -2346,7 +2392,7 @@
             java.lang.Object
             该通配符类型的下边界数量：0
             该通配符类型的下边界清单：
-        </font>
+        </code>
     </pre>
 </div>
 </body>
