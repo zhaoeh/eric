@@ -1595,9 +1595,10 @@
     .md-lang {
         color: rgb(180, 101, 77);
     }
-
-
     </style>
+    <link rel="stylesheet" href="../../../highlight/styles/default.css">
+    <script src="../../../highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body class='typora-export'>
 <div id='write' class='is-node'>
@@ -1616,33 +1617,37 @@
             并且，整个java中也就只有这9种class对象能够使isPrimitive()方法返回true。
         5.  isPrimitive()总结下，就是来判断传入的一个class对象是否是基本类型和void类型的。
         6.  测试：
-        package zeh.test.demo.com;
+        <code class="language-java">
+            package zeh.test.demo.com;
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2020-06-24
-         */
-        public class Test {
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2020-06-24
+             */
+            public class Test {
 
-            public static void main(String args[]) {
-                System.out.println(void.class.isPrimitive());
-                System.out.println(int.class.isPrimitive());
-                System.out.println(float.class.isPrimitive());
-                System.out.println(boolean.class.isPrimitive());
-                System.out.println(Integer.class.isPrimitive());
+                public static void main(String args[]) {
+                    System.out.println(void.class.isPrimitive());
+                    System.out.println(int.class.isPrimitive());
+                    System.out.println(float.class.isPrimitive());
+                    System.out.println(boolean.class.isPrimitive());
+                    System.out.println(Integer.class.isPrimitive());
+                }
             }
-        }
+        </code>
 
         7.  测试结果：
-        true
-        true
-        true
-        true
-        false
+        <code class="language-diff">
+            true
+            true
+            true
+            true
+            false
 
-        Process finished with exit code 0
+            Process finished with exit code 0
+        </code>
 
         8.  疑问？
         上面案例中，凡是JVM预创建的9种class对象，isPrimitive都返回了true。
@@ -1654,10 +1659,14 @@
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         1.  任何一个class对象直接输出，则表示该class对象表示的权限定名称，即它表示的类链接符。因为Class的toString()方法实现了覆盖。
         2.  Class类覆盖后的toString方法如下：
+        <code class="language-java">
             public String toString() {
                 return (isInterface() ? "interface " : (isPrimitive() ? "" : "class ")) + getName();
             }
+        </code>
+
         3.  测试：
+        <code class="language-java">
             package zeh.test.demo.com;
 
             /**
@@ -1677,16 +1686,19 @@
                     System.out.println("char.class is : " + char.class);
                 }
             }
+        </code>
 
         4.  测试结果：
-        Person.class is : class zeh.test.demo.com.Person
-        Integer.class is : class java.lang.Integer
-        int.class is : int
-        void.class is : void
-        boolean.class is : boolean
-        char.class is : char
+        <code class="language-diff">
+            Person.class is : class zeh.test.demo.com.Person
+            Integer.class is : class java.lang.Integer
+            int.class is : int
+            void.class is : void
+            boolean.class is : boolean
+            char.class is : char
 
-        Process finished with exit code 0
+            Process finished with exit code 0
+        </code>
 
         5.  结果分析：
         通过测试可以发现，如果是JVM预创建的9种内置class对象的话，其class对象直接输出的话，直接输出的就是其表示的基本类型或者void的名称。即，int.class直接输出就是int，void.class直接输出就是void。
@@ -1697,6 +1709,7 @@
         1.  Field类用来描述一个类里面的成员变量。
         2.  Field类的toString()方法实现了覆盖，直接输出一个field对象，就是输出该field对象描述的字段的权限定信息。
         3.  Field类的toString()方法覆盖如下：
+        <code class="language-java">
             public String toString() {
                 int mod = getModifiers();
                 return (((mod == 0) ? "" : (Modifier.toString(mod) + " "))
@@ -1704,33 +1717,37 @@
                     + getDeclaringClass().getTypeName() + "."
                     + getName());
             }
+        </code>
         4.  Class类中有个getField()方法，一般通过class对象调用该方法，指定字段名称，就会返回该class对象描述的目标类中指定成员的Field实例。如果指定的字段名称在对应的目标类中不存在，则抛出异常。
         5.  测试：
-        package zeh.test.demo.com;
+        <code class="language-java">
+            package zeh.test.demo.com;
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2020-06-24
-         */
-        public class Test {
+            /**
+             * 功能描述
+             *
+             * @since 2020-06-24
+             */
+            public class Test {
 
-            public static void main(String args[]) throws NoSuchFieldException {
-                System.out.println(Person.class.getField("name"));
-                System.out.println(Integer.class.getField("TYPE"));
-                System.out.println(Person.class.getField("CAO"));
+                public static void main(String args[]) throws NoSuchFieldException {
+                    System.out.println(Person.class.getField("name"));
+                    System.out.println(Integer.class.getField("TYPE"));
+                    System.out.println(Person.class.getField("CAO"));
+                }
             }
-        }
+        </code>
 
         6.  测试结果：
-        public java.lang.String zeh.test.demo.com.Person.name
-        public static final java.lang.Class java.lang.Integer.TYPE
-        Exception in thread "main" java.lang.NoSuchFieldException: CAO
-            at java.lang.Class.getField(Class.java:1703)
-            at zeh.test.demo.com.Test.main(Test.java:14)
+        <code class="language-diff">
+            public java.lang.String zeh.test.demo.com.Person.name
+            public static final java.lang.Class java.lang.Integer.TYPE
+            Exception in thread "main" java.lang.NoSuchFieldException: CAO
+                at java.lang.Class.getField(Class.java:1703)
+                at zeh.test.demo.com.Test.main(Test.java:14)
 
-        Process finished with exit code 1
+            Process finished with exit code 1
+        </code>
     </pre>
     <b><a name='header-n14' class='md-header-anchor '></a>1.4、 Field对象获取指定对象上的当前字段值</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
@@ -1741,29 +1758,32 @@
             如果底层字段是一个静态字段，则忽略 obj 变量，直接传入一个null值即可。
             其他注意点参考Java API。
         5.  测试：
-        package zeh.test.demo.com;
+        <code class="language-java">
+            package zeh.test.demo.com;
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2020-06-24
-         */
-        public class Test {
+            /**
+             * 功能描述
+             *
+             * @since 2020-06-24
+             */
+            public class Test {
 
-            public static void main(String args[]) throws NoSuchFieldException, IllegalAccessException {
-                System.out.println(Person.class.getField("name").get(new Person("Eric")));
-                System.out.println("Integer.class TYPE is : " + Integer.class.getField("TYPE"));
-                System.out.println(Integer.class.getField("TYPE").get(null));
+                public static void main(String args[]) throws NoSuchFieldException, IllegalAccessException {
+                    System.out.println(Person.class.getField("name").get(new Person("Eric")));
+                    System.out.println("Integer.class TYPE is : " + Integer.class.getField("TYPE"));
+                    System.out.println(Integer.class.getField("TYPE").get(null));
+                }
             }
-        }
+        </code>
 
         6.  测试结果：
-        Eric
-        Integer.class TYPE is : public static final java.lang.Class java.lang.Integer.TYPE
-        int
+        <code class="language-diff">
+            Eric
+            Integer.class TYPE is : public static final java.lang.Class java.lang.Integer.TYPE
+            int
 
-        Process finished with exit code 0
+            Process finished with exit code 0
+        </code>
 
         7.  结果分析：
         System.out.println(Person.class.getField("name").get(new Person("Eric")));输出了Eric，很好理解。因为Person.class描述的目标类是Person，所以getField("name")获取的Field对象就是描述Person类里面的name字段的。然后去获取指定实例对象new Person("Eric")中的name字段的值，即Eric。
@@ -1801,62 +1821,68 @@
             Character类中的TYPE字段：public static final Class<&lt;Character&gt; TYPE = (Class&lt;Character&gt;) Class.getPrimitiveClass("char");
 
         8.  我们全面验证下8种包装类型的TYPE字段取出来都是啥：
-        package zeh.test.demo.com;
+        <code class="language-java">
+            package zeh.test.demo.com;
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2020-06-24
-         */
-        public class Test {
+            /**
+             * 功能描述
+             *
+             * @since 2020-06-24
+             */
+            public class Test {
 
-            public static void main(String args[]) throws NoSuchFieldException, IllegalAccessException {
-                System.out.println(Byte.class.getField("TYPE").get(null));
-                System.out.println(Short.class.getField("TYPE").get(null));
-                System.out.println(Integer.class.getField("TYPE").get(null));
-                System.out.println(Long.class.getField("TYPE").get(null));
-                System.out.println(Float.class.getField("TYPE").get(null));
-                System.out.println(Double.class.getField("TYPE").get(null));
-                System.out.println(Boolean.class.getField("TYPE").get(null));
-                System.out.println(Character.class.getField("TYPE").get(null));
+                public static void main(String args[]) throws NoSuchFieldException, IllegalAccessException {
+                    System.out.println(Byte.class.getField("TYPE").get(null));
+                    System.out.println(Short.class.getField("TYPE").get(null));
+                    System.out.println(Integer.class.getField("TYPE").get(null));
+                    System.out.println(Long.class.getField("TYPE").get(null));
+                    System.out.println(Float.class.getField("TYPE").get(null));
+                    System.out.println(Double.class.getField("TYPE").get(null));
+                    System.out.println(Boolean.class.getField("TYPE").get(null));
+                    System.out.println(Character.class.getField("TYPE").get(null));
+                }
             }
-        }
+        </code>
+
 
         9.  我们看到8种包装类型中，TYPE字段实际上都是public static final的，即本身就是常量，因此，我们可以直接通过包装类的类名进行访问：
-        package zeh.test.demo.com;
+        <code class="language-java">
+            package zeh.test.demo.com;
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2020-06-24
-         */
-        public class Test {
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2020-06-24
+             */
+            public class Test {
 
-            public static void main(String args[]) {
-                System.out.println(Byte.TYPE);
-                System.out.println(Short.TYPE);
-                System.out.println(Integer.TYPE);
-                System.out.println(Long.TYPE);
-                System.out.println(Float.TYPE);
-                System.out.println(Double.TYPE);
-                System.out.println(Boolean.TYPE);
-                System.out.println(Character.TYPE);
+                public static void main(String args[]) {
+                    System.out.println(Byte.TYPE);
+                    System.out.println(Short.TYPE);
+                    System.out.println(Integer.TYPE);
+                    System.out.println(Long.TYPE);
+                    System.out.println(Float.TYPE);
+                    System.out.println(Double.TYPE);
+                    System.out.println(Boolean.TYPE);
+                    System.out.println(Character.TYPE);
+                }
             }
-        }
+        </code>
 
         10. 上面两种方式的测试结果是一致的，如下：
-        byte
-        short
-        int
-        long
-        float
-        double
-        boolean
-        char
+        <code class="language-diff">
+            byte
+            short
+            int
+            long
+            float
+            double
+            boolean
+            char
 
-        Process finished with exit code 0
+            Process finished with exit code 0
+        </code>
 
     </pre>
     <b><a name='header-n16' class='md-header-anchor '></a>1.6、 isPrimitive实现基本类型和对应包装类型的通用判断</b>
@@ -1868,84 +1894,88 @@
             （2） Integer.TYPE;
         4.  分析上述两种方式，很明显，第二种直接通过包装类获取TYPE的方式根本无法进行扩展。因为如果要实现一个通用的方法去专门实现包装类型的判断的话，我们无法从外部就直接传入一个包装类的TYPE。因为我们不知道要传入的对象是啥啊。而第一种方式，外部只需要传入一个class对象即可。
         5.  测试：
-        package zeh.test.demo.com;
-
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2020-06-24
-         */
-        public class Test {
-
-            public static void main(String args[]) {
-                System.out.println(isPrimitive(byte.class));
-                System.out.println(isPrimitive(short.class));
-                System.out.println(isPrimitive(int.class));
-                System.out.println(isPrimitive(long.class));
-                System.out.println(isPrimitive(float.class));
-                System.out.println(isPrimitive(double.class));
-                System.out.println(isPrimitive(boolean.class));
-                System.out.println(isPrimitive(char.class));
-                System.out.println(isPrimitive(Byte.class));
-                System.out.println(isPrimitive(Short.class));
-                System.out.println(isPrimitive(Integer.class));
-                System.out.println(isPrimitive(Long.class));
-                System.out.println(isPrimitive(Float.class));
-                System.out.println(isPrimitive(Double.class));
-                System.out.println(isPrimitive(Boolean.class));
-                System.out.println(isPrimitive(Character.class));
-
-                System.out.println(isPrimitive(Object.class));
-                System.out.println(isPrimitive(Person.class));
-            }
+        <code class="language-java">
+            package zeh.test.demo.com;
 
             /**
-             * 判断目标clazz对象是否是基本类型或其对应的包装类型
+             * 功能描述
              *
-             * @param clazz 目标clazz对象
-             * @return true：是基本类型 false：不是基本类型
+             * @since 2020-06-24
              */
-            public static boolean isPrimitive(Class clazz) {
-                return clazz.isPrimitive() || isWrapPrimitive(clazz);
-            }
+            public class Test {
 
-            /**
-             * 判断目标clazz对象是否是包装类型
-             *
-             * @param clazz 目标clazz对象
-             * @return true：是包装类型 false：不是包装类型
-             */
-            public static boolean isWrapPrimitive(Class clazz) {
-                try {
-                    return ((Class) (clazz.getField("TYPE").get(null))).isPrimitive();
-                } catch (Exception e) {
-                    return false;
+                public static void main(String args[]) {
+                    System.out.println(isPrimitive(byte.class));
+                    System.out.println(isPrimitive(short.class));
+                    System.out.println(isPrimitive(int.class));
+                    System.out.println(isPrimitive(long.class));
+                    System.out.println(isPrimitive(float.class));
+                    System.out.println(isPrimitive(double.class));
+                    System.out.println(isPrimitive(boolean.class));
+                    System.out.println(isPrimitive(char.class));
+                    System.out.println(isPrimitive(Byte.class));
+                    System.out.println(isPrimitive(Short.class));
+                    System.out.println(isPrimitive(Integer.class));
+                    System.out.println(isPrimitive(Long.class));
+                    System.out.println(isPrimitive(Float.class));
+                    System.out.println(isPrimitive(Double.class));
+                    System.out.println(isPrimitive(Boolean.class));
+                    System.out.println(isPrimitive(Character.class));
+
+                    System.out.println(isPrimitive(Object.class));
+                    System.out.println(isPrimitive(Person.class));
+                }
+
+                /**
+                 * 判断目标clazz对象是否是基本类型或其对应的包装类型
+                 *
+                 * @param clazz 目标clazz对象
+                 * @return true：是基本类型 false：不是基本类型
+                 */
+                public static boolean isPrimitive(Class clazz) {
+                    return clazz.isPrimitive() || isWrapPrimitive(clazz);
+                }
+
+                /**
+                 * 判断目标clazz对象是否是包装类型
+                 *
+                 * @param clazz 目标clazz对象
+                 * @return true：是包装类型 false：不是包装类型
+                 */
+                public static boolean isWrapPrimitive(Class clazz) {
+                    try {
+                        return ((Class) (clazz.getField("TYPE").get(null))).isPrimitive();
+                    } catch (Exception e) {
+                        return false;
+                    }
                 }
             }
-        }
+        </code>
+
 
         6.  测试结果：
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        true
-        false
-        false
+        <code class="language-diff">
+            true
+            true
+            true
+            true
+            true
+            true
+            true
+            true
+            true
+            true
+            true
+            true
+            true
+            true
+            true
+            true
+            false
+            false
 
-        Process finished with exit code 0
+            Process finished with exit code 0
+        </code>
     </pre>
 </div>
 </body>

@@ -1595,9 +1595,10 @@
     .md-lang {
         color: rgb(180, 101, 77);
     }
-
-
     </style>
+    <link rel="stylesheet" href="../../../highlight/styles/default.css">
+    <script src="../../../highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body class='typora-export'>
 <div id='write' class='is-node'>
@@ -1605,165 +1606,167 @@
     <b><a name='header-n1' class='md-header-anchor '></a>1、跟本地类、匿名类等相关的api测试</b><br>
     <b><a name='header-n11' class='md-header-anchor '></a>1.1、 修改上述案例中的ClassD如下：</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        package zeh.test.demo.com.class1;
-
-        /**
-         * 功能描述 ClassD内部定义了各种内部类
-         *
-         * @author zWX5331241
-         * @since 2021-03-11
-         */
-        public class ClassD extends ClassC {
-            private static String staticStr = "外部类的静态成员";
-
-            private String privateStr = "外部类的private成员";
-
-            private String str = "外部类的成员";
-
-            @Override
-            public void abstractFun() {
-                System.out.println("ClassD implements");
-            }
-
-            public void testD() {
-                System.out.println("ClassD testD");
-            }
+        <code class="language-java">
+            package zeh.test.demo.com.class1;
 
             /**
-             * 虽然内部类可以无条件的访问外部类的成员和方法，但是外部类想要访问内部类的成员和方法，就需要明确创建内部类的对象了。
+             * 功能描述 ClassD内部定义了各种内部类
+             *
+             * @author zWX5331241
+             * @since 2021-03-11
              */
-            public void doInnerField() {
-                // 外部类中必须先常见成员内部类的对象才能访问内部类的成员和方法
-                new Inter().testInner();
-                System.out.println(new Inter().str);
-            }
+            public class ClassD extends ClassC {
+                private static String staticStr = "外部类的静态成员";
 
-            /**
-             * 定义一个成员内部类：成员内部类可以无条件的访问自己的外部类中测成员属性和成员方法（包括静态成员和private成员）
-             */
-            class Inter {
+                private String privateStr = "外部类的private成员";
 
-                private String str = "内部类的private成员，和外部类的private成员同名，将对外部类的private成员进行覆盖";
+                private String str = "外部类的成员";
 
-                /**
-                 * 内部类定义了和外部类的同名方法，也将对外部类的同名方法进行覆盖。
-                 */
+                @Override
+                public void abstractFun() {
+                    System.out.println("ClassD implements");
+                }
+
                 public void testD() {
-                    System.out.println("Inter testD");
+                    System.out.println("ClassD testD");
                 }
-
-                public void testInner() {
-                    System.out.println("测试成员内部类，staticStr = " + staticStr + ";privateStr = " + privateStr);
-
-                    // 因为成员内部类对外部类的同名属性和方法进行了覆盖，所以如果直接访问的话访问的将是内部类覆盖后的成员和方法。
-                    System.out.println("访问str成员，实际上访问的就是内部类自己覆盖后的str：" + str);
-                    // 直接执行testD方法也是一样
-                    testD();
-
-                    // 如果想继续访问外部类的成员和方法，则必须实例化一个ClassD外部类的对象;或者直接使用 "类名.this.成员" 的方式显式指定当前的this是内部类还是外部类的。
-                    // 方式一：直接创建外部类对象。
-                    new ClassD().testD();
-                    System.out.println(new ClassD().str);
-
-                    // 方式二：通过“外部类.this.成员”的方式指定this代表的是外部类的this。如果直接使用this肯定是当前类的this。
-                    // 说明：“类名.this.成员”或者“类名.super.成员”这种方式只有在存在内部类外部类的时候才有这种语法。
-                    ClassD.this.testD();
-                    System.out.println(ClassD.this.str);
-                }
-            }
-
-
-            /**
-             * 定义一个方法，专门访问局部内部类
-             */
-            public void testFunInner() {
 
                 /**
-                 * 定义一个局部内部类，局部内部类是定义在方法或者某个作用域里面的，就像局部变量一样，是不能有任何访问权限修饰和static修饰的。
-                 *
-                 * 局部内部类也称为本地类。
-                 *
-                 * 局部内部类也可以无条件的访问外部类中的成员和方法。但是外部类可不能随意的访问局部内部类，只能在当前方法中才能访问局部内部类。
-                 *
-                 * 局部内部类和成员内部类的区别在于，局部内部类只能在当前的作用域或者当前的方法中进行访问。
+                 * 虽然内部类可以无条件的访问外部类的成员和方法，但是外部类想要访问内部类的成员和方法，就需要明确创建内部类的对象了。
                  */
-                class FunInner {
-                    private String funStr = "局部内部类的成员";
+                public void doInnerField() {
+                    // 外部类中必须先常见成员内部类的对象才能访问内部类的成员和方法
+                    new Inter().testInner();
+                    System.out.println(new Inter().str);
+                }
 
-                    private String str = "局部内部类的private成员，和外部类的private成员同名，将对外部类的private成员进行覆盖";
+                /**
+                 * 定义一个成员内部类：成员内部类可以无条件的访问自己的外部类中测成员属性和成员方法（包括静态成员和private成员）
+                 */
+                class Inter {
 
-                    public void testFunInner() {
-                        System.out.println("局部内部类的方法，staticStr = " + staticStr + ";privateStr = " + privateStr);
-                        System.out.println("访问str成员，实际上访问的就是局部内部类自己覆盖后的str：" + str);
+                    private String str = "内部类的private成员，和外部类的private成员同名，将对外部类的private成员进行覆盖";
 
-                        // 明确指定要访问外部类的同名成员才可
+                    /**
+                     * 内部类定义了和外部类的同名方法，也将对外部类的同名方法进行覆盖。
+                     */
+                    public void testD() {
+                        System.out.println("Inter testD");
+                    }
+
+                    public void testInner() {
+                        System.out.println("测试成员内部类，staticStr = " + staticStr + ";privateStr = " + privateStr);
+
+                        // 因为成员内部类对外部类的同名属性和方法进行了覆盖，所以如果直接访问的话访问的将是内部类覆盖后的成员和方法。
+                        System.out.println("访问str成员，实际上访问的就是内部类自己覆盖后的str：" + str);
+                        // 直接执行testD方法也是一样
+                        testD();
+
+                        // 如果想继续访问外部类的成员和方法，则必须实例化一个ClassD外部类的对象;或者直接使用 "类名.this.成员" 的方式显式指定当前的this是内部类还是外部类的。
+                        // 方式一：直接创建外部类对象。
+                        new ClassD().testD();
+                        System.out.println(new ClassD().str);
+
+                        // 方式二：通过“外部类.this.成员”的方式指定this代表的是外部类的this。如果直接使用this肯定是当前类的this。
+                        // 说明：“类名.this.成员”或者“类名.super.成员”这种方式只有在存在内部类外部类的时候才有这种语法。
+                        ClassD.this.testD();
                         System.out.println(ClassD.this.str);
                     }
                 }
 
-                // 只能在当前域中访问局部内部类，同理，需要创建局部内部类的对象才能访问局部内部类
-                FunInner funInner = new FunInner();
-                funInner.testFunInner();
-                System.out.println(new FunInner().funStr);
 
-                // 判断 FunInner 是否是本地类
-                System.out.println("FunInner 是否是本地类？" + FunInner.class.isLocalClass());
-            }
+                /**
+                 * 定义一个方法，专门访问局部内部类
+                 */
+                public void testFunInner() {
 
+                    /**
+                     * 定义一个局部内部类，局部内部类是定义在方法或者某个作用域里面的，就像局部变量一样，是不能有任何访问权限修饰和static修饰的。
+                     *
+                     * 局部内部类也称为本地类。
+                     *
+                     * 局部内部类也可以无条件的访问外部类中的成员和方法。但是外部类可不能随意的访问局部内部类，只能在当前方法中才能访问局部内部类。
+                     *
+                     * 局部内部类和成员内部类的区别在于，局部内部类只能在当前的作用域或者当前的方法中进行访问。
+                     */
+                    class FunInner {
+                        private String funStr = "局部内部类的成员";
 
-            /**
-             * 定义一个方法，专门实现匿名内部类。
-             * 匿名内部类一般用于实现接口，通过匿名实现接口进行回调逻辑的指定。
-             */
-            public MyInterface testNiMingInner() {
-                // 没有定义类名，直接创建某个类的对象，并实现某个类中的方法。
-                // 匿名内部类的实现必须具备父类或者接口的前提，才有匿名内部类的实现。
-                // 匿名内部类是唯一一种没有构造器的类。正因为其没有构造器，所以匿名内部类的使用范围非常有限，大部分匿名内部类用于接口回调。
-                // 匿名内部类在编译的时候由系统自动起名为Outter$1.class。一般来说，匿名内部类用于继承其他类或是实现接口，并不需要增加额外的方法，只是对继承方法的实现或是重写。
-                MyInterface myInterface = new MyInterface() {
-                    @Override
-                    public void abstractFun() {
-                        System.out.println("匿名内部类实现的abstractFun");
+                        private String str = "局部内部类的private成员，和外部类的private成员同名，将对外部类的private成员进行覆盖";
+
+                        public void testFunInner() {
+                            System.out.println("局部内部类的方法，staticStr = " + staticStr + ";privateStr = " + privateStr);
+                            System.out.println("访问str成员，实际上访问的就是局部内部类自己覆盖后的str：" + str);
+
+                            // 明确指定要访问外部类的同名成员才可
+                            System.out.println(ClassD.this.str);
+                        }
                     }
 
-                    @Override
-                    public void eat() {
-                        System.out.println("匿名内部类实现的eat");
+                    // 只能在当前域中访问局部内部类，同理，需要创建局部内部类的对象才能访问局部内部类
+                    FunInner funInner = new FunInner();
+                    funInner.testFunInner();
+                    System.out.println(new FunInner().funStr);
+
+                    // 判断 FunInner 是否是本地类
+                    System.out.println("FunInner 是否是本地类？" + FunInner.class.isLocalClass());
+                }
+
+
+                /**
+                 * 定义一个方法，专门实现匿名内部类。
+                 * 匿名内部类一般用于实现接口，通过匿名实现接口进行回调逻辑的指定。
+                 */
+                public MyInterface testNiMingInner() {
+                    // 没有定义类名，直接创建某个类的对象，并实现某个类中的方法。
+                    // 匿名内部类的实现必须具备父类或者接口的前提，才有匿名内部类的实现。
+                    // 匿名内部类是唯一一种没有构造器的类。正因为其没有构造器，所以匿名内部类的使用范围非常有限，大部分匿名内部类用于接口回调。
+                    // 匿名内部类在编译的时候由系统自动起名为Outter$1.class。一般来说，匿名内部类用于继承其他类或是实现接口，并不需要增加额外的方法，只是对继承方法的实现或是重写。
+                    MyInterface myInterface = new MyInterface() {
+                        @Override
+                        public void abstractFun() {
+                            System.out.println("匿名内部类实现的abstractFun");
+                        }
+
+                        @Override
+                        public void eat() {
+                            System.out.println("匿名内部类实现的eat");
+                        }
+
+                        @Override
+                        public void drink() {
+                            System.out.println("匿名内部类实现的drink");
+                        }
+
+                        @Override
+                        public void sleep() {
+                            System.out.println("匿名内部类实现的sleep");
+                        }
+                    };
+                    myInterface.drink();
+                    myInterface.abstractFun();
+                    myInterface.eat();
+                    myInterface.sleep();
+
+                    // 返回该匿名类对象
+                    return myInterface;
+                }
+
+                /**
+                 * 定义一个静态内部类，静态内部类就好像一个类的静态成员。
+                 * 静态内部类不能访问外部类的非静态成员，如果要访问，必须明确创建外部类的对象。
+                 */
+                static class StaticInner {
+
+                    private String str = "静态内部类中的成员";
+
+                    public void testStaticInner() {
+                        System.out.println("测试成员内部类，staticStr = " + staticStr + ";privateStr = " + new ClassD().privateStr);
+                        System.out.println(str);
                     }
-
-                    @Override
-                    public void drink() {
-                        System.out.println("匿名内部类实现的drink");
-                    }
-
-                    @Override
-                    public void sleep() {
-                        System.out.println("匿名内部类实现的sleep");
-                    }
-                };
-                myInterface.drink();
-                myInterface.abstractFun();
-                myInterface.eat();
-                myInterface.sleep();
-
-                // 返回该匿名类对象
-                return myInterface;
-            }
-
-            /**
-             * 定义一个静态内部类，静态内部类就好像一个类的静态成员。
-             * 静态内部类不能访问外部类的非静态成员，如果要访问，必须明确创建外部类的对象。
-             */
-            static class StaticInner {
-
-                private String str = "静态内部类中的成员";
-
-                public void testStaticInner() {
-                    System.out.println("测试成员内部类，staticStr = " + staticStr + ";privateStr = " + new ClassD().privateStr);
-                    System.out.println(str);
                 }
             }
-        }
+        </code>
     </pre>
 
 </div>

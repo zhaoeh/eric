@@ -1595,9 +1595,10 @@
     .md-lang {
         color: rgb(180, 101, 77);
     }
-
-
     </style>
+    <link rel="stylesheet" href="../../../highlight/styles/default.css">
+    <script src="../../../highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body class='typora-export'>
 <div id='write' class='is-node'>
@@ -1607,130 +1608,136 @@
     <b><a name='header-n11' class='md-header-anchor '></a>1.1、 准备几个操作类</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <font color="#a52a2a">MyInterface</font>
-        package zeh.test.demo.com.class1;
+        <code class="language-java">
+            package zeh.test.demo.com.class1;
 
-        /**
-         * 功能描述 顶层接口
-         *
-         * @author zWX5331241
-         * @since 2021-03-11
-         */
-        public interface MyInterface {
-            void abstractFun();
+            /**
+             * 功能描述 顶层接口
+             *
+             * @author zWX5331241
+             * @since 2021-03-11
+             */
+            public interface MyInterface {
+                void abstractFun();
 
-            void eat();
+                void eat();
 
-            void drink();
+                void drink();
 
-            void sleep();
-        }
+                void sleep();
+            }
+        </code>
 
         <font color="#a52a2a">ClassA</font>
-        package zeh.test.demo.com.class1;
+        <code class="language-java">
+            package zeh.test.demo.com.class1;
 
-        /**
-         * 功能描述 classA实现MyInterface
-         *
-         * @author zWX5331241
-         * @since 2021-03-11
-         */
-        public class ClassA implements MyInterface {
+            /**
+             * 功能描述 classA实现MyInterface
+             *
+             * @since 2021-03-11
+             */
+            public class ClassA implements MyInterface {
 
-            @Override
-            public void abstractFun() {
-                System.out.println("ClassA implements");
+                @Override
+                public void abstractFun() {
+                    System.out.println("ClassA implements");
+                }
+
+                @Override
+                public void eat() {
+                    System.out.println("ClassA eat");
+                }
+
+                @Override
+                public void drink() {
+                    System.out.println("ClassA drink");
+                }
+
+                @Override
+                public void sleep() {
+                    System.out.println("ClassA sleep");
+                }
+
+                public void testA() {
+                    System.out.println("ClassA testA");
+                }
             }
-
-            @Override
-            public void eat() {
-                System.out.println("ClassA eat");
-            }
-
-            @Override
-            public void drink() {
-                System.out.println("ClassA drink");
-            }
-
-            @Override
-            public void sleep() {
-                System.out.println("ClassA sleep");
-            }
-
-            public void testA() {
-                System.out.println("ClassA testA");
-            }
-        }
+        </code>
 
         <font color="#a52a2a">ClassB</font>
-        package zeh.test.demo.com.class1;
+        <code class="language-java">
+            package zeh.test.demo.com.class1;
 
-        /**
-         * 功能描述 ClassB 继承 ClassA
-         *
-         * @author zWX5331241
-         * @since 2021-03-11
-         */
-        public class ClassB extends ClassA {
-            @Override
-            public void abstractFun() {
-                System.out.println("ClassB implements");
+            /**
+             * 功能描述 ClassB 继承 ClassA
+             *
+             * @since 2021-03-11
+             */
+            public class ClassB extends ClassA {
+                @Override
+                public void abstractFun() {
+                    System.out.println("ClassB implements");
+                }
+
+                @Override
+                public void drink(){
+                    System.out.println("ClassB drink");
+                }
+
+                public void testB() {
+                    System.out.println("ClassB testB");
+                }
+
             }
-
-            @Override
-            public void drink(){
-                System.out.println("ClassB drink");
-            }
-
-            public void testB() {
-                System.out.println("ClassB testB");
-            }
-
-        }
+        </code>
 
         <font color="#a52a2a">ClassC</font>
-        package zeh.test.demo.com.class1;
+        <code class="language-java">
+            package zeh.test.demo.com.class1;
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-03-11
-         */
-        public class ClassC extends ClassB {
-            @Override
-            public void abstractFun() {
-                System.out.println("ClassC implements");
-            }
+            /**
+             * 功能描述
+             *
+             * @since 2021-03-11
+             */
+            public class ClassC extends ClassB {
+                @Override
+                public void abstractFun() {
+                    System.out.println("ClassC implements");
+                }
 
-            @Override
-            public void sleep(){
-                System.out.println("ClassC sleep");
-            }
+                @Override
+                public void sleep(){
+                    System.out.println("ClassC sleep");
+                }
 
-            public void testC() {
-                System.out.println("ClassC testC");
+                public void testC() {
+                    System.out.println("ClassC testC");
+                }
             }
-        }
+        </code>
 
         <font color="#a52a2a">ClassD</font>
-        package zeh.test.demo.com.class1;
+        <code class="language-java">
+            package zeh.test.demo.com.class1;
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-03-11
-         */
-        public class ClassD extends ClassC {
-            @Override
-            public void abstractFun() {
-                System.out.println("ClassD implements");
-            }
+            /**
+             * 功能描述
+             *
+             * @since 2021-03-11
+             */
+            public class ClassD extends ClassC {
+                @Override
+                public void abstractFun() {
+                    System.out.println("ClassD implements");
+                }
 
-            public void testD() {
-                System.out.println("ClassD testD");
+                public void testD() {
+                    System.out.println("ClassD testD");
+                }
             }
-        }
+        </code>
 
     </pre>
     <b><a name='header-n12' class='md-header-anchor '></a>1.2、 asSubclass方法</b>
@@ -1753,39 +1760,43 @@
             对于未知的class实例类型，比如由外部传入进来的，我们需要使用asSubclass来窄化未知的Class类型的范围，即对未知的class对象所属的类型范围进行一个窄化的限制，让它固定属于某个类型范围；如果不属于应该去做其他处理。
             说白了，asSubclass就是一个判断，判断当前的class对象是否是目标class对象所表示的类型或者是目标class对象所表示的类型的子类型。
         6.  测试：
-        package zeh.test.demo.com.class1;
+        <code class="language-java">
+            package zeh.test.demo.com.class1;
 
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-03-23
-         */
-        public class TestClassApi {
-            public static void main(String[] args) {
-                // 当前class对象是 ClassA.class，它是目标class对象 ClassA.class 所表示的类型，因此返回的是 ClassA.class 所表示的类型。
-                Class&lt;? extends ClassA&gt; classA = ClassA.class.asSubclass(ClassA.class);
-                System.out.println(classA.getSimpleName());
+            /**
+             * 功能描述
+             *
+             * @author zWX5331241
+             * @since 2021-03-23
+             */
+            public class TestClassApi {
+                public static void main(String[] args) {
+                    // 当前class对象是 ClassA.class，它是目标class对象 ClassA.class 所表示的类型，因此返回的是 ClassA.class 所表示的类型。
+                    Class&lt;? extends ClassA&gt; classA = ClassA.class.asSubclass(ClassA.class);
+                    System.out.println(classA.getSimpleName());
 
-                // 当前class对象是 ClassA.class，它是目标class对象 MyInterface.class 所表示的类型的子类型，因此返回的是 MyInterface.class 所表示的某个子类型，即 Class&lt;? extends MyInterface&gt;。
-                Class&lt;? extends MyInterface&gt; myInterface = ClassA.class.asSubclass(MyInterface.class);
-                System.out.println(myInterface.getSimpleName());
+                    // 当前class对象是 ClassA.class，它是目标class对象 MyInterface.class 所表示的类型的子类型，因此返回的是 MyInterface.class 所表示的某个子类型，即 Class&lt;? extends MyInterface&gt;。
+                    Class&lt;? extends MyInterface&gt; myInterface = ClassA.class.asSubclass(MyInterface.class);
+                    System.out.println(myInterface.getSimpleName());
 
-                // 当前class对象是 ClassA.class，它不是目标class对象 ClassD.class 所表示的类型，因此抛出异常 Exception in thread "main" java.lang.ClassCastException: class zeh.test.demo.com.class1.ClassA
-                Class&lt;? extends ClassD&gt; classD = ClassA.class.asSubclass(ClassD.class);
-                System.out.println(classD.getSimpleName());
+                    // 当前class对象是 ClassA.class，它不是目标class对象 ClassD.class 所表示的类型，因此抛出异常 Exception in thread "main" java.lang.ClassCastException: class zeh.test.demo.com.class1.ClassA
+                    Class&lt;? extends ClassD&gt; classD = ClassA.class.asSubclass(ClassD.class);
+                    System.out.println(classD.getSimpleName());
+                }
             }
-        }
+        </code>
 
         7.  测试结果：
-        ClassA
-        ClassA
-        Exception in thread "main" java.lang.ClassCastException: class zeh.test.demo.com.class1.ClassA
-            at java.lang.Class.asSubclass(Class.java:3404)
-            at zeh.test.demo.com.class1.TestClassApi.main(TestClassApi.java:21)
+        <code class="language-diff">
+            ClassA
+            ClassA
+            Exception in thread "main" java.lang.ClassCastException: class zeh.test.demo.com.class1.ClassA
+                at java.lang.Class.asSubclass(Class.java:3404)
+                at zeh.test.demo.com.class1.TestClassApi.main(TestClassApi.java:21)
 
-        Process finished with exit code 1
+            Process finished with exit code 1
+        </code>
     </pre>
     <b><a name='header-n13' class='md-header-anchor '></a>1.3、 cast方法</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
@@ -1794,58 +1805,61 @@
         3.  返回值：目标对象强制转换后的对象，如果目标对象是null，则返回null。
         4.  java中存在类型转换，分为自动类型转换和强制类型转换，cast方法实际上就是对类型转换的编码式实现（自动转换和强制转换的编码式实现）。即cast方法实际上就是将目标对象转换为当前class表示的类型，转换成功则返回转换后的对象，规则直接抛出类型转换异常。
         5.  测试：
-        package zeh.test.demo.com.class1;
+        <code class="language-java">
+            package zeh.test.demo.com.class1;
 
+            /**
+             * 功能描述
+             *
+             * @since 2021-03-23
+             */
+            public class TestClassApi {
+                public static void main(String[] args) {
+                    // 目标对象
+                    ClassC classC = new ClassC();
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-03-23
-         */
-        public class TestClassApi {
-            public static void main(String[] args) {
-                // 目标对象
-                ClassC classC = new ClassC();
+                    // 当前类型：ClassA，将目标对象classD强制转换为当前类型 ClassA
+                    // 仔细观察，此处实际上就是向上转型
+                    ClassA classA = ClassA.class.cast(classC);
+                    classA.eat();
 
-                // 当前类型：ClassA，将目标对象classD强制转换为当前类型 ClassA
-                // 仔细观察，此处实际上就是向上转型
-                ClassA classA = ClassA.class.cast(classC);
-                classA.eat();
+                    // 此处实际上就是向下转型，向下转型前必须进行向上转型
+                    classC = ClassC.class.cast(classA);
+                    classC.testC();
 
-                // 此处实际上就是向下转型，向下转型前必须进行向上转型
-                classC = ClassC.class.cast(classA);
-                classC.testC();
+                    // 此处实际上就是向下转型，将classA向下转型为ClassD，因为前面没有发生继承链上对应的向上转型，因此抛出类型转换异常
+                    try {
+                        ClassD classD = ClassD.class.cast(classA);
+                        classD.testD();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
-                // 此处实际上就是向下转型，将classA向下转型为ClassD，因为前面没有发生继承链上对应的向上转型，因此抛出类型转换异常
-                try {
-                    ClassD classD = ClassD.class.cast(classA);
-                    classD.testD();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    // 如果目标对象是null值，则直接返回null值
+                    Object obj = ClassD.class.cast(null);
+                    System.out.println(obj);
+
+                    // 目标对象是基本类型，则会自动装箱，装箱后再进行强制转换
+                    Integer integer = Integer.class.cast(124);
+                    System.out.println(integer);
+
                 }
-
-                // 如果目标对象是null值，则直接返回null值
-                Object obj = ClassD.class.cast(null);
-                System.out.println(obj);
-
-                // 目标对象是基本类型，则会自动装箱，装箱后再进行强制转换
-                Integer integer = Integer.class.cast(124);
-                System.out.println(integer);
-
             }
-        }
+        </code>
+
 
         6.  测试结果：
-        ClassA eat
-        ClassC testC
-        null
-        124
-        java.lang.ClassCastException: Cannot cast zeh.test.demo.com.class1.ClassC to zeh.test.demo.com.class1.ClassD
-            at java.lang.Class.cast(Class.java:3369)
-            at zeh.test.demo.com.class1.TestClassApi.main(TestClassApi.java:26)
+        <code class="language-diff">
+            ClassA eat
+            ClassC testC
+            null
+            124
+            java.lang.ClassCastException: Cannot cast zeh.test.demo.com.class1.ClassC to zeh.test.demo.com.class1.ClassD
+                at java.lang.Class.cast(Class.java:3369)
+                at zeh.test.demo.com.class1.TestClassApi.main(TestClassApi.java:26)
 
-        Process finished with exit code 0
+            Process finished with exit code 0
+        </code>
 
     </pre>
     <b><a name='header-n14' class='md-header-anchor '></a>1.4、 getCanonicalName方法</b>
@@ -1854,25 +1868,27 @@
         2.  说明：返回 Java Language Specification 中所定义的底层类的规范化名称。如果底层类没有规范化名称（即如果底层类是一个组件类型没有规范化名称的本地类、匿名类或数组），则返回 null。
         3.  返回值：底层类的规范化命名，实际上就是一个类的权限定名称。
         4.  测试：
-        package zeh.test.demo.com.class1;
+        <code class="language-java">
+            package zeh.test.demo.com.class1;
 
-
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-03-23
-         */
-        public class TestClassApi {
-            public static void main(String[] args) {
-                System.out.println(ClassA.class.getCanonicalName());
+            /**
+             * 功能描述
+             *
+             * @since 2021-03-23
+             */
+            public class TestClassApi {
+                public static void main(String[] args) {
+                    System.out.println(ClassA.class.getCanonicalName());
+                }
             }
-        }
+        </code>
 
         5.  测试结果：
-        zeh.test.demo.com.class1.ClassA
+        <code class="language-diff">
+            zeh.test.demo.com.class1.ClassA
 
-        Process finished with exit code 0
+            Process finished with exit code 0
+        </code>
 
     </pre>
     <b><a name='header-n15' class='md-header-anchor '></a>1.5、 getComponentType方法</b>
@@ -1881,30 +1897,33 @@
         2.  说明：如果当前class表示的是数组类，则返回表示该数组类型的class对象，否则返回null。
         3.  返回值：一个class对象，如果当前类表示数组类，则返回该数组类型的class对象，否则返回null值。
         4.  测试：
-        package zeh.test.demo.com.class1;
+        <code class="language-java">
+            package zeh.test.demo.com.class1;
 
+            /**
+             * 功能描述
+             *
+             * @since 2021-03-23
+             */
+            public class TestClassApi {
+                public static void main(String[] args) {
+                    // 当前class对象不表示数组，则返回null值
+                    System.out.println(ClassA.class.getComponentType());
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-03-23
-         */
-        public class TestClassApi {
-            public static void main(String[] args) {
-                // 当前class对象不表示数组，则返回null值
-                System.out.println(ClassA.class.getComponentType());
-
-                // 当前class对象表示数组，则返回该数组对应的class对象。
-                System.out.println(new ClassA[]{}.getClass().getComponentType());
+                    // 当前class对象表示数组，则返回该数组对应的class对象。
+                    System.out.println(new ClassA[]{}.getClass().getComponentType());
+                }
             }
-        }
+        </code>
+
 
         5.  测试结果：
-        null
-        class zeh.test.demo.com.class1.ClassA
+        <code class="language-diff">
+            null
+            class zeh.test.demo.com.class1.ClassA
 
-        Process finished with exit code 0
+            Process finished with exit code 0
+        </code>
     </pre>
     <b><a name='header-n16' class='md-header-anchor '></a>1.6、 isAssignableFrom方法</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
@@ -1916,44 +1935,47 @@
         4.  补充：isAssignableFrom表示“我是不是你爸爸”。
             instanceof测试左边的对象是否能够强制转换成右边的类型，而 isAssignableFrom 实际上直接测试的是左边的类型是否是右边的类型，或者是右边类型的父类型。
         5.  测试：
-        package zeh.test.demo.com.class1;
+        <code class="language-java">
+            package zeh.test.demo.com.class1;
 
-        /**
-         * 功能描述
-         *
-         * @author zWX5331241
-         * @since 2021-03-23
-         */
-        public class TestClassApi {
-            public static void main(String[] args) {
-                System.out.println("ClassA 是 MyInterface 或者其爸爸？" + ClassA.class.isAssignableFrom(MyInterface.class));
-                System.out.println("ClassA 是 ClassC 或者其爸爸？" + ClassA.class.isAssignableFrom(ClassC.class));
+            /**
+             * 功能描述
+             *
+             * @since 2021-03-23
+             */
+            public class TestClassApi {
+                public static void main(String[] args) {
+                    System.out.println("ClassA 是 MyInterface 或者其爸爸？" + ClassA.class.isAssignableFrom(MyInterface.class));
+                    System.out.println("ClassA 是 ClassC 或者其爸爸？" + ClassA.class.isAssignableFrom(ClassC.class));
 
-                System.out.println("ClassA 是 int 或者其爸爸？" + ClassA.class.isAssignableFrom(int.class));
-                System.out.println("Integer 是 int 或者其爸爸？" + Integer.class.isAssignableFrom(int.class));
-                System.out.println("int 是 Integer 或者其爸爸？" + int.class.isAssignableFrom(Integer.class));
+                    System.out.println("ClassA 是 int 或者其爸爸？" + ClassA.class.isAssignableFrom(int.class));
+                    System.out.println("Integer 是 int 或者其爸爸？" + Integer.class.isAssignableFrom(int.class));
+                    System.out.println("int 是 Integer 或者其爸爸？" + int.class.isAssignableFrom(Integer.class));
 
-                System.out.println("int 是 char 或者其爸爸？" + int.class.isAssignableFrom(char.class));
-                System.out.println("int 是 int 或者其爸爸？" + int.class.isAssignableFrom(int.class));
+                    System.out.println("int 是 char 或者其爸爸？" + int.class.isAssignableFrom(char.class));
+                    System.out.println("int 是 int 或者其爸爸？" + int.class.isAssignableFrom(int.class));
 
-                // 目标class对象为null值，将抛出空指针异常
-                System.out.println(double.class.isAssignableFrom(null));
+                    // 目标class对象为null值，将抛出空指针异常
+                    System.out.println(double.class.isAssignableFrom(null));
+                }
             }
-        }
+        </code>
 
         6.  测试结果：
-        ClassA 是 MyInterface 或者其爸爸？false
-        ClassA 是 ClassC 或者其爸爸？true
-        ClassA 是 int 或者其爸爸？false
-        Integer 是 int 或者其爸爸？false
-        int 是 Integer 或者其爸爸？false
-        int 是 char 或者其爸爸？false
-        int 是 int 或者其爸爸？true
-        Exception in thread "main" java.lang.NullPointerException
-            at java.lang.Class.isAssignableFrom(Native Method)
-            at zeh.test.demo.com.class1.TestClassApi.main(TestClassApi.java:22)
+        <code class="language-diff">
+            ClassA 是 MyInterface 或者其爸爸？false
+            ClassA 是 ClassC 或者其爸爸？true
+            ClassA 是 int 或者其爸爸？false
+            Integer 是 int 或者其爸爸？false
+            int 是 Integer 或者其爸爸？false
+            int 是 char 或者其爸爸？false
+            int 是 int 或者其爸爸？true
+            Exception in thread "main" java.lang.NullPointerException
+                at java.lang.Class.isAssignableFrom(Native Method)
+                at zeh.test.demo.com.class1.TestClassApi.main(TestClassApi.java:22)
 
-        Process finished with exit code 0
+            Process finished with exit code 0
+        </code>
 
     </pre>
     <b><a name='header-n17' class='md-header-anchor '></a>1.7、 isInstance方法</b>

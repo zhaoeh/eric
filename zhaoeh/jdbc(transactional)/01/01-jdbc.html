@@ -1232,6 +1232,22 @@
             conn.commit();
         </code>
     </pre>
+    <b><a name='header-n83' class='md-header-anchor '></a>8.3、 通过循环控制批处理</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        批处理的特性，往往会被我们应用到完全相同的SQL语句（只是参数不同）中，然后通过循环来迭代提交，如下案例：
+        <code class="language-java">
+            String SQL = "INSERT INTO Employees (id, first, last, age) " + "VALUES(?, ?, ?, ?)";
+            while(resultSet.next()){
+                pstmt.setInt( 1, resultSet.getInt(1) );
+                pstmt.setString( 2, resultSet.getString(2) );
+                pstmt.setString( 3, "resultSet.getString(3) );
+                pstmt.setInt( 4, resultSet.getInt(4) );
+                pstmt.addBatch();
+            }
+        </code>
+        上述案例在模拟一个数据复制的过程，resultSet是从源表中查询出来的数据结果集，然后遍历这个结果集，迭代设置不同的insert参数，每次构建好SQL语句后，进行addBatch操作。
+        最终再统一进行executeBatch。
+    </pre>
 
     <b><a name='header-n9' class='md-header-anchor '></a>9、JDBC操作二进制</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>

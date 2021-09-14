@@ -675,9 +675,10 @@
     .on-focus-mode blockquote {
         border-left-color: rgba(85, 85, 85, 0.12);
     }
-
-
     </style>
+    <link rel="stylesheet" href="../../../highlight/styles/default.css">
+    <script src="../../../highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body class='typora-export'>
 <div id='write' class='is-node'>
@@ -707,7 +708,7 @@
         很明显，对于那种没有setter方法的private成员，只能采用第一种方式进行赋值了。
 
         <b><font color="#a52a2a">通过反射修改普通成员</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package zeh.test.demo.com.fanshe;
 
             import java.lang.reflect.Field;
@@ -755,11 +756,14 @@
                     return "name = " + this.getName();
                 }
             }
-        </font>
+        </code>
         <b><font color="#a52a2a">测试结果</font> </b>
-        name = 奶茶
-        name = 珍珠
-        name = helloworld
+        <code class="language-diff">
+            name = 奶茶
+            name = 珍珠
+            name = helloworld
+        </code>
+
     </pre>
     <b><a name='header-n12' class='md-header-anchor '></a>1.2、 使用反射修改final常量成员</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
@@ -772,7 +776,7 @@
         </font>
 
         <b><font color="#a52a2a">通过反射修改final常量的值</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package zeh.test.demo.com.fanshe;
 
             import java.lang.reflect.Field;
@@ -808,10 +812,13 @@
                     return "name = " + stringBuilder.toString();
                 }
             }
-        </font>
+        </code>
         <b><font color="#a52a2a">测试结果</font> </b>
-        name = 奶茶
-        name = 珍珠
+        <code class="language-diff">
+            name = 奶茶
+            name = 珍珠
+        </code>
+
         <b><font color="#a52a2a">结果分析</font> </b>
         从结果上看，通过反射修改了目标对象cat的final常量stringBuilder的值。
         而stringBuilder是个引用对象，比如它在反射前指向的是A这个空间，反射后让它指向了B。即改变了它的内存指向。
@@ -821,13 +828,15 @@
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         java中对于基本类型和String，在使用final操作时，如果是直接赋值的方式进行初始化，则称这些值为字面量。
         比如：
-        private final int a = 10;
-        private final String str = "eric";
+        <code class="language-java">
+            private final int a = 10;
+            private final String str = "eric";
+        </code>
         像这种直接给简单类型初始化为字面量的操作，java编译器会进行一种优化，叫做宏替换。
         即在后续所有使用到a和str的地方，都会直接替换为其对应的字面量，而a和str实际上在编译阶段就已经明确了，它们不会参与JVM中的逻辑，只要用到它们，就是对应的字面量。
         好了，有了这个基础，实际上我们已经知道结论了：对于基本数据类型和String的final常量值，只要在编译阶段能够明确它们的值，则通过反射无法更改他们：
         <b><font color="#a52a2a">反射无法修改编译期间已经明确字面量值的final字段，因为编译器会进行宏替换操作</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package zeh.test.demo.com.fanshe;
 
             import java.lang.reflect.Field;
@@ -887,12 +896,15 @@
                     return "age = " + age1 + ";age2 = " + age2 + ";name1 = " + name1 + ";name2 = " + name2;
                 }
             }
-        </font>
+        </code>
         <b><font color="#a52a2a">测试结果</font> </b>
-        age = 10;age2 = 18;name1 = 奶茶;name2 = 奶茶妹子
-        age = 10;age2 = 28;name1 = 奶茶;name2 = 珍珠大哥
-        20
-        珍珠
+        <code class="language-diff">
+            age = 10;age2 = 18;name1 = 奶茶;name2 = 奶茶妹子
+            age = 10;age2 = 28;name1 = 奶茶;name2 = 珍珠大哥
+            20
+            珍珠
+        </code>
+
         <b><font color="#a52a2a">结果分析</font> </b>
         1.  编译器进行宏替换的final常量字段，反射无法修改，因为这些常量在编译阶段就明确了，不参与JVM的动态操作。
         2.  编译器不进行宏替换的其他字段，比如普通的成员变量和那些引用类型的常量字段，通过反射可以修改，因为它们需要在JVM中进行符号引用向直接引用的替换操作，因此反射可以操作它们。
@@ -911,7 +923,7 @@
         尽管static成员和实例成员有如上主要区别，但static成员仍旧参与JVM的动态操作，也就是说，代码中凡是用到static成员的地方，它依旧是个变量而已。
         因此，通过反射就可以修改它的值。
         <b><font color="#a52a2a">反射修改static成员的值</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package zeh.test.demo.com.fanshe;
 
             import java.lang.reflect.Field;
@@ -945,16 +957,19 @@
                     return "name = " + name;
                 }
             }
-        </font>
+        </code>
          <b><font color="#a52a2a">测试结果</font> </b>
-        name = 奶茶
-        name = 珍珠
+        <code class="language-diff">
+            name = 奶茶
+            name = 珍珠
+        </code>
+
     </pre>
     <b><a name='header-n15' class='md-header-anchor '></a>1.5、 使用反射修改static final成员变量</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         JVM底层对于static final的成员始终是不可访问的，即便使用 field.setAccessible(true);设置也不行。
         <b><font color="#a52a2a">反射修改static final成员的值</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package zeh.test.demo.com.fanshe;
 
             import java.lang.reflect.Field;
@@ -990,14 +1005,17 @@
                     return "name = " + name.toString();
                 }
             }
-        </font>
+        </code>
          <b><font color="#a52a2a">测试结果</font> </b>
-        Exception in thread "main" java.lang.IllegalAccessException: Can not set static final java.lang.StringBuilder field zeh.test.demo.com.fanshe.Cat.name to java.lang.StringBuilder
-            at sun.reflect.UnsafeFieldAccessorImpl.throwFinalFieldIllegalAccessException(UnsafeFieldAccessorImpl.java:76)
-            at sun.reflect.UnsafeFieldAccessorImpl.throwFinalFieldIllegalAccessException(UnsafeFieldAccessorImpl.java:80)
-            at sun.reflect.UnsafeQualifiedStaticObjectFieldAccessorImpl.set(UnsafeQualifiedStaticObjectFieldAccessorImpl.java:77)
-            at java.lang.reflect.Field.set(Field.java:764)
-            at zeh.test.demo.com.fanshe.FanSheMain.main(FanSheMain.java:22)
+        <code class="language-diff">
+            Exception in thread "main" java.lang.IllegalAccessException: Can not set static final java.lang.StringBuilder field zeh.test.demo.com.fanshe.Cat.name to java.lang.StringBuilder
+                at sun.reflect.UnsafeFieldAccessorImpl.throwFinalFieldIllegalAccessException(UnsafeFieldAccessorImpl.java:76)
+                at sun.reflect.UnsafeFieldAccessorImpl.throwFinalFieldIllegalAccessException(UnsafeFieldAccessorImpl.java:80)
+                at sun.reflect.UnsafeQualifiedStaticObjectFieldAccessorImpl.set(UnsafeQualifiedStaticObjectFieldAccessorImpl.java:77)
+                at java.lang.reflect.Field.set(Field.java:764)
+                at zeh.test.demo.com.fanshe.FanSheMain.main(FanSheMain.java:22)
+        </code>
+
     </pre>
     <b><a name='header-n16' class='md-header-anchor '></a>1.6、 使用反射修改static final成员变量-改造</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
@@ -1007,7 +1025,7 @@
         3.  成功修改指定final static字段的值。
         4.  修改完成后再通过反射将final修饰符加回来。
         <b><font color="#a52a2a">反射修改static final成员的值</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package zeh.test.demo.com.fanshe;
 
             import java.lang.reflect.Field;
@@ -1049,10 +1067,13 @@
                     return "name = " + name.toString();
                 }
             }
-        </font>
+        </code>
          <b><font color="#a52a2a">测试结果</font> </b>
-        name = 奶茶
-        name = 珍珠
+        <code class="language-diff">
+            name = 奶茶
+            name = 珍珠
+        </code>
+
     </pre>
 
     <b><a name='header-n2' class='md-header-anchor '></a>2、使用反射调用目标对象的指定方法</b><br>
@@ -1067,7 +1088,7 @@
     <b><a name='header-n22' class='md-header-anchor '></a>2.2、 反射执行目标对象各种方法</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         有的时候，目标方法是private的，只能本类自己调用。这时候如果想要调用private方法，可以采用反射强制调用执行。
-        <font color="gray">
+        <code class="language-java">
             package zeh.test.demo.com.fanshe;
 
             import java.lang.reflect.InvocationTargetException;
@@ -1163,11 +1184,12 @@
                 }
 
             }
-        </font>
+        </code>
         反射目标类的指定方法，还有个特别的用法，那就是method对象可以通过反射目标接口来获得，然后可以执行该接口对应的实现类的指定方法。
         这一点在jdk的动态代理中很有用。
+
         <b><font color="#a52a2a">目标接口FanSheService</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package zeh.test.demo.com.fanshe;
 
             /**
@@ -1180,9 +1202,10 @@
 
                 void method2();
             }
-        </font>
+        </code>
+
         <b><font color="#a52a2a">目标接口实现类FanSheServiceImpl</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package zeh.test.demo.com.fanshe;
 
             /**
@@ -1202,9 +1225,10 @@
                     System.out.println("我是method2");
                 }
             }
-        </font>
+        </code>
+
         <b><font color="#a52a2a">FanSheServiceMain测试</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package zeh.test.demo.com.fanshe;
 
             import java.lang.reflect.InvocationTargetException;
@@ -1223,12 +1247,12 @@
                     method1.invoke(new FanSheServiceImpl());
                 }
             }
-        </font>
+        </code>
         <b><font color="#a52a2a">测试结果</font> </b>
-        <font color="gray">
+        <code class="language-diff">
             我是method1
             我是method2
-        </font>
+        </code>
     </pre>
 
     <b><a name='header-n3' class='md-header-anchor '></a>3、使用反射实例化目标对象</b><br>
@@ -1247,7 +1271,7 @@
         因此：使用Class类的newInstance()方法去创建目标类对象的方式很不实用，因为它要求目标类必须存在空的可访问的构造方法。
 
         <b><font color="#a52a2a">使用Class的newInstance()反射创建目标类实例对象</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package zeh.test.demo.com.fanshe;
 
             /**
@@ -1279,26 +1303,30 @@
                     return "当前对象创建成功";
                 }
             }
-        </font>
+        </code>
         <b><font color="#a52a2a">测试结果</font> </b>
         当前对象创建成功
         <b><font color="#a52a2a">修改程序</font> </b>
         将上面的Cat类的构造方法改造为私有的，将抛出异常:
-        Exception in thread "main" java.lang.IllegalAccessException: Class zeh.test.demo.com.fanshe.FanSheMain can not access a member of class zeh.test.demo.com.fanshe.Cat with modifiers "private"
-            at sun.reflect.Reflection.ensureMemberAccess(Reflection.java:102)
-            at java.lang.Class.newInstance(Class.java:436)
-            at zeh.test.demo.com.fanshe.FanSheMain.createInstance(FanSheMain.java:17)
-            at zeh.test.demo.com.fanshe.FanSheMain.main(FanSheMain.java:11)
+        <code class="language-diff">
+            Exception in thread "main" java.lang.IllegalAccessException: Class zeh.test.demo.com.fanshe.FanSheMain can not access a member of class zeh.test.demo.com.fanshe.Cat with modifiers "private"
+                at sun.reflect.Reflection.ensureMemberAccess(Reflection.java:102)
+                at java.lang.Class.newInstance(Class.java:436)
+                at zeh.test.demo.com.fanshe.FanSheMain.createInstance(FanSheMain.java:17)
+                at zeh.test.demo.com.fanshe.FanSheMain.main(FanSheMain.java:11)
+        </code>
 
         或者删除空构造方法，添加一个有参数的构造方法
-        Exception in thread "main" java.lang.InstantiationException: zeh.test.demo.com.fanshe.Cat
-            at java.lang.Class.newInstance(Class.java:427)
-            at zeh.test.demo.com.fanshe.FanSheMain.createInstance(FanSheMain.java:17)
-            at zeh.test.demo.com.fanshe.FanSheMain.main(FanSheMain.java:11)
-        Caused by: java.lang.NoSuchMethodException: zeh.test.demo.com.fanshe.Cat.&lt;init&gt;()
-            at java.lang.Class.getConstructor0(Class.java:3082)
-            at java.lang.Class.newInstance(Class.java:412)
-            ... 2 more
+        <code class="language-diff">
+            Exception in thread "main" java.lang.InstantiationException: zeh.test.demo.com.fanshe.Cat
+                at java.lang.Class.newInstance(Class.java:427)
+                at zeh.test.demo.com.fanshe.FanSheMain.createInstance(FanSheMain.java:17)
+                at zeh.test.demo.com.fanshe.FanSheMain.main(FanSheMain.java:11)
+            Caused by: java.lang.NoSuchMethodException: zeh.test.demo.com.fanshe.Cat.&lt;init&gt;()
+                at java.lang.Class.getConstructor0(Class.java:3082)
+                at java.lang.Class.newInstance(Class.java:412)
+                ... 2 more
+        </code>
     </pre>
     <b><a name='header-n33' class='md-header-anchor '></a>3.3、 使用Constructor类的newInstance()创建目标类实例对象</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
@@ -1306,7 +1334,7 @@
         2.  通过该构造器描述对象，调用newInstance()方法，传入指定构造器的参数，即可调用目标类指定的构造器去创建目标类对象。
 
         <b><font color="#a52a2a">反射调用指定构造器对象去创建目标类实例</font> </b>
-        <font color="gray">
+        <code class="language-java">
             package zeh.test.demo.com.fanshe;
 
             import java.lang.reflect.Constructor;
@@ -1359,9 +1387,11 @@
                     return "name = " + this.getName();
                 }
             }
-        </font>
+        </code>
         <b><font color="#a52a2a">测试结果</font> </b>
-        name = 珍珠
+        <code class="language-diff">
+            name = 珍珠
+        </code>
     </pre>
 </div>
 </body>
