@@ -734,7 +734,7 @@
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         对任何内部类的访问都和其本身对应的角色的访问是一样的：
         1.  外部对成员内部类的访问，就好像访问一个类的成员。
-        2.  外部对方法内部类的访问，就好像访问一个类的方法变量（显然外部是不能访问方法变量的，只能外部类自己访问）。
+        2.  外部对方法内部类的访问，就好像访问一个类的方法变量（显然外部是不能访问方法变量的，只能外部类自己去访问）。
         3.  外部对匿名内部类的访问，就好像访问一个类的匿名变量。
         4.  外部对静态内部类的访问，就好像访问一个类的静态成员。
     </pre>
@@ -1024,35 +1024,215 @@
             package javase.demo13.innerclass;
 
             class Outer04 {
-                private String info = "外部类的方法中定义内部类，则内部类访问方法中的形式参数或者方法变量时，形式参数和方法变量必须定义为final类型的";
+                private String info = "外部类的成员属性";
 
-                public void fun(final int temp) {
-                    final int localVar = 100;
-                    /**
-                     * 在外部类的方法中定义内部类
-                     */
+                public void outterMethod(int temp) {
+                    // 外部类方法的局部变量
+                    int outerLocalVar = 100;
+
+                    // 外部类方法中定义方法内部类
                     class Inner04 {
-                        public void print() {
-                            System.out.println("方法内部类访问外部类的非静态属性：" + info);
-                            System.out.println("方法内部类访问该方法的形式参数：" + temp);
-                            System.out.println("方法内部类访问该方法的方法变量：" + localVar);
+                        // 方法内部类定义的成员
+                        private int innerField = 1000;
+
+                        // 方法内部类中的方法
+                        public void innerMethod() {
+                            int innerLocalVar = 101;
+                            System.out.println("方法内部类访问外部类的成员：" + info);
+                            System.out.println("方法内部类访问当前外部类方法的形式参数：" + temp);
+                            System.out.println("方法内部类访问当前外部类方法的方法变量：" + outerLocalVar);
+                            System.out.println("方法内部类访问自己的成员：" + innerField);
+                            System.out.println("方法内部类方法当前方法的方法变量：" + innerLocalVar);
                         }
                     }
-                    new Inner04().print();// 外部类本身通过new内部类访问内部类的方法
+                    // 只能是外部类在当前的方法域之内才能实例化方法内部类的对象，从而访问方法内部类的方法。
+                    // 在当前方法之外是不能访问方法内部类的。
+                    new Inner04().innerMethod();
                 }
             }
 
             public class Demo04MethodInnerClass {
                 public static void main(String args[]) {
-                    new Outer04().fun(300);
+                    new Outer04().outterMethod(300);
                 }
             }
         </code>
+
+        接下来，在上述代码的方法内部类的innerMethod方法中尝试修改各个变量的值，innerMethod方法中加入如下代码：
+        <code class="language-java">
+            // 方法内部类中的方法
+            public void innerMethod() {
+                int innerLocalVar = 101;
+                System.out.println("方法内部类访问外部类的成员：" + info);
+                System.out.println("方法内部类访问当前外部类方法的形式参数：" + temp);
+                System.out.println("方法内部类访问当前外部类方法的方法变量：" + outerLocalVar);
+                System.out.println("方法内部类访问自己的成员：" + innerField);
+                System.out.println("方法内部类方法当前方法的方法变量：" + innerLocalVar);
+
+                // 尝试在方法内部类中修改如下变量的值，结果编译报错了
+                info = "reset";
+                temp = 200;
+                outerLocalVar = 180;
+                innerField = 2000;
+                innerLocalVar = 110;
+            }
+        </code>
+        结果尝试修改变量值，temp和outerLocalVar的修改提示编译错误：
+        <img src="28-01-localvar.png">
+        根据idea提示的错误信息，可以知道<font color="#dc143c"> 外部类方法的形式参数temp和外部方法的局部变量outerLocalVar </font>是不能被修改的，因为它们是final的，即常量。
+
+        这是怎么回事呢？我们没有设置它们为final的啊。
+
+        我们先看看Demo04MethodInnerClassjava编译后的字节码文件：
+        <img src="28-04-method-inner.png">
+
+        可以看出，Demo04MethodInnerClassjava编译后共产生了3个字节码class文件，我们使用反编译工具jad来反编译这3个class：
+        <img src="28-02-jad-local.png">
+
+        在class同级目录下生成jad文件：
+        <img src="28-03-jad-local.png">
+
+        文件内容如下：
+        Demo04MethodInnerClass.jad
+        <code class="language-java">
+            // Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
+            // Jad home page: http://www.kpdus.com/jad.html
+            // Decompiler options: packimports(3)
+            // Source File Name:   Demo04MethodInnerClass.java
+
+            package javase.demo13.innerclass;
+
+
+            // Referenced classes of package javase.demo13.innerclass:
+            //            Outer04
+
+            public class Demo04MethodInnerClass
+            {
+
+                public Demo04MethodInnerClass()
+                {
+                }
+
+                public static void main(String args[])
+                {
+                    (new Outer04()).outterMethod(300);
+                }
+            }
+        </code>
+
+        外部类 Outer04.class
+        <code class="language-java">
+            // Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
+            // Jad home page: http://www.kpdus.com/jad.html
+            // Decompiler options: packimports(3)
+            // Source File Name:   Demo04MethodInnerClass.java
+
+            package javase.demo13.innerclass;
+
+            import java.io.PrintStream;
+
+            class Outer04
+            {
+
+                Outer04()
+                {
+                    info = "\u5916\u90E8\u7C7B\u7684\u6210\u5458\u5C5E\u6027";
+                }
+
+                public void outterMethod(final int temp)
+                {
+                    final int outerLocalVar = 100;
+                    class _cls1Inner04
+                    {
+
+                        public void innerMethod()
+                        {
+                            int innerLocalVar = 101;
+                            System.out.println((new StringBuilder()).append("\u65B9\u6CD5\u5185\u90E8\u7C7B\u8BBF\u95EE\u5916\u90E8\u7C7B\u7684\u6210\u5458\uFF1A").append(info).toString());
+                            System.out.println((new StringBuilder()).append("\u65B9\u6CD5\u5185\u90E8\u7C7B\u8BBF\u95EE\u5F53\u524D\u5916\u90E8\u7C7B\u65B9\u6CD5\u7684\u5F62\u5F0F\u53C2\u6570\uFF1A").append(temp).toString());
+                            System.out.println((new StringBuilder()).append("\u65B9\u6CD5\u5185\u90E8\u7C7B\u8BBF\u95EE\u5F53\u524D\u5916\u90E8\u7C7B\u65B9\u6CD5\u7684\u65B9\u6CD5\u53D8\u91CF\uFF1A").append(outerLocalVar).toString());
+                            System.out.println((new StringBuilder()).append("\u65B9\u6CD5\u5185\u90E8\u7C7B\u8BBF\u95EE\u81EA\u5DF1\u7684\u6210\u5458\uFF1A").append(innerField).toString());
+                            System.out.println((new StringBuilder()).append("\u65B9\u6CD5\u5185\u90E8\u7C7B\u65B9\u6CD5\u5F53\u524D\u65B9\u6CD5\u7684\u65B9\u6CD5\u53D8\u91CF\uFF1A").append(innerLocalVar).toString());
+                        }
+
+                        private int innerField;
+                        final int val$temp;
+                        final int val$outerLocalVar;
+                        final Outer04 this$0;
+
+                        _cls1Inner04()
+                        {
+                            this.this$0 = Outer04.this;
+                            temp = i;
+                            outerLocalVar = j;
+                            super();
+                            innerField = 1000;
+                        }
+                    }
+
+                    (new _cls1Inner04()).innerMethod();
+                }
+
+                private String info;
+
+            }
+
+        </code>
+
+        内部类 Outer04$1Inner04.jad
+        <code class="language-java">
+            // Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
+            // Jad home page: http://www.kpdus.com/jad.html
+            // Decompiler options: packimports(3)
+            // Source File Name:   Demo04MethodInnerClass.java
+
+            package javase.demo13.innerclass;
+
+            import java.io.PrintStream;
+
+            // Referenced classes of package javase.demo13.innerclass:
+            //            Outer04
+
+            class Outer04$1Inner04
+            {
+
+                public void innerMethod()
+                {
+                    int innerLocalVar = 101;
+                    System.out.println((new StringBuilder()).append("\u65B9\u6CD5\u5185\u90E8\u7C7B\u8BBF\u95EE\u5916\u90E8\u7C7B\u7684\u6210\u5458\uFF1A").append(Outer04.access$000(Outer04.this)).toString());
+                    System.out.println((new StringBuilder()).append("\u65B9\u6CD5\u5185\u90E8\u7C7B\u8BBF\u95EE\u5F53\u524D\u5916\u90E8\u7C7B\u65B9\u6CD5\u7684\u5F62\u5F0F\u53C2\u6570\uFF1A").append(val$temp).toString());
+                    System.out.println((new StringBuilder()).append("\u65B9\u6CD5\u5185\u90E8\u7C7B\u8BBF\u95EE\u5F53\u524D\u5916\u90E8\u7C7B\u65B9\u6CD5\u7684\u65B9\u6CD5\u53D8\u91CF\uFF1A").append(val$outerLocalVar).toString());
+                    System.out.println((new StringBuilder()).append("\u65B9\u6CD5\u5185\u90E8\u7C7B\u8BBF\u95EE\u81EA\u5DF1\u7684\u6210\u5458\uFF1A").append(innerField).toString());
+                    System.out.println((new StringBuilder()).append("\u65B9\u6CD5\u5185\u90E8\u7C7B\u65B9\u6CD5\u5F53\u524D\u65B9\u6CD5\u7684\u65B9\u6CD5\u53D8\u91CF\uFF1A").append(innerLocalVar).toString());
+                }
+
+                private int innerField;
+                final int val$temp;
+                final int val$outerLocalVar;
+                final Outer04 this$0;
+
+                Outer04$1Inner04()
+                {
+                    this.this$0 = this$0;
+                    val$temp = i;
+                    val$outerLocalVar = I.this;
+                    super();
+                    innerField = 1000;
+                }
+            }
+        </code>
+        <font color="#dc143c">从反编译后的文件可以看出，方法内部类持有外部类的一个引用，并且编译器默认将外部类的方法形式参数和局部变量使用final修饰了。</font>
+
+        实际上方法内部类想要修改外部类方法的形式参数或者局部变量的话，是有其他方式可以间接实现的。我们可以借助集合容器间接的达到修改某些数值的目的，如下：
+        <font color="#dc143c">外部如果是list或者set，map集合之类的，尽管编译器默认修饰它们为final，但此时只是不允许重新实例化这些集合，我们完全可以把想要修改的数据缓存到这些集合当中然后做进一步的判断。即我们可以在方法内部类中对这些集合对象进行put，get等操作。但是一旦进行put操作则必须考虑多线程安全问题。</font>
+        <img src="28-05-colletion.png">
+
+        总结：
         1.  内部类除了能直接在外部类里面定义外，也可以直接在外部类的方法或者其他作用域块里面定义，此时内部类称为方法内部类。
         2.  方法内部类就像一个方法中的局部变量一样，是不能有public、protected、private以及static等修饰符的。
-        3.  外部类要想访问方法内部类，必须在当前方法或者当前作用域中创建方法内部类的对象进行访问，在其他作用域中无法访问方法内部类。比如上述案例<font color="#dc143c">在外部类的fun()方法中通过new Inner04().print();去访问当前方法中的内部类</font>。
+        3.  外部类要想访问方法内部类，必须在当前方法或者当前作用域中创建方法内部类的对象进行访问，在其他作用域中无法访问方法内部类。比如上述案例<font color="#dc143c">只能在当前外部类的fun()方法中通过new Inner04().print();去访问当前方法中的内部类。其他作用域中无法访问该方法内部类。</font>。
         4.  方法内部类可以任意访问外部类的成员和方法。
-        5.  不能直接访问方法中的形式参数和方法变量的，如果要访问方法中的形式参数和方法变量的话，则方法中的形式参数和方法变量必须声明为final类型的。
+        5.  方法内部类不能直接修改外部类方法中的形式参数和方法变量，因为编译器默认将有方法内部类的外部类方法中的形式参数和方法变量声明为final，因此可以访问但是不能修改。
         6.  方法内部类不能在外部进行创建（因为它在外部类的方法中），只能在其所在的方法或者作用域中被创建。
         <font color="#dc143c">
             为啥方法内部类要访问方法形式参数或者所在方法的局部变量，必须要求它们是final的呢？
@@ -1146,7 +1326,7 @@
         4.  匿名内部类简化了专门定义子类实现接口抽象方法的步骤。直接new 接口()或者new 父类()同时覆盖抽象方法即可创建一个匿名内部类对象。
         5.  匿名内部类方便的创建一个匿名对象或者非匿名对象，它本身是使用new操作直接创建了一个对象，所以要注意new操作后面的分号;，因为new是一个语句。如果这个语句是用作方法的实际参数，;是可以没有的。
         6.  一般子类只需要实例化一次的情况下考虑使用匿名内部类替代实现子类。
-        7.  java8的lambda表达式就是基于匿名内部类的方式的，匿名内部类实际上是特殊的方法内部类，同样如果要访问方法形参和方法变量，该形参和变量必须是final的。
+        7.  java8的lambda表达式就是基于匿名内部类的方式的，匿名内部类实际上是特殊的方法内部类，同样匿名内部类中的方法形参和局部变量默认被编译器修饰为final的，意味着我们可以访问它们，但要是尝试修改的话则直接编译报错。
         8.  匿名内部类是唯一没有构造器的类，正因为其没有构造器，所以匿名内部类的使用范围十分有限，大部分匿名内部类用作接口回调。
         9.  匿名内部类在编译的时候由系统自动起名为Outer$1.class。
         10. 一般来说匿名内部类用于继承其他类或者实现接口，并不需要增加额外的方法，只是对继承方法的实现或者是重写（因为匿名内部类往往是一个匿名对象，只使用一次即可，因此增加方法没必要）。

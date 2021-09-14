@@ -1,9 +1,10 @@
+
 <!doctype html>
 <html>
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width initial-scale=1'>
-    <title>java format.md</title>
+    <title>连接池.md</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
           rel='stylesheet' type='text/css'/>
     <style type='text/css'>html {
@@ -709,74 +710,92 @@
         border-left-color: rgba(85, 85, 85, 0.12);
     }
     </style>
+
     <link rel="stylesheet" href="../../../highlight/styles/default.css">
     <script src="../../../highlight/highlight.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body class='typora-export'>
 <div id='write' class='is-node'>
-    <b><a name='header-n0' class='md-header-anchor '></a>JAVA Format 格式化</b>
+    <b><a name='header-n0' class='md-header-anchor '></a>连接池</b>
 
-    <b><a name='header-n1' class='md-header-anchor '></a>1、java中的format</b><br>
+    <b><a name='header-n1' class='md-header-anchor '></a>1、什么是连接池？</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        有时候，我们需要对程序中的文本、数字、日期等类型进行某种格式化，以适应我们自身的阅读和显式习惯。
-        在java中进行格式化的类主要是Format类。
-        Format类主要有3个子类：
-        1.  MessageFormat类（消息文本格式化类）。
-        2.  NumberFormat抽象类（数字格式化类）。
-        3.  DateFormat抽象类（日期格式化类）。
+        DataSource接口是java专门用来描述数据源而提供的一个接口规范。
+        同时DataSource可以方便的实现连接池。
+        <font color="#dc143c">注意，数据源和连接池实际上是两回事，数据源描述的就是数据库信息，只不过jdbc提供了DataSource来规范数据源。连接池就是数据库连接对象进行池化。说白了，连接池可以不使用DataSource规范，而直接通过DriverManager也可以进行池化。</font>
+        但是，JDBC2.0提供的DataSource接口，其目的就是为了将访问数据库的各种配置和步骤进行统一的规范，即它的目标就是通过使用DataSource规范，来约束数据源，并对连接池的实现提供了方便。
+        因此，很多地方会讲，DataSource数据源就是连接池，严谨来讲，这种描述是不对的（只不过所有的连接池的第三方实现都实现了DataSource接口，所以才会产生这种描述）。
     </pre>
 
-    <b><a name='header-n2' class='md-header-anchor '></a>2、MessageFormat</b><br>
+    <b><a name='header-n2' class='md-header-anchor '></a>2、获取数据库连接</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        MessageFormat是Format的子类，在java.text包中，专门用来格式化字符串文本。
-
-        其核心方法如下：
+        通过数据源描述的数据库的各种信息，就可以与其描述的指定数据库创建数据库连接：
         <code class="language-java">
-            public static String format(String pattern, Object ... arguments);
+             // 1.加载驱动程序
+            Class.forName(CommonJdbcLoadUtil.getDbdriver());
+
+            // 2.连接oracle数据库服务器，返回连接对象。注意连接数据库服务器时用户名和密码一定要正确。
+            con = DriverManager.getConnection(CommonJdbcLoadUtil.getDburl(),
+                    CommonJdbcLoadUtil.getDbuser(),
+                    CommonJdbcLoadUtil.getDbpass());
         </code>
-        其中第1个参数表示要操作的字符串文本，第2个参数表示输入参数可以是任意多个或者0个。
-        该方法的核心功能就是格式化字符串，使用实际参数替换字符串文本中的占位符<font color="#dc143c">{0}</font>之类的。
+    </pre>
 
-        案例代码如下：
+    <b><a name='header-n3' class='md-header-anchor '></a>3、数据源和连接池的关系</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        实际上由于java发展的太快，最早的JDBC规范有很多不太合理的地方。
+        截止到目前，我们知道了数据源实际上就是用来描述指定数据库的各种信息的。这些描述你可以硬编码到代码中，也可以统一存储到某个指定文件中然后使用特定工具类进行解析。总而言之，用于描述数据库信息的东西，我们就称它为数据源。
+        有了数据源之后，我们就可以通过数据源去加载驱动，然后通过 DriverManager 去获取数据库连接。
+
+        然而，随着JDBC的发展，逐渐显示出了弊端。比如，总是将数据库各种信息硬编码或者任由开发者去编写到某些指定文件中，看起来很乱，并没有规范；比如，执行一个SQL，总是需要通过DriverManager去获取数据库连接，执行完毕后然后释放连接。
+        这一系列随之而来的弊端，导致了在JDBC2.0版本发布时，内置了一个接口：<font color="#dc143c">javax.sql.DataSource</font>
+        SUN期望通过javax.sql.DataSource接口来统一描述数据源，并且提供一种全新获取数据库连接的方式（实际上它的底层和DriverManager获取Connection对象的方式相同）。
+
+        <font color="#dc143c">因此，我们需要知道，JDBC2.0发布了javax.sql.DataSource接口来规范数据源，并且创建Connection对象，该接口需要各个厂商自己负责实现。</font>
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、javax.sql.DataSource接口</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="#dc143c">最初的数据库连接方式：</font>
         <code class="language-java">
-            package javase.demo18.classlibray.base;
+            String URL = "jdbc:oracle:thin:@amrood:1521:EMP";
+            String USER = "username";
+            String PASS = "password"
+            Connection conn = DriverManager.getConnection(URL, USER, PASS);
+        </code>
+        可以看到，曾经获取数据库连接的代码还需要使用 DriverManager ,<font color="#dc143c">DriverManager.getConnection</font>是通过数据库驱动直接与数据库建立物理连接。
+        <font color="#dc143c">建立数据库连接以及关闭连接属于耗费时间的事情</font>，如果业务每次进行SQL查询都使用此方式，将会产生较大的性能开销。
+        因此，我们想着，既然线程对象都能够放在线程池中，那么数据库的Connection对象也能够放在一个池子中啊，这就是池化技术。所以，数据库连接池的设计开始出现了。
+        线程池、连接池，这些池化技术的核心思想就是<font color="#dc143c">空间换时间</font>。
 
-            import java.text.MessageFormat;
+        鉴于JDBC发展的需要，因此SUN公司在JDBC2.0发布的时候，指定了一个新的接口规范，javax.sql.DataSource，用来规范化访问数据库的流程。
+        SUN想通过javax.sql.DataSource的方式来替代原来的DriverManager获取连接的方式。
+        当你想要获取数据库连接时，通过DataSource去获取即可，用完了也不用关闭连接对象等。
+        然而SUN只是制定了该规范，至于究竟如何产生Connection对象，SUN并未做明确的要求，需要第三方自己去实现。
+        因此，实际上DataSource只是描述数据源的规范化接口，它提供了快速获取Connection对象的规范，至于这个Connection对象是通过DriverManager去产生，还是直接通过数据库驱动去产生，是放置在连接池中，还是没有实现连接池，DataSource一律不作要求。
 
-            /**
-             * 功能描述： MessageFormat进行文本格式化
-             *
-             * @ClassName Demo16StudyMessageFormat
-             * @Author zhaoerhu
-             * @Date 2021/8/31 16:47
-             */
-            public class Demo16StudyMessageFormat {
-                public static void main(String[] args) {
-                    String target = "hello,{0}.my home is {1}!";
-                    System.out.println(target);
-                    String format = MessageFormat.format(target, "Eric", "西安");
-                    System.out.println(format);
-
-                    target = "hello,{2}.my home is {3}!";
-                    format = MessageFormat.format(target, "Eric", "西安");
-                    System.out.println(format);
-                }
+        javax.sql.DataSource接口：
+        <code class="language-java">
+            public interface DataSource  extends CommonDataSource,Wrapper {
+              Connection getConnection() throws SQLException;
+              Connection getConnection(String username, String password) throws SQLException;
             }
         </code>
 
-        运行结果如下：
+        <font color="#dc143c">
+        总结：DataSource接口是SUN为了更加统一的描述数据源和方便实现连接池而推出的一种规范，需要各个第三方自己去实现。
+        说白了，DataSource并不是连接池，它只是对数据源的规范描述。但是可以使用DataSource方便的实现连接池，因为可以使用DataSource来代替DriverManager来方便的获取数据库连接对象。
+        </font>
         <code class="language-diff">
-            hello,{0}.my home is {1}!
-            hello,Eric.my home is 西安!
-            hello,{2}.my home is {3}!
-        </code>
+            DriverManager 只是JDBC1.0版本用来调用数据库驱动的工具包。
+            JDBC2.0版本推出的DataSource规范之后，典型的像第三方 DruidDataSource 就没有依赖DriverManager，而是在自己实现类中直接调用了数据库驱动。
+            这里只是重点强调，数据库连接不一定是使用DriverManager创建的（但实际上连接池中的连接对象还是从DriverManager或者类似组件中创建的）。
 
-        总结：
-        1.  MessageFormat类的format()方法接收2个参数，第1个参数表示要格式化的目标字符串，第2个参数是个可变参数，表示传入的用于替换字符串中占位符的参数，可以是无数个或者0个。
-        2.  字符串中的占位符使用形式必须遵守<font color="#dc143c">{index}</font>的形式，其中index表示要占位符的索引，从0开始匹配。此处占位符必须从{0}，再到{1}，{2}...以此类推。占位符的索引下标必须和format()方法的可变参数下标匹配上才会进行format操作。否则对于不匹配的占位符将不会进行任何format。
+            使用javax.sql.DataSource的好处：
+            有了DataSource后，数据库连接、用户名、密码等都有了统一的规范进行管理，它们作为DataSource属性的一部分，并且将数据库驱动名称填充，底层自动加载。
+        </code>
     </pre>
 </div>
 </body>
 </html>
-

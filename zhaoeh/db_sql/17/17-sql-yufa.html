@@ -1,0 +1,2198 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>SQL语法案例（Oracle）.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor {
+        width: auto;
+        border: 0px;
+        background: rgb(119, 238, 119);
+        z-index: 1;
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    div.hr:focus {
+        cursor: none;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    @media screen and (max-width: 48em) {
+
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    .md-inline-math .MathJax_SVG .noError {
+        display: none !important;
+    }
+
+    .mathjax-block .MathJax_SVG_Display {
+        text-align: center;
+        margin: 1em 0em;
+        position: relative;
+        text-indent: 0px;
+        max-width: none;
+        max-height: none;
+        min-height: 0px;
+        min-width: 100%;
+        width: auto;
+        display: block !important;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+        text-decoration: none;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    #write pre.md-meta-block {
+        padding: 1rem;
+        font-size: 85%;
+        line-height: 1.45;
+        background-color: rgb(247, 247, 247);
+        border: 0px;
+        border-radius: 3px;
+        color: rgb(119, 119, 119);
+        margin-top: 0px !important;
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+    </style>
+
+    <link rel="stylesheet" href="../../../highlight/styles/default.css">
+    <script src="../../../highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>常用SQL（Oracle）</b>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、创建表</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        创建ZEH_EMOTICON_A表：
+        <code class="language-diff">
+            --创建 ZEH_EMOTICON_A 表，用于join关联查询
+            create table ZEH_EMOTICON_A
+            (
+              user_code     VARCHAR2(20),
+              user_name     VARCHAR2(100),
+              emoticon_id   VARCHAR2(20),
+              create_date   VARCHAR2(20),
+              emoticon_name VARCHAR2(20),
+              emoticon_type VARCHAR2(20),
+              emoticon_flag VARCHAR2(20),
+              addresses     VARCHAR2(255 CHAR),
+              filetype      VARCHAR2(2 CHAR),
+              comments      VARCHAR2(100)
+            )
+            tablespace USERS
+              pctfree 10
+              initrans 1
+              maxtrans 255
+              storage
+              (
+                initial 64K
+                next 1M
+                minextents 1
+                maxextents unlimited
+              );
+
+
+            -- 初始化 ZEH_EMOTICON_A 表数据
+            insert into ZEH_EMOTICON_A (USER_CODE, USER_NAME, EMOTICON_ID, CREATE_DATE, EMOTICON_NAME, EMOTICON_TYPE, EMOTICON_FLAG, ADDRESSES, FILETYPE, COMMENTS)
+            values ('103498', '韩寒', '110', '2018/10/13', '不开心', '1', '0', '/home/path/i.jpg', '7', '表情包上传');
+
+            insert into ZEH_EMOTICON_A (USER_CODE, USER_NAME, EMOTICON_ID, CREATE_DATE, EMOTICON_NAME, EMOTICON_TYPE, EMOTICON_FLAG, ADDRESSES, FILETYPE, COMMENTS)
+            values ('908789498', '韩红', '110', '2018/10/13', '不开心', '1', '0', '/home/path/i.jpg', '7', '表情包上传');
+
+            insert into ZEH_EMOTICON_A (USER_CODE, USER_NAME, EMOTICON_ID, CREATE_DATE, EMOTICON_NAME, EMOTICON_TYPE, EMOTICON_FLAG, ADDRESSES, FILETYPE, COMMENTS)
+            values ('345986', '郭敬明', '110', '2018/10/13', '不开心', '1', '0', '/home/path/i.jpg', '7', '表情包上传');
+
+            insert into ZEH_EMOTICON_A (USER_CODE, USER_NAME, EMOTICON_ID, CREATE_DATE, EMOTICON_NAME, EMOTICON_TYPE, EMOTICON_FLAG, ADDRESSES, FILETYPE, COMMENTS)
+            values ('786212', '方建红', '110', '2018/10/13', '不开心', '1', '0', '/home/path/i.jpg', '7', '表情包上传');
+
+            insert into ZEH_EMOTICON_A (USER_CODE, USER_NAME, EMOTICON_ID, CREATE_DATE, EMOTICON_NAME, EMOTICON_TYPE, EMOTICON_FLAG, ADDRESSES, FILETYPE, COMMENTS)
+            values ('205602', '赵二虎', '110', '2018/10/13', '不开心', '1', '0', '/home/path/i.jpg', '7', '表情包上传');
+
+            insert into ZEH_EMOTICON_A (USER_CODE, USER_NAME, EMOTICON_ID, CREATE_DATE, EMOTICON_NAME, EMOTICON_TYPE, EMOTICON_FLAG, ADDRESSES, FILETYPE, COMMENTS)
+            values ('100897', 'Z_赵二虎', '110', '2018/10/13', '不开心', '1', '0', '/home/path/i.jpg', '7', '表情包上传');
+
+            insert into ZEH_EMOTICON_A (USER_CODE, USER_NAME, EMOTICON_ID, CREATE_DATE, EMOTICON_NAME, EMOTICON_TYPE, EMOTICON_FLAG, ADDRESSES, FILETYPE, COMMENTS)
+            values ('100986', 'ZOZ_二虎', '110', '2018/10/13', '不开心', '1', '0', '/home/path/i.jpg', '7', '表情包上传');
+
+            insert into ZEH_EMOTICON_A (USER_CODE, USER_NAME, EMOTICON_ID, CREATE_DATE, EMOTICON_NAME, EMOTICON_TYPE, EMOTICON_FLAG, ADDRESSES, FILETYPE, COMMENTS)
+            values ('100657', 'ZHZ_二虎', '110', '2018/10/13', '不开心', '1', '0', '/home/path/i.jpg', '7', '表情包上传');
+        </code>
+
+        创建 ZEH_EMOTICON_B  表：
+        <code class="language-diff">
+            -- 创建 ZEH_EMOTICON_B 表，用于join关联查询
+            create table ZEH_EMOTICON_B
+            (
+              user_code     VARCHAR2(20),
+              user_name     VARCHAR2(100),
+              emoticon_id   VARCHAR2(20),
+              create_date   VARCHAR2(20),
+              emoticon_name VARCHAR2(20),
+              emoticon_type VARCHAR2(20),
+              emoticon_flag VARCHAR2(20),
+              addresses     VARCHAR2(255 CHAR),
+              filetype      VARCHAR2(2 CHAR),
+              comments      VARCHAR2(100)
+            )
+            tablespace USERS
+              pctfree 10
+              initrans 1
+              maxtrans 255
+              storage
+              (
+                initial 64K
+                next 1M
+                minextents 1
+                maxextents unlimited
+              );
+        </code>
+
+        创建 ZEH_MERGE_A  表：
+        <code class="language-diff">
+            -- 创建 ZEH_MERGE_A 表，验证MERGE操作
+            create table ZEH_MERGE_A
+            (
+              id    NUMBER(12),
+              name  VARCHAR2(21),
+              age   NUMBER(12),
+              sex   VARCHAR2(12),
+              hobby VARCHAR2(100)
+            )
+            tablespace USERS
+              pctfree 10
+              initrans 1
+              maxtrans 255
+              storage
+              (
+                initial 64K
+                next 1M
+                minextents 1
+                maxextents unlimited
+              );
+
+             -- 初始化 ZEH_MERGE_A 表
+            insert into ZEH_MERGE_A (ID, NAME, AGE, SEX, HOBBY)
+            values (1, '大西洋', 22, '男', '打球');
+
+            insert into ZEH_MERGE_A (ID, NAME, AGE, SEX, HOBBY)
+            values (2, '修改后', 100, '男', '么有兴趣');
+
+            insert into ZEH_MERGE_A (ID, NAME, AGE, SEX, HOBBY)
+            values (102, '赵二虎', 22, '男', '编程');
+
+            insert into ZEH_MERGE_A (ID, NAME, AGE, SEX, HOBBY)
+            values (4, '大西洋', 22, '男', '打球');
+
+            insert into ZEH_MERGE_A (ID, NAME, AGE, SEX, HOBBY)
+            values (5, '大西洋', 22, '男', '打球');
+
+            insert into ZEH_MERGE_A (ID, NAME, AGE, SEX, HOBBY)
+            values (6, '大西洋', 22, '男', '打球');
+
+            insert into ZEH_MERGE_A (ID, NAME, AGE, SEX, HOBBY)
+            values (30, '石祥', 18, '男', '做公务员');
+
+            insert into ZEH_MERGE_A (ID, NAME, AGE, SEX, HOBBY)
+            values (30, '石祥', 18, '男', '做公务员');
+
+            insert into ZEH_MERGE_A (ID, NAME, AGE, SEX, HOBBY)
+            values (100, '石祥', 18, '男', '做公务员');
+
+            insert into ZEH_MERGE_A (ID, NAME, AGE, SEX, HOBBY)
+            values (102, 'ssg', 22, '女', '上网');
+
+            insert into ZEH_MERGE_A (ID, NAME, AGE, SEX, HOBBY)
+            values (103, 'ddf', 17, '女', '聊天');
+
+            insert into ZEH_MERGE_A (ID, NAME, AGE, SEX, HOBBY)
+            values (104, 'jjk', 19, '女', '协作');
+
+            insert into ZEH_MERGE_A (ID, NAME, AGE, SEX, HOBBY)
+            values (105, 'iio', 23, '女', '唱歌');
+
+            insert into ZEH_MERGE_A (ID, NAME, AGE, SEX, HOBBY)
+            values (106, 'zhaoeh', 27, '男', '写代码');
+
+            insert into ZEH_MERGE_A (ID, NAME, AGE, SEX, HOBBY)
+            values (107, 'yurui', 18, '女', '做软件测试');
+        </code>
+
+        创建 ZEH_MERGE_B 表：
+        <code class="language-diff">
+            -- Create table
+            create table ZEH_MERGE_B
+            (
+              id    NUMBER(12),
+              name  VARCHAR2(21),
+              age   NUMBER(12),
+              sex   VARCHAR2(12),
+              hobby VARCHAR2(100)
+            )
+            tablespace USERS
+              pctfree 10
+              initrans 1
+              maxtrans 255
+              storage
+              (
+                initial 64K
+                next 1M
+                minextents 1
+                maxextents unlimited
+              );
+        </code>
+    </pre>
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、case when</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        select 字段时case when的用法：
+        <code class="language-diff">
+            SELECT ROW_NUMBER() OVER ( ORDER BY reim.apply_ts DESC, b.image_date DESC ),
+                reim.ID,
+                reim.reimbursement_no,
+                reim.company_name,
+                reim.apply_department,
+                use.NAME AS displayName,
+                reim.amount,
+                reim.apply_ts,
+                reim.pre_check_status,
+                reim.status,
+                reim.ext_status,
+                reim.pay_method,
+                reim.is_sync,
+                reim.img_status,
+                reim.apply_reimb_no,
+                b.image_date,
+                b.storage_ts,
+                reim.voucher_id,
+                reim.voucher_no,
+                reim.apply_reimb_no,
+                reim.pay_ts payTs,
+                reim.bap_voucher_id,
+                reim.origin_apply_amt,
+                reim.origin_pay_amt,
+                reim.pay_amt,
+                COALESCE ( reim.voucher_status, '0' ) AS voucherStatus,
+            CASE WHEN auditlog.audit_status != '1' THEN
+                NULL ELSE auditlog.auditor_name
+                END AS auditor
+            FROM
+                t_es_sck_apply_reimbursement reim
+                LEFT JOIN t_es_cor_staff use ON reim.apply_user_id = use.
+                ID LEFT JOIN (
+                SELECT MAX
+                    ( b.create_ts ) AS "storage_ts",
+                    bs.biz_id,
+                    MAX ( b.upload_ts ) AS image_date
+                FROM
+                    t_es_bil_bill b
+                    LEFT JOIN t_es_bil_bill_sck_status bs ON bs.bill_id = b.ID
+                WHERE
+                    b.corp_id = '0fd200315b3544829aa0eb383e49c153'
+                    AND b.del_status = '0'
+                    AND b.template_group_no NOT LIKE'IMP_EXCEL_%'
+                GROUP BY
+                    bs.biz_id
+                ) b ON b.biz_id = reim.
+                ID LEFT JOIN t_es_sck_audit_log auditlog ON reim.ID = auditlog.reimb_id
+            WHERE
+                1 = 1
+                AND reim.status != '01'
+                AND reim.status != '02'
+                AND reim.status != '07'
+                AND reim.status != '00'
+                AND reim.status != '15'
+                AND reim.status != '09'
+                AND reim.ext_status != '27'
+                AND reim.corp_id IN ( SELECT ID FROM t_es_cor_corp WHERE group_id = '0fd200315b3544829aa0eb383e49c153' )
+                AND reim.status IN ( '02', '06', '04', '14', '08', '99' )
+            ORDER BY
+                reim.apply_ts DESC,
+                b.image_date DESC
+                LIMIT 10 OFFSET (
+                1-1
+            )
+        </code>
+    </pre>
+
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、 ORACLE索引操作</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        oracle对索引的crud：
+        <code class="language-diff">
+            -- Oracle创建索引
+            -- 如果不需要单独指定索引存放的表空间，则直接创建索引即可，会保存在默认的表空间中。
+            -- 凡是直接create index，不带unique和cluster修饰的全部默认是非唯一非聚集索引。
+            -- 主键、唯一键的字段列会自动创建唯一索引。
+            CREATE INDEX INDEX_IFS_STATION ON IFS_STATION (STAID);
+            CREATE INDEX IND_IFS_USER ON IFS_USER (STAID);
+
+            -- 如果项目对不同的表创建了不同的表空间的话，那么在建立索引的时候最好指定表空间，而且这个指定的表空间应该和其对应的表所在的表空间保持一致。
+            CREATE INDEX INDEX_IFS_STATION ON IFS_STATION (STAID)
+             TABLESPACE TBS_ALPHAFIN_DAT
+             PCTFREE 10
+             INITRANS 2
+             MAXTRANS 255
+             STORAGE
+             (INITIAL 64K
+             NEXT 1M
+             MINEXTENTS 1
+             MAXEXTENTS UNLIMITED);
+
+            -- 如下同理
+            -- 为STAID创建索引，注意表空间可能需要修改，与当前用户表空间对应
+            CREATE INDEX IND_IFS_USER ON IFS_USER (STAID)
+             TABLESPACE ICMP_TBS
+             PCTFREE 10
+             INITRANS 2
+             MAXTRANS 255
+             STORAGE
+             (
+             INITIAL 64K
+             NEXT 1M
+             MINEXTENTS 1
+             MAXEXTENTS UNLIMITED
+             );
+
+            -- 删除索引，sql不提供修改索引的操作
+            DROP INDEX IND_IFS_USER;
+        </code>
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、 ORACLE对sequence序列的crud</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        oracle操作sequence:
+        <code class="language-diff">
+            -- oracle创建sequence序列
+            CREATE SEQUENCE MYSEQUENCE
+            INCREMENT BY 1 --每次加1个
+            START WITH 1 --从1开始计数
+            NOMAXVALUE --不设置最大值
+            NOCYCLE --一直累加，不循环
+            CACHE 10 --缓存10个序列号，默认值是20个
+            NOORDER  --在并发读取时，不保证按顺序取值
+            ;
+
+            -- 删除sequence
+            DROP SEQUENCE MYSEQUENCE;
+
+            -- 修改sequence。
+            -- 首先用户必须拥有alter any sequence的权限才能修改sequence。
+            -- alter能够修改的sequence参数值，除了start with指定的参数值外，其他的皆能修改。
+            -- 如果要修改start with的参数值，必须drop sequence之后再create sequence。
+            ALTER SEQUENCE MYSEQUENCE MAXVALUE 999999999999;
+            ALTER SEQUENCE MYSEQUENCE CACHE 10;
+
+            -- 查询sequence
+            -- 没有初始化nextval的话，直接查询currvar将报错。
+            -- 先初始化nextval的值（查询一次就初始化了）。
+            SELECT MYSEQUENCE.CURRVAL FROM DUAL;
+            SELECT MYSEQUENCE.NEXTVAL FROM DUAL;
+
+            -- 序列对象SEQUENCE是oracle数据库自己的对象，对于同一个oracle的实例而来，同一个SEQUENCE对象是该实例所有对象共享的。
+            -- 由此可见，尽管oracle没有提供自增主键的函数，但是完全可以通过创建序列化对象，然后使用SEQUENCE来完成主键id的自增长。
+            -- 所以，SEQUENCE对象往往是oracle用在insert语句中实现自增长主键的。
+        </code>
+    </pre>
+
+    <b><a name='header-n5' class='md-header-anchor '></a>5、 oracle对表的CRUD</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        oracle对表的CRUD：
+        <code class="language-diff">
+            -- oracle对表的CRUD
+            -- 像这种创建表的操作，不建议放在SQL窗口下执行，应该放在命令窗口下执行，这样能够有效的避免报错并且效率高。
+            -- 创建表，本地环境不用显式指定表空间。如果要使用具体的表空间，需要在创建表语句后面加上表空间的指定。
+            create table IFS_STATION_BAK
+            (
+              STAID         VARCHAR2(8) not null,
+              RECYCLEFLAG   NUMBER(1) default 0 not null,
+              RECYCLEDT     DATE,
+              RECYCLEUSERID VARCHAR2(8),
+              STANAME       VARCHAR2(60),
+              STACODE       VARCHAR2(40),
+              STADESC       VARCHAR2(1000),
+              ISPRESETUP    VARCHAR2(6),
+              BRLEVELS      VARCHAR2(20),
+              ORGID         VARCHAR2(8),
+              STATYPE       VARCHAR2(2)
+            );
+            comment on table IFS_STATION
+              is '岗位表' ;
+            comment on column IFS_STATION.STAID
+              is '岗位编号';
+            comment on column IFS_STATION.RECYCLEFLAG
+              is '回收标志';
+            comment on column IFS_STATION.RECYCLEDT
+              is '回收日期';
+            comment on column IFS_STATION.RECYCLEUSERID
+              is '回收用户';
+            comment on column IFS_STATION.STANAME
+              is '岗位名称';
+            comment on column IFS_STATION.STACODE
+              is '岗位代码';
+            comment on column IFS_STATION.STADESC
+              is '岗位描述';
+            comment on column IFS_STATION.ISPRESETUP
+              is '是否预设岗位';
+            comment on column IFS_STATION.BRLEVELS
+              is '可用机构级别';
+            comment on column IFS_STATION.ORGID
+              is '组织编号';
+            comment on column IFS_STATION.STATYPE
+              is '岗位类型
+            01=对私
+            02=对公';
+            alter table IFS_STATION_BAK
+              add constraint PK_IFS_STATION_BAK primary key (STAID);
+
+            -- 案例二：创建表
+            create table EMOTICON
+            (
+              USER_CODE  VARCHAR2(20),
+              USER_NAME  VARCHAR2(100),
+              EMOTICON_ID     VARCHAR2(20),
+              CREATE_DATE  VARCHAR2(20),
+              EMOTICON_NAME    VARCHAR2(20),
+              EMOTICON_TYPE    VARCHAR2(20),
+              EMOTICON_FLAG    VARCHAR2(20),
+              ADDRESSES   VARCHAR2(255 CHAR),
+              FILETYPE      VARCHAR2(2 CHAR),
+              COMMENTS     VARCHAR2(100)
+            );
+            -- Add comments to the table
+            comment on table EMOTICON
+              is '云办公表情图片信息表';
+            -- Add comments to the columns
+            comment on column EMOTICON.USER_CODE
+              is '上传者ID';
+            comment on column EMOTICON.USER_NAME
+              is '上传者姓名';
+            comment on column EMOTICON.EMOTICON_ID
+              is '表情包ID';
+            comment on column EMOTICON.CREATE_DATE
+              is '创建日期';
+            comment on column EMOTICON.EMOTICON_NAME
+              is '表情包名称';
+            comment on column EMOTICON.EMOTICON_TYPE
+              is '表情包文件类型';
+            comment on column EMOTICON.EMOTICON_FLAG
+              is '表情包心情标签';
+            comment on column EMOTICON.ADDRESSES
+              is '表情包文件路径';
+            comment on column EMOTICON.FILETYPE
+              is '资料类型';
+            comment on column EMOTICON.COMMENTS
+              is '备注说明';
+            alter table EMOTICON
+            add constraint PK_EMOTICON primary key (USER_CODE,FILETYPE);
+
+            -- 创建表并设置主键
+            create table IFS_USER
+            ( USERID           VARCHAR2(23),
+              U_IDEN_ACC       VARCHAR2(128),
+              BRID             VARCHAR2(23),
+              SUBBRID          VARCHAR2(23),
+              SUBBANKID        VARCHAR2(23),
+              RECYCLEFLAG      NUMBER(1) default 0,
+              RECYCLEDT        DATE,
+              RECYCLEUSERID    VARCHAR2(23),
+              USERNAME         VARCHAR2(100),
+              USERPYNAME       VARCHAR2(100),
+              USERCODE         VARCHAR2(23),
+              USERPSWD         VARCHAR2(100),
+              ROLEID           VARCHAR2(8),
+              STAID            VARCHAR2(200),
+              DEPARTMENT       VARCHAR2(60),
+              POSITION1        VARCHAR2(60),
+              ISPROCM          VARCHAR2(2),
+              TECHTITLE        VARCHAR2(60),
+              SEX              VARCHAR2(2),
+              BIRTHYEAR        VARCHAR2(4),
+              BIRTHMONDAY      VARCHAR2(6),
+              MARRIAGE         VARCHAR2(2),
+              EDUCATION        VARCHAR2(2),
+              OFFICEPHONE      VARCHAR2(20),
+              HOMEPHONE        VARCHAR2(20),
+              MOBILEPHONE      VARCHAR2(20),
+              FAX              VARCHAR2(20),
+              EMAIL            VARCHAR2(50),
+              EMAILPSWD        VARCHAR2(100),
+              USERSTATUS       VARCHAR2(1),
+              USERVALIDSTATUS  VARCHAR2(2),
+              USERLOCKSTATUS   VARCHAR2(2),
+              LOCKDT           TIMESTAMP(6),
+              USERLOGINSTATUS  VARCHAR2(2),
+              LASTLOGINDT      TIMESTAMP(6),
+              INVALIDLOGINTIME NUMBER(5),
+              INVALIDLOGINDT   TIMESTAMP(6),
+              UPDATEPSWDDT     TIMESTAMP(6),
+              ENABLEFLAG       VARCHAR2(2),
+              ENABLEDT         TIMESTAMP(6),
+              ISPRESETUP       VARCHAR2(2),
+              USERBID          VARCHAR2(23),
+              TRUSTSTATUS      VARCHAR2(6),
+              TRUSTMODE        VARCHAR2(6),
+              TRUSTSTARTDT     DATE,
+              TRUSTCLOSEDT     DATE,
+              LASTINVALIDIP    VARCHAR2(100),
+              LASTVALIDIP      VARCHAR2(100),
+              SKINNAME         VARCHAR2(20),
+              PENDIDS          VARCHAR2(1000),
+              UNIVERSITY       VARCHAR2(50),
+              USERLEVEL        VARCHAR2(100),
+              SPECIALTY        VARCHAR2(50),
+              LASTCHECK        VARCHAR2(2),
+              CMBCDATE         DATE,
+              PACTBEGINYM      VARCHAR2(6),
+              PACTENDYM        VARCHAR2(6),
+              CERTFLAG         VARCHAR2(2),
+              QUALITYFLAG      VARCHAR2(2),
+              CERTTYPE         VARCHAR2(100),
+              ORGID            VARCHAR2(8),
+              TRAINDESC        VARCHAR2(1000),
+              USERDESC         VARCHAR2(1000),
+              EMPLOYCODE       VARCHAR2(10));
+             -- tablespace TBS_ALPHAFIN_DAT
+              -- pctfree 10
+            --  initrans 1
+            --  maxtrans 255
+            --  storage
+            --  (initial 64
+              --  next 8
+                --minextents 1
+            --    maxextents unlimited);
+            comment on table IFS_USER
+              is '用户表';
+            comment on column IFS_USER.USERID
+              is '用户编号';
+            comment on column IFS_USER.BRID
+              is '所属网点';
+            comment on column IFS_USER.SUBBRID
+              is '所属支行';
+            comment on column IFS_USER.SUBBANKID
+              is '所属分行';
+            comment on column IFS_USER.RECYCLEFLAG
+              is '回收标志';
+            comment on column IFS_USER.RECYCLEDT
+              is '回收日期';
+            comment on column IFS_USER.RECYCLEUSERID
+              is '回收用户';
+            comment on column IFS_USER.USERNAME
+              is '用户名称';
+            comment on column IFS_USER.USERPYNAME
+              is '用户拼音名称';
+            comment on column IFS_USER.USERCODE
+              is '用户代码';
+            comment on column IFS_USER.USERPSWD
+              is '用户密码';
+            comment on column IFS_USER.ROLEID
+              is '角色';
+            comment on column IFS_USER.STAID
+              is '岗位';
+            comment on column IFS_USER.DEPARTMENT
+              is '部门';
+            comment on column IFS_USER.POSITION1
+              is '职位';
+            comment on column IFS_USER.ISPROCM
+              is '是否专职客户经理';
+            comment on column IFS_USER.SEX
+              is '性别';
+            comment on column IFS_USER.BIRTHYEAR
+              is '出生年';
+            comment on column IFS_USER.BIRTHMONDAY
+              is '出生月日';
+            comment on column IFS_USER.MARRIAGE
+              is '婚姻状况';
+            comment on column IFS_USER.EDUCATION
+              is '教育程度';
+            comment on column IFS_USER.OFFICEPHONE
+              is '办公电话';
+            comment on column IFS_USER.HOMEPHONE
+              is '家庭电话';
+            comment on column IFS_USER.MOBILEPHONE
+              is '手机号码';
+            comment on column IFS_USER.FAX
+              is '传真';
+            comment on column IFS_USER.EMAIL
+              is '电子邮箱';
+            comment on column IFS_USER.EMAILPSWD
+              is '邮箱密码';
+            comment on column IFS_USER.USERSTATUS
+              is '用户状态';
+            comment on column IFS_USER.USERVALIDSTATUS
+              is '有效状态';
+            comment on column IFS_USER.USERLOCKSTATUS
+              is '锁定状态';
+            comment on column IFS_USER.LOCKDT
+              is '锁定日期';
+            comment on column IFS_USER.USERLOGINSTATUS
+              is '登陆状态';
+            comment on column IFS_USER.LASTLOGINDT
+              is '上次登陆日期';
+            comment on column IFS_USER.INVALIDLOGINTIME
+              is '无效登陆次数';
+            comment on column IFS_USER.INVALIDLOGINDT
+              is '无效登陆日期';
+            comment on column IFS_USER.UPDATEPSWDDT
+              is '更新密码日期';
+            comment on column IFS_USER.ENABLEFLAG
+              is '是否可用';
+            comment on column IFS_USER.ENABLEDT
+              is '可用日期';
+            comment on column IFS_USER.ISPRESETUP
+              is '是否预设';
+            comment on column IFS_USER.USERBID
+              is 'B角用户';
+            comment on column IFS_USER.TRUSTSTATUS
+              is '托管状态';
+            comment on column IFS_USER.TRUSTMODE
+              is '托管模式';
+            comment on column IFS_USER.TRUSTSTARTDT
+              is '托管开始日期';
+            comment on column IFS_USER.TRUSTCLOSEDT
+              is '托管结束日期';
+            comment on column IFS_USER.LASTINVALIDIP
+              is '上次无效登陆IP';
+            comment on column IFS_USER.LASTVALIDIP
+              is '上次有效登陆IP';
+            comment on column IFS_USER.SKINNAME
+              is '界面方案名称';
+            comment on column IFS_USER.PENDIDS
+              is '备选编号';
+            comment on column IFS_USER.UNIVERSITY
+              is '毕业学校';
+            comment on column IFS_USER.USERLEVEL
+              is '用户等级';
+            comment on column IFS_USER.SPECIALTY
+              is '专业';
+            comment on column IFS_USER.LASTCHECK
+              is '上季度考核升降结果';
+            comment on column IFS_USER.CMBCDATE
+              is '进入银行日期';
+            comment on column IFS_USER.PACTBEGINYM
+              is '签订劳动合同日期';
+            comment on column IFS_USER.PACTENDYM
+              is '结束劳动合同日期';
+            comment on column IFS_USER.CERTFLAG
+              is '是否持有证书';
+            comment on column IFS_USER.QUALITYFLAG
+              is '是否获得上岗证';
+            comment on column IFS_USER.CERTTYPE
+              is '证书类型';
+            comment on column IFS_USER.ORGID
+              is '组织编号';
+            comment on column IFS_USER.TRAINDESC
+              is '培训描述';
+            comment on column IFS_USER.USERDESC
+              is '用户描述';
+            comment on column IFS_USER.EMPLOYCODE
+              is '对应6位员工号';
+            alter table IFS_USER
+            add constraint PK_IFS_USER primary key (USERID);
+        </code>
+    </pre>
+
+    <b><a name='header-n6' class='md-header-anchor '></a>6、 oracle对user的CRUD</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        oracle对user的CRUD：
+        <code class="language-diff">
+            -- oracle创建用户并设置密码
+            -- 创建普通用户和密码，如果不单独指定表空间和临时表空间，oracle将自动使用默认的
+            create user oracle identified by oracle;
+
+            -- 直接将dba角色的权限授权给oracle用户
+            grant dba to oracle;
+        </code>
+    </pre>
+
+    <b><a name='header-n7' class='md-header-anchor '></a>7、 DATE和TIMESTAMP</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        DATE和TIMESTAMP:
+        <code class="language-diff">
+            -- 计算当前日期，并且当前日期可以直接运算
+            select sysdate,sysdate + 1.2 from dual; --将当前日期和当前日期加上1.2天之后的日期输出
+
+            -- 对于 TIMESTAMP 类型的可以直接和TIMESTAMP格式的字符串进行大小比较
+            -- 注意，sql中对于Date类型的不能直接和date格式的字符串进行比较，要比较，必须两者都转换为date类型才能。
+            SELECT COUNT(*)
+              FROM ESBDATA.ESB2_TRANS_LOG E
+             WHERE E.FLOWSTEPID = '4'
+               AND E.RESPSTATUS = '1'
+               AND E.TRANSTAMP > '2017-09-26 00:00:00 000'
+               AND E.TRANSTAMP < '2017-09-27 00:00:00 000'; --统计26当天成功的笔数
+
+            SELECT COUNT(*)
+              FROM ESBDATA.ESB2_TRANS_LOG E
+             WHERE E.FLOWSTEPID = '4'
+               AND E.RESPSTATUS <> '1'
+               AND E.TRANSTAMP > '2017-09-26 00:00:00 000'
+               AND E.TRANSTAMP < '2017-09-27 00:00:00 000'; --统计26当天失败的笔数
+
+            SELECT *
+              FROM ESBDATA.ESB2_TRANS_LOG E
+             WHERE E.RESPSTATUS <> '1'
+               AND E.FLOWSTEPID = '4'
+               AND E.TRANSTAMP > '2017-09-26 00:00:00 000'
+               AND E.TRANSTAMP < '2017-09-27 00:00:00 000'; --查询26当天报错的详细信息
+        </code>
+    </pre>
+
+    <b><a name='header-n8' class='md-header-anchor '></a>8、 DISTINCE</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        DISTINCE：
+        <code class="language-diff">
+            -- DISTINCT对指定的目标字段的所有值去重复
+            SELECT DISTINCT * FROM IFS_STATION;-- 正确
+            SELECT DISTINCT(*) FROM IFS_STATION;-- 错误
+            SELECT DISTINCT(STANAME) FROM IFS_STATION; --正确
+            SELECT COUNT(DISTINCT STANAME) FROM IFS_STATION; -- 正确
+        </code>
+    </pre>
+
+    <b><a name='header-n9' class='md-header-anchor '></a>9、 insert_delete_update_select</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        insert_delete_update_select:
+        <code class="language-diff">
+            -- INSERT 语句案例
+            INSERT INTO DEPLOYMENTS
+              (ID, LOCATION, DEPLOYDATE, NAME, VERSION)
+            VALUES
+              ('207', 'LOCAL_OUT', '17-11-27 下午14:57', '3004300002001', '0');
+
+            INSERT INTO SERVICEINFO
+              (SERVICEID,
+               SERVICETYPE,
+               CONTRIBUTION,
+               PREPARED,
+               LOCATION,
+               DESCRIPTION,
+               MODIFYTIME,
+               ISCREATE)
+            VALUES
+              ('3004300002001',
+               'BUSS',
+               '3004300002001',
+               'FALSE',
+               'LOCAL_OUT',
+               '汇路选择',
+               '2017-11-27 09:57:32 241',
+               'TRUE');
+
+            -- 对于可以INSERT空值的字段来说，是可以直接INSERT为NULL的。Oracle中的NULL值就是空字符串。Oracle中没有空字符的概念。
+            -- 即oracle中认为null值和空字符是一样的。
+            INSERT INTO BUSSSERVICES
+              (SERVICEID, CATEGORY, METHODNAME, ISARG, DESCRIPTION)
+            VALUES
+              ('QUERY', NULL, NULL, 'FALSE', NULL);
+
+            -- 对于DML语言而言，都是需要提交的。SELECT是DQL语言，CREATE,DROP,ALTER是DDL语言。这两者都不需要COMMIT。
+            COMMIT;
+
+            -- DELETE 语句案例，经验：在操作DELETE语句的时候，一定要加上WHERE条件过滤，最好在DELETE之前先按照指定条件SELECT一下，确保要删除的数据没问题。
+            DELETE FROM DEPLOYMENTS WHERE NAME = '3004300001801';
+            DELETE FROM SERVICES WHERE NAME = '3004300001301';
+            COMMIT;
+
+            -- UPDATE 语句案例
+            UPDATE SERVICESYSTEMMAP SET ADAPTER = 'ZHAOERHUADAPTER' WHERE SERVICEID = '2001300000104';
+            UPDATE SERVICESYSTEMMAP SET ADAPTER = 'ZHAOERHUADAPTER' WHERE SERVICEID = '3001100000606';
+            COMMIT;
+
+            -- SELECT 语句案例
+            SELECT * FROM DEPLOYMENTS WHERE NAME = '3004300000901';
+            SELECT * FROM SERVICES WHERE NAME = '3004300000901';
+            -- SELECT 语句不需要COMMIT进行事务提交
+
+            -- GROUP BY 分组查询。经验，按照哪个字段分组就查询哪个字段，如果要统计数量，就COUNT(分组字段)
+            SELECT LOOP, COUNT(1)
+              FROM ESB2_TRANS_LOG
+             WHERE TRANSTAMP > '2017-08-11 09:09:00'
+             GROUP BY LOOP;
+
+            -- SELECT 排序，ORDER BY 目标字段。asc是升序，desc是降序，默认是升序。
+            SELECT *
+              FROM PROTOCOLBIND
+             WHERE BINDTYPE = 'TCPSERVICECONNECTOR'
+             ORDER BY PROTOCOLID;
+
+            -- SELECT COUNT(1)。经验，COUNT()是SQL中的统计函数，COUNT(*)=COUNT(1)=COUNT(2)等等。
+            -- COUNT(1)的统计效率比COUNT(*)高。
+            -- COUNT()里面如果是*或者1或者其他数字常量，则默认统计的是目标表里面所有的记录数，是所有的，也包括null值。
+            -- COUNT(字段) 只是统计目标字段在查询结果中出现的总数，是不会去重复，同样自动过滤到目标字段的null值。
+            -- COUNT(DISTINCT 目标字段) 会将目标字段去重复之后再统计目标字段的出现个数。
+            SELECT COUNT(1) FROM PROTOCOLBIND WHERE BINDTYPE = 'TCPSERVICECONNECTOR';
+            SELECT COUNT(BINDTYPE) FROM PROTOCOLBIND;
+            SELECT COUNT(DISTINCT BINDTYPE) FROM PROTOCOLBIND;
+
+            -- SELECT 多条件查询并排序
+            SELECT *
+              FROM BINDMAP
+             WHERE STYPE = 'SERVICE'
+               AND MAPTYPE = 'REQUEST'
+             ORDER BY SERVICEID;
+
+
+            -- SELECT 匹配模糊查新like
+            SELECT * FROM SERVICESYSTEM WHERE NAME LIKE '%IN';
+
+            -- SELECT的等值查询，注意SQL中的不等号是<>或者!=
+            SELECT * FROM SERVICESYSTEM WHERE NAME <> 'ALL' ORDER BY DESCRIPTION;
+
+            -- TRUNCATE 是ORACLE扩展的命令，一次性只能删除整张表，不能带有条件过滤。TRUNCATE 删除整张表的效率高且不能回滚。
+            TRUNCATE TABLE PROTOCOLBIND;
+
+            -- DELETE 删除数据，可以带有WHERE条件，而且建议DELETE操作一定要带有WHERE条件，除非是想清空整张表的数据。
+            -- 注意DELETE FROM中间是没有*的。
+            DELETE FROM PROTOCOLBIND;
+            DELETE FROM SERVICESYSTEM WHERE NAME = 'GATEWAY_IN';
+            DELETE FROM SERVICESYSTEMMAP
+             WHERE NAME = 'DX'
+               AND SERVICEID = 'GOACCT';
+        </code>
+    </pre>
+
+    <b><a name='header-n10' class='md-header-anchor '></a>10、 MERGE</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        MERGE：
+        <code class="language-diff">
+            MERGE INTO MERGE_A A
+            USING (SELECT B.ID, B.NAME, B.AGE FROM MERGE_B B) C
+            ON (A.ID = C.ID)
+            WHEN MATCHED THEN
+              UPDATE SET A.NAME = C.NAME
+            WHEN NOT MATCHED THEN
+              INSERT (A.ID, A.NAME, A.AGE) VALUES (C.ID, C.NAME, C.AGE);
+            COMMIT;
+
+            SELECT * FROM MERGE_A;
+        </code>
+    </pre>
+
+    <b><a name='header-n11' class='md-header-anchor '></a>11、 RENAME</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        RENAME对表进行重命名：
+        <code class="language-diff">
+            -- ALTER RENAME实现对表重命名
+            ALTER TABLE MERGE_C RENAME TO HAHAHAH;
+
+            -- 使用RENAME对源表进行重命名，如果源表有schema，目标表名称不能带有schema，重命名后会自动带有。
+            ALTER TABLE alphafin.APP_AUTHORIZE_NEWCORE_BAK RENAME TO APP_AUTHORIZE;
+        </code>
+    </pre>
+
+    <b><a name='header-n12' class='md-header-anchor '></a>12、 sql中的转义字符</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        sql中的转义字符：
+        <code class="language-diff">
+            SELECT * FROM USERS WHERE NAME = '赵二虎' OR '1' = '1';--错误
+
+            SELECT * FROM USERS WHERE NAME = '''赵二虎'' OR ''1'' = ''1'''; --正确
+
+            -- '''' 表示一个字符串，字符串的值是一个'。因为'在字符串的标志''中，所以Oracle规定两个'表示一个'。所以''就是'。
+            SELECT '''' FROM DUAL;
+            SELECT '''' FROM IFS_STATION;
+            SELECT '''' FROM EMOTICON;
+        </code>
+    </pre>
+
+    <b><a name='header-n13' class='md-header-anchor '></a>13、substr函数截取字符串</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        substr函数截取字符串：
+        <code class="language-diff">
+            -- 方式一
+            select regexp_substr('199,22,33,4,29,5,', '[^,]+', 1, rownum)
+              from dual
+            connect by rownum <=
+                       length(regexp_replace('199,22,33,4,29,5,', '[^,]', NULL))
+
+
+            -- 方式二
+            select regexp_substr('199,22,33,4,29,5', '[^,]+', 1, rownum)
+              from dual
+            connect by rownum <= length('199,22,33,4,29,5,') -
+                       length(replace('199,22,33,4,29,5,', ',', '')) + 1 ;
+
+
+             -- oracle中的递归分割字符串
+            select regexp_substr(ss.org_subtype, '[^,]+', 1, level) deptId,level
+              from S_USER_ORG_MAP ss
+             where regexp_substr(ss.org_subtype, '[^,]+', 1, level) is not null
+            connect by level <= length(ss.org_subtype) -
+                       length(replace(ss.org_subtype, ',', '')) + 1
+                   and prior ss.id = ss.id
+                   and prior dbms_random.value is not null;
+
+            select regexp_substr(ss.org_subtype, '[^,]+', 1, level) deptId,level
+              from S_USER_ORG_MAP ss
+            connect by level <= length(ss.org_subtype) -
+                       length(replace(ss.org_subtype, ',', ''))+1
+                   and prior ss.org_subtype = ss.org_subtype
+                   and prior dbms_random.value is not null;
+        </code>
+    </pre>
+
+    <b><a name='header-n14 ' class='md-header-anchor '></a>14、substr函数截取字符串</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        substr函数截取字符串:
+        <code class="language-diff">
+            -- 方式一
+            select regexp_substr('199,22,33,4,29,5,', '[^,]+', 1, rownum)
+              from dual
+            connect by rownum <=
+                       length(regexp_replace('199,22,33,4,29,5,', '[^,]', NULL))
+
+
+            -- 方式二
+            select regexp_substr('199,22,33,4,29,5', '[^,]+', 1, rownum)
+              from dual
+            connect by rownum <= length('199,22,33,4,29,5,') -
+                       length(replace('199,22,33,4,29,5,', ',', '')) + 1 ;
+
+
+             -- oracle中的递归分割字符串
+            select regexp_substr(ss.org_subtype, '[^,]+', 1, level) deptId,level
+              from S_USER_ORG_MAP ss
+             where regexp_substr(ss.org_subtype, '[^,]+', 1, level) is not null
+            connect by level <= length(ss.org_subtype) -
+                       length(replace(ss.org_subtype, ',', '')) + 1
+                   and prior ss.id = ss.id
+                   and prior dbms_random.value is not null;
+
+            select regexp_substr(ss.org_subtype, '[^,]+', 1, level) deptId,level
+              from S_USER_ORG_MAP ss
+            connect by level <= length(ss.org_subtype) -
+                       length(replace(ss.org_subtype, ',', ''))+1
+                   and prior ss.org_subtype = ss.org_subtype
+                   and prior dbms_random.value is not null;
+        </code>
+    </pre>
+
+    <b><a name='header-n15 ' class='md-header-anchor '></a>15、substr函数截取字符串</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        -- to_date()函数将字符串按照指定格式转化成Oracle中的date类型
+        -- to_date()函数中第一个参数要不要''呢？如果目标字符串是纯数字，要不要都一样，如果有其他字符，必须要''。
+        -- to_date()函数中目标字符串的格式一定要和匹配模板的格式保持一致才能进行转换。
+        SELECT TO_DATE(2018-10-11,'YYYY-MM-DD') FROM DUAL; --错误
+        SELECT TO_DATE('2018-10-11','YYYY-MM-DD') FROM DUAL; --正确
+        SELECT TO_DATE(20181011,'YYYYMMDD') FROM DUAL; --正确
+        SELECT TO_DATE('20181011','YYYYMMDD') FROM DUAL; --正确
+        SELECT TO_DATE('2018-10-11 21:23:34','YYYY-MM-DD HH24:MI:SS') FROM DUAL; --正确
+        SELECT * FROM USERS WHERE 1=1 AND TO_DATE(BUSSDATE,'YYYYMMDD') >= TO_DATE('20180708','YYYYMMDD'); --正确
+        SELECT * FROM USERS WHERE 1=1 AND TO_DATE(BUSSDATE,'YYYYMMDD') >= TO_DATE(20180708,'YYYYMMDD'); --正确
+    </pre>
+
+    <b><a name='header-n16 ' class='md-header-anchor '></a>16、union&union all</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        union&union all：
+        <code class="language-diff">
+            -- COUNT统计函数
+            SELECT T.USER_CODE,COUNT( T.USER_CODE) FROM EMOTICON T GROUP BY T.USER_CODE;
+
+            SELECT * FROM EMOTICON;
+
+            SELECT ID FROM MERGE_A UNION SELECT USER_CODE FROM EMOTICON
+
+            SELECT * FROM MERGE_B FOR UPDATE
+            SELECT * FROM MERGE_C
+
+            SELECT * FROM MERGE_A A
+            INNER JOIN (SELECT * FROM MERGE_B) C ON A.ID = C.ID
+
+            -- 通过ON实现条件内连接，然后将两个内连接的查询结果使用UNION取并集。
+            -- UNION取并集要求合并的字段个数，顺序，类型必须一致才能合并。
+            -- UNION对合并后的结果集去重复
+            -- UNION ALL对合并后的结果不做任何处理，不去重复，直接合并。
+            SELECT * FROM MERGE_A A
+            INNER JOIN MERGE_B B
+            ON A.ID = B.ID
+            UNION
+            SELECT * FROM MERGE_A C
+            INNER JOIN MERGE_C D
+            ON C.ID = D.ID
+        </code>
+    </pre>
+
+    <b><a name='header-n17 ' class='md-header-anchor '></a>17、union&union all</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        union&union all：
+        <code class="language-diff">
+            -- COUNT统计函数
+            SELECT T.USER_CODE,COUNT( T.USER_CODE) FROM EMOTICON T GROUP BY T.USER_CODE;
+
+            SELECT * FROM EMOTICON;
+
+            SELECT ID FROM MERGE_A UNION SELECT USER_CODE FROM EMOTICON
+
+            SELECT * FROM MERGE_B FOR UPDATE
+            SELECT * FROM MERGE_C
+
+            SELECT * FROM MERGE_A A
+            INNER JOIN (SELECT * FROM MERGE_B) C ON A.ID = C.ID
+
+            -- 通过ON实现条件内连接，然后将两个内连接的查询结果使用UNION取并集。
+            -- UNION取并集要求合并的字段个数，顺序，类型必须一致才能合并。
+            -- UNION对合并后的结果集去重复
+            -- UNION ALL对合并后的结果不做任何处理，不去重复，直接合并。
+            SELECT * FROM MERGE_A A
+            INNER JOIN MERGE_B B
+            ON A.ID = B.ID
+            UNION
+            SELECT * FROM MERGE_A C
+            INNER JOIN MERGE_C D
+            ON C.ID = D.ID
+        </code>
+    </pre>
+
+    <b><a name='header-n18 ' class='md-header-anchor '></a>18、表被锁定</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        表被锁定：
+        <code class="language-diff">
+            ALTER TABLE version_app_compose MODIFY PACKAGE_NAME Varchar2(255);
+
+            -- 查询被锁的表和引起锁表的session
+            select * from v$locked_object a,dba_objects b where a.OBJECT_ID = b.OBJECT_ID;
+
+            -- 查询详细信息,session id
+            select t2.USERNAME,t2.SID,t2.SERIAL#,t2.LOGON_TIME,t1.OS_USER_NAME from v$locked_object t1,v$session t2 where t1.SESSION_ID = t2.SID order by t2.LOGON_TIME;
+
+            -- 查询被锁的OBJECT_ID
+            select t.XIDUSN,t.OBJECT_ID,t.ORACLE_USERNAME,t.OS_USER_NAME,t.SESSION_ID from v$locked_object t;
+
+            -- 查询被锁的对象信息
+            -- 23129  23130
+            select t.object_id,t.object_name from dba_objects t where t.object_id = '23129';
+
+            select t.SID,t.SERIAL#,t.USERNAME,t.OSUSER from v$session t where t.SID = '779';
+
+            alter system kill session '779,14845';
+        </code>
+    </pre>
+
+    <b><a name='header-n19 ' class='md-header-anchor '></a>19、存储过程案例</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        存储过程案例：
+        <code class="language-diff">
+            create or replace package body PKG_CONFIG as
+
+          /******************************************************************************/
+          /*                             特殊说明                                        */
+          /* 1、执行该存储过程前，一定要仔细阅读该说明                                  */
+          /* 2、该存储过程实现逻辑未考虑多线程问题，因此一次只能由一个人执行            */
+          /* 3、该存储过程使用到 server_config 表，使用操作步骤如下：                    */
+          /*    3.1、先将 server_config 表清空，                                          */
+          /*    3.2、在 server_config 表配置业务id和中文名称                              */
+          /*    3.3、输入参数，执行该存储过程                                            */
+          /*******************************************************************************/
+
+          procedure pro_server_config(i_server_sys_name in varchar2, i_adapter_name In Varchar2)  As
+
+              v_id Varchar2(4);                         -- 序号
+              v_current_time Varchar2(30);              -- 当前时间
+              v_server_sys_name Varchar2(20) := i_server_sys_name;  -- 'WuGuojunSGPS';           -- 服务系统名称
+              v_adapter_name Varchar2(50) := i_adapter_name;        -- 'WuGuojunAdapter';              -- out 端适配器名称
+
+              Cursor c_server_config Is
+              Select Id, Name From server_config;
+              c_row c_server_config%rowtype;
+
+          Begin
+
+              -- 1、将脏数据删除
+              delete From deployments d Where d.name In (Select Id From server_config);
+              Delete From services t Where t.name In (Select Id From server_config);
+              Delete From serviceinfo t Where t.serviceid In (Select Id From server_config);
+              Delete From dataadapter t Where t.dataadapterid In (Select Id From server_config);
+              Delete From Bussservices t Where t.serviceid In (Select Id From server_config);
+              Delete From bindmap t Where t.serviceid In (Select Id From server_config);
+              Delete From ServiceSystemMap t Where t.serviceid In (Select Id From server_config);
+              Commit;
+
+              Select to_char(Sysdate, 'YYYY-MM-DD HH:mm:ss') Into v_current_time From dual;
+              -- Dbms_Output.put_line(v_current_time);
+
+
+              for c_row in c_server_config Loop
+                  Dbms_Output.put_line(c_row.id || '  ' || c_row.name);
+                  Select to_char( Max( to_number(d.id) )+1 ) Into v_id From deployments d;
+                  dbms_output.put_line(v_id);
+                  Commit;
+
+                  insert into deployments(ID,LOCATION,DEPLOYDATE,NAME,VERSION) values(v_id, 'local_out', v_current_time, c_row.id,'0');
+                  insert into services(NAME,Inaddressid,Outaddressid,Type,SESSIONCOUNT,Deliverymode,Nodeid,Location) VALUES(c_row.id,'4cc95abd8b9cba4705f290b39dee3d6a','70022232c41f240289cac75d5b3e3884',
+                'SERVICE','1','2','','local_out');
+                  insert into serviceinfo(serviceid,servicetype,contribution,prepared,location,Description,modifytime,iscreate) values(c_row.id,'BUSS',c_row.id,'false','local_out', c_row.name, v_current_time || ' 241','true');
+                  insert into dataadapter(DATAADAPTERID,dataadapter,location,adaptertype) values(c_row.id,'default_service','local_out','OUT');
+                  insert into Bussservices(serviceid,Isarg) values(c_row.id,'false');
+                  insert into bindmap(serviceid,stype,location,version,protocolid,maptype) values(c_row.id,'SERVICE','local_out','0', v_adapter_name,'request');
+                  insert into ServiceSystemMap(name,Serviceid,Adapter) values(v_server_sys_name, c_row.id, v_adapter_name);
+              End Loop;
+
+              Commit;
+          exception
+              when others then
+                -- rollback;
+                Dbms_Output.put_line('出错了！！！');
+
+          End pro_server_config;
+        end PKG_CONFIG;
+        </code>
+    </pre>
+
+    <b><a name='header-n20 ' class='md-header-anchor '></a>20、关联子查询修改为left join提升性能</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        关联子查询修改为left join提升性能：
+        <code class="language-diff">
+            -- 优化前
+            SELECT
+                t1.ID_ AS id,
+                t3.COURSE_CODE_ AS courseCode,
+                t3.COURSE_NAME_ AS courseName,
+                t1.NAME_ AS teachingClass,
+                t1.CODE_ AS courseNum,
+                t1.CAMPUS_ AS schoolZone,
+                CONCAT( t.TEACHER_CODE_, t.TEACHER_NAME_ ) AS teacher,
+                t3.PERIOD_ AS period,
+                t3.CREDITS_ AS credit,
+                t1.ELC_NUMBER_ AS number,
+                t3.FACULTY_ AS college,
+                ( SELECT CONCAT( IMPORTER_CODE_, IMPORTER_NAME_ ) FROM score_teaching_class_score_t WHERE TEACHING_CLASS_ID_ = t1.ID_ ) AS otherEnter,
+                ( SELECT LAST_IMPORTER_AT_ FROM score_teaching_class_score_t WHERE TEACHING_CLASS_ID_ = t1.ID_ ) AS enterTime,
+                '0' AS releaseType
+            FROM
+                teaching_class_teacher_t t
+                JOIN teaching_class_t t1 ON t1.ID_ = t.TEACHING_CLASS_ID_
+                AND t1.STATUS_ = 0
+                AND t.TYPE_ = 0
+                JOIN teaching_task_t t2 ON t2.ID_ = t1.TASK_ID_
+                JOIN course_open_t t3 ON t3.ID_ = t2.COURSE_OPEN_ID_
+            WHERE
+                NOT EXISTS ( SELECT ID_ FROM score_teaching_class_score_t WHERE TEACHING_CLASS_ID_ = t1.ID_ AND COURSE_CODE_ = t3.COURSE_CODE_ AND RELEASE_TYPE_ > 0 )
+                AND t3.PROJ_ID_ = 2
+            GROUP BY
+                t1.ID_
+            ORDER BY
+                t3.COURSE_CODE_
+                LIMIT 20;
+
+            --优化中
+            SELECT
+              t1.ID_ AS id,
+              t3.COURSE_CODE_ AS courseCode,
+              t3.COURSE_NAME_ AS courseName,
+              t1.NAME_ AS teachingClass,
+              t1.CODE_ AS courseNum,
+              t1.CAMPUS_ AS schoolZone,
+              CONCAT(
+                t.TEACHER_CODE_,
+                t.TEACHER_NAME_
+              ) AS teacher,
+              t3.PERIOD_ AS period,
+              t3.CREDITS_ AS credit,
+              t1.ELC_NUMBER_ AS number,
+              t3.FACULTY_ AS college,
+              sst.otherEnter AS otherEnter,
+              sst.LAST_IMPORTER_AT_ AS enterTime,
+              '0' AS releaseType
+            FROM
+              teaching_class_teacher_t t
+              JOIN teaching_class_t t1
+                ON t1.ID_ = t.TEACHING_CLASS_ID_
+                AND t1.STATUS_ = 0
+                AND t1.DELETE_STATUS_= 0
+                AND t.TYPE_ = 0
+              JOIN teaching_task_t t2
+                ON t2.ID_ = t1.TASK_ID_
+              JOIN course_open_t t3
+                ON t3.ID_ = t2.COURSE_OPEN_ID_  AND t3.`PROJ_ID_`=2
+              LEFT JOIN (SELECT
+                CONCAT(IMPORTER_CODE_, IMPORTER_NAME_) AS otherEnter,LAST_IMPORTER_AT_,TEACHING_CLASS_ID_
+              FROM
+                score_teaching_class_score_t ) sst ON sst.TEACHING_CLASS_ID_ = t1.ID_
+            WHERE
+            NOT EXISTS ( SELECT ID_ FROM score_teaching_class_score_t WHERE TEACHING_CLASS_ID_ = t1.ID_ AND COURSE_CODE_ = t3.COURSE_CODE_ AND RELEASE_TYPE_ > 0 )
+            GROUP BY t1.ID_
+            ORDER BY t3.COURSE_CODE_
+            LIMIT 20;
+
+            --优化后
+            SELECT
+                t1.ID_ AS id,
+                t3.COURSE_CODE_ AS courseCode,
+                t3.COURSE_NAME_ AS courseName,
+                t1.NAME_ AS teachingClass,
+                t1.CODE_ AS courseNum,
+                t1.CAMPUS_ AS schoolZone,
+                CONCAT( t.TEACHER_CODE_, t.TEACHER_NAME_ ) AS teacher,
+                t3.PERIOD_ AS period,
+                t3.CREDITS_ AS credit,
+                t1.ELC_NUMBER_ AS number,
+                t3.FACULTY_ AS college,
+                t4.otherEnter,
+                t4. enterTime,
+                '0' AS releaseType
+            FROM
+                teaching_class_teacher_t t
+                JOIN teaching_class_t t1 ON t1.ID_ = t.TEACHING_CLASS_ID_
+                AND t1.STATUS_ = 0
+                AND t.TYPE_ = 0
+                JOIN teaching_task_t t2 ON t2.ID_ = t1.TASK_ID_
+                JOIN course_open_t t3 ON t3.ID_ = t2.COURSE_OPEN_ID_
+                 left JOIN (SELECT CONCAT( IMPORTER_CODE_, IMPORTER_NAME_ ) AS otherEnter,LAST_IMPORTER_AT_ AS enterTime,TEACHING_CLASS_ID_  FROM score_teaching_class_score_t) t4
+                ON  t4.TEACHING_CLASS_ID_ = t1.ID_
+                left JOIN score_teaching_class_score_t t5
+                on t5.TEACHING_CLASS_ID_ = t1.ID_
+                AND t5.COURSE_CODE_ = t3.COURSE_CODE_
+                AND t5.RELEASE_TYPE_ > 0
+
+            WHERE
+            t5.ID_ IS NULL
+                AND t3.PROJ_ID_ = 2
+            GROUP BY
+                t1.ID_
+            ORDER BY
+                t3.COURSE_CODE_
+                LIMIT 20
+        </code>
+    </pre>
+
+    <b><a name='header-n21 ' class='md-header-anchor '></a>21、每一笔交易的耗时统计(优化)_BETWEEN</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        每一笔交易的耗时统计(优化)_BETWEEN：
+
+        优化前：
+        <code class="language-diff">
+        --1
+        SELECT E.TRANSTAMP, E.FLAT_DATE
+          FROM ESBDATA.ESB2_TRANS_LOG E
+         WHERE E.ESBFLOWNO IN (SELECT E.ESBFLOWNO
+                                 FROM ESBDATA.ESB2_TRANS_LOG E
+                                WHERE E.TRANSTAMP BETWEEN '2017-11-09 00:00:00 000' AND
+                                      '2017-11-10 00:00:00 000'
+                                  AND E.CHANNELID = 'IBPS'
+                                  AND E.REALSYSTEM = 'CARD'
+                                  AND E.FLOWSTEPID = '4')
+           AND E.FLOWSTEPID = '1'
+         ORDER BY E.ESBFLOWNO;
+
+        --4
+        SELECT E.ESBFLOWNO, E.TRANSTAMP
+          FROM ESBDATA.ESB2_TRANS_LOG E
+         WHERE E.TRANSTAMP BETWEEN '2017-11-09 00:00:00 000' AND
+               '2017-11-10 00:00:00 000'
+           AND E.CHANNELID = 'IBPS'
+           AND E.REALSYSTEM = 'CARD'
+           AND E.FLOWSTEPID = '4'
+         ORDER BY E.ESBFLOWNO;
+
+        SELECT E4.TRANSTAMP,
+               E4.FLAT_DATE,
+               E1.TRANSTAMP,
+               E1.FLAT_DATE,
+               (E4.FLAT_DATE - E1.FLAT_DATE) * 24 * 60 * 60 AS 时间差_秒
+          FROM (SELECT E.ESBFLOWNO, E.FLOWSTEPID, E.TRANSTAMP, E.FLAT_DATE
+                  FROM ESBDATA.ESB2_TRANS_LOG E
+                 WHERE E.ESBFLOWNO IN
+                       (SELECT E.ESBFLOWNO
+                          FROM ESBDATA.ESB2_TRANS_LOG E
+                         WHERE E.TRANSTAMP BETWEEN '2017-11-08 00:00:00 000' AND
+                               '2017-11-10 00:00:00 000'
+                           AND E.CHANNELID = 'IBPS'
+                           AND E.REALSYSTEM = 'CARD'
+                           AND E.FLOWSTEPID = '4')
+                   AND E.FLOWSTEPID = '1'
+                 ORDER BY E.ESBFLOWNO) E1,
+               (SELECT E.ESBFLOWNO, E.FLOWSTEPID, E.TRANSTAMP, E.FLAT_DATE
+                  FROM ESBDATA.ESB2_TRANS_LOG E
+                 WHERE E.TRANSTAMP BETWEEN '2017-11-08 00:00:00 000' AND
+                       '2017-11-10 00:00:00 000'
+                   AND E.CHANNELID = 'IBPS'
+                   AND E.REALSYSTEM = 'CARD'
+                   AND E.FLOWSTEPID = '4'
+                 ORDER BY E.ESBFLOWNO) E4
+         WHERE E1.ESBFLOWNO = E4.ESBFLOWNO
+           AND (E4.FLAT_DATE - E1.FLAT_DATE) * 24 * 60 * 60 >= 2;
+
+        SELECT E4.TRANSTAMP,
+               E4.FLAT_DATE,
+               E1.TRANSTAMP,
+               E1.FLAT_DATE,
+               (E4.FLAT_DATE - E1.FLAT_DATE) * 24 * 60 * 60 AS 时间差_秒
+          FROM (SELECT E.ESBFLOWNO, E.FLOWSTEPID, E.TRANSTAMP, E.FLAT_DATE
+                  FROM ESBDATA.ESB2_TRANS_LOG E
+                 WHERE E.ESBFLOWNO IN
+                       (SELECT E.ESBFLOWNO
+                          FROM ESBDATA.ESB2_TRANS_LOG E
+                         WHERE E.TRANSTAMP BETWEEN '2017-11-08 00:00:00 000' AND
+                               '2017-11-10 00:00:00 000'
+                           AND E.CHANNELID = 'IBPS'
+                           AND E.REALSYSTEM = 'SYMBOLS'
+                           AND E.FLOWSTEPID = '4')
+                   AND E.FLOWSTEPID = '1'
+                 ORDER BY E.ESBFLOWNO) E1,
+               (SELECT E.ESBFLOWNO, E.FLOWSTEPID, E.TRANSTAMP, E.FLAT_DATE
+                  FROM ESBDATA.ESB2_TRANS_LOG E
+                 WHERE E.TRANSTAMP BETWEEN '2017-11-08 00:00:00 000' AND
+                       '2017-11-10 00:00:00 000'
+                   AND E.CHANNELID = 'IBPS'
+                   AND E.REALSYSTEM = 'SYMBOLS'
+                   AND E.FLOWSTEPID = '4'
+                 ORDER BY E.ESBFLOWNO) E4
+         WHERE E1.ESBFLOWNO = E4.ESBFLOWNO
+           AND (E4.FLAT_DATE - E1.FLAT_DATE) * 24 * 60 * 60 >= 2;
+
+        </code>
+
+        优化后：
+        <code class="language-diff">
+            --1
+            SELECT E.TRANSTAMP, E.FLAT_DATE
+              FROM ESBDATA.ESB2_TRANS_LOG E
+             WHERE E.ESBFLOWNO IN (SELECT E.ESBFLOWNO
+                                     FROM ESBDATA.ESB2_TRANS_LOG E
+                                    WHERE E.TRANSTAMP BETWEEN '2017-11-09 00:00:00 000' AND
+                                          '2017-11-10 00:00:00 000'
+                                      AND E.CHANNELID = 'IBPS'
+                                      AND E.REALSYSTEM = 'CARD'
+                                      AND E.FLOWSTEPID = '4')
+               AND E.FLOWSTEPID = '1'
+             ORDER BY E.ESBFLOWNO;
+
+            --4
+            SELECT E.ESBFLOWNO, E.TRANSTAMP
+              FROM ESBDATA.ESB2_TRANS_LOG E
+             WHERE E.TRANSTAMP BETWEEN '2017-11-09 00:00:00 000' AND
+                   '2017-11-10 00:00:00 000'
+               AND E.CHANNELID = 'IBPS'
+               AND E.REALSYSTEM = 'CARD'
+               AND E.FLOWSTEPID = '4'
+             ORDER BY E.ESBFLOWNO;
+
+            SELECT E4.TRANSTAMP AS 第4笔流水时间戳_毫秒,
+                   E4.FLAT_DATE AS 第4笔流水时间戳_秒,
+                   E1.TRANSTAMP AS 第1笔流水时间戳_毫秒,
+                   E1.FLAT_DATE AS 第1笔流水时间戳_秒,
+                   (E4.FLAT_DATE - E1.FLAT_DATE) * 24 * 60 * 60 AS 时间差_秒,
+                   E4.CHANNELID AS 渠道ID,
+                   E4.REALSYSTEM AS 服务系统,
+                   E4.SERVICEID AS 服务ID
+              FROM (SELECT E.ESBFLOWNO, E.FLOWSTEPID, E.TRANSTAMP, E.FLAT_DATE
+                      FROM ESBDATA.ESB2_TRANS_LOG E
+                     WHERE E.ESBFLOWNO IN
+                           (SELECT E.ESBFLOWNO
+                              FROM ESBDATA.ESB2_TRANS_LOG E
+                             WHERE E.TRANSTAMP BETWEEN '2017-11-08 00:00:00 000' AND
+                                   '2017-11-10 00:00:00 000'
+                               AND E.CHANNELID = 'IBPS'
+                               AND E.REALSYSTEM = 'CARD'
+                               AND E.FLOWSTEPID = '4')
+                       AND E.FLOWSTEPID = '1'
+                     ORDER BY E.ESBFLOWNO) E1,
+                   (SELECT E.ESBFLOWNO,
+                           E.FLOWSTEPID,
+                           E.TRANSTAMP,
+                           E.FLAT_DATE,
+                           E.CHANNELID,
+                           E.REALSYSTEM,
+                           E.SERVICEID
+                      FROM ESBDATA.ESB2_TRANS_LOG E
+                     WHERE E.TRANSTAMP BETWEEN '2017-11-08 00:00:00 000' AND
+                           '2017-11-10 00:00:00 000'
+                       AND E.CHANNELID = 'IBPS'
+                       AND E.REALSYSTEM = 'CARD'
+                       AND E.FLOWSTEPID = '4'
+                     ORDER BY E.ESBFLOWNO) E4
+             WHERE E1.ESBFLOWNO = E4.ESBFLOWNO
+               AND (E4.FLAT_DATE - E1.FLAT_DATE) * 24 * 60 * 60 >= 2;
+        </code>
+    </pre>
+
+    <b><a name='header-n22 ' class='md-header-anchor '></a>22、模糊查询like和转义字符</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        模糊查询like和转义字符:
+        <code class="language-diff">
+            select 'DROP TABLE ' || t.table_name || ' CASCADE CONSTRAINTS;' from dba_tables t where t.owner = 'ICMP' AND t.table_name not  like 'S/_%' ESCAPE '/';
+            select  'DROP TABLE ' || t.table_name || ' CASCADE CONSTRAINTS;'  from dba_tables t where t.owner = 'ALPHAFIN';
+
+            select COUNT(1) from dba_tables t where t.owner = 'ICMP' AND t.table_name not  like 'S/_%' ESCAPE '/';
+            select COUNT(1) from dba_tables t where t.owner = 'ICMP' AND t.table_name  like 'S/_%' ESCAPE '/';
+            select * from dba_tables t where t.owner = 'ICMP' AND t.table_name  like 'S/_%' ESCAPE '/';
+        </code>
+    </pre>
+
+    <b><a name='header-n23 ' class='md-header-anchor '></a>23、模糊查询like和转义字符</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        模糊查询like和转义字符：
+        <code class="language-diff">
+            -- 从当前回话中查询连接的用户信息
+            SELECT USERNAME,SID,SERIAL#，PADDR FROM V$SESSION WHERE USERNAME = 'ICMP';
+
+            -- 从进程中查看上面的用户被哪个进程占用，确定是否可以kill这个进程
+            SELECT B.PROGRAM FROM V$PROCESS B WHERE ADDR IN (SELECT PADDR FROM V$SESSION WHERE USERNAME = 'ICMP');
+
+            -- KILL 连接用户
+            SELECT 'ALTER SYSTEM KILL SESSION '''||SID||','||SERIAL#||''';' FROM  V$SESSION WHERE USERNAME = 'ICMP';
+
+            ALTER SYSTEM KILL SESSION '10,10807';
+        </code>
+    </pre>
+
+    <b><a name='header-n24 ' class='md-header-anchor '></a>24、外表自己测试</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        外表自己测试：
+        <code class="language-diff">
+            create or replace directory TestTable_dir  as 'D:\Test';
+
+            create table TestTable(
+              ID varchar2(10),
+              NAME varchar2(20),
+              TYPE varchar2(20),
+              AGE varchar2(20)
+            ) organization external(
+              type oracle_loader
+            default directory TestTable_dir
+              access parameters(fields terminated by ',')
+                location('TestTable.txt')
+            );
+
+            ALTER TABLE TestTable reject limit unlimited;
+
+            DROP DIRECTORY TestTable_dir
+            drop table TestTable
+            select * from TestTable;
+
+            select * from Users;
+        </code>
+    </pre>
+
+    <b><a name='header-n25 ' class='md-header-anchor '></a>25、新核心dump语法</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        新核心dump语法：
+        <code class="language-diff">
+            -- oracle中的dump文件的使用，使用expdp到处dump文件进行备份，使用impdp导入dump文件进行备份。
+            -- 注意，expdp和impdp这两个指令只能在oracle的服务端执行，不能在客户端执行！
+
+            导出dump:
+            expdp icmp/icmp@30.3.229.221:1688/icmpdb dumpfile=icmp.dmp DIRECTORY=BAKDATA logfile=expdp.log compression=all
+
+            expdp ALPHAFIN/alphafin@30.3.229.221:1688/icmpdb dumpfile=alphafin.dmp DIRECTORY=BAKDATA logfile=expdp.log compression=all
+
+            使用下面的用户登录linux服务器（服务器是oracle服务器软件部署的Linux环境）
+            oracle/oracle666
+
+
+            导入dump：
+            imp icmp/IcMp_3@30.3.225.160:1521/dzdevdb file="/home/odsicmp/icmp2018.dmp" full = y
+
+
+            impdp  icmp2018/icmp2018@30.3.3.139:1521/dzdevdb DIRECTORY=BAKDATA logfile=expdp.log  DUMPFILE=icmp.dmp  REMAP_SCHEMA=icmp:icmp2018;
+
+            expdp \"/ as sysdba\" directory=DATA_PUMP_DIR dumpfile=${ORACLE_SID}_`hostname`_TM_${DT}.dmp logfile=${ORACLE_SID}_`hostname`_TM_${DT}.log  schemas=ALPHAFIN,ICMP
+
+
+            -- 使用下面：
+            -- 注意oracle提供的导出语法
+            -- / as sysdba以dba角色登录，前提是oracle这个用户有这个权限
+            -- directory=BAKDATA是当前数据库用户中的木兰路值，这个目录只应该指向服务器上的dump文件路径
+            -- dumpfile=icmpdb_movicmpdb01_TM__tm.dmp指定要执行的目标dump文件的文件名称
+            -- logfile=icmpdb_movicmpdb01_TM__tm.dmp.log指定执行目标dump文件产生的log文件名称
+            -- table_exists_action=replace表示导入目标dump文件时候替换掉现有库中存在的所有数据（注意如果现在库中增量存在的数据将不被dump替换）
+
+            -- table_exists_action=replace的值详解：
+                -- 使用imp命令进行数据导入时候，如果表已经存在，要先drop掉表，再进行导入；
+                -- 而使用impdp命令完成数据库导入时候，如果表已经存在，有四种处理方式：
+                    -- （1）、skip：默认操作，表示如果表已经存在则跳过处理下一个对象（即使表结构发生了变化，只要表名称不发生改变，导入这个表，就会被跳过）
+                    -- （2）、replace；先drop掉表，然后创建表，最后插入dump中的数据（新建的表，在dump中没有，这个表不会被覆盖）
+                    -- （3）、append：在原来数据的基础上增加数据（只要append数据出错，比如唯一键错误，这时候什么数据都不能插入目标表了）
+                    -- （4）、truncate：先truncate表，然后再插入数据
+
+            impdp \"/ as sysdba\" directory=impdir  dumpfile=vrecov03_icmpdb1_SC_0908.dmp  logfile=vrecov03_icmpdb1_SC_0908.log table_exists_action=replace
+
+
+            impdp \"/ as sysdba\" directory=BAKDATA  dumpfile=icmpdb_movicmpdb01_TM__tm.dmp  logfile=icmpdb_movicmpdb01_TM__tm.dmp.log table_exists_action=replace
+
+
+            -- 从远程复制文件到本地服务器
+            scp   root@30.3.3.139:/home/oracle/dpdump/icmp_expdp_20180321.dmp    /oradata/dumpdir
+
+
+            导入之前请删除用户ICMP 和 ALPHAFIN
+
+            drop user icmp cascade;
+            drop user alphafin cascade;
+
+
+            -- 只导入定义
+            impdp \"/ as sysdba\"  directory=BAKDATA dumpfile=vrecov03_icmpdb1_ntm_hl_1101.dmp  logfile=a.log  schemas=icmp  content=metadata_only
+
+            -- DBA导出的dump文件
+            30.3.229.221：oracle/oracle666
+            /home/oracle:
+            movicmpdb01_icmpdb_ytm_hl_1101.dump //已经脱敏的数据
+            vrecov03_icmpdb1_ntm_hl_1101.dump //没有脱敏的数据（使用这个dump只导入表结构，这样外部表就能导入成功，导入表结构前请先创建外部表建立时候需要的directory目录）
+
+
+            impdp \"/ as sysdba\" directory=BAKDATA  dumpfile=./movicmpdb01_icmpdb_ytm_hl_1101.dump  logfile=movicmpdb01_icmpdb_ytm_hl_1101.dump.log table_exists_action=replace
+
+        </code>
+    </pre>
+</div>
+</body>
+</html>
+

@@ -1,9 +1,10 @@
+
 <!doctype html>
 <html>
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width initial-scale=1'>
-    <title>java format.md</title>
+    <title>从cpu角度看并发.md</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
           rel='stylesheet' type='text/css'/>
     <style type='text/css'>html {
@@ -709,74 +710,106 @@
         border-left-color: rgba(85, 85, 85, 0.12);
     }
     </style>
-    <link rel="stylesheet" href="../../../highlight/styles/default.css">
-    <script src="../../../highlight/highlight.min.js"></script>
+
+    <link rel="stylesheet" href="../../../../highlight/styles/default.css">
+    <script src="../../../../highlight/highlight.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body class='typora-export'>
 <div id='write' class='is-node'>
-    <b><a name='header-n0' class='md-header-anchor '></a>JAVA Format 格式化</b>
+    <b><a name='header-n0' class='md-header-anchor '></a>从CPU角度看待并发</b>
 
-    <b><a name='header-n1' class='md-header-anchor '></a>1、java中的format</b><br>
+    <b><a name='header-n1' class='md-header-anchor '></a>1、脱离Java从CPU角度去看并发</b><br>
+    <b><a name='header-n11' class='md-header-anchor '></a>1.1、 疑问？</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        有时候，我们需要对程序中的文本、数字、日期等类型进行某种格式化，以适应我们自身的阅读和显式习惯。
-        在java中进行格式化的类主要是Format类。
-        Format类主要有3个子类：
-        1.  MessageFormat类（消息文本格式化类）。
-        2.  NumberFormat抽象类（数字格式化类）。
-        3.  DateFormat抽象类（日期格式化类）。
+        1.  抛开Java语言本身，对于单线程操作和多线程并发操作，CPU自身是如何执行的？
+        2.  CPU为了性能做了哪些努力？
+        3.  CPU底层进行变量的读取和写入是安全的么？
+        4.  CPU的读操作是原子操作么？
+        5.  CPU的写操作是原子操作么？
+        6.  CPU的读和写放在一起还是原子操作么？
+        7.  CPU的原子操作体现在代码上还是原子操作么？
+        8.  什么是原子操作？
+        9.  JVM为CPU的执行做了哪些努力？
+        10. volatile关键字感觉是JVM规范一直没有描述清楚的一个关键字，在JAVA 5之前，它是一个饱受争议的关键字，因为在程序中使用它往往会导致出人意料的结果。在JAVA 5之后，volatile关键字才得以重获生机。volatile关键字的原理是什么？它的作用呢？
+    </pre>
+    <b><a name='header-n12' class='md-header-anchor '></a>1.2、 并发还是并行？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  并发：多个客户端同时发出多个相同的请求，服务端有可能是并行执行的，也有可能是串行执行的，也有可能是交替执行的。当单核CPU时，实际上服务器对于并发是交替执行的，并没有真正的并行。
+        2.  并行：服务端是真正的并行执行，多核CPU时，服务端是多个CPU真正的并行执行。
+        <font color="#a52a2a">
+            tips：不论是并发还是并行，对于客户端来说都是一样的，就是服务器并行处理任务。
+        </font>
+    </pre>
+    <b><a name='header-n13' class='md-header-anchor '></a>1.3、 死锁、饥饿、活锁？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  死锁：多个线程彼此互相等待并阻塞，彼此都不能执行。
+        2.  饥饿：某个线程疯狂占用锁资源不释放，其他线程无法获得该锁资源长期处于饥饿状态，无法执行自己的任务。
+        3.  活锁：两个线程彼此谦让，结果是两个线程都无法获得锁资源，因此都无法执行自己的任务。
+    </pre>
+    <b><a name='header-n14' class='md-header-anchor '></a>1.4、 CPU的上锁机制分类？</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  lock#：锁总线，禁止cpu总线和其他部件的通信【总线上锁，解决缓存一致性问题】。
+        2.  锁缓存：将高速缓存中某一块空间进行锁定，并使其失效即清空该缓存中的值【缓存一致性协议】。
+        3.  锁内存：当cup发出assign指令后（注意上锁的时机，volatile锁持有的时间短），将物理内存中某一块内存地址锁定，禁止其他线程操作，并立即将缓存中assign后的新值回写到主内存中，其他线程短暂性阻塞【volatile作用】。
+        4.  锁内存（互斥锁）：同样是锁内存，当cpu进入到临界资源后（即从cpu最开始发出read指令后即对对应的内存地址整体上锁，上锁时间长，锁的持有时间长），将物理内存中某一块内存地址锁定，禁止其他线程操作，其他线程将长时间阻塞【synchronized调用的操作系统互斥锁基于此原理】。
+        <font color="#a52a2a">
+            tips：
+            在这里提一下CAS算法。
+            CAS算法底层调用的是CPU的CMPXCHG指令实现的，这个指令是原子指令，并且没有调用任何的CPU锁。
+            CAS算法基于乐观锁，采用无限比较交换原则实现原子性，但是CAS依赖于volatile。
+            所以，这两者结合在一起就调用了volatile的轻量级锁，只导致其他线程短暂性阻塞，这也是CAS无锁编程性能高的原因。
+        </font>
     </pre>
 
-    <b><a name='header-n2' class='md-header-anchor '></a>2、MessageFormat</b><br>
+    <b><a name='header-n2' class='md-header-anchor '></a>2、计算机内存模型</b><br>
+    <b><a name='header-n21' class='md-header-anchor '></a>2.1、 CPU操作主存和缓存的指令</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        MessageFormat是Format的子类，在java.text包中，专门用来格式化字符串文本。
-
-        其核心方法如下：
-        <code class="language-java">
-            public static String format(String pattern, Object ... arguments);
-        </code>
-        其中第1个参数表示要操作的字符串文本，第2个参数表示输入参数可以是任意多个或者0个。
-        该方法的核心功能就是格式化字符串，使用实际参数替换字符串文本中的占位符<font color="#dc143c">{0}</font>之类的。
-
-        案例代码如下：
-        <code class="language-java">
-            package javase.demo18.classlibray.base;
-
-            import java.text.MessageFormat;
-
-            /**
-             * 功能描述： MessageFormat进行文本格式化
-             *
-             * @ClassName Demo16StudyMessageFormat
-             * @Author zhaoerhu
-             * @Date 2021/8/31 16:47
-             */
-            public class Demo16StudyMessageFormat {
-                public static void main(String[] args) {
-                    String target = "hello,{0}.my home is {1}!";
-                    System.out.println(target);
-                    String format = MessageFormat.format(target, "Eric", "西安");
-                    System.out.println(format);
-
-                    target = "hello,{2}.my home is {3}!";
-                    format = MessageFormat.format(target, "Eric", "西安");
-                    System.out.println(format);
-                }
-            }
-        </code>
-
-        运行结果如下：
+        对于任何一个变量（<font color="#dc143c">该变量指的是共享变量，方法变量本身是在线程私有栈内存中诞生的</font> ），是如何从主内存中拷贝到工作内存、又如何从工作内存中回写到主内存中的实现细节，Java内存模型定义了以下8种操作指令来完成。
+        Java虚拟机必须保证以下提及的每一种操作指令都是原子性的、不可再分的（对于long和double类型的变量来说，load、store、read和write指令在某些平台上允许有例外）：
         <code class="language-diff">
-            hello,{0}.my home is {1}!
-            hello,Eric.my home is 西安!
-            hello,{2}.my home is {3}!
+            1.  lock（锁定）：作用于主内存中的变量，把一个变量标识为一条线程独占的状态。 作用内存：主内存。
+            2.  unlock（解锁）：作用于主内存的变量，把一个处于锁定状态的变量释放出来，释放后的变量才可以被其他线程锁定。 作用内存：主内存。
+            3.  read（读取）：作用于主内存的变量，把一个变量的值从主内存传输到线程的工作内存，以便随后的load动作使用，注意read只是一个传输命令。 作用内存：主内存。
+            4.  load（载入）：作用于工作内存的变量，把read操作从主内存中得到的变量值写入工作内存的变量副本中。 作用内存：工作内存。
+            5.  use（使用）：作用于工作内存的变量，把工作内存中一个变量的值传递给执行引擎，每当虚拟机遇到一个需要使用到变量的值的字节码指令时将会执行这个操作，也是一个传输命令。 作用内存：工作内存。
+            6.  assign（赋值）：作用于工作内存的变量，把一个从执行引擎接收到的值赋给工作内存的变量，每当虚拟机遇到一个给变量赋值的字节码指令时执行这个操作，注意assign是赋值操作。 作用内存：工作内存。
+            7.  store（存储）：作用于工作内存，把工作内存中的一个变量的值传送给主内存中，以便随后的write操作使用，store是一个传输命令。 作用内存：工作内存。
+            8.  write（写入）：作用于主内存的变量，把store操作从工作内存得到的变量的值放入主内存的变量中。 作用内存：主内存。
         </code>
-
-        总结：
-        1.  MessageFormat类的format()方法接收2个参数，第1个参数表示要格式化的目标字符串，第2个参数是个可变参数，表示传入的用于替换字符串中占位符的参数，可以是无数个或者0个。
-        2.  字符串中的占位符使用形式必须遵守<font color="#dc143c">{index}</font>的形式，其中index表示要占位符的索引，从0开始匹配。此处占位符必须从{0}，再到{1}，{2}...以此类推。占位符的索引下标必须和format()方法的可变参数下标匹配上才会进行format操作。否则对于不匹配的占位符将不会进行任何format。
+        如果要把一个变量从主内存复制到工作区，就要顺序地执行read和load操作；如果要把变量从工作内存同步回主内存，就要顺序的执行store和write操作。
+        <font color="#dc143c">注意，4,5,6,7中的4个步骤（load,use,assign,store）操作的都是工作内存，即线程私有的，意味着这4个步骤无论如何是不可能被其他线程中断的，即原子的。</font>
+        Java内存模型只要求上述两个操作必须按顺序执行，而不是连续执行。因此在read与load之间、store与write之间是可插入其他指令的。除此之外，Java内存模型还规定了在执行上述8种基本操作时必须满足如下规则：
+        <code class="language-diff">
+            1.  不允许read和load、store和write操作之一单独出现，即不允许一个变量从主内存读取了但工作内存不接受，或者从工作内存发起回写了但主内存不接受的情况。
+            2.  不允许一个线程丢弃它最近的assign操作，即变量在工作内存中改变后必须将该变化同步回主内存。
+            3.  不允许一个线程无原因的（没有发生过任何assign操作）把数据从线程的工作内存同步回主内存中。
+            4.  一个新的变量只能在主内存中“诞生”，不允许在工作内存中直接使用未被初始化（load或assign）的变量。也就是说，在对一个变量实施use、store操作之前，必须先执行了load、assign操作。
+            5.  一个线程在同一时刻，只允许一个线程对其进行lock操作，但lock操作可以被一个线程重复执行多次，执行了多少次lock操作，就必须在执行同样次数的unlock操作后，变量才会被解锁。
+            6.  如果对一个变量执行了lock操作，那么将会清空工作内存中此变量的值，在执行引擎使用这个变量前，需要重新执行load或assign操作初始化变量的值（保证可见性）。
+            7.  如果一个变量没有被lock操作锁定，那就不允许对它执行unlock操作，也不允许unlock一个被其他线程锁定的变量。
+            8.  对一个变量执行unlock操作之前，必须先把此变量同步回主内存中（执行store、write操作），即必须保证原子性。
+        </code>
     </pre>
+
+    <b><a name='header-n22' class='md-header-anchor '></a>2.2、 CPU从硬件层面采用高速缓存</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  最早时，CPU是直接操作主内存的。
+        计算机在执行程序时，每条指令都在CPU中执行，而执行指令的过程，涉及到数据的读取（<font color="#dc143c">read</font> ）、处理（<font color="#dc143c">load,use,assign,store</font> ）、写入（<font color="#dc143c">write</font> ）。这三步分别是原子性的。
+
+        CPU的天生原子性：
+        在直接操作主存的前提下，CPU在对基本类型数据的读取操作和写入操作是天生原子性的（32位操作系统对java中64bit的long和double类型是分步读取和分步写入的，所以32位系统对long和double不保证天生原子性），注意是读操作、写操作，分别是原子性；读和写放在一起就不是原子性操作。如下图：
+        <img src="01-bingfa-cpu-01.png">
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、向下转型和向下转型案例</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、感想</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+    </pre>
+
 </div>
 </body>
 </html>
-

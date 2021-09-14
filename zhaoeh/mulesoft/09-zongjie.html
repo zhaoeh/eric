@@ -1,9 +1,10 @@
+
 <!doctype html>
 <html>
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width initial-scale=1'>
-    <title>java format.md</title>
+    <title>mule常用知识点总结.md</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
           rel='stylesheet' type='text/css'/>
     <style type='text/css'>html {
@@ -709,72 +710,81 @@
         border-left-color: rgba(85, 85, 85, 0.12);
     }
     </style>
-    <link rel="stylesheet" href="../../../highlight/styles/default.css">
-    <script src="../../../highlight/highlight.min.js"></script>
+
+    <link rel="stylesheet" href="../../highlight/styles/default.css">
+    <script src="../../highlight/highlight.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body class='typora-export'>
 <div id='write' class='is-node'>
-    <b><a name='header-n0' class='md-header-anchor '></a>JAVA Format 格式化</b>
+    <b><a name='header-n0' class='md-header-anchor '></a>mule常用知识点总结</b>
 
-    <b><a name='header-n1' class='md-header-anchor '></a>1、java中的format</b><br>
+    <b><a name='header-n1' class='md-header-anchor '></a>1、mule操作db的批操作 </b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        有时候，我们需要对程序中的文本、数字、日期等类型进行某种格式化，以适应我们自身的阅读和显式习惯。
-        在java中进行格式化的类主要是Format类。
-        Format类主要有3个子类：
-        1.  MessageFormat类（消息文本格式化类）。
-        2.  NumberFormat抽象类（数字格式化类）。
-        3.  DateFormat抽象类（日期格式化类）。
-    </pre>
+        原生jdbc的Statement 和 PreparedStatemen 对象都提供批量操作，通过指定executeBatch来一次性缓存多条insert、update、delete语句等，最后一次性提交给db，避免了和数据库多次建立连接，提升性能。
 
-    <b><a name='header-n2' class='md-header-anchor '></a>2、MessageFormat</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        MessageFormat是Format的子类，在java.text包中，专门用来格式化字符串文本。
-
-        其核心方法如下：
+        <font color="#dc143c">jdbc批量操作案例：</font>
         <code class="language-java">
-            public static String format(String pattern, Object ... arguments);
+            // Create SQL statement
+            String SQL = "INSERT INTO Employees (id, first, last, age) " + "VALUES(?, ?, ?, ?)";
+            ​
+            // Create PrepareStatement object
+            PreparedStatemen pstmt = conn.prepareStatement(SQL);
+            ​
+            //Set auto-commit to false
+            conn.setAutoCommit(false);
+            ​
+            // Set the variables
+            pstmt.setInt( 1, 400 );
+            pstmt.setString( 2, "Pappu" );
+            pstmt.setString( 3, "Singh" );
+            pstmt.setInt( 4, 33 );
+            // Add it to the batch
+            pstmt.addBatch();
+            ​
+            // Set the variables
+            pstmt.setInt( 1, 401 );
+            pstmt.setString( 2, "Pawan" );
+            pstmt.setString( 3, "Singh" );
+            pstmt.setInt( 4, 31 );
+            // Add it to the batch
+            pstmt.addBatch();
+            ​
+            //add more batches
+            ​
+            //Create an int[] to hold returned values
+            int[] count = stmt.executeBatch();
+            ​
+            //Explicitly commit statements to apply changes
+            conn.commit();
         </code>
-        其中第1个参数表示要操作的字符串文本，第2个参数表示输入参数可以是任意多个或者0个。
-        该方法的核心功能就是格式化字符串，使用实际参数替换字符串文本中的占位符<font color="#dc143c">{0}</font>之类的。
+        executeBatch的原理很简单，通过一次和数据库的连接，然后每构建好一个SQL语句后，便执行一次pstmt.addBatch()，将这个SQL先缓存到statement对象中。
+        等到最终所有目标SQL都通过pstmt.addBatch()缓存到statement对象之后，再统一执行executeBatch()，将所有的SQL一次性执行，达到了批处理的目的。
 
-        案例代码如下：
+        批处理的特性，往往会被我们应用到完全相同的SQL语句（只是参数不同）中，然后通过循环来迭代提交，如下案例：
         <code class="language-java">
-            package javase.demo18.classlibray.base;
-
-            import java.text.MessageFormat;
-
-            /**
-             * 功能描述： MessageFormat进行文本格式化
-             *
-             * @ClassName Demo16StudyMessageFormat
-             * @Author zhaoerhu
-             * @Date 2021/8/31 16:47
-             */
-            public class Demo16StudyMessageFormat {
-                public static void main(String[] args) {
-                    String target = "hello,{0}.my home is {1}!";
-                    System.out.println(target);
-                    String format = MessageFormat.format(target, "Eric", "西安");
-                    System.out.println(format);
-
-                    target = "hello,{2}.my home is {3}!";
-                    format = MessageFormat.format(target, "Eric", "西安");
-                    System.out.println(format);
-                }
+            String SQL = "INSERT INTO Employees (id, first, last, age) " + "VALUES(?, ?, ?, ?)";
+            while(resultSet.next()){
+                pstmt.setInt( 1, resultSet.getInt(1) );
+                pstmt.setString( 2, resultSet.getString(2) );
+                pstmt.setString( 3, "resultSet.getString(3) );
+                pstmt.setInt( 4, resultSet.getInt(4) );
+                pstmt.addBatch();
             }
         </code>
+        上述案例在模拟一个数据复制的过程，resultSet是从源表中查询出来的数据结果集，然后遍历这个结果集，迭代设置不同的insert参数，每次构建好SQL语句后，进行addBatch操作。
+        最终再统一进行executeBatch。
 
-        运行结果如下：
-        <code class="language-diff">
-            hello,{0}.my home is {1}!
-            hello,Eric.my home is 西安!
-            hello,{2}.my home is {3}!
-        </code>
-
-        总结：
-        1.  MessageFormat类的format()方法接收2个参数，第1个参数表示要格式化的目标字符串，第2个参数是个可变参数，表示传入的用于替换字符串中占位符的参数，可以是无数个或者0个。
-        2.  字符串中的占位符使用形式必须遵守<font color="#dc143c">{index}</font>的形式，其中index表示要占位符的索引，从0开始匹配。此处占位符必须从{0}，再到{1}，{2}...以此类推。占位符的索引下标必须和format()方法的可变参数下标匹配上才会进行format操作。否则对于不匹配的占位符将不会进行任何format。
+        <font color="#dc143c"><b>知道了原理，接下来看mule里面的批处理：</b></font>
+            1.  mule中的select实际上和jdbc、mybatis一样，如果查询不到数据，会自动将结果集映射为一个空的llist集合对象，而不会产生null值。实际上这一点jdbc返回的ResultSet结果集就说明了，ResultSet不会是null值。
+            2.  对于insert、update、delete等语句来说，有个批量操作，底层原始使用的就是jdbc的executeBatch：
+            通过在insert等标签中添加属性 <font color="#dc143c">bulkMode="true"</font>来对当前的语句开启批量处理功能。
+            加上bulkMode="true"属性就表示批量操作，此时的入参payload，要求payload是一个list集合对象，如果此时的payload是一个null值的话，那么将会报错。
+            如果此时的payload是一个空集合对象（不是null值），此时的批处理将不会进去，也不会报错。
+            <font color="#dc143c">mule的底层对批处理实际上是通过遍历入参payload来循环设置参数，循环提交SQL语句的，如果payload是空对象，那么循环将进不去。</font>
+            3.  重点来了。同样，如果不使用批量操作，即去掉<font color="#dc143c">bulkMode="true"</font>，直接进行单个的insert等操作，此时如果传入的payload是个空集合对象，那么对应的参数取出来就会是null。
+            这个时候是会执行insert语句的，如果数据库对字段有非空约束，则会插入报错。
+            这一点需要注意。
     </pre>
 </div>
 </body>

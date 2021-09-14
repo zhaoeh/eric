@@ -1,0 +1,2546 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>jdbc.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor {
+        width: auto;
+        border: 0px;
+        background: rgb(119, 238, 119);
+        z-index: 1;
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    div.hr:focus {
+        cursor: none;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    @media screen and (max-width: 48em) {
+
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    .md-inline-math .MathJax_SVG .noError {
+        display: none !important;
+    }
+
+    .mathjax-block .MathJax_SVG_Display {
+        text-align: center;
+        margin: 1em 0em;
+        position: relative;
+        text-indent: 0px;
+        max-width: none;
+        max-height: none;
+        min-height: 0px;
+        min-width: 100%;
+        width: auto;
+        display: block !important;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+        text-decoration: none;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    #write pre.md-meta-block {
+        padding: 1rem;
+        font-size: 85%;
+        line-height: 1.45;
+        background-color: rgb(247, 247, 247);
+        border: 0px;
+        border-radius: 3px;
+        color: rgb(119, 119, 119);
+        margin-top: 0px !important;
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+    </style>
+
+    <link rel="stylesheet" href="../../../highlight/styles/default.css">
+    <script src="../../../highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>原生JDBC</b>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、JDBC规范</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        JDBC实际上和JNDI,JMS一样，这些玩意儿，很多文档都会翻译成SUN的规范来解释。
+        此处重点解释JDBC。
+        1.  JDBC是规范，即SUN公司通过接口定义的方式向应用开发者和实现者暴露一组统一的接口规范。说白了就是一系列interface和class。由此可见，java中要是没有interface还怎么制定规范啊。
+        2.  JDBC是抽象层的东西，SUN自己不实现它。换言之，JDBC是意识形态的东西，SUN的目的就是让开发者和实现者认同并遵守这些规范。由此可见，一旦规范形成后，果然就不怕意识形态的斗争啊。
+        3.  既然JDBC是抽象层的东西，就需要有人来实现它们，将它们具体化。apache是实现SUN规范的好助手，就像使用Oracle或者mySql数据库需要加载数据驱动包一样，驱动包就是JDBC的实现。由此可见，SUN喜欢制定规范，apache喜欢实现规范，spring喜欢包装实现。
+        4.  数据库的厂商很多，每个厂商都按照SUN的规范去实现自己的数据库驱动包，所以导致不同的数据库厂商会有很多的数据库驱动包实现，它们各自适配不同的数据库。比如JMS是SUN指定的规范，实现JMS规范的厂商很多，rocketMQ，activeMQ，kafka等，和JDBC原理一样，厂商需要自己实现。
+        5.  从意识形态到实现者，可以看出规范的重要性。规范，既约定统一的标准暴露给开发者和实现者，又不牵制具体的实现方案。只要厂商在标准内实现，任你发挥都可以，都包容。不难看出，要想别人遵循你的规范，你必须强大，SUN如果不强大不足以制定规范，谁让你们用JAVA呢？这个华为争取5G规范标准的道理一样，可见规范的牛逼性。
+    </pre>
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、JDBC</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  JDBC（Java DataBase Connectivity,java数据库连接）是一种用于执行SQL语句的Java API，可以为多种关系数据库提供统一访问，它由一组用Java语言编写的类和接口组成。JDBC是JAVA连接数据库封装的接口。是SUN制定的操作数据库的接口标准，需要不同的厂商实现各自的数据库驱动才能通过这些接口操作数据库。JDBC提供了一种基准，据此可以构建更高级的工具和接口，使数据库开发人员能够编写数据库应用程序
+        2.  JDBC的本质是由一些接口和类组成的。它提供一种标准。组成JDBC的接口和类存在于Java.sql包中。Java 具有坚固、安全、易于使用、易于理解和可从网络上自动下载等特性，是编写数据库应用程序的杰出语言。所需要的只是 Java应用程序与各种不同数据库之间进行对话的方法。
+        3.  通过JDBC连接数据库，则首先要有驱动程序。驱动程序是用来驱使数据库运行的程序，实质是对JDBC当中的接口和类的实现，驱动程序由不同的数据库商家提供。下载好数据库后，通过ClassPath的配置将数据库的驱动程序(即一些jar包)加载到jdk当中去，这样，这些驱动程序（对JDBC当中的接口和类的实现类）就被包含到Java开发包中。
+        4.  在Java程序中要想使用这些驱动程序，则要通过Class.forName()方法加载这些驱动程序。
+        （1）当驱动程序加载成功以后，说明对JDBC中的实现方法已经全部调用到Java开发系统中了，有了这些驱动程序（实现方法）后，则可以通过其中的方法去连接一个数据库。
+        （2）通过方法连接数据库的过程需要数据库的连接地址，连接地址由不同的数据库商提供。连接以后，则可以通过java语言结合数据库操作语言对数据库进行操作。
+        5.  ORACLE是数据库，用来存储数据的。
+        6.  Oracle SQL Developer(PLSQL)是一个软件，图形化工具，相当于第三方平台，通过这款软件可以直接创建数据库表，并对数据库表等进行各种SQL操作，而不再需要必须借助jdk环境进行操作。
+        7.  java要连接数据库，必须先将数据库厂家提供的数据库jar包导入到项目当中，或者配置到classpath当中。
+        8.  jsp程序是在tomcat服务器当中运行的，所以要想利用tomcat服务器去执行jsp语句，如果jsp文档中存在数据库连接操作，则首先应该讲数据库jar包复制到tomcat安装目录下的lib当中去，这样才能保证执行的jsp代码能够顺利加载到所需要的驱动程序。
+        9.  一般开发，必须具备的三个大的环境条件：
+        （1）jdk环境的安装，以及环境变量的配置。
+        只有存在jdk才能进行java application应用程序的开发。因为jdk当中存在很多命令。例如javac,java,javadoc等一系列doc窗口的命令，并且所调用的包，类等都存在于jdk当中。要配置classpath,path的原因是，想要在windows操作系统中操作jdk等一系列命令的话，则必须要跟windows平台进行连接，如果不连接的话，windows平台自带的doc窗口是不能识别jdk当中提供的javac等命令的，并且不能识别jdk当中的各种包等。配置完classpath和path后，意味着将jdk的lib文件夹和一些列数据库的bin文件夹的路径导入到了windows平台当中，这样才能在windows平台当中执行一系列的命令，并且顺利地导入jdk当中的包。
+        （2）数据库
+        要操作数据库，必须安装数据库，安装数据库以后不用也要进行path的配置，目的与上面一样，要让windows平台找到需要的数据库文件夹当中的命令。数据库安装完成后，就可以利用java代码进行数据库的连接操作。
+        要想连接数据库，通过jdbc。数据库的安装目录下提供了实现jdbc中所有接口的实现类，这些类都是以jar包的形式存放在数据库的安装目录下的，这些类被称为数据库的驱动程序。在连接数据库之前，必须将这些实现好的驱动程序导入到jdk当中去，一般有两种方法，一是通过myeclipse工具进行开发的话，直接将该数据库驱动程序jar包导入到项目当中，而是不利用工具开发的话，则首先应该将该驱动程序包加入到classpath当中，其实原理是一样的，都是将该驱动程序包导入到了jdk当中，以便后面能够找到该包进行数据库驱动的加载过程。
+        如果是执行web程序的话，所有的web程序都是在服务器当中即tomcat容器里运行的，那么此时就应该讲驱动包导入到tomcat安装路径下的lib文件夹中。
+        （3）服务器软件：比如tomcat。
+        tomcat在安装后也要和jdk进行关联，以便能够在必要的时候通过jdk运行环境去执行java代码，通过JAVA_HOME环境变量的配置连接到jdk。tomcat当中也存在很多自带的jar包，在必要的时候要将这些jar包导入到jdk当中进行开发，因为jdk当中不存在tomcat当中的某些jar包。在jsp程序中要想连接数据库的话，则应该讲驱动程序包jar导入到tomcat当中去。因为此时执行jsp程序的是tomcat，而tomcat又关联到jdk，所以只需要将驱动包导入到tomcat当中就行，这样在tomcat当中执行jsp程序才能访问到驱动程序，从而将驱动程序加载进去。
+        10. JDBC可以在各种平台上使用Java，如Windows，Mac OS和各种版本的UNIX。
+        11. JDBC库包括通常与数据库使用相关的下面提到的每个任务的API。
+        （1）连接数据库。
+        （2）创建SQL或MySQL语句。
+        （3）在数据库中执行SQL或MySQL查询。
+        （4）查看和修改生成的记录。
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、JDBC使用</b><br>
+    <b><a name='header-n31' class='md-header-anchor '></a>3.1、 JDBC体系结构</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        JDBC是java提供了一套访问各种数据库的标准接口，只提供规范。其实现需要各个数据库厂商提供驱动包进行实现。
+        JDBC API支持用于数据库访问的两层和三层处理模型，但通常，JDBC体系结构由两层组成：
+        （1）JDBC API：这提供了应用程序到JDBC管理器连接。
+        （2）JDBC驱动程序API：这支持JDBC管理器到驱动程序连接。
+        JDBC API使用驱动程序管理器和特定于数据库的驱动程序来提供与异构数据库的透明连接。
+        <img src="01-1-jdbc.png">
+    </pre>
+    <b><a name='header-n32' class='md-header-anchor '></a>3.2、 使用JDBC的准备工作</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        将相对应的数据库系统中的驱动程序包的访问路径配置到classpath当中，或者将Oracle对应的Jar包（驱动程序包）导入到eclipse项目当中。（这样保证了使用Jdk环境能够通过数据库的Jar路径访问到驱动程序包）。
+        <font color="#dc143c">注意：尽管这一前提将数据库驱动程序包导入到工程当中了，但是导入并不代表就能直接使用，只代表可以通过jdk环境找到该驱动程序包，要想使用驱动程序还需要加载，说白了就是使用反射机制动态进行目标驱动类的加载。</font>
+        Oracle数据库管理系统自带的驱动程序包，其存在路径：
+        1.  Oracle安装目录下lib文件夹有驱动ojdbc14.jar（10g）
+        2.  Oracle安装目录下lib文件夹有驱动ojdbc6.jar（11g）
+    </pre>
+    <b><a name='header-n33' class='md-header-anchor '></a>3.3、 JDBC访问数据库的步骤</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="#dc143c">口诀：加、建、创、执、处、关</font>
+        <code class="language-diff">
+            1.  加载Jdbc驱动程序（这个过程即将数据库对应厂商的驱动程序加载进JDK中的JDBC api当中，驱动程序实际是一系列实现好JDBC中接口的实现类。Class.forName(""),括号里面是对应的驱动程序名称）。
+            2.  建立数据库连接（驱动加载进来，就要通过驱动实现好的JDBC当中的具体方法与数据库进行连接，具体使用的是JDBC当中的DriverManager类中的getConnection()方法进行与数据库的连接。该方法返回的是Connection接口的对象）。
+            3.  创建Statement对象（Connection类中存在着创建Statement对象的方法，可以通过Connection对象调用createStatement()的方法进行创建，之所以要创建Statement对象，是因为Statement接口中存在这执行SQL语句的方法）。
+            4.  执行SQL语句（通过Statement类中的方法,executeQuery(),execute(),executeUpdate()来将SQL语句传递到数据库并执行,其中executeQuery()只会执行select语句，executeUpdate()执行insert，update，delete和ddl语句，execute()是两者的综合但比较特殊。
+            5.  处理返回结果（通过执行SQL语句的不同方法，返回值得类型也不同。其中，返回值类型为ResultSet类型的值将使用ResultSet接口中的方法对返回值进行各种处理）。
+            6.  关闭数据库连接（顺序是：先关闭ResultSet对象，再关闭Statement对象，最后关闭Connection对象）
+        </code>
+        <font color="#dc143c">
+            总结：
+            通过Java语句操作Oracle数据库，总的来说，要使用到“一类三接口（一类：DriverManager；三接口：Connection，Statement，ResultSet）”。
+        </font>
+    </pre>
+    <b><a name='header-n34' class='md-header-anchor '></a>3.4、 对JDBC驱动程序的理解</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        JDBC驱动程序是“中间桥梁”。
+        左边要将驱动程序加载到Java环境即Jdk当中，以确定其实现了JDBC当中的接口，从而使得可以通过JDBC当中的方法去操作SQL语句。（加载驱动程序）。
+        右边要将加载进来的驱动程序与相对应的数据库进行连接，主要通过DriverManager类的getConnection()方法，其中的参数要输入相应数据库的位置标志（url）,用户名和密码。只有将驱动程序与数据库进行连接后，才能通过java语句去操作相对应的数据库。(连接数据库)。
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、JDBC常见API</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        JDBC的本质是由一些接口和类组成的。它提供一种标准。组成JDBC的接口和类存在于Java.sql包中。
+        这些类和接口通常被我们称之为JDBC的通用组件。如下：
+        <code class="language-diff">
+            DriverManager： 此类管理数据库驱动程序列表。使用通信子协议将来自java应用程序的连接请求与适当的数据库驱动程序匹配。
+            Driver:此接口处理与数据库服务器的通信，我们很少会直接与Driver对象进行交互。而是使用DriverManager对象来管理这种类型的对象。
+            Connection：该界面具有用于联系数据库的所有方法。连接对象表示通信上下文，即，与数据库的所有通信仅通过连接对象。
+            Statement：使用从此接口创建的对象将SQL语句提交到数据库。除了执行存储过程之外，一些派生接口还接受参数。
+            ResultSet：在使用Statement对象执行SQL查询后，这些对象保存从数据库检索的数据。它作为一个迭代器，允许我们移动其数据。
+            SQLException：此类处理数据库应用程序中发生的任何错误
+        </code>
+        它的常用接口如下面描述。
+    </pre>
+    <b><a name='header-n41' class='md-header-anchor '></a>4.1、 DriverManager类</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        DriverManager类的api：
+        <code class="language-diff">
+            static void deregisterDriver(Driver driver)：从 DriverManager 的列表中删除一个驱动程序。
+            static Connection getConnection(String url)：试图建立到给定数据库 URL 的连接。
+            static Connection getConnection(String url, Properties info)：试图建立到给定数据库 URL 的连接。
+            static Connection getConnection(String url, String user, String password)：试图建立到给定数据库 URL 的连接。
+            static Driver getDriver(String url)：试图查找能理解给定 URL 的驱动程序。
+            static Enumeration&lt;Driver> getDrivers()：获取带有当前调用者可以访问的所有当前已加载 JDBC 驱动程序的 Enumeration。
+            static int getLoginTimeout()：获取驱动程序试图登录到某一数据库时可以等待的最长时间，以秒为单位。
+            static PrintStream getLogStream()：已过时。
+            static PrintWriter getLogWriter()：获取日志 writer。
+            static void println(String message)：将一条消息打印到当前 JDBC 日志流中。
+            static void registerDriver(Driver driver)：向 DriverManager 注册给定驱动程序。
+            static void setLoginTimeout(int seconds)：设置驱动程序试图连接到某一数据库时将等待的最长时间，以秒为单位。
+            static void setLogStream(PrintStream out)：已过时。
+            static void setLogWriter(PrintWriter out)：设置由 DriverManager 和所有驱动程序使用的日志/追踪 PrintWriter 对象。
+        </code>
+    </pre>
+    <b><a name='header-n42' class='md-header-anchor '></a>4.2、 Connection接口</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        Connection接口的api：
+        <code class="language-diff">
+            static int TRANSACTION_NONE：指示事务不受支持的常量。即便开启了事务一旦设置该级别，则事务不生效。
+            static int TRANSACTION_READ_COMMITTED：指示不可以发生脏读的常量；不可重复读和虚读可以发生。
+            static int TRANSACTION_READ_UNCOMMITTED：指示可以发生脏读 (dirty read)、不可重复读和虚读 (phantom read) 的常量。
+            static int TRANSACTION_REPEATABLE_READ：指示不可以发生脏读和不可重复读的常量；虚读可以发生。
+            static int TRANSACTION_SERIALIZABLE：指示不可以发生脏读、不可重复读和虚读的常量。
+            void clearWarnings()：清除为此 Connection 对象报告的所有警告。
+            void close()：立即释放此 Connection 对象的数据库和 JDBC 资源，而不是等待它们被自动释放。
+            void commit()：使所有上一次提交/回滚后进行的更改成为持久更改，并释放此 Connection 对象当前持有的所有数据库锁。
+            Array createArrayOf(String typeName, Object[] elements)：创建 Array 对象的工厂方法。
+            Blob createBlob()：构造实现 Blob 接口的对象。
+            Clob createClob()：构造实现 Clob 接口的对象。
+            NClob createNClob()：构造实现 NClob 接口的对象。
+            SQLXML createSQLXML()：构造实现 SQLXML 接口的对象。
+            Statement createStatement()：创建一个 Statement 对象来将 SQL 语句发送到数据库。
+            Statement createStatement(int resultSetType, int resultSetConcurrency)：创建一个 Statement 对象，该对象将生成具有给定类型和并发性的 ResultSet 对象。
+            Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)：创建一个 Statement 对象，该对象将生成具有给定类型、并发性和可保存性的 ResultSet 对象。
+
+            Struct createStruct(String typeName, Object[] attributes)：创建 Struct 对象的工厂方法。
+            boolean getAutoCommit()：获取此 Connection 对象的当前自动提交模式。
+            String getCatalog()：获取此 Connection 对象的当前目录名称。
+            Properties getClientInfo()：返回一个列表，它包含驱动程序支持的每个客户端信息属性的名称和当前值。
+            String getClientInfo(String name)：返回通过名称指定的客户端信息属性的值。
+            int getHoldability()：获取使用此 Connection 对象创建的 ResultSet 对象的当前可保存性。
+            DatabaseMetaData getMetaData()：获取一个 DatabaseMetaData 对象，该对象包含关于此 Connection 对象所连接的数据库的元数据。
+            int getTransactionIsolation()：获取此 Connection 对象的当前事务隔离级别。
+            Map&lt;String,Class&lt;?>> getTypeMap()：获取与此 Connection 对象关联的 Map 对象。
+            SQLWarning getWarnings()：获取此 Connection 对象上的调用报告的第一个警告。
+            boolean isClosed()：查询此 Connection 对象是否已经被关闭。
+            boolean isReadOnly()：查询此 Connection 对象是否处于只读模式。
+            boolean isValid(int timeout)：如果连接尚未关闭并且仍然有效，则返回 true。
+            String nativeSQL(String sql)：将给定的 SQL 语句转换成系统本机 SQL 语法。
+            CallableStatement prepareCall(String sql)：创建一个 CallableStatement 对象来调用数据库存储过程。
+            CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency)：创建一个 CallableStatement 对象，该对象将生成具有给定类型和并发性的 ResultSet 对象。
+            CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability)：创建一个 CallableStatement 对象，该对象将生成具有给定类型和并发性的 ResultSet 对象。
+            PreparedStatement prepareStatement(String sql)：创建一个 PreparedStatement 对象来将参数化的 SQL 语句发送到数据库。
+            PreparedStatement prepareStatement(String sql, int autoGeneratedKeys)：创建一个默认 PreparedStatement 对象，该对象能获取自动生成的键。
+            PreparedStatement prepareStatement(String sql, int[] columnIndexes)：创建一个能返回由给定数组指定的自动生成键的默认 PreparedStatement 对象。
+            PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)：创建一个 PreparedStatement 对象，该对象将生成具有给定类型和并发性的 ResultSet 对象。
+            PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency,int resultSetHoldability)：创建一个 PreparedStatement 对象，该对象将生成具有给定类型、并发性和可保存性的ResultSet 对象。
+            PreparedStatement prepareStatement(String sql, String[] columnNames)：创建一个能返回由给定数组指定的自动生成键的默认 PreparedStatement 对象。
+
+            void releaseSavepoint(Savepoint savepoint)：从当前事务中移除指定的 Savepoint 和后续 Savepoint 对象。
+            void rollback()：取消在当前事务中进行的所有更改，并释放此 Connection 对象当前持有的所有数据库锁。
+            void rollback(Savepoint savepoint)：取消所有设置给定 Savepoint 对象之后进行的更改。
+            void setAutoCommit(boolean autoCommit)：将此连接的自动提交模式设置为给定状态。
+            void setCatalog(String catalog)：设置给定目录名称，以便选择要在其中进行工作的此 Connection 对象数据库的子空间。
+            void setClientInfo(Properties properties)：设置连接的客户端信息属性的值。
+            void setClientInfo(String name, String value)：将 name 指定的客户端信息属性的值设置为 value 指定的值。
+            void setHoldability(int holdability)：将使用此 Connection 对象创建的 ResultSet 对象的默认可保存性 (holdability) 更改为给定可保存性。
+            void setReadOnly(boolean readOnly)：将此连接设置为只读模式，作为驱动程序启用数据库优化的提示。
+            Savepoint setSavepoint()：在当前事务中创建一个未命名的保存点 (savepoint)，并返回表示它的新 Savepoint 对象。
+            Savepoint setSavepoint(String name)：在当前事务中创建一个具有给定名称的保存点，并返回表示它的新 Savepoint 对象。
+            void setTransactionIsolation(int level)：试图将此 Connection 对象的事务隔离级别更改为给定的级别。
+            void setTypeMap(Map&lt;String,Class&lt;?>> map)：将给定的 TypeMap 对象安装为此 Connection 对象的类型映射。
+        </code>
+    </pre>
+
+    <b><a name='header-n5' class='md-header-anchor '></a>5、JDBC相关的SQL</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        CRUD语法介绍：
+        <code class="language-diff">
+            SQL 是一种标准化的语言，它允许你在数据库上执行操作，如创建项目，查询内容，更新内容，并删除条目等操作。
+            Create, Read, Update, and Delete 通常称为CRUD操作。
+            1.  CREATE DATABASE语句用于创建新的数据库：
+            SQL> CREATE DATABASE DATABASE_NAME;
+
+            2.  DROP DATABASE语句用于删除现有数据库：
+            SQL> DROP DATABASE DATABASE_NAME;
+
+            3.  CREATE TABLE语句用于创建新表:
+            SQL> CREATE TABLE Employees
+            (
+               id INT NOT NULL,
+               age INT NOT NULL,
+               first VARCHAR(255),
+               last VARCHAR(255),
+               PRIMARY KEY ( id )
+            );
+
+            4.  DROP TABLE语句用于删除现有表:
+            SQL> DROP TABLE table_name;
+
+            5.  INSERT的语法类似于以下内容，其中column1，column2等表示要显示在相应列中的新数据：
+            SQL> INSERT INTO table_name VALUES (column1, column2, ...);
+
+            6.  SELECT语句用于从数据库中检索数据：
+            SQL> SELECT column_name, column_name, ...
+            FROM table_name
+            WHERE conditions;
+            WHERE子句可以使用比较运算符，例如=，！=，<，>，<=和> =，以及BETWEEN和LIKE运算符。
+
+            7.  UPDATE语句用于更新数据：
+            SQL> UPDATE table_name
+            SET column_name = value, column_name = value, ...
+            WHERE conditions;
+            WHERE子句可以使用比较运算符，例如=，！=，<，>，<=和> =，以及BETWEEN和LIKE运算符。
+
+            8.  DELETE语句用于从表中删除数据：
+            SQL> DELETE FROM table_name WHERE conditions;
+            WHERE子句可以使用比较运算符，例如=，！=，<，>，<=和> =，以及BETWEEN和LIKE运算符。
+        </code>
+    </pre>
+
+    <b><a name='header-n6' class='md-header-anchor '></a>6、JDBC使用说明</b><br>
+    <b><a name='header-n61' class='md-header-anchor '></a>6.1、 使用步骤</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        构建JDBC应用程序涉及以下六个步骤：
+        <code class="language-diff">
+            1.  导入包：需要包含包含数据库编程所需的JDBC类的包。大多数情况下，使用import java.sql.*就足够了。
+            2.  注册JDBC驱动程序：要求您初始化驱动程序，以便您可以打开与数据库的通信通道。
+            3.  打开连接：需要使用DriverManager.getConnection（）方法创建一个Connection对象，该对象表示与数据库的物理连接。
+            4.  执行查询：需要使用类型为Statement的对象来构建和提交SQL语句到数据库。
+            5.  从结果集中提取数据：需要使用相应的ResultSet.getXXX（）方法从结果集中检索数据。
+            6.  释放资源：需要明确地关闭所有数据库资源，而不依赖于JVM的垃圾收集。
+        </code>
+    </pre>
+    <b><a name='header-n62' class='md-header-anchor '></a>6.2、 JDBC连接步骤</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        建立JDBC连接所涉及的编程相当简单。这是简单的四个步骤:
+        <code class="language-diff">
+            1.  导入JDBC包：将Java语言的import语句添加到Java代码中导入所需的类。
+            2.  注册JDBC驱动程序：此步骤将使JVM将所需的驱动程序实现加载到内存中，以便它可以满足您的JDBC请求。
+            3.  数据库URL配置：这是为了创建一个格式正确的地址，指向要连接到的数据库。
+            4.  创建连接对象：最后，调用DriverManager对象的getConnection（）方法来建立实际的数据库连接。
+        </code>
+
+        下面分别说明：
+
+        <font color="#dc143c">注册JDBC驱动程序</font>
+        注册驱动程序最常见的方法是使用Java的Class.forName（）方法，将驱动程序的类文件动态加载到内存中，并将其自动注册：
+        <code class="language-java">
+            try {
+               Class.forName("oracle.jdbc.driver.OracleDriver");
+            }
+            catch(ClassNotFoundException ex) {
+               System.out.println("Error: unable to load driver class!");
+               System.exit(1);
+            }
+        </code>
+
+        可以用来注册驱动程序的第二种方法是使用静态DriverManager.registerDriver（）方法：
+        <code class="language-java">
+            try {
+               Driver myDriver = new oracle.jdbc.driver.OracleDriver();
+               DriverManager.registerDriver( myDriver );
+            }
+            catch(ClassNotFoundException ex) {
+               System.out.println("Error: unable to load driver class!");
+               System.exit(1);
+            }
+        </code>
+
+        <font color="#dc143c">数据库URL配置</font>
+        加载驱动程序后，可以使用DriverManager.getConnection（）方法建立连接。为了方便参考，让我列出三个重载的DriverManager.getConnection()方法：
+        <code class="language-java">
+            1.  getConnection（String url）
+            2.  getConnection（String url，Properties prop）
+            3.  getConnection（String url，String user，String password）
+        </code>
+        常见的驱动名称：
+        MySQL：com.mysql.jdbc.Driver；格式为：jdbc：mysql：//hostname / databaseName
+        ORACLE：oracle.jdbc.driver.OracleDriver；格式为：jdbc：oracle：thin：@ hostname：port Number：databaseName
+        DB2：COM.ibm.db2.jdbc.net.DB2Driver，格式为：jdbc：db2：hostname：port Number / databaseName
+        SYBASE：com.sybase.jdbc.SybDriver；格式为：jdbc：sybase：Tds： hostname：port Number / databaseName
+
+        <font color="#dc143c">创建数据库连接对象</font>
+        <code class="language-java">
+            String URL = "jdbc:oracle:thin:@amrood:1521:EMP";
+            String USER = "username";
+            String PASS = "password"
+            Connection conn = DriverManager.getConnection(URL, USER, PASS);
+        </code>
+        DriverManager.getConnection（）方法的第三种形式需要一个数据库URL和一个Properties对象：
+        <code class="language-java">
+            import java.util.*;
+​
+            String URL = "jdbc:oracle:thin:@amrood:1521:EMP";
+            Properties info = new Properties( );
+            info.put( "user", "username" );
+            info.put( "password", "password" );
+            ​
+            Connection conn = DriverManager.getConnection(URL, info);
+        </code>
+
+        <font color="#dc143c">关闭数据库连接</font>
+        为确保连接关闭，您可以在代码中提供一个“finally”块。一个finally块总是执行，不管是否发生异常。
+        要关闭上面打开的连接，你应该调用close（）方法如下：
+        <code class="language-java">
+            conn.close();
+        </code>
+    </pre>
+
+    <b><a name='header-n7' class='md-header-anchor '></a>7、JDBC执行SQL语句</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        一旦获得了连接，我们可以与数据库进行交互。JDBC Statement和PreparedStatement接口定义了使您能够发送SQL命令并从数据库接收数据的方法和属性。
+        1.  Statement接口：用于对数据库进行通用访问。在运行时使用静态SQL语句时很有用。Statement接口不能接受参数。
+        2.  PreparedStatement接口：当您计划多次使用SQL语句时使用。PreparedStatement接口在运行时接受输入参数。
+    </pre>
+    <b><a name='header-n71' class='md-header-anchor '></a>7.1、 声明Statement对象</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <font color="#dc143c">创建语句对象</font>
+        在使用Statement对象执行SQL语句之前，需要使用Connection对象的createStatement（）方法创建一个，如下例：
+        <code class="language-java">
+            Statement stmt = null;
+            try {
+               stmt = conn.createStatement( );
+               . . .
+            }
+            catch (SQLException e) {
+               . . .
+            }
+            finally {
+               . . .
+            }
+        </code>
+        创建Statement对象后，您可以使用它来执行一个SQL语句，其中有三个执行方法：
+        1.  boolean execute（String SQL）：如果可以检索到ResultSet对象，则返回一个布尔值true; 否则返回false。使用此方法执行SQL DDL语句或需要使用真正的动态SQL时。
+        2.  int executeUpdate（String SQL）：返回受SQL语句执行影响的行数。使用此方法执行预期会影响多个行的SQL语句，例如INSERT，UPDATE或DELETE语句。
+        3.  ResultSet executeQuery（String SQL）：返回一个ResultSet对象。当您希望获得结果集时，请使用此方法，就像使用SELECT语句一样。
+    </pre>
+    <b><a name='header-n72' class='md-header-anchor '></a>7.2、 关闭Statement对象</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        就像我们关闭一个Connection对象以保存数据库资源一样，由于同样的原因，还应该关闭Statement对象。
+        一个简单的调用close（）方法将执行该作业。如果先关闭Connection对象，它也会关闭Statement对象。但是，应始终显式关闭Statement对象，以确保正确清理。
+        <code class="language-java">
+            Statement stmt = null;
+            try {
+               stmt = conn.createStatement( );
+               . . .
+            }
+            catch (SQLException e) {
+               . . .
+            }
+            finally {
+               stmt.close();
+            }
+        </code>
+    </pre>
+    <b><a name='header-n73' class='md-header-anchor '></a>7.3、 创建PreparedStatement对象</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        该PreparedStatement的接口扩展了Statement接口，它为您提供了一个通用的Statement对象有两个优点附加功能。
+        此语句使您可以动态地提供参数。
+        <code class="language-java">
+            PreparedStatement pstmt = null;
+            try {
+               String SQL = "Update Employees SET age = ? WHERE id = ?";
+               pstmt = conn.prepareStatement(SQL);
+               . . .
+            }
+            catch (SQLException e) {
+               . . .
+            }
+            finally {
+               . . .
+            }
+        </code>
+        JDBC中的所有参数都由？符号，这被称为参数标记。在执行SQL语句之前，必须为每个参数提供值。
+        所述的setXXX（）方法将值绑定到所述参数，其中XXX代表要绑定到输入参数的值的Java数据类型。如果忘记提供值，将收到一个SQLException。
+        每个参数标记由其顺序位置引用。第一个标记表示位置1，下一个位置2等等。该方法与Java数组索引不同，从0开始。
+    </pre>
+    <b><a name='header-n74' class='md-header-anchor '></a>7.4、 关闭PreparedStatement对象</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        就像关闭Statement对象一样，由于同样的原因，还应该关闭PreparedStatement对象。
+        一个简单的调用close（）方法将执行该作业。如果先关闭Connection对象，它也会关闭PreparedStatement对象。但是，应始终显式关闭PreparedStatement对象，以确保正确清理。
+        <code class="language-java">
+            PreparedStatement pstmt = null;
+            try {
+               String SQL = "Update Employees SET age = ? WHERE id = ?";
+               pstmt = conn.prepareStatement(SQL);
+               . . .
+            }
+            catch (SQLException e) {
+               . . .
+            }
+            finally {
+               pstmt.close();
+            }
+        </code>
+    </pre>
+    <b><a name='header-n75' class='md-header-anchor '></a>7.5、 ResultSet结果集</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        SELECT语句是从数据库中选择行并在结果集中查看行的标准方法。该java.sql.ResultSet中的接口表示结果集数据库查询。
+        ResultSet对象维护指向结果集中当前行的游标。术语“结果集”是指包含在ResultSet对象中的行和列数据。
+        <font color="#dc143c">ResultSet类型</font>
+        如果没有指定任何ResultSet类型，您将自动获得一个TYPE_FORWARD_ONLY。
+        <b>
+            ResultSet.TYPE_FORWARD_ONLY：光标只能在结果集中向前移动。
+            ResultSet.TYPE_SCROLL_INSENSITIVE：光标可以向前和向后滚动，结果集对创建结果集后发生的数据库的其他更改不敏感。
+            ResultSet.TYPE_SCROLL_SENSITIVE：光标可以向前和向后滚动，结果集对创建结果集之后发生的其他数据库所做的更改敏感。
+        </b>
+        <code class="language-java">
+            try {
+               Statement stmt = conn.createStatement(
+                                       ResultSet.TYPE_FORWARD_ONLY,
+                                       ResultSet.CONCUR_READ_ONLY);
+            }
+            catch(Exception ex) {
+               ....
+            }
+            finally {
+               ....
+            }
+        </code>
+    </pre>
+
+    <b><a name='header-n8' class='md-header-anchor '></a>8、JDBC批处理操作</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        批量处理允许您将相关的SQL语句分组到批处理中，并通过对数据库的一次调用提交它们。
+        当您一次向数据库发送多个SQL语句时，可以减少连接数据库的开销，从而提高性能。
+    </pre>
+    <b><a name='header-n81' class='md-header-anchor '></a>8.1、 使用Statement对象进行批处理操作</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        以下是使用语句对象的批处理的典型步骤序列：
+        1.  使用createStatement（）方法创建Statement对象。
+        2.  使用setAutoCommit（）将auto-commit设置为false 。
+        3.  使用addBatch（）方法在创建的语句对象上添加您喜欢的SQL语句到批处理中。
+        4.  在创建的语句对象上使用executeBatch（）方法执行所有SQL语句。
+        5.  最后，使用commit（）方法提交所有更改。
+        <code class="language-java">
+            // Create statement object
+            Statement stmt = conn.createStatement();
+            ​
+            // Set auto-commit to false
+            conn.setAutoCommit(false);
+            ​
+            // Create SQL statement
+            String SQL = "INSERT INTO Employees (id, first, last, age) " +
+                         "VALUES(200,'Zia', 'Ali', 30)";
+            // Add above SQL statement in the batch.
+            stmt.addBatch(SQL);
+            ​
+            // Create one more SQL statement
+            String SQL = "INSERT INTO Employees (id, first, last, age) " +
+                         "VALUES(201,'Raj', 'Kumar', 35)";
+            // Add above SQL statement in the batch.
+            stmt.addBatch(SQL);
+            ​
+            // Create one more SQL statement
+            String SQL = "UPDATE Employees SET age = 35 " +
+                         "WHERE id = 100";
+            // Add above SQL statement in the batch.
+            stmt.addBatch(SQL);
+            ​
+            // Create an int[] to hold returned values
+            int[] count = stmt.executeBatch();
+            ​
+            //Explicitly commit statements to apply changes
+            conn.commit();
+        </code>
+    </pre>
+    <b><a name='header-n82' class='md-header-anchor '></a>8.2、 PrepareStatement对象进行批处理</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  使用占位符创建SQL语句。
+        2.  使用prepareStatement（） 方法创建PrepareStatement对象。
+        3.  使用setAutoCommit（）将auto-commit设置为false 。
+        4.  使用addBatch（）方法在创建的语句对象上添加您喜欢的SQL语句到批处理中。
+        5.  在创建的语句对象上使用executeBatch（）方法执行所有SQL语句。
+        6.  最后，使用commit（）方法提交所有更改。
+        <code class="language-java">
+            // Create SQL statement
+            String SQL = "INSERT INTO Employees (id, first, last, age) " +
+                         "VALUES(?, ?, ?, ?)";
+            ​
+            // Create PrepareStatement object
+            PreparedStatemen pstmt = conn.prepareStatement(SQL);
+            ​
+            //Set auto-commit to false
+            conn.setAutoCommit(false);
+            ​
+            // Set the variables
+            pstmt.setInt( 1, 400 );
+            pstmt.setString( 2, "Pappu" );
+            pstmt.setString( 3, "Singh" );
+            pstmt.setInt( 4, 33 );
+            // Add it to the batch
+            pstmt.addBatch();
+            ​
+            // Set the variables
+            pstmt.setInt( 1, 401 );
+            pstmt.setString( 2, "Pawan" );
+            pstmt.setString( 3, "Singh" );
+            pstmt.setInt( 4, 31 );
+            // Add it to the batch
+            pstmt.addBatch();
+            ​
+            //add more batches
+            ​
+            //Create an int[] to hold returned values
+            int[] count = stmt.executeBatch();
+            ​
+            //Explicitly commit statements to apply changes
+            conn.commit();
+        </code>
+    </pre>
+
+    <b><a name='header-n9' class='md-header-anchor '></a>9、JDBC操作二进制</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        PreparedStatement对象可以使用输入和输出流来提供参数数据。这使您可以将整个文件放入可以保存大值的数据库列，例如CLOB和BLOB数据类型。
+        有以下方法可用于流式传输数据：
+        1.  setAsciiStream（）：此方法用于提供大的ASCII值。
+        2.  setCharacterStream（）：此方法用于提供大型UNICODE值。
+        3.  setBinaryStream（）：此方法用于提供较大的二进制值。
+        setXXXStream（）方法除了参数占位符之外还需要额外的参数，文件大小。
+        考虑我们要将XML文件XML_Data.xml上传到数据库表中。这是XML文件的内容：
+        <code class="language-xml">
+            <?xml version="1.0"?>
+                &lt;Employee>
+                &lt;id>100&lt;/id>
+                &lt;first>Zara&lt;/first>
+                &lt;last>Ali&lt;/last>
+                &lt;Salary>10000&lt;/Salary>
+                &lt;Dob>18-08-1978&lt;/Dob>
+                &lt;Employee>
+        </code>
+        <code class="language-java">
+            // Import required packages
+            import java.sql.*;
+            import java.io.*;
+            import java.util.*;
+            ​
+            public class JDBCExample {
+               // JDBC driver name and database URL
+               static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+               static final String DB_URL = "jdbc:mysql://localhost/EMP";
+            ​
+               //  Database credentials
+               static final String USER = "username";
+               static final String PASS = "password";
+
+               public static void main(String[] args) {
+               Connection conn = null;
+               PreparedStatement pstmt = null;
+               Statement stmt = null;
+               ResultSet rs = null;
+               try{
+                  // Register JDBC driver
+                  Class.forName("com.mysql.jdbc.Driver");
+                  // Open a connection
+                  System.out.println("Connecting to database...");
+                  conn = DriverManager.getConnection(DB_URL,USER,PASS);
+            ​
+                  //Create a Statement object and build table
+                  stmt = conn.createStatement();
+                  createXMLTable(stmt);
+            ​
+                  //Open a FileInputStream
+                  File f = new File("XML_Data.xml");
+                  long fileLength = f.length();
+                  FileInputStream fis = new FileInputStream(f);
+            ​
+                  //Create PreparedStatement and stream data
+                  String SQL = "INSERT INTO XML_Data VALUES (?,?)";
+                  pstmt = conn.prepareStatement(SQL);
+                  pstmt.setInt(1,100);
+                  pstmt.setAsciiStream(2,fis,(int)fileLength);
+                  pstmt.execute();
+            ​
+                  //Close input stream
+                  fis.close();
+            ​
+                  // Do a query to get the row
+                  SQL = "SELECT Data FROM XML_Data WHERE id=100";
+                  rs = stmt.executeQuery (SQL);
+                  // Get the first row
+                  if (rs.next ()){
+                     //Retrieve data from input stream
+                     InputStream xmlInputStream = rs.getAsciiStream (1);
+                     int c;
+                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                     while (( c = xmlInputStream.read ()) != -1)
+                        bos.write(c);
+                     //Print results
+                     System.out.println(bos.toString());
+                  }
+                  // Clean-up environment
+                  rs.close();
+                  stmt.close();
+                  pstmt.close();
+                  conn.close();
+               }catch(SQLException se){
+                  //Handle errors for JDBC
+                  se.printStackTrace();
+               }catch(Exception e){
+                  //Handle errors for Class.forName
+                  e.printStackTrace();
+               }finally{
+                  //finally block used to close resources
+                  try{
+                     if(stmt!=null)
+                        stmt.close();
+                  }catch(SQLException se2){
+                  }// nothing we can do
+                  try{
+                     if(pstmt!=null)
+                        pstmt.close();
+                  }catch(SQLException se2){
+                  }// nothing we can do
+                  try{
+                     if(conn!=null)
+                        conn.close();
+                  }catch(SQLException se){
+                     se.printStackTrace();
+                  }//end finally try
+               }//end try
+               System.out.println("Goodbye!");
+            }//end main
+            ​
+            public static void createXMLTable(Statement stmt)
+               throws SQLException{
+                   System.out.println("Creating XML_Data table..." );
+                   //Create SQL Statement
+                   String streamingDataSql = "CREATE TABLE XML_Data " +
+                                             "(id INTEGER, Data LONG)";
+                   //Drop table first if it exists.
+                   try{
+                      stmt.executeUpdate("DROP TABLE XML_Data");
+                   }catch(SQLException se){
+                   }// do nothing
+                   //Build table.
+                   stmt.executeUpdate(streamingDataSql);
+                }//end createXMLTable
+            }//end JDBCExample
+        </code>
+    </pre>
+
+
+    <b><a name='header-n10' class='md-header-anchor '></a>10、JDBC综合案例</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        在使用前，为了避免数据库的各种信息硬编码，先手动实现一个通用的读取数据库配置的工具类：
+        <code class="language-java">
+            package javase.demo26.db.util;
+
+            import java.io.FileInputStream;
+            import java.io.FileNotFoundException;
+            import java.io.IOException;
+            import java.util.Properties;
+
+            public class CommonJdbcLoadUtil {
+                private static String DBDRIVER;
+                private static String DBURL;
+                private static String DBUSER;
+                private static String DBPASS;
+
+                private static final Properties PROPERTIES = new Properties();
+
+                static {
+                    try {
+                        // idea中如果进行了模块化处理后，则所有的文件的路径实际上都不是相对原来的项目根路径了，而是相对于最顶层的项目路径了，因为原来myeclipse中的项目可能在idea中已经变成了模块了，所以要加上自己的模块的路径。
+                        PROPERTIES.load(new FileInputStream("myjavaSE/resource/jdbc.properties"));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    DBDRIVER = PROPERTIES.getProperty("jdbc.driver", "oracle.jdbc.driver.OracleDriver");
+
+                    DBURL = PROPERTIES.getProperty("jdbc.url", "jdbc:oracle:thin:@localhost:1521:orcl");
+
+                    DBUSER = PROPERTIES.getProperty("jdbc.username", "oracle");
+
+                    DBPASS = PROPERTIES.getProperty("jdbc.password", "oracle1234");
+                }
+
+                public static String getDbdriver() {
+                return DBDRIVER;
+                }
+
+                public static String getDburl() {
+                return DBURL;
+                }
+
+                public static String getDbuser() {
+                return DBUSER;
+                }
+
+                public static String getDbpass() {
+                return DBPASS;
+                }
+            }
+        </code>
+
+        resource目录下配置jdbc.properties文件用于指定数据库的信息：
+        <code class="language-diff">
+            jdbc.driver=oracle.jdbc.driver.OracleDriver
+            jdbc.url=jdbc:oracle:thin:@localhost:1521:orcl
+            jdbc.username=oracle
+            jdbc.password=oracle1234
+        </code>
+    </pre>
+    <b><a name='header-n101' class='md-header-anchor '></a>10.1、 加载驱动程序</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <code class="language-java">
+            package javase.demo26.db.jdbc;
+
+            import javase.demo26.db.util.CommonJdbcLoadUtil;
+
+            /**
+             * jdbc学习-DriverManager类就是加载jdbc驱动程序的管理类。
+             * 如果不加载驱动程序，则DriverManager类将无法正常使用。
+             * 加载jdbc驱动。
+             * 如果该程序未报错，说明数据库oracle的驱动程序加载成功。
+             *
+             */
+            public class Demo01DriverManager {
+
+                public static void main(String args[]) {
+                    try {
+                        //jdbc操作第一步：通过反射加载jdbc接口的驱动实现包
+                        Class.forName(CommonJdbcLoadUtil.getDbdriver());
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("程序正常执行，oracle驱动程序加载成功...");
+                }
+            }
+        </code>
+    </pre>
+
+    <b><a name='header-n102' class='md-header-anchor '></a>10.2、 DriverManager类取得Connection接口对象</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <code class="language-java">
+            package javase.demo26.db.jdbc;
+
+            import javase.demo26.db.util.CommonJdbcLoadUtil;
+
+            import java.sql.Connection;
+            import java.sql.DriverManager;
+            import java.sql.SQLException;
+
+            /**
+             * jdbc学习
+             * jdbc常见操作-通过DriverManager类取得Connection接口对象。
+             */
+
+            public class Demo02Connection {
+                public static void main(String args[]) {
+                    Connection con = null;
+                    try {
+                        // 1.加载驱动程序
+                        Class.forName(CommonJdbcLoadUtil.getDbdriver());
+
+                        // 2.连接oracle数据库服务器，返回连接对象。注意连接数据库服务器时用户名和密码一定要正确。
+                        con = DriverManager.getConnection(CommonJdbcLoadUtil.getDburl(),
+                                CommonJdbcLoadUtil.getDbuser(),
+                                CommonJdbcLoadUtil.getDbpass());
+
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+
+                    System.out.println("连接对象：" + con);
+
+                    try {
+                        con.close();// 6.连接完毕后一定要关闭数据库连接
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        </code>
+    </pre>
+
+    <b><a name='header-n103' class='md-header-anchor '></a>10.3、 利用statement对象执行建表操作</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <code class="language-java">
+            package javase.demo26.db.jdbc;
+
+            import javase.demo26.db.util.CommonJdbcLoadUtil;
+
+            import java.sql.Connection;
+            import java.sql.DriverManager;
+            import java.sql.SQLException;
+            import java.sql.Statement;
+
+            /**
+             * jdbc学习
+             * jdbc操作-利用statement对象执行建表操作。
+             * 保存数据库连接信息的实体bean。
+             */
+            class DbBean {
+
+                // 建表sql，原生jdbc实现的sql硬编码。
+                private static final String SQL = "create table person(id number(12),name varchar(21),age number(12),sex varchar(12),birthday Date)";
+
+                public static String getSql() {
+                    return SQL;
+                }
+            }
+
+            class DbHandel {
+                public static void service() {
+                    Connection con = null;
+                    Statement statement = null;
+                    try {
+                        // 1.加载数据库驱动
+                        Class.forName(CommonJdbcLoadUtil.getDbdriver());
+
+                        // 2.建立数据库连接
+                        con = DriverManager.getConnection(CommonJdbcLoadUtil.getDburl(),
+                                CommonJdbcLoadUtil.getDbuser(),
+                                CommonJdbcLoadUtil.getDbpass());// 连接数据，并取得连接对象
+
+                        // 3.创建statement对象
+                        statement = con.createStatement();// 取得Statement对象
+
+                        // 4.通过statement对象执行sql语句。
+                        statement.execute(DbBean.getSql());// 执行sql语句，创建表person
+                        System.out.println("创建表操作执行完毕....");
+                        // 5.处理返回结果，此处没有该步骤。
+
+                        // 6.倒序关闭statement对象和Connection对象
+                        statement.close();
+                        con.close();// 按照倒序关闭statement对象和con对象，也可直接关闭con对象，注意关闭顺序，先打开的后关闭
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            /**
+             * 应用层
+             */
+            public class Demo03CreateTable {
+                public static void main(String args[]) {
+                    DbHandel.service();// 处理主程序
+                }
+            }
+        </code>
+    </pre>
+
+    <b><a name='header-n104' class='md-header-anchor '></a>10.4、 执行insert操作</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <code class="language-java">
+            package javase.demo26.db.jdbc;
+
+            import javase.demo26.db.util.CommonJdbcLoadUtil;
+
+            import java.sql.Connection;
+            import java.sql.DriverManager;
+            import java.sql.SQLException;
+            import java.sql.Statement;
+
+            /**
+             * jdbc-执行insert语句。
+             * 保存数据库信息的实体bean。
+             * 注意插入语句的日期格式。
+             */
+            class DbBean04 {
+                //原生jdbc实现的sql硬编码。
+                private static final String SQL = "insert into person values(1001,'赵二虎',25,'男',to_date('1992-10-13','yyyy-mm-dd'))";
+
+                public static String getSql() {
+                    return SQL;
+                }
+            }
+
+            /**
+             * 控制层，执行sql操作
+             *
+             * @author zhaoeh
+             */
+            class DbInsertService {
+                public static void insertService() {
+                    Connection con = null;
+                    Statement state = null;
+                    try {
+                        Class.forName(CommonJdbcLoadUtil.getDbdriver());// 1.加载oracle驱动程序。
+
+                        con = DriverManager.getConnection(CommonJdbcLoadUtil.getDburl(),
+                                CommonJdbcLoadUtil.getDbuser(),
+                                CommonJdbcLoadUtil.getDbpass());// 2.建立数据库连接
+
+                        state = con.createStatement();// 3.创建Statement对象
+
+                        state.execute(DbBean04.getSql());// 4.执行目标sql语句
+
+                        /**
+                         * 5.上述sql语句执行完毕后没有返回结果可处理
+                         */
+
+                        state.close();
+                        con.close();// 6.按照逆序关闭连接对象
+                        System.out.println("数据插入成功...");
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+
+            /**
+             * 应用层入口
+             */
+            public class Demo04InsertData {
+                public static void main(String args[]) {
+                    DbInsertService.insertService();
+                }
+            }
+        </code>
+    </pre>
+    <b><a name='header-n105' class='md-header-anchor '></a>10.5、 执行insert操作，通过bean映射参数</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <code class="language-java">
+            package javase.demo26.db.jdbc;
+
+            import javase.demo26.db.util.CommonJdbcLoadUtil;
+
+            import java.sql.Connection;
+            import java.sql.DriverManager;
+            import java.sql.SQLException;
+            import java.sql.Statement;
+
+            /**
+             * jdbc执行insert语句。
+             * 定义数据实体的bean。
+             */
+            class Person {
+                private int id;
+                private String name;
+                private int age;
+                private String sex;
+                private String birthday;
+
+                public Person(int id, String name, int age, String sex, String birthday) {
+                    this.setId(id);
+                    this.setName(name);
+                    this.setAge(age);
+                    this.setSex(sex);
+                    this.setBirthday(birthday);
+                }
+
+                public int getId() {
+                    return id;
+                }
+
+                public void setId(int id) {
+                    this.id = id;
+                }
+
+                public String getName() {
+                    return name;
+                }
+
+                public void setName(String name) {
+                    this.name = name;
+                }
+
+                public int getAge() {
+                    return age;
+                }
+
+                public void setAge(int age) {
+                    this.age = age;
+                }
+
+                public String getSex() {
+                    return sex;
+                }
+
+                public void setSex(String sex) {
+                    this.sex = sex;
+                }
+
+                public String getBirthday() {
+                    return birthday;
+                }
+
+                public void setBirthday(String birthday) {
+                    this.birthday = birthday;
+                }
+
+            }
+
+            /**
+             * 保存数据库信息的实体bean
+             * 注意插入语句的日期格式
+             */
+            class DbBean05 {
+                //通过实体对象封装数据信息
+                private static final Person per = new Person(123, "于瑞", 23, "女",
+                        "1992-07-25");
+                //通过实体对象动态拼接SQL语句
+                private static final String SQL = "insert into person values("
+                        + DbBean05.per.getId() + ",'" + DbBean05.per.getName() + "',"
+                        + DbBean05.per.getAge() + ",'" + DbBean05.per.getSex()
+                        + "',to_date('" + DbBean05.per.getBirthday() + "','yyyy-mm-dd'))";
+
+                public static String getSql() {
+                    return SQL;
+                }
+            }
+
+            /**
+             * 控制层，执行sql操作
+             */
+            class Db05InsertService {
+                public static void insertService() {
+                    Connection con = null;
+                    Statement state = null;
+                    try {
+                        Class.forName(CommonJdbcLoadUtil.getDbdriver());// 1.加载oracle驱动程序
+
+                        con = DriverManager.getConnection(CommonJdbcLoadUtil.getDburl(),
+                                CommonJdbcLoadUtil.getDbuser(),
+                                CommonJdbcLoadUtil.getDbpass());// 2.建立数据库连接对象
+
+                        state = con.createStatement();// 3.创建Statement对象
+                        System.out.println(DbBean05.getSql());
+                        state.execute(DbBean05.getSql());// 4.执行目标sql语句
+
+                        /**
+                         * 5.上述sql语句执行完毕后没有返回结果可处理
+                         */
+
+                        state.close();
+                        con.close();// 6.按照逆序关闭连接对象
+                        System.out.println("----数据插入成功----");
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            /**
+             * 应用层入口
+             */
+            public class Demo05InsertBeanData {
+                public static void main(String args[]) {
+                    Db05InsertService.insertService();
+                }
+            }
+        </code>
+    </pre>
+    <b><a name='header-n106' class='md-header-anchor '></a>10.6、 执行update操作</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        package javase.demo26.db.jdbc;
+
+        import javase.demo26.db.util.CommonJdbcLoadUtil;
+
+        import java.sql.Connection;
+        import java.sql.DriverManager;
+        import java.sql.SQLException;
+        import java.sql.Statement;
+
+        /**
+         * jdbc学习
+         * jdbc操作-更新数据。
+         * 定义数据实体bean。
+         */
+        class Person06 {
+            private int id;
+            private String name;
+            private int age;
+            private String sex;
+            private String birthday;
+
+            public Person06(int id, String name, int age, String sex, String birthday) {
+                this.setId(id);
+                this.setName(name);
+                this.setAge(age);
+                this.setSex(sex);
+                this.setBirthday(birthday);
+            }
+
+            public int getId() {
+                return id;
+            }
+
+            public void setId(int id) {
+                this.id = id;
+            }
+
+            public String getName() {
+                return name;
+            }
+
+            public void setName(String name) {
+                this.name = name;
+            }
+
+            public int getAge() {
+                return age;
+            }
+
+            public void setAge(int age) {
+                this.age = age;
+            }
+
+            public String getSex() {
+                return sex;
+            }
+
+            public void setSex(String sex) {
+                this.sex = sex;
+            }
+
+            public String getBirthday() {
+                return birthday;
+            }
+
+            public void setBirthday(String birthday) {
+                this.birthday = birthday;
+            }
+        }
+
+        /**
+         * 保存数据库信息的实体bean
+         * 注意更新语句的日期格式
+         */
+        class DbBean06 {
+            //通过对象实体封装数据
+            private static final Person06 per = new Person06(1223, "变更", 100, "男",
+                    "1992-10-15");
+            //动态拼接SQL语句
+            private static final String SQL = "update person set id="
+                    + DbBean06.per.getId() + ",name='" + DbBean06.per.getName()
+                    + "',age=" + DbBean06.per.getAge() + ",sex='"
+                    + DbBean06.per.getSex() + "',birthday=to_date('"
+                    + DbBean06.per.getBirthday() + "','yyyy-mm-dd') where name='于瑞'";
+
+            public static String getSql() {
+                return SQL;
+            }
+        }
+
+        /**
+         * 控制层，执行sql操作
+         */
+        class Db06UpdateService {
+            public static void insertService() {
+                Connection con = null;
+                Statement state = null;
+                try {
+                    Class.forName(CommonJdbcLoadUtil.getDbdriver());// 1.加载oracle驱动
+
+                    con = DriverManager.getConnection(CommonJdbcLoadUtil.getDburl(),
+                            CommonJdbcLoadUtil.getDbuser(),
+                            CommonJdbcLoadUtil.getDbpass());// 2.建立连接
+
+                    state = con.createStatement();// 3.创建Statement对象
+                    System.out.println(DbBean06.getSql());
+                    state.executeUpdate(DbBean06.getSql());// 4.执行目标update sql语句
+
+                    /**
+                     * 5.上述sql语句执行完毕后没有返回结果可处理
+                     */
+                    state.close();
+                    con.close();// 6按照逆序关闭对象
+                    System.out.println("数据更新成功...");
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        /**
+         * 应用层入口程序
+         */
+        public class Demo06UpdateData {
+            public static void main(String args[]) {
+                Db06UpdateService.insertService();
+            }
+        }
+    </pre>
+    <b><a name='header-n107' class='md-header-anchor '></a>10.7、 执行delete操作</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <code class="language-java">
+            package javase.demo26.db.jdbc;
+
+            import javase.demo26.db.util.CommonJdbcLoadUtil;
+
+            import java.sql.Connection;
+            import java.sql.DriverManager;
+            import java.sql.SQLException;
+            import java.sql.Statement;
+
+            /**
+             * jdbc操作-删除数据。
+             * 定义数据实体bean。
+             */
+            class Person07 {
+                private int id;
+                private String name;
+                private int age;
+                private String sex;
+                private String birthday;
+
+                public Person07(int id, String name, int age, String sex, String birthday) {
+                    this.setId(id);
+                    this.setName(name);
+                    this.setAge(age);
+                    this.setSex(sex);
+                    this.setBirthday(birthday);
+                }
+
+                public int getId() {
+                    return id;
+                }
+
+                public void setId(int id) {
+                    this.id = id;
+                }
+
+                public String getName() {
+                    return name;
+                }
+
+                public void setName(String name) {
+                    this.name = name;
+                }
+
+                public int getAge() {
+                    return age;
+                }
+
+                public void setAge(int age) {
+                    this.age = age;
+                }
+
+                public String getSex() {
+                    return sex;
+                }
+
+                public void setSex(String sex) {
+                    this.sex = sex;
+                }
+
+                public String getBirthday() {
+                    return birthday;
+                }
+
+                public void setBirthday(String birthday) {
+                    this.birthday = birthday;
+                }
+            }
+
+            /**
+             * 保存数据库信息的实体bean
+             * 注意插入语句的日期格式
+             */
+            class DbBean07 {
+                private static final Person07 per = new Person07(456, "变更", 100, "男",
+                        "1992-10-15");
+                private static final String SQL = "delete from person where name='"
+                        + DbBean07.per.getName() + "'";
+
+                public static String getSql() {
+                    return SQL;
+                }
+            }
+
+            /**
+             * 控制层，执行sql操作
+             */
+            class Db07DeleteService {
+                public static void insertService() {
+                    Connection con = null;
+                    Statement state = null;
+                    try {
+                        Class.forName(CommonJdbcLoadUtil.getDbdriver());// 1.加载oracle驱动
+
+                        con = DriverManager.getConnection(CommonJdbcLoadUtil.getDburl(),
+                                CommonJdbcLoadUtil.getDbuser(),
+                                CommonJdbcLoadUtil.getDbpass());// 2.建立连接
+
+                        state = con.createStatement();// 3.创建Statement对象
+                        System.out.println(DbBean07.getSql());
+                        state.executeUpdate(DbBean07.getSql());// 4.执行目标delete sql语句
+
+                        /**
+                         * 5.上述sql语句执行完毕后没有返回结果可处理
+                         */
+
+                        state.close();
+                        con.close();// 6.按照逆序关闭对象
+                        System.out.println("数据删除成功...");
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            /**
+             * 应用层入口程序
+             */
+            public class Demo07DeleteData {
+                public static void main(String args[]) {
+                    Db07DeleteService.insertService();
+                }
+            }
+        </code>
+    </pre>
+    <b><a name='header-n108' class='md-header-anchor '></a>10.8、 执行select操作</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <code class="language-java">
+            package javase.demo26.db.jdbc;
+
+            import javase.demo26.db.util.CommonJdbcLoadUtil;
+
+            import java.sql.*;
+            import java.util.Date;
+
+            /**
+             * jdbc操作-查询数据。
+             */
+            class DbBean08 {
+                private static final String SQL = "select id,name,age,sex,birthday from person";
+
+                public static String getSql() {
+                    return SQL;
+                }
+            }
+
+            /**
+             * Service层，执行sql操作sql的select操作，是指上述数据的反持久化，将库中持久化的数据重新读取到内存中并进行处理开发中不建议使用select * 替代全部的字段，这样会使得查询出来的列名不明显
+             */
+            class Demo08SelectService {
+                public static void selectService() {
+                    Connection con = null;
+                    Statement state = null;
+                    ResultSet result = null;
+                    try {
+                        Class.forName(CommonJdbcLoadUtil.getDbdriver());// 1.加载oracle驱动
+
+                        con = DriverManager.getConnection(CommonJdbcLoadUtil.getDburl(),
+                                CommonJdbcLoadUtil.getDbuser(),
+                                CommonJdbcLoadUtil.getDbpass());// 2.建立连接
+
+                        state = con.createStatement();// 3.创建Statement对象
+
+                        result = state.executeQuery(DbBean08.getSql());// 4.执行目标sql语句，并返回查询语句
+
+                        /*
+                         * 5.处理查询数据。resultSet是游标对象，next()方法将游标指向下一行，从0还是计数，所以第一次的next()方法将指向第一行数据行。当resultSet对象没有下一行数据时，next()方法返回false。
+                         */
+                        System.out.println("result.next():" + result.next());
+                        while (result.next()) {
+                            int id = result.getInt("id");
+                            String name = result.getString("name");
+                            int age = result.getInt("age");
+                            String sex = result.getString("sex");
+                            Date birthday = result.getDate("birthday");
+                            System.out.println("id=" + id + ";name=" + name + ";age=" + age
+                                    + ";sex=" + sex + ";birthday=" + birthday);
+                            System.out.println("........................");
+                        }
+                        result.close();
+                        state.close();
+                        con.close();// 6.按照逆序关闭对象
+                        System.out.println("执行的sql语句:" + DbBean08.getSql());
+                        System.out.println("数据查询成功...");
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            /**
+             * 应用层入口程序
+             */
+            public class Demo08SelectData {
+                public static void main(String args[]) {
+                    Demo08SelectService.selectService();
+                }
+            }
+        </code>
+    </pre>
+    <b><a name='header-n109' class='md-header-anchor '></a>10.9、 PreparedStatement执行insert</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <code class="language-java">
+            package javase.demo26.db.jdbc;
+
+            import javase.demo26.db.util.CommonJdbcLoadUtil;
+
+            import java.sql.*;
+            import java.text.ParseException;
+            import java.text.SimpleDateFormat;
+
+            /**
+             * jdbc学习
+             * jdbc执行insert语句，使用 PreparedStatement 对象执行sql语句的预编译，所以执行效率比Statement快
+             * 定义数据实体bean
+             */
+            class Person09 {
+                private int id;
+                private String name;
+                private int age;
+                private String sex;
+                private String birthday;
+
+                public Person09(int id, String name, int age, String sex, String birthday) {
+                    this.setId(id);
+                    this.setName(name);
+                    this.setAge(age);
+                    this.setSex(sex);
+                    this.setBirthday(birthday);
+                }
+
+                public int getId() {
+                    return id;
+                }
+
+                public void setId(int id) {
+                    this.id = id;
+                }
+
+                public String getName() {
+                    return name;
+                }
+
+                public void setName(String name) {
+                    this.name = name;
+                }
+
+                public int getAge() {
+                    return age;
+                }
+
+                public void setAge(int age) {
+                    this.age = age;
+                }
+
+                public String getSex() {
+                    return sex;
+                }
+
+                public void setSex(String sex) {
+                    this.sex = sex;
+                }
+
+                public String getBirthday() {
+                    return birthday;
+                }
+
+                public void setBirthday(String birthday) {
+                    this.birthday = birthday;
+                }
+
+            }
+
+            /**
+             * 保存数据库信息的实体bean
+             * 注意插入语句的日期格式
+             */
+            class DbBean09 {
+                private static final String SQL = "insert into person values(?,?,?,?,?)";
+
+                public static String getSql() {
+                    return SQL;
+                }
+            }
+
+            /**
+             * 控制层，执行sql操作
+             */
+            class Db09InsertService {
+                public static void insertService() {
+                    Connection con = null;
+                    PreparedStatement state = null;
+                    Person09 per = new Person09(1234, "Eric", 26, "男", "1992-10-13");
+                    try {
+                        Class.forName(CommonJdbcLoadUtil.getDbdriver());// 加载oracle驱动
+
+                        con = DriverManager.getConnection(CommonJdbcLoadUtil.getDburl(),
+                                CommonJdbcLoadUtil.getDbuser(),
+                                CommonJdbcLoadUtil.getDbpass());// 建立连接
+
+                        state = con.prepareStatement(DbBean09.getSql());// 创建PreparedStatement对象
+                        state.setInt(1, per.getId());
+                        state.setString(2, per.getName());
+                        state.setInt(3, per.getAge());
+                        state.setString(4, per.getSex());
+                        try {
+                            state.setDate(
+                                    5,
+                                    new Date((new SimpleDateFormat("yyyy-mm-dd").parse(per
+                                            .getBirthday())).getTime()));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        state.executeUpdate();// 执行目标insert sql语句
+
+                        /**
+                         * 上述sql语句执行完毕后没有返回结果可处理
+                         */
+
+                        state.close();
+                        con.close();// 按照顺序关闭对象
+                        System.out.println(DbBean09.getSql());
+                        System.out.println("数据插入成功....");
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            /**
+             * 应用层入口
+             */
+            public class Demo09InsertDataPreparedStatement {
+                public static void main(String args[]) {
+                    Db09InsertService.insertService();
+                }
+            }
+        </code>
+    </pre>
+    <b><a name='header-n1010' class='md-header-anchor '></a>10.10、 PreparedStatement执行select</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <code class="language-java">
+            package javase.demo26.db.jdbc;
+
+            import javase.demo26.db.util.CommonJdbcLoadUtil;
+
+            import java.sql.*;
+            import java.util.Date;
+
+            /**
+             * jdbc学习
+             * jdbc执行select语句，使用PreparedStatement对象执行sql语句的预编译，所以执行效率比Statement快
+             * 使用模糊查询,Statement往往需要用户手动拼接sql，容易出错，开发中建议使用PreparedStatement操作sql，这样可以预先占位，然后设置指定占位值
+             * 定义数据实体bean
+             */
+            class Person10 {
+                private int id;
+                private String name;
+                private int age;
+                private String sex;
+                private String birthday;
+
+                public Person10(int id, String name, int age, String sex, String birthday) {
+                    this.setId(id);
+                    this.setName(name);
+                    this.setAge(age);
+                    this.setSex(sex);
+                    this.setBirthday(birthday);
+                }
+
+                public int getId() {
+                    return id;
+                }
+
+                public void setId(int id) {
+                    this.id = id;
+                }
+
+                public String getName() {
+                    return name;
+                }
+
+                public void setName(String name) {
+                    this.name = name;
+                }
+
+                public int getAge() {
+                    return age;
+                }
+
+                public void setAge(int age) {
+                    this.age = age;
+                }
+
+                public String getSex() {
+                    return sex;
+                }
+
+                public void setSex(String sex) {
+                    this.sex = sex;
+                }
+
+                public String getBirthday() {
+                    return birthday;
+                }
+
+                public void setBirthday(String birthday) {
+                    this.birthday = birthday;
+                }
+
+            }
+
+            /**
+             * 保存数据库信息的实体bean
+             * 注意插入语句的日期格式
+             */
+            class DbBean10 {
+                private static final String SQL = "select id,name,age,sex,birthday from person where name like ?";// 使用sql通配符
+
+                public static String getSql() {
+                    return SQL;
+                }
+            }
+
+            /**
+             * 控制层，执行sql操作
+             */
+            class Db10InsertService {
+                public static void insertService() {
+                    Connection con = null;
+                    PreparedStatement state = null;
+                    ResultSet result = null;
+                    Person10 per = new Person10(1234, "赵", 26, "男", "1992-10-13");
+                    try {
+                        Class.forName(CommonJdbcLoadUtil.getDbdriver());// 加载oracle驱动
+
+                        con = DriverManager.getConnection(CommonJdbcLoadUtil.getDburl(),
+                                CommonJdbcLoadUtil.getDbuser(),
+                                CommonJdbcLoadUtil.getDbpass());// 建立连接
+
+                        state = con.prepareStatement(DbBean10.getSql());// 创建PreparedStatement对象
+                        state.setString(1, "%" + per.getName() + "%");
+
+                        result = state.executeQuery();// 执行指定的预sql语句
+
+                        while (result.next()) {
+                            int id = result.getInt("id");
+                            String name = result.getString("name");
+                            int age = result.getInt("age");
+                            String sex = result.getString("sex");
+                            Date birthday = result.getDate("birthday");
+                            System.out.println("id=" + id + ";name=" + name + ";age=" + age
+                                    + ";sex=" + sex + ";birthday=" + birthday);
+                            System.out.println("..............................");
+                        }
+                        state.close();
+                        con.close();// 按照顺序关闭对象
+                        System.out.println(DbBean10.getSql());
+                        System.out.println("模糊查询成功....");
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            /**
+             * 应用层入口
+             */
+            public class Demo10SelectDataPreparedStatement {
+                public static void main(String args[]) {
+                    Db10InsertService.insertService();
+                }
+            }
+
+        </code>
+    </pre>
+    <b><a name='header-n1011' class='md-header-anchor '></a>10.11、 jdbc升级</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <code class="language-java">
+            package javase.demo26.db.jdbc;
+
+            import javase.demo26.db.util.CommonJdbcLoadUtil;
+            import javase.demo38.common.FileHandleUtil;
+            import javase.demo38.common.HandelTxtUtil;
+
+            import java.io.File;
+            import java.io.FileNotFoundException;
+            import java.io.FileOutputStream;
+            import java.io.PrintStream;
+            import java.sql.*;
+            import java.util.Iterator;
+            import java.util.Set;
+
+            /**
+             * jdbc学习
+             * jdbc操作-查询数据
+             * 保存数据库信息的实体bean
+             * 注意插入语句的日期格式
+             */
+            class DbBean11 {
+                // 下面是最传统的jdbc方式，将数据源信息硬编码到代码中，很不合适，每次改动需要修改源码
+                // 目前流行的方式，1，将数据源配置在文件中，通过自己解析文件或者交给spring等框架进行自动解析；
+                // 2，将数据源信息配置在web服务器（tomcat或者weblogic服务器中绑定JNDI），然后通过框架或者自己手动调用JNDI相关接口获取数据源信息
+                private static final String SQL = "select * from user_tables";
+
+                public static String getSql() {
+                    return SQL;
+                }
+            }
+
+            /**
+             * Service层，执行sql操作
+             * sql的select操作，是指上述数据的反持久化，将库中持久化的数据重新读取到内存中并进行处理，开发中不建议使用select * 替代全部的字段，这样会使得查询出来的列名不明显
+             */
+            class Db08SelectService {
+                public static void selectService() throws FileNotFoundException {
+                    Connection con = null;
+                    Statement state = null;
+                    ResultSet result = null;
+                    try {
+                        Class.forName(CommonJdbcLoadUtil.getDbdriver());// 加载oracle驱动
+
+                        con = DriverManager.getConnection(CommonJdbcLoadUtil.getDburl(),
+                                CommonJdbcLoadUtil.getDbuser(),
+                                CommonJdbcLoadUtil.getDbpass());// 建立连接
+
+                        state = con.createStatement();// 创建Statement对象
+
+                        result = state.executeQuery(DbBean11.getSql());// 执行目标sql语句，并返回查询语句
+
+                        File f = new File("table" + File.separator + "tableName.txt");
+                        FileHandleUtil.checkFile(f, true);
+                        PrintStream out = new PrintStream(new FileOutputStream(f));
+
+                        /*
+                         * 处理查询数据
+                         */
+                        while (result.next()) {
+                            //
+                            String tableName = result.getString(1);
+                            out.println(tableName);
+                        }
+                        result.close();
+                        state.close();
+                        con.close();// 按照顺序关闭对象
+                        System.out.println("----执行的sql语句:" + DbBean11.getSql());
+                        System.out.println("----数据输出到文件----");
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                public static void selectService2() throws FileNotFoundException {
+                    Connection con = null;
+                    Statement state = null;
+                    ResultSet result = null;
+                    try {
+                        Class.forName(CommonJdbcLoadUtil.getDbdriver());// 加载oracle驱动
+
+                        con = DriverManager.getConnection(CommonJdbcLoadUtil.getDburl(),
+                                CommonJdbcLoadUtil.getDbuser(),
+                                CommonJdbcLoadUtil.getDbpass());// 建立连接
+
+                        state = con.createStatement();// 创建Statement对象
+
+                        File f = new File("table" + File.separator + "tableName.txt");
+                        Set&lt;String> set = HandelTxtUtil.getMore(f);
+                        Iterator&lt;String> it = set.iterator();
+                        while (it.hasNext()) {
+                            String tableName = it.next();
+                            File file = new File("compare" + File.separator + tableName
+                                    + ".txt");
+                            FileHandleUtil.checkFile(file, true);
+
+                            PrintStream out = new PrintStream(new FileOutputStream(file));
+                            String sql = "select * from " + tableName;
+                            System.out.println(sql);
+                            result = state.executeQuery(sql);// 执行目标sql语句，并返回查询语句
+                            /*
+                             * 处理查询结果
+                             */
+                            int columnCount = result.getMetaData().getColumnCount();
+                            while (result.next()) {
+                                for (int i = 1; i <= columnCount; i++) {
+                                    String re = result.getString(i);
+                                    out.print(re + "\t");
+                                }
+                                out.println();
+                            }
+                        }
+
+                        result.close();
+                        state.close();
+                        con.close();// 按照顺序关闭对象
+                        System.out.println("执行的sql语句:" + DbBean11.getSql());
+                        System.out.println("数据输出到文件...");
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            /**
+             * 应用层入口程序
+             */
+            public class Demo11SelectDataMain {
+                public static void main(String args[]) throws FileNotFoundException {
+                    Db08SelectService.selectService();
+                    Db08SelectService.selectService2();
+                }
+            }
+        </code>
+    </pre>
+</div>
+</body>
+</html>
