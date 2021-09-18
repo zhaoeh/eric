@@ -1595,9 +1595,10 @@
     .md-lang {
         color: rgb(180, 101, 77);
     }
-
-
     </style>
+    <link rel="stylesheet" href="../../../highlight/styles/default.css">
+    <script src="../../../highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body class='typora-export'>
 <div id='write' class='is-node'>
@@ -1613,10 +1614,15 @@
 
     <b><a name='header-n2' class='md-header-anchor '></a>2、Java中的异常</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        Java中的异常是语义错误，叫做Throwable,Throwable本质是jdk封装好的一个内置类，其中又可以细分为一下三种：
+        Java中的异常是语义错误，叫做Throwable,Throwable本质是jdk封装好的一个内置类，其中又可以细分为以下三种：
         1.  错误类，即Error类。错误类一般是由JVM引起的，一般不由开发人员处理，可忽略。
         2.  运行时异常类，也叫做非检查性异常。该异常可以不进行捕获，不用处理，由JVM自动进行处理。如果不对该异常处理的话，类似于直接使用throws将出现的异常向上抛出去了，最终整个代码执行链上都没处理的话，则层层向上抛出，最终抛给栈底，一般都是程序入口方法，比如main方法。再由栈顶直接抛给JVM。而JVM会直接导致程序流程异常终止的。因此，运行时异常一般也需要手动进行try catch处理。
         3.  非运行时异常类，也叫做检查性异常。该异常必须由java开发人员手动进行处理。
+
+        JAVA中异常的含义：
+        异常是一个程序执行期间发生的事件，当当前线程执行程序时一旦发生了这种异常事件，java会自动将该事件封装为一个Exception对象。
+        默认情况下，异常事件一旦发生将会直接丢给JVM，中断当前线程的正常指令流，即直接结束当前线程的运行。
+        而java提供的异常处理机制，让我们可以捕获异常事件，从而决定对该异常如何处理。
     </pre>
 
     <b><a name='header-n3' class='md-header-anchor '></a>3、异常处理的两种方式</b><br>
@@ -1653,13 +1659,18 @@
     <b><a name='header-n5' class='md-header-anchor '></a>5、运行时异常</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         1.  运行时异常如果不显式处理，则直接一层一层向调用方抛出，类似于throws，直到遇见try catch语句，如果抛向异常栈的最底部（即最初的调用方，注意栈是先进后出的）一直没有catch处理则程序会异常终止。
+
         2.  常见的运行时异常：
-        ArrayIndexOutOfBoundsException 数组下标越界异常；
-        NullPointerException 空指针异常；
-        ArithmeticException 算数异常；
-        MissingResourceException 资源丢失异常；
-        ClassNotFoundException 找不到类异常。
+        <code class="language-java">
+            ArrayIndexOutOfBoundsException 数组下标越界异常；
+            NullPointerException 空指针异常；
+            ArithmeticException 算数异常；
+            MissingResourceException 资源丢失异常；
+            ClassNotFoundException 找不到类异常。
+        </code>
+
         3.  运行时异常属于非检查性异常，程序中可以选择try catch处理，也可以不处理。这些异常一般是由于程序逻辑错误引起的，完全是可以避免的异常，也就是说这些异常完全是程序员可以自己规避的异常，jdk团队已经整理好了，所以才将这些异常定义为运行时异常，目的就是不让程序员频繁的使用try catch进行处理（即抛出这些运行时异常不处理完全可以），然而不处理一旦发生这种运行时异常就会直接导致程序异常终止。
+
         4.  从逻辑角度讲，运行时异常应该由程序员通过代码实现进行规避。
     </pre>
 
@@ -1756,7 +1767,86 @@
     </pre>
 
     <b><a name='header-n9' class='md-header-anchor '></a>9、断言</b><br>
+    <b><a name='header-n91' class='md-header-anchor '></a>9.1、 使用assert</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        JDK1.4之后增加了断言的功能：断言就是肯定某个结果的返回值是正确的，如果最终该结果的返回值是错误的，则通过断言肯定会提示错误信息。
+
+        断言的格式如下（可用（）将boolean表达式扩起来）：
+        <code class="language-java">
+            (1) assert boolean表达式；
+            (2) assert boolean表达式：详细的信息。
+        </code>
+        如果boolean表达式的结果为true，则什么错误信息都不提示；如果为false，则会提示错误信息；如果没有声明详细的错误描述，则系统会按照默认的错误信息方式显式。
+    </pre>
+    <b><a name='header-n92' class='md-header-anchor '></a>9.2、 开启断言</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        在Java中，assert关键字是从JAVA SE 1.4 引入的，为了避免和老版本的Java代码中使用了assert关键字导致错误（<font color="#dc143c">（即JDK1.4之前有的项目中使用assert作为变量，这样如果直接开启有的老项目就会报错喽）</font> ），Java在执行的时候默认是不启动断言检查的（这个时候，所有的断言语句都将忽略！），如果要开启断言检查，则需要用开关-enableassertions或-ea来开启。
+
+        在java运行时加入JVM启动参数：
+        <code class="language-java">
+            -ea或者-enableassertions
+        </code>
+    </pre>
+    <b><a name='header-n93' class='md-header-anchor '></a>9.3、  myeclipse开启断言</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        eclipse、myeclipse开启assert(断言)，默认是关闭，如下：
+        说白了就是设置一下jvm的参数，参数是-ea或者-enableassertions
+        （1）全局开启
+        <img src="07-assert-01.png">
+        （2）只对当前代码开启，右键运行代码设置jvm参数
+        <img src="07-assert-02.png">
+    </pre>
+    <b><a name='header-n94' class='md-header-anchor '></a>9.4、  assert陷阱</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        assert关键字用法简单，但是使用assert往往会让你陷入越来越深的陷阱中。应避免使用。笔者经过研究，总结了以下原因：
+        1.  assert关键字需要在运行时候显式开启才能生效，否则你的断言就没有任何意义。而现在主流的Java IDE工具默认都没有开启-ea断言检查功能。这就意味着你如果使用IDE工具编码，调试运行时候会有一定的麻烦。并且，对于Java Web应用，程序代码都是部署在容器里面，你没法直接去控制程序的运行，如果一定要开启-ea的开关，则需要更改Web容器的运行配置参数。这对程序的移植和部署都带来很大的不便。
+        2.  用assert代替if是陷阱之二。assert的判断和if语句差不多，但两者的作用有着本质的区别：assert关键字本意上是为测试调试程序时使用的，但如果不小心用assert来控制了程序的业务流程，那在测试调试结束后去掉assert关键字就意味着修改了程序的正常的逻辑。
+        3.  assert断言失败将面临程序的退出。这在一个生产环境下的应用是绝不能容忍的。一般都是通过异常处理来解决程序中潜在的错误。<font color="#dc143c">但是使用断言就很危险，一旦失败系统就挂了。</font>
+    </pre>
+    <b><a name='header-n95' class='md-header-anchor '></a>9.5、  对assert的思考</b>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        assert既然是为了调试测试程序用，不在正式生产环境下用，那应该考虑更好的测试JUint来代替其作用，JUint相对assert关键的所提供的功能是有过之而无不及。当然完全可以通过IDE debug来进行调试测试。在此看来，assert的前途一片昏暗。
+        因此，应当避免在Java中使用assert关键字，除非哪一天Java默认支持开启-ea的开关，这时候可以考虑。对比一下，assert能给你带来多少好处，多少麻烦，这是我们选择是否使用的的原则。
+    </pre>
+
+    <b><a name='header-n10' class='md-header-anchor '></a>10、对异常的思考</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  不要使用异常来管理业务逻辑，应该使用条件语句。如果一个控制逻辑可以通过if-else语句来简单完成的，那就不用使用异常，因为异常会降低代码的可读性和性能。比如一些null值的判断，除0的情况。
+        <code class="language-java">
+            // 使用如下的if判断来控制逻辑。
+            String str = null;
+            if(str == null){
+                ...
+            }
+
+            // 如果不使用上面的if判断，而是直接对异常进行catch捕获来控制逻辑的话，将会很丑陋：
+            String str = null;
+            try{
+                // 任由str抛出异常，然后通过对异常的catch来判断逻辑的走向，这种方式不建议
+                str.toString();
+            }catch(Exception e){
+                ...
+            }
+        </code>
+
+        2.  异常对象的名字必须清晰而且有具体的含义，表示异常具体发生的问题。比如FileNotFoundException就很清晰直观。
+
+        3.  当方法判断应该抛出异常时，必须直接throws异常出去，而不要return一些错误的码值，因为错误值不够直观。比如抛出 FileNotFoundException异常，而不是直接返回-1或者-2之类的错误码。
+
+        4.  应该catch具体的异常，而不是直接catch Exception完事，异常的catch应该越具体越好，这对代码的性能、可读性和诸多方面都有好处。
+
+        5.  Null的判断逻辑并不是一成不变的，如果特殊情况下允许一个方法返回null值，则在调用方应该使用if-else去控制逻辑，否则将会抛出NullPointException。
+
+        6.  不要仅仅捕获了异常，而不做任何处理，至少得打印出异常的堆栈信息等，否则异常会被吞掉，不便于后期维护。
+
+        7.  请使用finally来释放一些打开的资源，比如打开的文件，数据库连接等。
+
+        8.  大部分情况下不建议在循环内部处理异常，应在循环外对异常进行捕获处理。
+
+        9.  异常的粒度很重要，应该为一个基本操作定义一个try-catch块，而不是为了简单，直接将几百行代码放到一个try-catch块中。
+
+        10. 为每一个异常定义一个明确唯一的code，这一点很重要。
+
     </pre>
 </div>
 </body>
