@@ -767,7 +767,7 @@
         （1）JDBC API：这提供了应用程序到JDBC管理器连接。
         （2）JDBC驱动程序API：这支持JDBC管理器到驱动程序连接。
         JDBC API使用驱动程序管理器和特定于数据库的驱动程序来提供与异构数据库的透明连接。
-        <img src="01-1-jdbc.png">
+        <img src="02-1-jdbc.png">
     </pre>
     <b><a name='header-n32' class='md-header-anchor '></a>3.2、 使用JDBC的准备工作</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
@@ -1143,113 +1143,8 @@
         </code>
     </pre>
 
-    <b><a name='header-n8' class='md-header-anchor '></a>8、JDBC批处理操作</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        批量处理允许您将相关的SQL语句分组到批处理中，并通过对数据库的一次调用提交它们。
-        当您一次向数据库发送多个SQL语句时，可以减少连接数据库的开销，从而提高性能。
-    </pre>
-    <b><a name='header-n81' class='md-header-anchor '></a>8.1、 使用Statement对象进行批处理操作</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        以下是使用语句对象的批处理的典型步骤序列：
-        1.  使用createStatement（）方法创建Statement对象。
-        2.  使用setAutoCommit（）将auto-commit设置为false 。
-        3.  使用addBatch（）方法在创建的语句对象上添加您喜欢的SQL语句到批处理中。
-        4.  在创建的语句对象上使用executeBatch（）方法执行所有SQL语句。
-        5.  最后，使用commit（）方法提交所有更改。
-        <code class="language-java">
-            // Create statement object
-            Statement stmt = conn.createStatement();
-            ​
-            // Set auto-commit to false
-            conn.setAutoCommit(false);
-            ​
-            // Create SQL statement
-            String SQL = "INSERT INTO Employees (id, first, last, age) " +
-                         "VALUES(200,'Zia', 'Ali', 30)";
-            // Add above SQL statement in the batch.
-            stmt.addBatch(SQL);
-            ​
-            // Create one more SQL statement
-            String SQL = "INSERT INTO Employees (id, first, last, age) " +
-                         "VALUES(201,'Raj', 'Kumar', 35)";
-            // Add above SQL statement in the batch.
-            stmt.addBatch(SQL);
-            ​
-            // Create one more SQL statement
-            String SQL = "UPDATE Employees SET age = 35 " +
-                         "WHERE id = 100";
-            // Add above SQL statement in the batch.
-            stmt.addBatch(SQL);
-            ​
-            // Create an int[] to hold returned values
-            int[] count = stmt.executeBatch();
-            ​
-            //Explicitly commit statements to apply changes
-            conn.commit();
-        </code>
-    </pre>
-    <b><a name='header-n82' class='md-header-anchor '></a>8.2、 PrepareStatement对象进行批处理</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        1.  使用占位符创建SQL语句。
-        2.  使用prepareStatement（） 方法创建PrepareStatement对象。
-        3.  使用setAutoCommit（）将auto-commit设置为false 。
-        4.  使用addBatch（）方法在创建的语句对象上添加您喜欢的SQL语句到批处理中。
-        5.  在创建的语句对象上使用executeBatch（）方法执行所有SQL语句。
-        6.  最后，使用commit（）方法提交所有更改。
-        <code class="language-java">
-            // Create SQL statement
-            String SQL = "INSERT INTO Employees (id, first, last, age) " +
-                         "VALUES(?, ?, ?, ?)";
-            ​
-            // Create PrepareStatement object
-            PreparedStatemen pstmt = conn.prepareStatement(SQL);
-            ​
-            //Set auto-commit to false
-            conn.setAutoCommit(false);
-            ​
-            // Set the variables
-            pstmt.setInt( 1, 400 );
-            pstmt.setString( 2, "Pappu" );
-            pstmt.setString( 3, "Singh" );
-            pstmt.setInt( 4, 33 );
-            // Add it to the batch
-            pstmt.addBatch();
-            ​
-            // Set the variables
-            pstmt.setInt( 1, 401 );
-            pstmt.setString( 2, "Pawan" );
-            pstmt.setString( 3, "Singh" );
-            pstmt.setInt( 4, 31 );
-            // Add it to the batch
-            pstmt.addBatch();
-            ​
-            //add more batches
-            ​
-            //Create an int[] to hold returned values
-            int[] count = stmt.executeBatch();
-            ​
-            //Explicitly commit statements to apply changes
-            conn.commit();
-        </code>
-    </pre>
-    <b><a name='header-n83' class='md-header-anchor '></a>8.3、 通过循环控制批处理</b>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        批处理的特性，往往会被我们应用到完全相同的SQL语句（只是参数不同）中，然后通过循环来迭代提交，如下案例：
-        <code class="language-java">
-            String SQL = "INSERT INTO Employees (id, first, last, age) " + "VALUES(?, ?, ?, ?)";
-            while(resultSet.next()){
-                pstmt.setInt( 1, resultSet.getInt(1) );
-                pstmt.setString( 2, resultSet.getString(2) );
-                pstmt.setString( 3, "resultSet.getString(3) );
-                pstmt.setInt( 4, resultSet.getInt(4) );
-                pstmt.addBatch();
-            }
-        </code>
-        上述案例在模拟一个数据复制的过程，resultSet是从源表中查询出来的数据结果集，然后遍历这个结果集，迭代设置不同的insert参数，每次构建好SQL语句后，进行addBatch操作。
-        最终再统一进行executeBatch。
-    </pre>
 
-    <b><a name='header-n9' class='md-header-anchor '></a>9、JDBC操作二进制</b><br>
+    <b><a name='header-n8' class='md-header-anchor '></a>8、JDBC操作二进制</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         PreparedStatement对象可以使用输入和输出流来提供参数数据。这使您可以将整个文件放入可以保存大值的数据库列，例如CLOB和BLOB数据类型。
         有以下方法可用于流式传输数据：
@@ -1380,7 +1275,7 @@
     </pre>
 
 
-    <b><a name='header-n10' class='md-header-anchor '></a>10、JDBC综合案例</b><br>
+    <b><a name='header-n9' class='md-header-anchor '></a>9、JDBC综合案例</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         在使用前，为了避免数据库的各种信息硬编码，先手动实现一个通用的读取数据库配置的工具类：
         <code class="language-java">
@@ -1444,7 +1339,7 @@
             jdbc.password=oracle1234
         </code>
     </pre>
-    <b><a name='header-n101' class='md-header-anchor '></a>10.1、 加载驱动程序</b>
+    <b><a name='header-n91' class='md-header-anchor '></a>9.1、 加载驱动程序</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <code class="language-java">
             package javase.demo26.db.jdbc;
@@ -1473,7 +1368,7 @@
         </code>
     </pre>
 
-    <b><a name='header-n102' class='md-header-anchor '></a>10.2、 DriverManager类取得Connection接口对象</b>
+    <b><a name='header-n92' class='md-header-anchor '></a>9.2、 DriverManager类取得Connection接口对象</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <code class="language-java">
             package javase.demo26.db.jdbc;
@@ -1519,7 +1414,7 @@
         </code>
     </pre>
 
-    <b><a name='header-n103' class='md-header-anchor '></a>10.3、 利用statement对象执行建表操作</b>
+    <b><a name='header-n93' class='md-header-anchor '></a>9.3、 利用statement对象执行建表操作</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <code class="language-java">
             package javase.demo26.db.jdbc;
@@ -1589,7 +1484,7 @@
         </code>
     </pre>
 
-    <b><a name='header-n104' class='md-header-anchor '></a>10.4、 执行insert操作</b>
+    <b><a name='header-n94' class='md-header-anchor '></a>9.4、 执行insert操作</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <code class="language-java">
             package javase.demo26.db.jdbc;
@@ -1661,7 +1556,7 @@
             }
         </code>
     </pre>
-    <b><a name='header-n105' class='md-header-anchor '></a>10.5、 执行insert操作，通过bean映射参数</b>
+    <b><a name='header-n95' class='md-header-anchor '></a>9.5、 执行insert操作，通过bean映射参数</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <code class="language-java">
             package javase.demo26.db.jdbc;
@@ -1796,7 +1691,7 @@
             }
         </code>
     </pre>
-    <b><a name='header-n106' class='md-header-anchor '></a>10.6、 执行update操作</b>
+    <b><a name='header-n96' class='md-header-anchor '></a>9.6、 执行update操作</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         package javase.demo26.db.jdbc;
 
@@ -1929,7 +1824,7 @@
             }
         }
     </pre>
-    <b><a name='header-n107' class='md-header-anchor '></a>10.7、 执行delete操作</b>
+    <b><a name='header-n97' class='md-header-anchor '></a>9.7、 执行delete操作</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <code class="language-java">
             package javase.demo26.db.jdbc;
@@ -2059,7 +1954,7 @@
             }
         </code>
     </pre>
-    <b><a name='header-n108' class='md-header-anchor '></a>10.8、 执行select操作</b>
+    <b><a name='header-n98' class='md-header-anchor '></a>9.8、 执行select操作</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <code class="language-java">
             package javase.demo26.db.jdbc;
@@ -2136,7 +2031,7 @@
             }
         </code>
     </pre>
-    <b><a name='header-n109' class='md-header-anchor '></a>10.9、 PreparedStatement执行insert</b>
+    <b><a name='header-n99' class='md-header-anchor '></a>9.9、 PreparedStatement执行insert</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <code class="language-java">
             package javase.demo26.db.jdbc;
@@ -2277,7 +2172,7 @@
             }
         </code>
     </pre>
-    <b><a name='header-n1010' class='md-header-anchor '></a>10.10、 PreparedStatement执行select</b>
+    <b><a name='header-n910' class='md-header-anchor '></a>9.10、 PreparedStatement执行select</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <code class="language-java">
             package javase.demo26.db.jdbc;
@@ -2416,7 +2311,7 @@
 
         </code>
     </pre>
-    <b><a name='header-n1011' class='md-header-anchor '></a>10.11、 jdbc升级</b>
+    <b><a name='header-n911' class='md-header-anchor '></a>9.11、 jdbc升级</b>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
         <code class="language-java">
             package javase.demo26.db.jdbc;

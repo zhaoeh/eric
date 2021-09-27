@@ -1,0 +1,988 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>JdbcTemplate.md</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+          rel='stylesheet' type='text/css'/>
+    <style type='text/css'>html {
+        overflow-x: initial !important;
+    }
+
+    .CodeMirror pre {
+    }
+
+    .CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor {
+        width: auto;
+        border: 0px;
+        background: rgb(119, 238, 119);
+        z-index: 1;
+    }
+
+    .cm-s-typora-default pre.cm-header1:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 2rem;
+        line-height: 2rem;
+    }
+
+    .cm-s-typora-default pre.cm-header2:not(.cm-atom) :not(.cm-overlay) {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+    }
+
+    .cm-s-typora-default .cm-overlay {
+        font-family: monospace;
+    }
+
+    .CodeMirror pre {
+        border-radius: 0px;
+        border-width: 0px;
+        background: transparent;
+        font-family: inherit;
+        font-size: inherit;
+        margin: 0px;
+        white-space: pre;
+        word-wrap: normal;
+        color: inherit;
+        z-index: 2;
+        position: relative;
+        overflow: visible;
+    }
+
+    .CodeMirror-wrap pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: normal;
+    }
+
+    .CodeMirror-code pre {
+        border-right: 30px solid transparent;
+        width: fit-content;
+    }
+
+    .CodeMirror-wrap .CodeMirror-code pre {
+        border-right: none;
+        width: auto;
+    }
+
+    .CodeMirror-measure pre {
+        position: static;
+    }
+
+    .CodeMirror span {
+    }
+
+    @media print {
+        .CodeMirror div.CodeMirror-cursor {
+            visibility: hidden;
+        }
+    }
+
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #333333;
+        --code-block-bg-color: inherit;
+    }
+
+    html {
+        font-size: 14px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        margin: 0px;
+        padding: 0px;
+        height: auto;
+        bottom: 0px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        font-size: 1rem;
+        line-height: 1.42857;
+        overflow-x: hidden;
+        background: inherit;
+    }
+
+    a:active, a:hover {
+        outline: 0px;
+    }
+
+    #write {
+        margin: 0px auto;
+        height: auto;
+        width: inherit;
+        word-break: normal;
+        word-wrap: break-word;
+        position: relative;
+        padding-bottom: 70px;
+        white-space: pre-wrap;
+        overflow-x: visible;
+    }
+
+    .for-image #write {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    body.typora-export {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    @media screen and (max-width: 500px) {
+        body.typora-export {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    }
+
+    .typora-export #write {
+        margin: 0px auto;
+    }
+
+    #write > p:first-child, #write > ul:first-child, #write > ol:first-child, #write > pre:first-child, #write > blockquote:first-child, #write > div:first-child, #write > table:first-child {
+        margin-top: 30px;
+    }
+
+    #write li > table:first-child {
+        margin-top: -20px;
+    }
+
+    img {
+        max-width: 100%;
+        vertical-align: middle;
+    }
+
+    input, button, select, textarea {
+        color: inherit;
+        font-style: inherit;
+        font-variant: inherit;
+        font-weight: inherit;
+        font-stretch: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        font-family: inherit;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        line-height: normal;
+        padding: 0px;
+    }
+
+    ::before, ::after, * {
+        box-sizing: border-box;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write div, #write pre {
+        width: inherit;
+    }
+
+    #write p, #write h1, #write h2, #write h3, #write h4, #write h5, #write h6 {
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    h4 {
+        font-size: 1.4rem;
+    }
+
+    h5 {
+        font-size: 1.2rem;
+    }
+
+    h6 {
+        font-size: 1rem;
+    }
+
+    p {
+        -webkit-margin-before: 1rem;
+        -webkit-margin-after: 1rem;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+    }
+
+    .typora-export p {
+        white-space: normal;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    #write input[type="checkbox"] {
+        cursor: pointer;
+        width: inherit;
+        height: inherit;
+        margin: 4px 0px 0px;
+    }
+
+    tr {
+        break-inside: avoid;
+        break-after: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0px;
+        width: 100%;
+        overflow: auto;
+        break-inside: auto;
+        text-align: left;
+    }
+
+    table.md-table td {
+        min-width: 80px;
+    }
+
+    .CodeMirror pre {
+        padding: 0px 4px;
+    }
+
+    div.hr:focus {
+        cursor: none;
+    }
+
+    pre {
+        white-space: pre-wrap;
+    }
+
+    .md-fences {
+        font-size: 0.9rem;
+        display: block;
+        break-inside: avoid;
+        text-align: left;
+        overflow: visible;
+        white-space: pre;
+        background: var(--code-block-bg-color);
+        position: relative !important;
+    }
+
+    .md-fences.mock-cm {
+        white-space: pre-wrap;
+    }
+
+    .show-fences-line-number .md-fences {
+        padding-left: 0px;
+    }
+
+    .show-fences-line-number .md-fences.mock-cm {
+        padding-left: 40px;
+    }
+
+    li div {
+        padding-top: 0px;
+    }
+
+    blockquote {
+        margin: 1rem 0px;
+    }
+
+    li {
+        margin: 0px;
+        position: relative;
+    }
+
+    blockquote > :last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote > :first-child {
+        margin-top: 0px;
+    }
+
+    @media print {
+        html, body {
+            border: 1px solid transparent;
+            height: 99%;
+            break-after: avoid;
+            break-before: avoid;
+        }
+
+        .typora-export * {
+            -webkit-print-color-adjust: exact;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid-page;
+            orphans: 2;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        html.blink-to-pdf {
+            font-size: 13px;
+        }
+
+        .typora-export #write {
+            padding-left: 1cm;
+            padding-right: 1cm;
+            padding-bottom: 0px;
+            break-after: avoid;
+        }
+
+        .typora-export #write::after {
+            height: 0px;
+        }
+
+        @page {
+            margin: 20mm 0mm;
+        }
+    }
+
+    a img, img a {
+        cursor: pointer;
+    }
+
+    [contenteditable="true"]:active, [contenteditable="true"]:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .task-list-item input {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    @media screen and (max-width: 48em) {
+
+    }
+
+    .footnote-line a:not(.reversefootnote) {
+        color: inherit;
+    }
+
+    code {
+        text-align: left;
+    }
+
+    .md-inline-math .MathJax_SVG .noError {
+        display: none !important;
+    }
+
+    .mathjax-block .MathJax_SVG_Display {
+        text-align: center;
+        margin: 1em 0em;
+        position: relative;
+        text-indent: 0px;
+        max-width: none;
+        max-height: none;
+        min-height: 0px;
+        min-width: 100%;
+        width: auto;
+        display: block !important;
+    }
+
+    .MathJax_SVG * {
+        transition: none;
+    }
+
+    .md-diagram-panel > svg {
+        max-width: 100%;
+    }
+
+    [lang="flow"] svg, [lang="mermaid"] svg {
+        max-width: 100%;
+    }
+
+    :root {
+        --side-bar-bg-color: #fafafa;
+        --control-text-color: #777;
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: normal;
+        src: local("Open Sans Regular"), url("./github/400.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: normal;
+        src: local("Open Sans Italic"), url("./github/400i.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: normal;
+        font-weight: bold;
+        src: local("Open Sans Bold"), url("./github/700.woff") format("woff");
+    }
+
+    @font-face {
+        font-family: "Open Sans";
+        font-style: italic;
+        font-weight: bold;
+        src: local("Open Sans Bold Italic"), url("./github/700i.woff") format("woff");
+    }
+
+    html {
+        font-size: 16px;
+    }
+
+    body {
+        font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: rgb(51, 51, 51);
+        line-height: 1.6;
+    }
+
+    #write {
+        max-width: 860px;
+        margin: 0px auto;
+        padding: 20px 30px 100px;
+    }
+
+    #write > ul:first-child, #write > ol:first-child {
+        margin-top: 30px;
+    }
+
+    body > :first-child {
+        margin-top: 0px !important;
+    }
+
+    body > :last-child {
+        margin-bottom: 0px !important;
+    }
+
+    a {
+        color: rgb(65, 131, 196);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        position: relative;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+        line-height: 1.4;
+        cursor: text;
+    }
+
+    h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+        text-decoration: none;
+    }
+
+    h1 tt, h1 code {
+        font-size: inherit;
+    }
+
+    h2 tt, h2 code {
+        font-size: inherit;
+    }
+
+    h3 tt, h3 code {
+        font-size: inherit;
+    }
+
+    h4 tt, h4 code {
+        font-size: inherit;
+    }
+
+    h5 tt, h5 code {
+        font-size: inherit;
+    }
+
+    h6 tt, h6 code {
+        font-size: inherit;
+    }
+
+    h1 {
+        padding-bottom: 0.3em;
+        font-size: 2.25em;
+        line-height: 1.2;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h2 {
+        padding-bottom: 0.3em;
+        font-size: 1.75em;
+        line-height: 1.225;
+        border-bottom: 1px solid rgb(238, 238, 238);
+    }
+
+    h3 {
+        font-size: 1.5em;
+        line-height: 1.43;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+
+    h5 {
+        font-size: 1em;
+    }
+
+    h6 {
+        font-size: 1em;
+        color: rgb(119, 119, 119);
+    }
+
+    p, blockquote, ul, ol, dl, table {
+        margin: 0.8em 0px;
+    }
+
+    li > ol, li > ul {
+        margin: 0px;
+    }
+
+    hr {
+        height: 4px;
+        padding: 0px;
+        margin: 16px 0px;
+        background-color: rgb(231, 231, 231);
+        border-width: 0px 0px 1px;
+        border-style: none none solid;
+        border-top-color: initial;
+        border-right-color: initial;
+        border-left-color: initial;
+        border-image: initial;
+        overflow: hidden;
+        box-sizing: content-box;
+        border-bottom-color: rgb(221, 221, 221);
+    }
+
+    body > h2:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h1:first-child + h2 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+        margin-top: 0px;
+        padding-top: 0px;
+    }
+
+    h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+        margin-top: 0px;
+    }
+
+    ul, ol {
+        padding-left: 30px;
+    }
+
+    ul:first-child, ol:first-child {
+        margin-top: 0px;
+    }
+
+    ul:last-child, ol:last-child {
+        margin-bottom: 0px;
+    }
+
+    blockquote {
+        border-left: 4px solid rgb(221, 221, 221);
+        padding: 0px 15px;
+        color: rgb(119, 119, 119);
+    }
+
+    blockquote blockquote {
+        padding-right: 0px;
+    }
+
+    table {
+        padding: 0px;
+        word-break: initial;
+    }
+
+    table tr {
+        border-top: 1px solid rgb(204, 204, 204);
+        margin: 0px;
+        padding: 0px;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: rgb(248, 248, 248);
+    }
+
+    table tr th {
+        font-weight: bold;
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr td {
+        border: 1px solid rgb(204, 204, 204);
+        text-align: left;
+        margin: 0px;
+        padding: 6px 13px;
+    }
+
+    table tr th:first-child, table tr td:first-child {
+        margin-top: 0px;
+    }
+
+    table tr th:last-child, table tr td:last-child {
+        margin-bottom: 0px;
+    }
+
+    .md-fences, code, tt {
+        border: 1px solid rgb(221, 221, 221);
+        background-color: rgb(248, 248, 248);
+        border-radius: 3px;
+        font-family: Consolas, "Liberation Mono", Courier, monospace;
+        padding: 2px 4px 0px;
+        font-size: 0.9em;
+    }
+
+    .md-fences {
+        margin-bottom: 15px;
+        margin-top: 15px;
+        padding: 8px 1em 6px;
+    }
+
+    .task-list-item input {
+        top: 3px;
+        left: 8px;
+    }
+
+    @media screen and (min-width: 914px) {
+    }
+
+    @media print {
+        html {
+            font-size: 13px;
+        }
+
+        table, pre {
+            break-inside: avoid;
+        }
+
+        pre {
+            word-wrap: break-word;
+        }
+    }
+
+    .md-fences {
+        background-color: rgb(248, 248, 248);
+    }
+
+    #write pre.md-meta-block {
+        padding: 1rem;
+        font-size: 85%;
+        line-height: 1.45;
+        background-color: rgb(247, 247, 247);
+        border: 0px;
+        border-radius: 3px;
+        color: rgb(119, 119, 119);
+        margin-top: 0px !important;
+    }
+
+    .on-focus-mode blockquote {
+        border-left-color: rgba(85, 85, 85, 0.12);
+    }
+    </style>
+
+    <link rel="stylesheet" href="../../../highlight/styles/default.css">
+    <script src="../../../highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body class='typora-export'>
+<div id='write' class='is-node'>
+    <b><a name='header-n0' class='md-header-anchor '></a>玩转JdbcTemplate</b>
+
+    <b><a name='header-n1' class='md-header-anchor '></a>1、什么是JdbcTemplate？</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        前面学习了Commons DbUtils，是用来简化jdbc传统的操作步骤的。
+        实际上spring针对原生jdbc也封装了一个模板对象，就是JdbcTemplate。
+        java中操作db最原始的方式就是纯jdbc了，每次操作db都需要加载数据库驱动、获取连接、获取PreparedStatement、执行sql、关闭PreparedStatement、关闭连接等，操作还是比较繁琐的，spring中提供了一个模块，对jdbc操作进行了封装，使其更简单。
+        这个模块的核心对象就是JdbcTemplate，JdbcTemplate是spring对jdbc的封装，目的是使jdbc更加易于使用。
+    </pre>
+
+    <b><a name='header-n2' class='md-header-anchor '></a>2、JdbcTemplate源码解析</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        1.  类定义
+        <code class="language-java">
+            public class JdbcTemplate extends JdbcAccessor implements JdbcOperations
+        </code>
+
+        2.  属性字段
+        <code class="language-java">
+            private static final String RETURN_RESULT_SET_PREFIX = "#result-set-";
+            private static final String RETURN_UPDATE_COUNT_PREFIX = "#update-count-";
+            private NativeJdbcExtractor nativeJdbcExtractor;
+            private boolean ignoreWarnings = true;
+            private int fetchSize = 0;
+            private int maxRows = 0;
+            private int queryTimeout = 0;
+            private boolean skipResultsProcessing = false;
+            private boolean skipUndeclaredResults = false;
+            private boolean resultsMapCaseInsensitive = false;
+        </code>
+
+        3.  构造方法
+        <code class="language-java">
+            public JdbcTemplate() {
+            }
+
+            public JdbcTemplate(DataSource dataSource) {
+                this.setDataSource(dataSource);
+                this.afterPropertiesSet();
+            }
+
+            public JdbcTemplate(DataSource dataSource, boolean lazyInit) {
+                this.setDataSource(dataSource);
+                this.setLazyInit(lazyInit);
+                this.afterPropertiesSet();
+            }
+        </code>
+
+        4.  setter/getter
+        <code class="language-java">
+            public void setNativeJdbcExtractor(NativeJdbcExtractor extractor) {
+                this.nativeJdbcExtractor = extractor;
+            }
+
+            public NativeJdbcExtractor getNativeJdbcExtractor() {
+                return this.nativeJdbcExtractor;
+            }
+
+            public void setIgnoreWarnings(boolean ignoreWarnings) {
+                this.ignoreWarnings = ignoreWarnings;
+            }
+
+            public boolean isIgnoreWarnings() {
+                return this.ignoreWarnings;
+            }
+
+            public void setFetchSize(int fetchSize) {
+                this.fetchSize = fetchSize;
+            }
+
+            public int getFetchSize() {
+                return this.fetchSize;
+            }
+
+            public void setMaxRows(int maxRows) {
+                this.maxRows = maxRows;
+            }
+
+            public int getMaxRows() {
+                return this.maxRows;
+            }
+
+            public void setQueryTimeout(int queryTimeout) {
+                this.queryTimeout = queryTimeout;
+            }
+
+            public int getQueryTimeout() {
+                return this.queryTimeout;
+            }
+
+            public void setSkipResultsProcessing(boolean skipResultsProcessing) {
+                this.skipResultsProcessing = skipResultsProcessing;
+            }
+
+            public boolean isSkipResultsProcessing() {
+                return this.skipResultsProcessing;
+            }
+
+            public void setSkipUndeclaredResults(boolean skipUndeclaredResults) {
+                this.skipUndeclaredResults = skipUndeclaredResults;
+            }
+
+            public boolean isSkipUndeclaredResults() {
+                return this.skipUndeclaredResults;
+            }
+
+            public void setResultsMapCaseInsensitive(boolean resultsMapCaseInsensitive) {
+                this.resultsMapCaseInsensitive = resultsMapCaseInsensitive;
+            }
+
+            public boolean isResultsMapCaseInsensitive() {
+                return this.resultsMapCaseInsensitive;
+            }
+        </code>
+    </pre>
+
+    <b><a name='header-n3' class='md-header-anchor '></a>3、如何使用JdbcTemplate？</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        <b>1.  使用JdbcTemplate需要DataSource数据源的支持。</b></br>
+        spring提供的jdbcTemplate对象是对jdbc技术的封装，通过该对象可以更加方便的操作数据库，相当于DBUtils里面的QueryRunner对象。
+        使用JdbcTemplate对象，需要数据源的支持。
+        通过JdbcTemplate源码可以知道，构造方法总共有3个：
+        <code class="language-java">
+            public JdbcTemplate() {
+            }
+
+            public JdbcTemplate(DataSource dataSource) {
+                this.setDataSource(dataSource);
+                this.afterPropertiesSet();
+            }
+
+            public JdbcTemplate(DataSource dataSource, boolean lazyInit) {
+                this.setDataSource(dataSource);
+                this.setLazyInit(lazyInit);
+                this.afterPropertiesSet();
+            }
+        </code>
+        第1个是空构造方法；
+        第2个是有一个DataSource参数的构造方法；
+        第3个是有两个参数的构造方法，分别是DataSource和lazyInit。
+
+        除了第1个空构造方法外，剩下两个构造方法都需要传入DataSource对象。
+        也就是说，我们在实例化JdbcTemplate对象时，并不一定非得传入DataSource对象。
+
+        但实际上，JdbcTemplate方法里面去绑定数据源的方式，只提供了一种，如下：
+        <code class="language-java">
+            public void setDataSource(DataSource dataSource)
+        </code>
+        <font color="#dc143c">而并没有提供其他类似jdbc之类的单独去绑定driverClassName、url、username、password之类的方法。由此可见，使用JdbcTemplate是离不开DataSource数据源的支持的。这也侧面验证了遵守jdbc2.0规范的重要性。</font>
+
+        <b>2.   使用JdbcTemplate的方式</b></br>
+        （1）直接硬编码，即直接new，此时的JdbcTemplate对象并没有交给Spring管理。
+        <code class="language-java">
+            public class JdbcTemplateTest {
+                public static void main(String[] args) {
+                    // 硬编码方式1
+                    JdbcTemplate jdbcTemplate = new JdbcTemplate();
+                    jdbcTemplate.setDataSource(new BasicDataSource());
+
+                    // 硬编码方式2
+                    JdbcTemplate jdbcTemplate1 = new JdbcTemplate(new BasicDataSource());
+
+                    // 硬编码方式3
+                    JdbcTemplate jdbcTemplate2 = new JdbcTemplate(new BasicDataSource(),Boolean.FALSE);
+                }
+            }
+        </code>
+        （2）spring和jdbcTemplate整合，交给spring管理，通过注解或者xml配置进行注入。
+        依赖关系是：业务Dao对象依赖JdbcTemplate，JdbcTemplate依赖DataSource。
+        业务Dao需要自己手动定义jdbcTemplate作为成员和对应的setter方法，如下：
+        <code class="language-java">
+            public class PersonDaoImpl implements PersonDao{
+                private JdbcTemplate jdbcTemplate;
+
+                public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+                    this.jdbcTemplate = jdbcTemplate;
+                }
+            }
+        </code>
+        通过xml配置依赖关系如下：
+        <code class="language-xml">
+            &lt;!-- 配置dbcp数据源-->
+            &lt;bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+                destroy-method="close">
+                &lt;!-- 通过property属性注入依赖成员 -->
+                &lt;property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+                &lt;property name="url">
+                    &lt;value>jdbc:oracle:thin:@localhost:1521:orcl&lt;/value>
+                &lt;/property>
+                &lt;property name="username" value="oracle" />
+                &lt;property name="password" value="oracle" />
+            &lt;/bean>
+
+            &lt;!-- 配置jdbcTemplate -->
+            &lt;bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+                &lt;property name="dataSource" ref="dataSource"/>
+            &lt;/bean>
+
+            &lt;!-- 配置dao -->
+            &lt;bean id="personDao" class="demo08.myspring.model.jdbc.dao.impl.PersonDaoImpl"
+                  depends-on="jdbcTemplate" init-method="initDatabase">
+                &lt;property name="jdbcTemplate">
+                    &lt;ref bean="jdbcTemplate" />
+                &lt;/property>
+            &lt;/bean>
+        </code>
+
+        （3）spring和jdbcTemplate整合，交给spring管理，引入JdbcDaoSupport更加方便的直接管理JdbcTemplate对象。
+        通过（2）可以看出，自己编写一个业务Dao，交给Spring管理，需要有如下依赖关系：
+        <font color="#dc143c">业务Dao依赖JdbcTemplate对象；
+        JdbcTemplate对象依赖DataSource对象。</font>
+        这种依赖层次有点多，如果能够直接在业务Dao中注入DataSource对象就很方便了。
+        spring提供了一个Support类来实现这种便捷，这个类是 <font color="#dc143c">JdbcDaoSupport</font> 。
+        业务Dao必须继承JdbcDaoSupport类，才能持有JdbcTemplate对象，这样就不用自己在Dao类中添加JdbcTemplate变量了：
+        <code class="language-java">
+            public class PersonDaoImpl extends JdbcDaoSupport implements PersonDao
+        </code>
+        通过xml配置依赖关系如下：
+        <code class="language-xml">
+            &lt;!-- 配置dbcp数据源-->
+            &lt;bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+                destroy-method="close">
+                &lt;!-- 通过property属性注入依赖成员 -->
+                &lt;property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+                &lt;property name="url">
+                    &lt;value>jdbc:oracle:thin:@localhost:1521:orcl&lt;/value>
+                &lt;/property>
+                &lt;property name="username" value="oracle" />
+                &lt;property name="password" value="oracle" />
+            &lt;/bean>
+
+            &lt;!-- 配置dao -->
+            &lt;bean id="personDao" class="demo08.myspring.model.jdbc.dao.impl.PersonDaoImpl"
+                  depends-on="dataSource" init-method="initDatabase">
+                &lt;property name="dataSource">
+                    &lt;ref bean="dataSource" />
+                &lt;/property>
+            &lt;/bean>
+        </code>
+
+    </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、通过硬编码操作JdbcTemplate的API</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        我们直接通过硬编码的方式去构建JdbcTemplate
+    </pre>
+
+    <b><a name='header-n5' class='md-header-anchor '></a>5、通过spring整合JdbcTemplate去操作API</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        我们通过业务Dao继承JdbcDaoSupport类的方式，直接将JdbcTemplate交给Spring管理。
+
+        <font color="#dc143c">定义Service接口：</font>
+        <code class="language-java">
+            package demo08.myspring.model.jdbc.service;
+            import demo08.myspring.model.jdbc.pojo.Person;
+            import java.util.List;
+
+            public interface PersonService {
+                public abstract String name(Integer id);
+                public abstract void insert(Person per);
+                public abstract int count();
+                public abstract List&lt;Person> list();
+            }
+        </code>
+    </pre>
+
+</div>
+</body>
+</html>

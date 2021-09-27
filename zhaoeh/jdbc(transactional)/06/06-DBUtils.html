@@ -4,7 +4,7 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width initial-scale=1'>
-    <title>连接池.md</title>
+    <title>DBUtils工具类使用.md</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
           rel='stylesheet' type='text/css'/>
     <style type='text/css'>html {
@@ -717,85 +717,162 @@
 </head>
 <body class='typora-export'>
 <div id='write' class='is-node'>
-    <b><a name='header-n0' class='md-header-anchor '></a>连接池</b>
+    <b><a name='header-n0' class='md-header-anchor '></a>DBUtils工具类使用</b>
 
-    <b><a name='header-n1' class='md-header-anchor '></a>1、什么是连接池？</b><br>
+    <b><a name='header-n1' class='md-header-anchor '></a>1、什么是DBUtils？</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        DataSource接口是java专门用来描述数据源而提供的一个接口规范。
-        同时DataSource可以方便的实现连接池。
-        <font color="#dc143c">注意，数据源和连接池实际上是两回事，数据源描述的就是数据库信息，只不过jdbc提供了DataSource来规范数据源。连接池就是数据库连接对象进行池化。说白了，连接池可以不使用DataSource规范，而直接通过DriverManager也可以进行池化。</font>
-        但是，JDBC2.0提供的DataSource接口，其目的就是为了将访问数据库的各种配置和步骤进行统一的规范，即它的目标就是通过使用DataSource规范，来约束数据源，并对连接池的实现提供了方便。
-        因此，很多地方会讲，DataSource数据源就是连接池，严谨来讲，这种描述是不对的（只不过所有的连接池的第三方实现都实现了DataSource接口，所以才会产生这种描述）。
+        Commons DbUtils是Apache组织提供的一个对JDBC进行简单封装的开源工具类库，使用它能够简化JDBC应用程序的开发，同时也不会影响程序的性能。
     </pre>
 
-    <b><a name='header-n2' class='md-header-anchor '></a>2、获取数据库连接</b><br>
+    <b><a name='header-n2' class='md-header-anchor '></a>2、DBUtils简介</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        通过数据源描述的数据库的各种信息，就可以与其描述的指定数据库创建数据库连接：
-        <code class="language-java">
-             // 1.加载驱动程序
-            Class.forName(CommonJdbcLoadUtil.getDbdriver());
+        DBUtils是java编程中的数据库操作实用工具，小巧简单实用。
+        1.  对于数据表的读操作，他可以把结果转换成List，Array，Set等java集合，便于程序员操作；
 
-            // 2.连接oracle数据库服务器，返回连接对象。注意连接数据库服务器时用户名和密码一定要正确。
-            con = DriverManager.getConnection(CommonJdbcLoadUtil.getDburl(),
-                    CommonJdbcLoadUtil.getDbuser(),
-                    CommonJdbcLoadUtil.getDbpass());
-        </code>
+        2.  对于数据表的写操作，也变得很简单（只需写sql语句）；
+
+        3.  可以使用数据源，使用JNDI，数据库连接池等技术来优化性能--重用已经构建好的数据库连接对象，而不像php，asp那样，费时费力的不断重复的构建和析构这样的对象。
+
+        4.  DBUtils包括3个包：
+        org.apache.commons.dbutils
+        org.apache.commons.dbutils.handlers
+        org.apache.commons.dbutils.wrappers
+        DBUtils封装了对JDBC的操作，简化了JDBC操作，可以少写代码。
+
+        5.  org.apache.commons.dbutils：
+        DbUtils 关闭链接等操作；
+        QueryRunner 进行查询的操作。
+
+        6.org.apache.commons.dbutils.handlers：
+        ArrayHandler ：将ResultSet中第一行的数据转化成对象数组
+        ArrayListHandler：将ResultSet中所有的数据转化成List，List中存放的是Object[]
+        BeanHandler ：将ResultSet中第一行的数据转化成类对象
+        BeanListHandler ：将ResultSet中所有的数据转化成List，List中存放的是类对象
+        ColumnListHandler ：将ResultSet中某一列的数据存成List，List中存放的是Object对象
+        KeyedHandler ：将ResultSet中存成映射，key为某一列对应为Map。Map中存放的是数据
+        MapHandler ：将ResultSet中第一行的数据存成Map映射
+        MapListHandler ：将ResultSet中所有的数据存成List。List中存放的是Map
+        ScalarHandler ：将ResultSet中一条记录的其中某一列的数据存成Object
+
+        7.  org.apache.commons.dbutils.wrappers：
+        SqlNullCheckedResultSet ：对ResultSet进行操作，改版里面的值
+        StringTrimmedResultSet ：去除ResultSet中中字段的左右空格。Trim()
+
+        8.  主要方法：
+        DbUtils类：启动类。
+        ResultSetHandler接口：转换类型接口。
+        MapListHandler类：实现类，把记录转化成List。
+        BeanListHandler类：实现类，把记录转化成List，使记录为JavaBean类型的对象。
+        Query Runner类：执行SQL语句的类。
     </pre>
 
-    <b><a name='header-n3' class='md-header-anchor '></a>3、数据源和连接池的关系</b><br>
+    <b><a name='header-n3' class='md-header-anchor '></a>3、DBUtils+C3P0工具类实现？</b><br>
     <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        实际上由于java发展的太快，最早的JDBC规范有很多不太合理的地方。
-        截止到目前，我们知道了数据源实际上就是用来描述指定数据库的各种信息的。这些描述你可以硬编码到代码中，也可以统一存储到某个指定文件中然后使用特定工具类进行解析。总而言之，用于描述数据库信息的东西，我们就称它为数据源。
-        有了数据源之后，我们就可以通过数据源去加载驱动，然后通过 DriverManager 去获取数据库连接。
+        1.  导入jar包 工具类 配置文件
+        ​ dbutils.jar
+        ​ c3p0.jar
+        ​ jdbc.jar
+        ​ 之前项目的info.properties
+        ​ c3p0工具类
 
-        然而，随着JDBC的发展，逐渐显示出了弊端。比如，总是将数据库各种信息硬编码或者任由开发者去编写到某些指定文件中，看起来很乱，并没有规范；比如，执行一个SQL，总是需要通过DriverManager去获取数据库连接，执行完毕后然后释放连接。
-        这一系列随之而来的弊端，导致了在JDBC2.0版本发布时，内置了一个接口：<font color="#dc143c">javax.sql.DataSource</font>
-        SUN期望通过javax.sql.DataSource接口来统一描述数据源，并且提供一种全新获取数据库连接的方式（实际上它的底层和DriverManager获取Connection对象的方式相同）。
-
-        <font color="#dc143c">因此，我们需要知道，JDBC2.0发布了javax.sql.DataSource接口来规范数据源，并且创建Connection对象，该接口需要各个厂商自己负责实现。</font>
-    </pre>
-
-    <b><a name='header-n4' class='md-header-anchor '></a>4、javax.sql.DataSource接口</b><br>
-    <pre class='md-fences mock-cm' style='display:block;position:relative'>
-        <font color="#dc143c">最初的数据库连接方式：</font>
+        2.  代码实现：
         <code class="language-java">
-            String URL = "jdbc:oracle:thin:@amrood:1521:EMP";
-            String USER = "username";
-            String PASS = "password"
-            Connection conn = DriverManager.getConnection(URL, USER, PASS);
-        </code>
-        可以看到，曾经获取数据库连接的代码还需要使用 DriverManager ,<font color="#dc143c">DriverManager.getConnection</font>是通过数据库驱动直接与数据库建立物理连接。
-        <font color="#dc143c">建立数据库连接以及关闭连接属于耗费时间的事情</font>，如果业务每次进行SQL查询都使用此方式，将会产生较大的性能开销。
-        因此，我们想着，既然线程对象都能够放在线程池中，那么数据库的Connection对象也能够放在一个池子中啊，这就是池化技术。所以，数据库连接池的设计开始出现了。
-        线程池、连接池，这些池化技术的核心思想就是<font color="#dc143c">空间换时间</font>。
-
-        鉴于JDBC发展的需要，因此SUN公司在JDBC2.0发布的时候，指定了一个新的接口规范，javax.sql.DataSource，用来规范化访问数据库的流程。
-        SUN想通过javax.sql.DataSource的方式来替代原来的DriverManager获取连接的方式。
-        当你想要获取数据库连接时，通过DataSource去获取即可，用完了也不用关闭连接对象等。
-        然而SUN只是制定了该规范，至于究竟如何产生Connection对象，SUN并未做明确的要求，需要第三方自己去实现。
-        因此，实际上DataSource只是描述数据源的规范化接口，它提供了快速获取Connection对象的规范，至于这个Connection对象是通过DriverManager去产生，还是直接通过数据库驱动去产生，是放置在连接池中，还是没有实现连接池，DataSource一律不作要求。
-
-        javax.sql.DataSource接口：
-        <code class="language-java">
-            public interface DataSource  extends CommonDataSource,Wrapper {
-              Connection getConnection() throws SQLException;
-              Connection getConnection(String username, String password) throws SQLException;
+            public class ResultHanlder {
+            ​
+                @Test
+                public void testArrayHander() throws SQLException {
+                    // ArrayHandler:适合取1条记录。把该条记录的每列值封装到一个数组中Object[]
+                    QueryRunner runner = new QueryRunner(C3P0Util.getDataSource());
+                    Object[] query = runner.query("select * from day13 where id = ?", new ArrayHandler(), 9);
+                    for (Object object : query) {
+                        System.out.println(object);
+                    }
+                }
+            ​
+                @Test
+                public void testArrayListHander() throws SQLException {
+                    // ArrayHandler:适合取1条记录。把该条记录的每列值封装到一个数组中Object[]
+                    QueryRunner runner = new QueryRunner(C3P0Util.getDataSource());
+                    List&lt;Object[]> query = runner.query("select * from day13 ", new ArrayListHandler());
+                    for (Object[] objects : query) {
+                        for (Object object : objects) {
+                            System.out.println(object);
+                        }
+                    }
+                }
+            ​
+                @Test
+                public void testColumnListHander() throws SQLException {
+                    // ColumnListHandler:取某一列的数据。封装到List中。
+                    QueryRunner runner = new QueryRunner(C3P0Util.getDataSource());
+                    List&lt;Object> query = runner.query("select * from day13 ", new ColumnListHandler(2));
+                    for (Object objects : query) {
+                        System.out.println(objects);
+                    }
+                }
+            ​
+                @Test
+                public void testKeyedHandler() throws SQLException {
+                    // KeyedHandler:取多条记录，每一条记录封装到一个Map中，再把这个Map封装到另外一个Map中，key为指定的字段值
+                    QueryRunner runner = new QueryRunner(C3P0Util.getDataSource());
+                    Map&lt;Object, Map&lt;String, Object>> query = runner.query("select * from day13 ", new KeyedHandler(2));
+                    for (Object key : query.keySet()) {
+                        System.out.println(key);
+                        for (Entry&lt;String, Object> entry : query.get(key).entrySet()) {
+                            System.out.println("key:" + entry.getKey() + "  values:" + entry.getValue());
+                        }
+                    }
+                }
+            ​
+                @Test
+                public void testMapHandler() throws SQLException {
+                    // MapHandler:适合取1条记录。把当前记录的列名和列值放到一个Map中
+                    QueryRunner runner = new QueryRunner(C3P0Util.getDataSource());
+                    Map&lt;String, Object> query = runner.query("select * from day13 ", new MapHandler());
+                    for (Entry&lt;String, Object> entry : query.entrySet()) {
+                        System.out.println("key:" + entry.getKey() + "  values:" + entry.getValue());
+                    }
+                }
+            ​
+                @Test
+                public void testMapListHandler() throws SQLException {
+                    // MapListHandler:适合取多条记录。把每条记录封装到一个Map中，再把Map封装到List中
+                    QueryRunner runner = new QueryRunner(C3P0Util.getDataSource());
+                    List&lt;Map&lt;String, Object>> query = runner.query("select * from day13 ", new MapListHandler());
+                    for (Map&lt;String, Object> entry : query) {
+                        for (Entry&lt;String, Object> mapEntr : entry.entrySet()) {
+                            System.out.println("key:" + mapEntr.getKey() + "  values:" + mapEntr.getValue());
+                        }
+                    }
+                }
+            ​
+                @Test
+                public void testScalarHandler() throws SQLException {
+                    // ScalarHandler:适合取单行单列数据
+                    QueryRunner runner = new QueryRunner(C3P0Util.getDataSource());
+                    Object query = runner.query("select count(*) from day13 ", new ScalarHandler());
+                    System.out.println(query);
+                }
+            ​
+                @Test
+                public void testBeanHandler() throws SQLException {
+                    // BeanHandler:适合取单行单列数据
+                    QueryRunner runner = new QueryRunner(C3P0Util.getDataSource());
+                    Day13 query = runner.query("select name,age from day13 ", new BeanHandler&lt;Day13>(Day13.class));
+                    System.out.println(query.toString());
+                }
             }
         </code>
-
-        <font color="#dc143c">
-        总结：DataSource接口是SUN为了更加统一的描述数据源和方便实现连接池而推出的一种规范，需要各个第三方自己去实现。
-        说白了，DataSource并不是连接池，它只是对数据源的规范描述。但是可以使用DataSource方便的实现连接池，因为可以使用DataSource来代替DriverManager来方便的获取数据库连接对象。
-        </font>
-        <code class="language-diff">
-            DriverManager 只是JDBC1.0版本用来调用数据库驱动的工具包。
-            JDBC2.0版本推出的DataSource规范之后，典型的像第三方 DruidDataSource 就没有依赖DriverManager，而是在自己实现类中直接调用了数据库驱动。
-            这里只是重点强调，数据库连接不一定是使用DriverManager创建的（但实际上连接池中的连接对象还是从DriverManager或者类似组件中创建的）。
-
-            使用javax.sql.DataSource的好处：
-            有了DataSource后，数据库连接、用户名、密码等都有了统一的规范进行管理，它们作为DataSource属性的一部分，并且将数据库驱动名称填充，底层自动加载。
-        </code>
     </pre>
+
+    <b><a name='header-n4' class='md-header-anchor '></a>4、总结</b><br>
+    <pre class='md-fences mock-cm' style='display:block;position:relative'>
+        DBUtils实际上是一个非常简单小巧的orm映射框架。
+        不过目前有专门的orm框架去做这些事情，比如非常流行的mybatis。
+        甚至包括spring也提供了很多更加强大的工具类，比如jdbcTemplate。
+        因此，DBUtils这个工具只需要简单了解即可。
+    </pre>
+
 </div>
 </body>
 </html>
